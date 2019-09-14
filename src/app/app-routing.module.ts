@@ -6,7 +6,17 @@ import {ScreenTasksComponent, ScreenTasksModule} from './screen-tasks'
 const routes: Routes = [
     {
         path: '',
-        component: ScreenTasksComponent
+        redirectTo: 'tasks/all',
+        pathMatch: 'full'
+    },
+    {
+        path: 'tasks',
+        children: [
+            {
+                path: ':state',
+                component: ScreenTasksComponent
+            }
+        ]
     }
 ];
 

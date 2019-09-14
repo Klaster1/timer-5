@@ -11,6 +11,6 @@ export class ScreenTasksComponent {
     constructor(
         private store: Store<StoreState>,
     ) {}
-    tasks$ = this.store.select(userTasks, {userId: 'foo'})
+    tasks$ = this.store.select(userTasks, {})
     addTask = () => this.store.dispatch(createTask({name: Math.random().toString()}))
 }
