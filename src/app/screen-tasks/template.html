@@ -1,7 +1,32 @@
 <h1>Tasks</h1>
 <button (click)='addTask()'>Add task</button>
+<nav>
+    <li>
+        <a routerLink='/tasks/all'>All</a>
+    </li>
+    <li>
+        <a routerLink='/tasks/active'>Active</a>
+    </li>
+    <li>
+        <a routerLink='/tasks/done'>Done</a>
+    </li>
+    <li>
+        <a routerLink='/tasks/on-hold'>On hold</a>
+    </li>
+    <li>
+        <a routerLink='/tasks/to-do'>To do</a>
+    </li>
+</nav>
 <ul>
     <li *ngFor='let task of (tasks$|async)'>
         <pre>{{task|json}}</pre>
+        <button (click)='renameTask(task)'>Rename</button>
+        <button (click)='deleteTask(task)'>Delete</button>
+        <select [value]='task.state' (input)='$event.preventDefault();changeTaskState(task, $event.target.value)'>
+            <option value="active">Active</option>
+            <option value="done">Done</option>
+            <option value="on-hold">On hold</option>
+            <option value="to-do">To do</option>
+        </select>
     </li>
 </ul>

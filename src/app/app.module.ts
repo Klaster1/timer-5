@@ -30,11 +30,10 @@ import {ScreenTasksModule} from './screen-tasks'
     StoreModule.forRoot(reducers.combinedReducers),
     StoreRouterConnectingModule.forRoot(),
     StoreDevtoolsModule.instrument({
-      maxAge: 25, // Retains last 25 states
+      maxAge: 25,
       logOnly: environment.production, // Restrict extension to log-only mode
     }),
     EffectsModule.forRoot([Effects]),
-    // AngularFirestoreModule,
     NgxAuthFirebaseUIModule.forRoot(environment.firebase)
   ],
   providers: [],
