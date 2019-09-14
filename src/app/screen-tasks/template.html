@@ -1,0 +1,7 @@
+<h1>Tasks</h1>
+<button (click)='addTask()'>Add task</button>
+<ul>
+    <li *ngFor='let task of (tasks$|async)'>
+        <pre>{{task|json}}</pre>
+    </li>
+</ul>
