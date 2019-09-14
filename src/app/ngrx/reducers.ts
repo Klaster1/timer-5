@@ -1,3 +1,4 @@
+import {routerReducer} from '@ngrx/router-store'
 import {createReducer, Action, on} from '@ngrx/store'
 import * as actions from './actions'
 import {StoreState} from '@app/types'
@@ -32,5 +33,6 @@ export function user(state: StoreState['user'], action: Action) {
 
 export const combinedReducers = {
     user,
-    tasks
+    tasks,
+    router: routerReducer
 }

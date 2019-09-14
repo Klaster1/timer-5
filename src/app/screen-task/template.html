@@ -1,1 +1,4 @@
-<h1>Task</h1>
+<ng-container *ngIf='(task$|async) as task'>
+    <h1>Task: {{task.name}}</h1>
+    <pre>{{task|json}}</pre>    
+</ng-container>

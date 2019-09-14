@@ -19,7 +19,7 @@ const routes: Routes = [
                 children: [
                     {
                         path: ':taskId',
-                        component: ScreenTaskComponent
+                        component: ScreenTaskComponent,
                     }
                 ]
             }
