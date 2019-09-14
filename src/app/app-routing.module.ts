@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import {ScreenTasksComponent, ScreenTasksModule} from './screen-tasks'
+import {ScreenTasksComponent} from './screen-tasks'
+import {ScreenTaskComponent} from './screen-task'
 
 
 const routes: Routes = [
@@ -14,7 +15,13 @@ const routes: Routes = [
         children: [
             {
                 path: ':state',
-                component: ScreenTasksComponent
+                component: ScreenTasksComponent,
+                children: [
+                    {
+                        path: ':taskId',
+                        component: ScreenTaskComponent
+                    }
+                ]
             }
         ]
     }
@@ -22,8 +29,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [
-      RouterModule.forRoot(routes),
-      ScreenTasksModule
+      RouterModule.forRoot(routes)
   ],
   exports: [RouterModule]
 })

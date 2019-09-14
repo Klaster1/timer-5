@@ -20,6 +20,7 @@
 <ul>
     <li *ngFor='let task of (tasks$|async)'>
         <pre>{{task|json}}</pre>
+        <a [routerLink]='[task.id]'>Open task</a>
         <button (click)='renameTask(task)'>Rename</button>
         <button (click)='deleteTask(task)'>Delete</button>
         <select [value]='task.state' (input)='$event.preventDefault();changeTaskState(task, $event.target.value)'>

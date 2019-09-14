@@ -17,6 +17,7 @@ import { AppComponent } from './app.component';
 import * as reducers from './ngrx/reducers'
 import {Effects} from './ngrx/effects'
 import {ScreenTasksModule} from './screen-tasks'
+import {ScreenTaskModule} from './screen-task'
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import {ScreenTasksModule} from './screen-tasks'
     BrowserAnimationsModule,
     AppRoutingModule,
     ScreenTasksModule,
+    ScreenTaskModule,
     StoreModule.forRoot(reducers.combinedReducers),
     StoreRouterConnectingModule.forRoot(),
     StoreDevtoolsModule.instrument({
