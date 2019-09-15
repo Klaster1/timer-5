@@ -6,7 +6,7 @@
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr;
     flex: 1;
-    --fab-offset: 10px;
+    --fab-offset: 1rem;
 }
 .task-link {
     padding: calc((48px - 1.5em) / 2) 0 !important;

@@ -43,8 +43,7 @@ export class Effects {
 
     newTaskRedirect$ = createEffect(() => this.actions$.pipe(
         ofType(actions.task),
-        withLatestFrom(this.actions$.pipe(pathNavigate(['tasks', ':state']))),
-        exhaustMap(([a, path]) => this.router.navigate(['tasks', path.params.state, a.task.id]))
+        exhaustMap((a) => this.router.navigate(['tasks', 'active', a.task.id]))
     ), {dispatch: false})
 
     renameTask$ = createEffect(() => this.actions$.pipe(
@@ -57,9 +56,13 @@ export class Effects {
 
     deleteTask$ = createEffect(() => this.actions$.pipe(
         ofType(actions.deleteTask),
-        withLatestFrom(this.store.select(selectors.user)),
-        exhaustMap(([action, user]) => {
-            return this.afs.collection<Task>('tasks').doc(action.taskId).delete()
+        withLatestFrom(
+            this.store.select(selectors.user),
+            this.actions$.pipe(pathNavigate(['tasks', ':state']))
+        ),
+        exhaustMap(async ([action, user, state]) => {
+            await this.afs.collection<Task>('tasks').doc(action.taskId).delete()
+            await this.router.navigate(['tasks', state.params.state])
         })
     ), {dispatch: false})
 
