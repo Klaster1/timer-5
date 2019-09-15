@@ -14,7 +14,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { NgxAuthFirebaseUIModule } from 'ngx-auth-firebaseui';
 import {
     MatSidenavModule,
-    MatListModule
+    MatListModule,
 } from '@angular/material'
 
 import { AppRoutingModule } from './app-routing.module';
@@ -24,6 +24,7 @@ import {Effects} from './ngrx/effects'
 import {ScreenTasksModule} from './screen-tasks'
 import {ScreenTaskModule} from './screen-task'
 import {ScreenLoginModule} from './screen-login'
+import {ButtonUserActionsModule} from './button-user-actions'
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import {ScreenLoginModule} from './screen-login'
     ScreenLoginModule,
     ScreenTasksModule,
     ScreenTaskModule,
+    ButtonUserActionsModule,
     MatSidenavModule,
     MatListModule,
     StoreModule.forRoot(reducers.combinedReducers),

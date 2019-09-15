@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import {Store} from '@ngrx/store'
-import {isLoggedIn} from '@app/ngrx/selectors'
+import {isLoggedIn, user} from '@app/ngrx/selectors'
 import {StoreState} from '@app/types'
 
 @Component({
@@ -13,5 +13,6 @@ export class AppComponent {
         private store: Store<StoreState>
     ) {}
     isLoggedIn$ = this.store.select(isLoggedIn)
+    user$ = this.store.select(user)
   title = 'timer';
 }

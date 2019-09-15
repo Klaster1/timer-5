@@ -64,7 +64,7 @@ export class Effects {
     ), {dispatch: false})
 
     userFromFirebase$ = createEffect(() => this.afa.user.pipe(
-        map(user => actions.user({user: user ? {id: user.uid} : null})),
+        map(user => actions.user({user: user ? {id: user.uid, photoURL: user.photoURL} : null})),
     ), {dispatch: true})
 
     taskToFirebase$ = createEffect(() => this.actions$.pipe(

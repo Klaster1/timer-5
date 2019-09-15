@@ -18,7 +18,8 @@ export interface Session {
 export type TaskState = 'active' | 'done' | 'dropped' | 'on-hold' | 'to-do'
 
 export type User = null | {
-    id: string
+    id: string,
+    photoURL?: string
 }
 
 export type WithId<T> = T & {
