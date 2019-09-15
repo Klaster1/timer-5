@@ -2,8 +2,8 @@
     <h1>Tasks</h1>
     <button (click)='addTask()' mat-fab color='primary'>Add</button>
     <mat-nav-list *ngIf='(tasks$|async) as tasks'>
-        <mat-list-item *ngFor='let task of tasks' [ngClass]='{active: rla.isActive}'>
-            <a matLine [routerLink]='[task.id]' #rla='routerLinkActive' routerLinkActive>{{task.name}}</a>
+        <mat-list-item *ngFor='let task of tasks; trackBy taskId' [ngClass]='{active: rla.isActive}'>
+            <a matLine [routerLink]='[task.id]' #rla='routerLinkActive' routerLinkActive class='task-link'>{{task.name}}</a>
             <button-task-actions [task]='task'></button-task-actions>
         </mat-list-item>
     </mat-nav-list>

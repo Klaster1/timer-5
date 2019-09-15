@@ -21,4 +21,5 @@ export class ScreenTasksComponent {
         if (!name) return
         this.store.dispatch(actions.createTask({name}))
     }
+    taskId = (task: TaskWithId) => task.id
 }

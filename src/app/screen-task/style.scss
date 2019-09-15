@@ -11,4 +11,5 @@ mat-card {
     position: absolute;
     bottom: var(--fab-offset);
     right: var(--fab-offset);
+    z-index: 2;
 }
