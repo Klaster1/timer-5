@@ -7,6 +7,7 @@ import {fromEntries} from '@app/utils'
 export function tasks(state: StoreState['tasks'], action: Action) {
     return createReducer<StoreState['tasks']>(
         {},
+        on(actions.logout, (state, action) => ({})),
         on(actions.task, (state, action) => ({
             ...state,
             [action.task.id]: action.task
