@@ -1,0 +1,15 @@
+:host {
+    display: inline-block;
+    --size: 48;
+    --size-px: calc(var(--size) * 1px);
+    width: var(--size-px);
+    height: var(--size-px);
+}
+img {
+    width: var(--size-px);
+    height: var(--size-px);
+    border-radius: 100%;
+}
+mat-icon {
+    transform: scale(calc(var(--size) / 24));
+}

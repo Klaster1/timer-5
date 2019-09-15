@@ -1,0 +1,9 @@
+<button
+    type='button'
+    mat-icon-button
+    class='button-user-menu'
+    *ngIf='(user$|async) as user'
+>
+    <img [src]="user.photoURL" *ngIf='user.photoURL'>
+    <mat-icon *ngIf='!user.photoURL'>account_circle</mat-icon>
+</button>
