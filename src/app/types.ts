@@ -29,7 +29,7 @@ export type TaskWithId = WithId<Task>
 export type SessionWithId = WithId<Session>
 
 export interface StoreState {
-    user: User
+    user: User | null,
     tasks: {[taskId: string]: TaskWithId},
     sessions: {[sessionId: string]: SessionWithId},
     router: RouterReducerState

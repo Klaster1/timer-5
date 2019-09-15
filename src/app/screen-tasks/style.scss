@@ -1,0 +1,25 @@
+:host {
+    display: grid;
+    grid-template-areas:
+        "tasks"
+        "task";
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+    flex: 1;
+    --fab-offset: 10px;
+}
+.tasks {
+    position: relative;
+}
+.task {
+    display: flex;
+    flex-direction: column;
+}
+[mat-fab] {
+    position: absolute;
+    bottom: var(--fab-offset);
+    right: var(--fab-offset);
+}
+.active {
+    background: var(--active-link-background)
+}

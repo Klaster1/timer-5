@@ -5,7 +5,8 @@ import * as selectors from '@app/ngrx/selectors'
 import * as actions from '@app/ngrx/actions'
 
 @Component({
-    templateUrl: './template.html'
+    templateUrl: './template.html',
+    styleUrls: ['./style.scss']
 })
 export class ScreenTaskComponent {
     constructor(

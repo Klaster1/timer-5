@@ -6,10 +6,15 @@ import * as selectors from '@app/ngrx/selectors'
 import {ROUTER_NAVIGATION, RouterNavigationAction} from '@ngrx/router-store'
 import {AngularFirestore} from '@angular/fire/firestore'
 import {AngularFireAuth} from '@angular/fire/auth'
-import {EMPTY, combineLatest} from 'rxjs';
-import {tap, map, withLatestFrom, exhaustMap, switchMap, filter} from 'rxjs/operators';
-import {StoreState, Task} from '@app/types'
+import {EMPTY, combineLatest, pipe} from 'rxjs';
+import {tap, map, withLatestFrom, exhaustMap, switchMap, filter, pluck} from 'rxjs/operators';
+import {StoreState, Task, TaskState} from '@app/types'
 import {findRoute} from '@app/utils'
+
+const pathNavigate = path => pipe(
+    ofType<RouterNavigationAction>(ROUTER_NAVIGATION),
+    map(a => findRoute(a.payload, path))
+)
 
 @Injectable()
 export class Effects {
@@ -59,7 +64,7 @@ export class Effects {
     ), {dispatch: false})
 
     userFromFirebase$ = createEffect(() => this.afa.user.pipe(
-        map(user => actions.user({user: {id: user.uid}})),
+        map(user => actions.user({user: user ? {id: user.uid} : null})),
     ), {dispatch: true})
 
     taskToFirebase$ = createEffect(() => this.actions$.pipe(
@@ -71,18 +76,15 @@ export class Effects {
     ), {dispatch: false})
 
     tasksFromFirebase$ = createEffect(() => combineLatest(
-        this.actions$.pipe(
-            ofType<RouterNavigationAction>(ROUTER_NAVIGATION),
-            map(a => findRoute(a.payload, ['tasks', ':state']))
-        ),
+        this.actions$.pipe(pathNavigate(['tasks', ':state']), map(s => s? s.params.state as TaskState|'all' : undefined)),
         this.store.select(selectors.user),
     ).pipe(
         switchMap(([taskState, user]) => {
             if (!user || !taskState) return EMPTY
-            if (!taskState.params || taskState.params.state === 'all') {
+            if (taskState === 'all') {
                 return this.afs.collection<Task>('tasks', (ref) => ref.where('userId', '==', user.id)).valueChanges({idField: 'id'})
             } else {
-                return this.afs.collection<Task>('tasks', (ref) => ref.where('userId', '==', user.id).where('state', '==', taskState.params.state)).valueChanges({idField: 'id'})
+                return this.afs.collection<Task>('tasks', (ref) => ref.where('userId', '==', user.id).where('state', '==', taskState)).valueChanges({idField: 'id'})
             }
         }),
         map(tasks => actions.tasks({tasks})),

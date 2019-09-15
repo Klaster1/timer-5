@@ -5,7 +5,8 @@ import {userTasks} from '@app/ngrx/selectors'
 import * as actions from '@app/ngrx/actions'
 
 @Component({
-    templateUrl: './template.html'
+    templateUrl: './template.html',
+    styleUrls: ['./style.scss']
 })
 export class ScreenTasksComponent {
     constructor(
@@ -16,16 +17,5 @@ export class ScreenTasksComponent {
         const name = window.prompt('Add task')
         if (!name) return
         this.store.dispatch(actions.createTask({name}))
-    }
-    renameTask(task: TaskWithId) {
-        const name = window.prompt('Rename task', task.name)
-        if (!name) return
-        this.store.dispatch(actions.renameTask({taskId: task.id, name}))
-    }
-    deleteTask = (task: TaskWithId) => {
-        this.store.dispatch(actions.deleteTask({taskId: task.id}))
-    }
-    changeTaskState(task: TaskWithId, state: TaskState) {
-        this.store.dispatch(actions.changeTaskState({taskId: task.id, state}))
     }
 }

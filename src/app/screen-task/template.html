@@ -1,4 +1,12 @@
 <ng-container *ngIf='(task$|async) as task'>
-    <h1>Task: {{task.name}}</h1>
-    <pre>{{task|json}}</pre>    
+    <mat-card>
+        <mat-card-title>
+            {{task.name}}
+            <button-task-actions [task]='task'></button-task-actions>
+        </mat-card-title>
+        <mat-card-content>
+            <pre>{{task|json}}</pre>    
+        </mat-card-content>
+    </mat-card>
+    <button  mat-fab color='primary'>Start</button>
 </ng-container>

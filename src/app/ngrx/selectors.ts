@@ -3,6 +3,10 @@ import {StoreState, TaskState} from '@app/types'
 import {getSelectors} from '@ngrx/router-store'
 
 export const user = createFeatureSelector<StoreState, StoreState['user']>('user')
+export const isLoggedIn = createSelector(
+    user,
+    (user) => !!user
+)
 export const tasks = createFeatureSelector<StoreState, StoreState['tasks']>('tasks')
 export const userTasks = createSelector(
     tasks, user,

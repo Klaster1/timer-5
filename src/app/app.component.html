@@ -1,2 +1,39 @@
-<ngx-auth-firebaseui></ngx-auth-firebaseui>
-<router-outlet></router-outlet>
+<mat-drawer-container>
+    <mat-drawer mode='side' [opened]='isLoggedIn$|async'>
+        <mat-nav-list>
+            <a
+                mat-list-item
+                routerLink='/tasks/all'
+                routerLinkActive='active'
+            >All</a>
+            <a
+                mat-list-item
+                routerLink='/tasks/active'
+                routerLinkActive='active'
+            >Active</a>
+            <a
+                mat-list-item
+                routerLink='/tasks/done'
+                routerLinkActive='active'
+            >Done</a>
+            <a
+                mat-list-item
+                routerLink='/tasks/to-do'
+                routerLinkActive='active'
+            >To do</a>
+            <a
+                mat-list-item
+                routerLink='/tasks/on-hold'
+                routerLinkActive='active'
+            >On hold</a>
+            <a
+                mat-list-item
+                routerLink='/tasks/dropped'
+                routerLinkActive='active'
+            >Dropped</a>
+        </mat-nav-list>
+    </mat-drawer>
+    <mat-drawer-content>
+        <router-outlet></router-outlet>
+    </mat-drawer-content>
+</mat-drawer-container>

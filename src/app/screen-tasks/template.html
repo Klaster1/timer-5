@@ -1,34 +1,13 @@
-<h1>Tasks</h1>
-<button (click)='addTask()'>Add task</button>
-<nav>
-    <li>
-        <a routerLink='/tasks/all'>All</a>
-    </li>
-    <li>
-        <a routerLink='/tasks/active'>Active</a>
-    </li>
-    <li>
-        <a routerLink='/tasks/done'>Done</a>
-    </li>
-    <li>
-        <a routerLink='/tasks/on-hold'>On hold</a>
-    </li>
-    <li>
-        <a routerLink='/tasks/to-do'>To do</a>
-    </li>
-</nav>
-<ul>
-    <li *ngFor='let task of (tasks$|async)'>
-        <pre>{{task|json}}</pre>
-        <a [routerLink]='[task.id]'>Open task</a>
-        <button (click)='renameTask(task)'>Rename</button>
-        <button (click)='deleteTask(task)'>Delete</button>
-        <select [value]='task.state' (input)='$event.preventDefault();changeTaskState(task, $event.target.value)'>
-            <option value="active">Active</option>
-            <option value="done">Done</option>
-            <option value="on-hold">On hold</option>
-            <option value="to-do">To do</option>
-        </select>
-    </li>
-</ul>
-<router-outlet></router-outlet>
+<section class='tasks'>
+    <h1>Tasks</h1>
+    <button (click)='addTask()' mat-fab color='primary'>Add</button>
+    <mat-nav-list *ngIf='(tasks$|async) as tasks'>
+        <mat-list-item *ngFor='let task of tasks' [ngClass]='{active: rla.isActive}'>
+            <a matLine [routerLink]='[task.id]' #rla='routerLinkActive' routerLinkActive>{{task.name}}</a>
+            <button-task-actions [task]='task'></button-task-actions>
+        </mat-list-item>
+    </mat-nav-list>
+</section>
+<section class="task">
+    <router-outlet></router-outlet>
+</section>

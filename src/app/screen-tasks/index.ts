@@ -1,7 +1,10 @@
 import {NgModule} from '@angular/core'
 import {CommonModule} from '@angular/common'
-import {ScreenTasksComponent} from './component'
 import {RouterModule} from '@angular/router'
+import {MatButtonModule, MatListModule} from '@angular/material'
+
+import {ScreenTasksComponent} from './component'
+import {ButtonTaskActionsModule} from '@app/button-task-actions'
 
 export {ScreenTasksComponent}
 
@@ -11,7 +14,10 @@ export {ScreenTasksComponent}
     exports: [ScreenTasksComponent],
     imports: [
         CommonModule,
-        RouterModule
+        RouterModule,
+        MatButtonModule,
+        MatListModule,
+        ButtonTaskActionsModule
     ]
 })
 export class ScreenTasksModule {}

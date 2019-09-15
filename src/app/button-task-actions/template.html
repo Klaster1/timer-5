@@ -1,0 +1,31 @@
+<button
+    mat-icon-button
+    [matMenuTriggerFor]='menu'
+>
+    <mat-icon>more_vert</mat-icon>
+</button>
+<mat-menu #menu='matMenu'>
+    <ng-template matMenuContent>
+        <div mat-menu-item (click)='$event.stopPropagation()'>
+            <mat-select
+                [value]='task.state'
+                (selectionChange)='changeTaskState(task, $event.value)'
+            >
+                <mat-option value="active">Active</mat-option>
+                <mat-option value="done">Done</mat-option>
+                <mat-option value="on-hold">On hold</mat-option>
+                <mat-option value="to-do">To do</mat-option>
+            </mat-select>
+        </div>
+        <button
+            mat-menu-item
+            type='button'
+            (click)='renameTask(task)'
+        >Rename</button>
+        <button
+            mat-menu-item
+            type='button'
+            (click)='deleteTask(task)'
+        >Delete</button>
+    </ng-template>
+</mat-menu>
