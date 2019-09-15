@@ -1,9 +1,30 @@
-<button
-    type='button'
-    mat-icon-button
-    class='button-user-menu'
-    *ngIf='(user$|async) as user'
->
-    <img [src]="user.photoURL" *ngIf='user.photoURL'>
-    <mat-icon *ngIf='!user.photoURL'>account_circle</mat-icon>
-</button>
+<ng-container *ngIf='(user$|async) as user'>
+    <button
+        type='button'
+        mat-icon-button
+        class='button-user-menu'
+        [matMenuTriggerFor]='menu'
+    >
+        <img [src]="user.photoURL" *ngIf='user.photoURL'>
+        <mat-icon *ngIf='!user.photoURL'>account_circle</mat-icon>
+    </button>
+    <mat-menu #menu='matMenu'>
+        <ng-template matMenuContent>
+          <div
+            mat-menu-item
+            disabled
+            disableRipple
+            style='height: auto'
+            *ngIf='user.email'
+          >
+            {{user.email}}
+          </div>
+          <mat-divider></mat-divider>
+            <button
+                type='button'
+                mat-menu-item
+                (click)='logout()'
+            >Logout</button>
+        </ng-template>
+    </mat-menu>    
+</ng-container>

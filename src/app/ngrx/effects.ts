@@ -3,6 +3,7 @@ import {createEffect, ofType, Actions} from '@ngrx/effects'
 import {Store} from '@ngrx/store'
 import * as actions from '@app/ngrx/actions'
 import * as selectors from '@app/ngrx/selectors'
+import {Router} from '@angular/router'
 import {ROUTER_NAVIGATION, RouterNavigationAction} from '@ngrx/router-store'
 import {AngularFirestore} from '@angular/fire/firestore'
 import {AngularFireAuth} from '@angular/fire/auth'
@@ -22,7 +23,8 @@ export class Effects {
         private actions$: Actions,
         private store: Store<StoreState>,
         private afs: AngularFirestore,
-        private afa: AngularFireAuth
+        private afa: AngularFireAuth,
+        private router: Router
     ) {}
 
     createTask$ = createEffect(() => this.actions$.pipe(
@@ -64,8 +66,20 @@ export class Effects {
     ), {dispatch: false})
 
     userFromFirebase$ = createEffect(() => this.afa.user.pipe(
-        map(user => actions.user({user: user ? {id: user.uid, photoURL: user.photoURL} : null})),
+        map(user => actions.user({user: user ? {id: user.uid, photoURL: user.photoURL, email: user.email} : null})),
     ), {dispatch: true})
+
+    loginRedirect$ = createEffect(() => this.actions$.pipe(
+        ofType(actions.user),
+        withLatestFrom(this.actions$.pipe(pathNavigate(['tasks', ':state']), map(p=>!!p))),
+        exhaustMap(([a, isOnTasks]) => isOnTasks ? EMPTY : this.router.navigate(['tasks', 'active']))
+    ), {dispatch: false})
+
+    logout$ = createEffect(() => this.actions$.pipe(
+        ofType(actions.logout),
+        exhaustMap(() => this.afa.auth.signOut()),
+        exhaustMap(() => this.router.navigate(['login']))
+    ), {dispatch: false})
 
     taskToFirebase$ = createEffect(() => this.actions$.pipe(
         ofType(actions.task),

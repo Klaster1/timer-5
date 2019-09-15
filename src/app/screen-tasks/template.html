@@ -1,4 +1,4 @@
-<section class='tasks'>
+<section class='tasks' [class.full-width]='taskNotOpened$|async'>
     <h1>Tasks</h1>
     <button (click)='addTask()' mat-fab color='primary'>Add</button>
     <mat-nav-list *ngIf='(tasks$|async) as tasks'>
@@ -8,6 +8,6 @@
         </mat-list-item>
     </mat-nav-list>
 </section>
-<section class="task">
+<section class="task" *ngIf='taskOpened$|async'>
     <router-outlet></router-outlet>
 </section>

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import {Store} from '@ngrx/store'
 import {user} from '@app/ngrx/selectors'
+import * as actions from '@app/ngrx/actions'
 import {StoreState} from '@app/types'
 
 @Component({
@@ -13,4 +14,7 @@ export class ButtonUserActionsComponent {
         private store: Store<StoreState>
     ) {}
     user$ = this.store.select(user)
+    logout() {
+        this.store.dispatch(actions.logout())
+    }
 }

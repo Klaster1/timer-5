@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core'
 import {CommonModule} from '@angular/common'
-import {MatButtonModule, MatIconModule, MatMenuModule} from '@angular/material'
+import {MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule} from '@angular/material'
 import {ButtonUserActionsComponent} from './component'
 
 @NgModule({
@@ -8,7 +8,8 @@ import {ButtonUserActionsComponent} from './component'
         CommonModule,
         MatButtonModule,
         MatIconModule,
-        MatMenuModule
+        MatMenuModule,
+        MatDividerModule
     ],
     declarations: [ButtonUserActionsComponent],
     exports: [ButtonUserActionsComponent]

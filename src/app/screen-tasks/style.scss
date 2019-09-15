@@ -23,3 +23,6 @@
 .active {
     background: var(--active-link-background)
 }
+.full-width {
+    grid-column: span 2;
+}

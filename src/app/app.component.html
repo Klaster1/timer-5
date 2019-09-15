@@ -33,7 +33,7 @@
                     routerLinkActive='active'
                 >Dropped</a>
             </mat-nav-list>
-            <button-user-actions></button-user-actions>
+            <button-user-actions *ngIf='isLoggedIn$|async'></button-user-actions>
         </div>
     </mat-drawer>
     <mat-drawer-content>
