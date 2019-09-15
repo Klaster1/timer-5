@@ -6,32 +6,41 @@
                     mat-list-item
                     routerLink='/tasks/all'
                     routerLinkActive='active'
-                >All</a>
+                >
+                    <img src="/assets/logo.svg" alt="Timer" class=logo>
+                </a>
                 <a
                     mat-list-item
                     routerLink='/tasks/active'
                     routerLinkActive='active'
-                >Active</a>
+                    matTooltip='Active'
+                >
+                    <mat-icon>play_circle_filled</mat-icon>
+                </a>
                 <a
                     mat-list-item
                     routerLink='/tasks/done'
                     routerLinkActive='active'
-                >Done</a>
+                    matTooltip='Done'
+                ><mat-icon>check_circled</mat-icon></a>
                 <a
                     mat-list-item
                     routerLink='/tasks/to-do'
                     routerLinkActive='active'
-                >To do</a>
+                    matTooltip='To do'
+                ><mat-icon>bookmark</mat-icon></a>
                 <a
                     mat-list-item
                     routerLink='/tasks/on-hold'
                     routerLinkActive='active'
-                >On hold</a>
+                    matTooltip='On hold'
+                ><mat-icon>low_priority</mat-icon></a>
                 <a
                     mat-list-item
                     routerLink='/tasks/dropped'
                     routerLinkActive='active'
-                >Dropped</a>
+                    matTooltip='Dropped'
+                ><mat-icon>delete</mat-icon></a>
             </mat-nav-list>
             <button-user-actions *ngIf='isLoggedIn$|async'></button-user-actions>
         </div>

@@ -15,6 +15,8 @@ import { NgxAuthFirebaseUIModule } from 'ngx-auth-firebaseui';
 import {
     MatSidenavModule,
     MatListModule,
+    MatIconModule,
+    MatTooltipModule
 } from '@angular/material'
 
 import { AppRoutingModule } from './app-routing.module';
@@ -41,6 +43,8 @@ import {ButtonUserActionsModule} from './button-user-actions'
     ButtonUserActionsModule,
     MatSidenavModule,
     MatListModule,
+    MatIconModule,
+    MatTooltipModule,
     StoreModule.forRoot(reducers.combinedReducers),
     StoreRouterConnectingModule.forRoot(),
     StoreDevtoolsModule.instrument({

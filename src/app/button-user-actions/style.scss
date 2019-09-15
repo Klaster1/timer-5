@@ -1,5 +1,7 @@
 :host {
-    display: inline-block;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
     --size: 32;
     --size-px: calc(var(--size) * 1px);
     width: var(--size-px);
