@@ -41,6 +41,12 @@ export class Effects {
         }))
     ), {dispatch: true})
 
+    newTaskRedirect$ = createEffect(() => this.actions$.pipe(
+        ofType(actions.task),
+        withLatestFrom(this.actions$.pipe(pathNavigate(['tasks', ':state']))),
+        exhaustMap(([a, path]) => this.router.navigate(['tasks', path.params.state, a.task.id]))
+    ), {dispatch: false})
+
     renameTask$ = createEffect(() => this.actions$.pipe(
         ofType(actions.renameTask),
         withLatestFrom(this.store.select(selectors.user)),
