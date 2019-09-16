@@ -10,12 +10,7 @@ import {AngularFireAuth} from '@angular/fire/auth'
 import {EMPTY, combineLatest, pipe} from 'rxjs';
 import {tap, map, withLatestFrom, exhaustMap, switchMap, filter, pluck} from 'rxjs/operators';
 import {StoreState, Task, TaskState} from '@app/types'
-import {findRoute} from '@app/utils'
-
-const pathNavigate = path => pipe(
-    ofType<RouterNavigationAction>(ROUTER_NAVIGATION),
-    map(a => findRoute(a.payload, path))
-)
+import {pathNavigate} from '@app/utils/router-store'
 
 @Injectable()
 export class Effects {
@@ -99,8 +94,8 @@ export class Effects {
     ), {dispatch: false})
 
     tasksFromFirebase$ = createEffect(() => combineLatest(
-        this.actions$.pipe(pathNavigate(['tasks', ':state']), map(s => s? s.params.state as TaskState|'all' : undefined)),
-        this.store.select(selectors.user),
+        this.actions$.pipe(pathNavigate(['tasks', ':state']), map(s => s ? s.params.state as TaskState|'all' : undefined)),
+        this.actions$.pipe(ofType(actions.user), pluck('user'))
     ).pipe(
         switchMap(([taskState, user]) => {
             if (!user || !taskState) return EMPTY

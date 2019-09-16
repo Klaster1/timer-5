@@ -1,6 +1,6 @@
 <section class='tasks' [class.full-width]='taskNotOpened$|async'>
     <mat-toolbar>
-        <h1>Tasks</h1>
+        <h1>{{state$|async|taskState}}</h1>
     </mat-toolbar>
     <button (click)='addTask()' mat-fab color='primary'>Add</button>
     <mat-nav-list *ngIf='(tasks$|async) as tasks'>

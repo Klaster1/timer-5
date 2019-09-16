@@ -1,14 +1,16 @@
+// @import '~@angular/material/theming';
+
+// @import './theme.scss';
+
 :host {
     flex: 1;
     display: flex;
     flex-direction: column;
 
-    --active-link-background: #cddc39;
+    // --active-link-background: #cddc39;
 }
-.logo {
-    width: 32px;
-    height: 32px;
-    margin: auto;
+.link-all mat-icon {
+    transform: scale(calc(32/24));
 }
 mat-icon {
     margin: auto;
@@ -27,7 +29,7 @@ mat-drawer-content {
     box-sizing: border-box;
 }
 .active {
-    background: var(--active-link-background)
+    // color: var(--active-link-background)
 }
 button-user-actions {
     margin: auto auto 10px auto;

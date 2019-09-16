@@ -2,7 +2,7 @@ import {routerReducer} from '@ngrx/router-store'
 import {createReducer, Action, on} from '@ngrx/store'
 import * as actions from './actions'
 import {StoreState} from '@app/types'
-import {fromEntries} from '@app/utils'
+import {fromEntries} from '@app/utils/from-entries'
 
 export function tasks(state: StoreState['tasks'], action: Action) {
     return createReducer<StoreState['tasks']>(

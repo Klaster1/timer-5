@@ -9,6 +9,7 @@ import {
 
 import {ScreenTasksComponent} from './component'
 import {ButtonTaskActionsModule} from '@app/button-task-actions'
+import {TaskStatePipeModule} from '@app/pipes/task-state.pipe'
 
 export {ScreenTasksComponent}
 
@@ -18,6 +19,7 @@ export {ScreenTasksComponent}
     exports: [ScreenTasksComponent],
     imports: [
         CommonModule,
+        TaskStatePipeModule,
         RouterModule,
         MatToolbarModule,
         MatButtonModule,

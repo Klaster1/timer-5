@@ -1,5 +1,5 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import {CommonModule} from '@angular/common'
 
 import { AngularFireModule } from '@angular/fire';
@@ -15,6 +15,7 @@ import { NgxAuthFirebaseUIModule } from 'ngx-auth-firebaseui';
 import {
     MatSidenavModule,
     MatListModule,
+    MatIconRegistry,
     MatIconModule,
     MatTooltipModule
 } from '@angular/material'
@@ -54,7 +55,19 @@ import {ButtonUserActionsModule} from './button-user-actions'
     EffectsModule.forRoot([Effects]),
     NgxAuthFirebaseUIModule.forRoot(environment.firebase)
   ],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INITIALIZER,
+      multi: true,
+      useFactory: (icons: MatIconRegistry, sanitizer: DomSanitizer) => () => {
+        icons.addSvgIcon(
+          'timer-logo',
+          sanitizer.bypassSecurityTrustResourceUrl('../assets/logo.svg')
+        )
+      },
+      deps: [MatIconRegistry, DomSanitizer]
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

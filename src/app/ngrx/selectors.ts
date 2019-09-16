@@ -15,7 +15,7 @@ export const userTasks = createSelector(
     }
 )
 export const router = createFeatureSelector<StoreState, StoreState['router']>('router')
-const {
+export const {
   selectQueryParams,    // select the current route query params
   selectQueryParam,     // factory function to select a query param
   selectRouteParams,    // select the current route params
@@ -24,6 +24,7 @@ const {
   selectUrl,            // select the current url
 } = getSelectors(router);
 export const currentTaskId = selectRouteParam('taskId')
+export const currentTasksState = selectRouteParam('state')
 export const taskById = createSelector(
     tasks,
     (tasks, props: {taskId: string}) => tasks[props.taskId]
