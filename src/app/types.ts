@@ -4,7 +4,7 @@ export interface Task {
     name: string
     state: TaskState
     completeSessionsDuration: number
-    runningSessionStart?: number
+    lastSession?: SessionWithId
     userId: string
 }
 
