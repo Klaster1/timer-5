@@ -1,5 +1,7 @@
 <section class='tasks' [class.full-width]='taskNotOpened$|async'>
-    <h1>Tasks</h1>
+    <mat-toolbar>
+        <h1>Tasks</h1>
+    </mat-toolbar>
     <button (click)='addTask()' mat-fab color='primary'>Add</button>
     <mat-nav-list *ngIf='(tasks$|async) as tasks'>
         <mat-list-item *ngFor='let task of tasks; trackBy taskId' [ngClass]='{active: rla.isActive}'>

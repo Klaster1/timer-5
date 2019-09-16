@@ -1,12 +1,11 @@
 <ng-container *ngIf='(task$|async) as task'>
-    <mat-card>
-        <mat-card-title>
-            {{task.name}}
-            <button-task-actions [task]='task'></button-task-actions>
-        </mat-card-title>
-        <mat-card-content>
-            <pre>{{task|json}}</pre>    
-        </mat-card-content>
-    </mat-card>
+    <mat-toolbar>
+        <a routerLink='./..' mat-icon-button>
+            <mat-icon>arrow_back</mat-icon>
+        </a>
+        <h2>{{task.name}}</h2>
+        <button-task-actions [task]='task'></button-task-actions>
+    </mat-toolbar>
+    <pre>{{task|json}}</pre>    
     <button  mat-fab color='primary'>Start</button>
 </ng-container>
