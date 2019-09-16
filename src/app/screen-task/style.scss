@@ -13,3 +13,7 @@ button-task-actions {
     right: var(--fab-offset);
     z-index: 2;
 }
+.session-tabular-data {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}

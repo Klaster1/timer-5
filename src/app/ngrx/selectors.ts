@@ -1,5 +1,5 @@
 import {createFeatureSelector,createSelector} from '@ngrx/store'
-import {StoreState, TaskState} from '@app/types'
+import {StoreState, TaskState, SessionWithId} from '@app/types'
 import {getSelectors} from '@ngrx/router-store'
 
 export const user = createFeatureSelector<StoreState, StoreState['user']>('user')
@@ -27,10 +27,20 @@ export const currentTaskId = selectRouteParam('taskId')
 export const currentTasksState = selectRouteParam('state')
 export const taskById = createSelector(
     tasks,
-    (tasks, props: {taskId: string}) => tasks[props.taskId]
+    (tasks: StoreState['tasks'], props: {taskId: string}) => tasks[props.taskId]
 )
 export const currentTask = createSelector(
     currentTaskId,
     tasks,
     (id, tasks) => tasks[id]
+)
+export const sessions = createFeatureSelector<StoreState, StoreState['sessions']>('sessions')
+export const sessionById = createSelector(
+  sessions,
+  (sessions: StoreState['sessions'], props: {sessionId: string}) => sessions[props.sessionId]
+)
+export const currentTaskSessions = createSelector(
+  currentTaskId,
+  sessions,
+  (taskId, sessions) => Object.values(sessions).filter(s => s.taskId === taskId)
 )

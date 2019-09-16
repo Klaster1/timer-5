@@ -4,7 +4,9 @@ import {
     MatCardModule,
     MatButtonModule,
     MatToolbarModule,
-    MatIconModule
+    MatIconModule,
+    MatListModule,
+    MatTableModule
 } from '@angular/material'
 import {RouterModule} from '@angular/router'
 
@@ -12,6 +14,7 @@ import {ScreenTaskComponent} from './component'
 export {ScreenTaskComponent}
 
 import {ButtonTaskActionsModule} from '@app/button-task-actions'
+import {DurationPipeModule} from '@app/pipes/duration.pipe'
 
 @NgModule({
     declarations: [ScreenTaskComponent],
@@ -24,6 +27,9 @@ import {ButtonTaskActionsModule} from '@app/button-task-actions'
         MatButtonModule,
         MatToolbarModule,
         MatIconModule,
+        MatListModule,
+        MatTableModule,
+        DurationPipeModule,
         ButtonTaskActionsModule
     ]
 })

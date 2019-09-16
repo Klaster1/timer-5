@@ -8,7 +8,7 @@ import {ROUTER_NAVIGATION, RouterNavigationAction} from '@ngrx/router-store'
 import {AngularFirestore} from '@angular/fire/firestore'
 import {AngularFireAuth} from '@angular/fire/auth'
 import {EMPTY, combineLatest, pipe} from 'rxjs';
-import {tap, map, withLatestFrom, exhaustMap, switchMap, filter, pluck} from 'rxjs/operators';
+import {tap, map, withLatestFrom, exhaustMap, switchMap, filter, pluck, take} from 'rxjs/operators';
 import {StoreState, Task, TaskState} from '@app/types'
 import {pathNavigate} from '@app/utils/router-store'
 
@@ -107,4 +107,27 @@ export class Effects {
         }),
         map(tasks => actions.tasks({tasks})),
     ), {dispatch: true});
+
+    startTask$ = createEffect(() => combineLatest(
+        this.actions$.pipe(ofType(actions.startTask), pluck('taskId')),
+        this.actions$.pipe(ofType(actions.user), pluck('user', 'id'))
+    ).pipe(
+        map(([taskId, userId]) => actions.sessionStart({
+            userId,
+            taskId,
+            sessionId: this.afs.createId(),
+            timestamp: Date.now()
+        }))
+    ))
+    stopTask = createEffect(() => combineLatest(
+        this.actions$.pipe(ofType(actions.stopTask), pluck('taskId'), switchMap(taskId => this.store.select(selectors.taskById, {taskId}).pipe(take(1)))),
+        this.actions$.pipe(ofType(actions.user), pluck('user', 'id'))
+    ).pipe(
+        map(([task, userId]) => actions.sessionStop({
+            userId,
+            taskId: task.id,
+            sessionId: task.lastSession.id,
+            timestamp: Date.now()
+        }))
+    ))
 }

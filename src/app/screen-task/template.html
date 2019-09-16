@@ -4,8 +4,26 @@
             <mat-icon>arrow_back</mat-icon>
         </a>
         <h2>{{task.name}}</h2>
+        <span> ({{taskDuration$|async}})</span>
         <button-task-actions [task]='task'></button-task-actions>
     </mat-toolbar>
-    <pre>{{task|json}}</pre>    
-    <button  mat-fab color='primary'>Start</button>
+    <pre>{{task|json}}</pre>
+    <table mat-table [dataSource]='sessions$|async'>
+        <ng-container matColumnDef='start'>
+            <th mat-header-cell *matHeaderCellDef style='width: 40%'>Start</th>
+            <td mat-cell *matCellDef='let session'>{{session.start|date:'yyyy-MM-dd H:mm'}}</td>
+        </ng-container>
+        <ng-container matColumnDef='end'>
+            <th mat-header-cell *matHeaderCellDef style='width: 40%'>End</th>
+            <td mat-cell *matCellDef='let session'>{{session.end|date:'yyyy-MM-dd H:mm'}}</td>
+        </ng-container>
+        <ng-container matColumnDef='duration'>
+            <th mat-header-cell *matHeaderCellDef style='width: 20%'>Duration</th>
+            <td mat-cell *matCellDef='let session'>{{(session.end-session.start)|duration}}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <button (click)='start(task.id)' *ngIf='(taskIsProgress$|async) === false' mat-fab color='primary'>Start</button>
+    <button (click)='stop(task.id)' *ngIf='(taskIsProgress$|async) === true' mat-fab color='primary'>Stop</button>
 </ng-container>
