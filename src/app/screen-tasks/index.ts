@@ -4,7 +4,8 @@ import {RouterModule} from '@angular/router'
 import {
     MatButtonModule,
     MatListModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatIconModule
 } from '@angular/material'
 
 import {ScreenTasksComponent} from './component'
@@ -22,6 +23,7 @@ export {ScreenTasksComponent}
         TaskStatePipeModule,
         RouterModule,
         MatToolbarModule,
+        MatIconModule,
         MatButtonModule,
         MatListModule,
         ButtonTaskActionsModule

@@ -24,6 +24,10 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
-    <button (click)='start(task.id)' *ngIf='(taskIsProgress$|async) === false' mat-fab color='primary'>Start</button>
-    <button (click)='stop(task.id)' *ngIf='(taskIsProgress$|async) === true' mat-fab color='primary'>Stop</button>
+    <button (click)='start(task.id)' *ngIf='(taskIsProgress$|async) === false' mat-fab color='seconday'>
+        <mat-icon>play_arrow</mat-icon>
+    </button>
+    <button (click)='stop(task.id)' *ngIf='(taskIsProgress$|async) === true' mat-fab color='primary'>
+        <mat-icon>pause</mat-icon>
+    </button>
 </ng-container>

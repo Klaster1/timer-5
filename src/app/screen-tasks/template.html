@@ -2,7 +2,9 @@
     <mat-toolbar>
         <h1>{{state$|async|taskState}}</h1>
     </mat-toolbar>
-    <button (click)='addTask()' mat-fab color='primary'>Add</button>
+    <button (click)='addTask()' mat-fab color='secondary'>
+        <mat-icon>add</mat-icon>
+    </button>
     <mat-nav-list *ngIf='(tasks$|async) as tasks'>
         <mat-list-item *ngFor='let task of tasks; trackBy taskId' [ngClass]='{active: rla.isActive}'>
             <a matLine [routerLink]='[task.id]' #rla='routerLinkActive' routerLinkActive class='task-link'>{{task.name}}</a>
