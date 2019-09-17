@@ -19,6 +19,13 @@
 .tasks {
     grid-area: tasks;
     position: relative;
+    max-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+.list-container {
+    flex: 1;
+    overflow-y: auto;
 }
 .task {
     grid-area: task;
@@ -30,6 +37,7 @@
     bottom: var(--fab-offset);
     right: var(--fab-offset);
     z-index: 2;
+    left: 50%;
 }
 .active {
     background: var(--active-link-background)
