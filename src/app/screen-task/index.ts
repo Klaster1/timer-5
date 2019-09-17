@@ -10,6 +10,8 @@ import {
     MatTooltipModule
 } from '@angular/material'
 import {RouterModule} from '@angular/router'
+import {NgScrollbarModule} from 'ngx-scrollbar'
+
 
 import {ScreenTaskComponent} from './component'
 export {ScreenTaskComponent}
@@ -32,6 +34,7 @@ import {ButtonSessionActionsModule} from '@app/button-session-actions'
         MatListModule,
         MatTableModule,
         MatTooltipModule,
+        NgScrollbarModule,
         DurationPipeModule,
         ButtonTaskActionsModule,
         ButtonSessionActionsModule

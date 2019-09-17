@@ -23,10 +23,6 @@
     display: flex;
     flex-direction: column;
 }
-.list-container {
-    flex: 1;
-    overflow-y: auto;
-}
 .task {
     grid-area: task;
     display: flex;
@@ -44,7 +40,4 @@ mat-toolbar {
 }
 .active {
     background: var(--active-link-background)
-}
-.full-width {
-    grid-column: span 2;
 }

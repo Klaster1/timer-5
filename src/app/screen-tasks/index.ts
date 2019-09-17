@@ -7,6 +7,8 @@ import {
     MatToolbarModule,
     MatIconModule
 } from '@angular/material'
+import {ScrollingModule} from '@angular/cdk/scrolling'
+import {NgScrollbarModule} from 'ngx-scrollbar'
 
 import {ScreenTasksComponent} from './component'
 import {ButtonTaskActionsModule} from '@app/button-task-actions'
@@ -22,6 +24,8 @@ export {ScreenTasksComponent}
         CommonModule,
         TaskStatePipeModule,
         RouterModule,
+        ScrollingModule,
+        NgScrollbarModule,
         MatToolbarModule,
         MatIconModule,
         MatButtonModule,

@@ -17,6 +17,7 @@ export class ScreenTaskComponent {
     displayedColumns = ['start', 'end', 'duration', 'action']
     task$ = this.store.select(selectors.currentTask)
     taskDuration$ = this.task$.pipe(
+        filter(v=>!!v),
         switchMap((t) => {
             return (t.lastSession && t.lastSession.end) || !t.lastSession
                 ? of(t.completeSessionsDuration)

@@ -7,7 +7,7 @@
         <span>{{task.state}}</span>
         <button-task-actions [task]='task'></button-task-actions>
     </mat-toolbar>
-    <div class="table-container">
+    <ng-scrollbar>
         <table mat-table [dataSource]='sessions$|async'>
             <ng-container matColumnDef='start'>
                 <th mat-header-cell *matHeaderCellDef style='width: 35%'>Start</th>
@@ -38,7 +38,7 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             <tr mat-footer-row *matFooterRowDef='displayedColumns; sticky: true'></tr>
         </table>
-    </div>
+    </ng-scrollbar>
     <button (click)='start(task.id)' *ngIf='(taskIsProgress$|async) === false' mat-fab color='seconday'>
         <mat-icon>play_arrow</mat-icon>
     </button>
