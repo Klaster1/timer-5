@@ -2,14 +2,14 @@
     <mat-toolbar>
         <h1>{{state$|async|taskState}}</h1>
     </mat-toolbar>
-    <button (click)='addTask()' mat-fab color='secondary'>
+    <button (click)='addTask()' mat-fab color='accent'>
         <mat-icon>add</mat-icon>
     </button>
     <ng-scrollbar *ngIf='(tasks$|async) as tasks'>
         <cdk-virtual-scroll-viewport itemSize='48' scrollViewport>
             <mat-nav-list>
-                <mat-list-item *cdkVirtualFor='let task of tasks; trackBy taskId' [ngClass]='{active: rla.isActive}'>
-                    <a matLine [routerLink]='[task.id]' #rla='routerLinkActive' routerLinkActive class='task-link'>{{task.name}}</a>
+                <mat-list-item *cdkVirtualFor='let task of tasks; trackBy taskId'>
+                    <a matLine [routerLink]='[task.id]' routerLinkActive='nav-link-active' class='task-link'>{{task.name}}</a>
                     <button-task-actions [task]='task'></button-task-actions>
                 </mat-list-item>
             </mat-nav-list>

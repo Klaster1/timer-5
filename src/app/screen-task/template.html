@@ -39,7 +39,7 @@
             <tr mat-footer-row *matFooterRowDef='displayedColumns; sticky: true'></tr>
         </table>
     </ng-scrollbar>
-    <button (click)='start(task.id)' *ngIf='(taskIsProgress$|async) === false' mat-fab color='seconday'>
+    <button (click)='start(task.id)' *ngIf='(taskIsProgress$|async) === false' mat-fab color='accent'>
         <mat-icon>play_arrow</mat-icon>
     </button>
     <button (click)='stop(task.id)' *ngIf='(taskIsProgress$|async) === true' mat-fab color='primary'>

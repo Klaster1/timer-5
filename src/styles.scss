@@ -7,3 +7,11 @@ body {
     min-height: 100vh;
     display: flex;
 }
+
+.nav-link-active {
+  color: var(--primary-darker-color) !important;
+}
+
+.theme-alternate .nav-link-active {
+  color: var(--primary-color) !important;
+}
