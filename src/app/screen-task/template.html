@@ -22,7 +22,7 @@
             <ng-container matColumnDef='duration'>
                 <th mat-header-cell *matHeaderCellDef style='width: 20%'>Duration</th>
                 <td mat-cell *matCellDef='let session'>{{(session.end-session.start)|duration}}</td>
-                <td mat-footer-cell *matFooterCellDef>{{taskDuration$|async}}</td>
+                <td mat-footer-cell *matFooterCellDef [matTooltip]='taskDuration$|async'>{{taskDuration$|async|duration}}</td>
             </ng-container>
             <ng-container matColumnDef='action'>
                 <th mat-header-cell *matHeaderCellDef style='width: 10%'></th>

@@ -6,7 +6,8 @@ import {
     MatToolbarModule,
     MatIconModule,
     MatListModule,
-    MatTableModule
+    MatTableModule,
+    MatTooltipModule
 } from '@angular/material'
 import {RouterModule} from '@angular/router'
 
@@ -30,6 +31,7 @@ import {ButtonSessionActionsModule} from '@app/button-session-actions'
         MatIconModule,
         MatListModule,
         MatTableModule,
+        MatTooltipModule,
         DurationPipeModule,
         ButtonTaskActionsModule,
         ButtonSessionActionsModule

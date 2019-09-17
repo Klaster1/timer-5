@@ -3,8 +3,8 @@ import {Store} from '@ngrx/store'
 import {StoreState, TaskWithId, TaskState} from '@app/types'
 import * as selectors from '@app/ngrx/selectors'
 import * as actions from '@app/ngrx/actions'
-import {timer} from 'rxjs';
-import {map, share, filter, withLatestFrom} from 'rxjs/operators';
+import {timer, of} from 'rxjs';
+import {map, share, filter, withLatestFrom, switchMap} from 'rxjs/operators';
 
 @Component({
     templateUrl: './template.html',
@@ -16,17 +16,14 @@ export class ScreenTaskComponent {
     ) {}
     displayedColumns = ['start', 'end', 'duration', 'action']
     task$ = this.store.select(selectors.currentTask)
-    taskDuration$ = timer(0, 1000).pipe(
-        withLatestFrom(this.task$),
-        map(([,t]) => {
-            return t.lastSession
-                ? t.lastSession.end
-                    ? (t.lastSession.end - t.lastSession.start) + t.completeSessionsDuration
-                    : (Date.now() - t.lastSession.start) + t.completeSessionsDuration
-                : t.completeSessionsDuration
+    taskDuration$ = this.task$.pipe(
+        switchMap((t) => {
+            return (t.lastSession && t.lastSession.end) || !t.lastSession
+                ? of(t.completeSessionsDuration)
+                : timer(0, 1000).pipe(map((() => t.completeSessionsDuration + Date.now() - t.lastSession.start)))
         })
     )
-    sessions$ = this.store.select(selectors.currentTaskSessions)
+    sessions$ = this.store.select(selectors.currentTaskSessions).pipe(map(data => data.sort((a,b) => b.start - a.start)))
     taskIsProgress$ = this.task$.pipe(map(t => !!t && !!t.lastSession && !t.lastSession.end))
     start(taskId: string) {
         this.store.dispatch(actions.startTask({taskId}))

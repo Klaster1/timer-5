@@ -110,7 +110,7 @@ export class Effects {
 
     startTask$ = createEffect(() => combineLatest(
         this.actions$.pipe(ofType(actions.startTask), pluck('taskId')),
-        this.actions$.pipe(ofType(actions.user), pluck('user', 'id'))
+        this.actions$.pipe(ofType(actions.user), filter(a => !!a.user), pluck('user', 'id'))
     ).pipe(
         map(([taskId, userId]) => actions.sessionStart({
             userId,
@@ -121,7 +121,7 @@ export class Effects {
     ))
     stopTask = createEffect(() => combineLatest(
         this.actions$.pipe(ofType(actions.stopTask), pluck('taskId'), switchMap(taskId => this.store.select(selectors.taskById, {taskId}).pipe(take(1)))),
-        this.actions$.pipe(ofType(actions.user), pluck('user', 'id'))
+        this.actions$.pipe(ofType(actions.user), filter(a => !!a.user), pluck('user', 'id'))
     ).pipe(
         map(([task, userId]) => actions.sessionStop({
             userId,
