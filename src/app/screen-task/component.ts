@@ -14,7 +14,7 @@ export class ScreenTaskComponent {
     constructor(
         private store: Store<StoreState>,
     ) {}
-    displayedColumns = ['start', 'end', 'duration']
+    displayedColumns = ['start', 'end', 'duration', 'action']
     task$ = this.store.select(selectors.currentTask)
     taskDuration$ = timer(0, 1000).pipe(
         withLatestFrom(this.task$),

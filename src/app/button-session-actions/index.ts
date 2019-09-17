@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core'
 import {MatMenuModule, MatButtonModule, MatIconModule, MatSelectModule} from '@angular/material'
-import {ButtonTaskActionsComponent} from './component'
+import {ButtonSessionActionsComponent} from './component'
 
 @NgModule({
     imports: [
@@ -9,7 +9,7 @@ import {ButtonTaskActionsComponent} from './component'
         MatSelectModule,
         MatIconModule
     ],
-    declarations: [ButtonTaskActionsComponent],
-    exports: [ButtonTaskActionsComponent]
+    declarations: [ButtonSessionActionsComponent],
+    exports: [ButtonSessionActionsComponent]
 })
-export class ButtonTaskActionsModule {}
+export class ButtonSessionActionsModule {}

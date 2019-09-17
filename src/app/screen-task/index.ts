@@ -15,6 +15,7 @@ export {ScreenTaskComponent}
 
 import {ButtonTaskActionsModule} from '@app/button-task-actions'
 import {DurationPipeModule} from '@app/pipes/duration.pipe'
+import {ButtonSessionActionsModule} from '@app/button-session-actions'
 
 @NgModule({
     declarations: [ScreenTaskComponent],
@@ -30,7 +31,8 @@ import {DurationPipeModule} from '@app/pipes/duration.pipe'
         MatListModule,
         MatTableModule,
         DurationPipeModule,
-        ButtonTaskActionsModule
+        ButtonTaskActionsModule,
+        ButtonSessionActionsModule
     ]
 })
 export class ScreenTaskModule {}

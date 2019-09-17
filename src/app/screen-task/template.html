@@ -9,12 +9,12 @@
     <div class="table-container">
         <table mat-table [dataSource]='sessions$|async'>
             <ng-container matColumnDef='start'>
-                <th mat-header-cell *matHeaderCellDef style='width: 40%'>Start</th>
+                <th mat-header-cell *matHeaderCellDef style='width: 35%'>Start</th>
                 <td mat-cell *matCellDef='let session'>{{session.start|date:'yyyy-MM-dd H:mm'}}</td>
                 <td mat-footer-cell *matFooterCellDef>State: {{task.state}}</td>
             </ng-container>
             <ng-container matColumnDef='end'>
-                <th mat-header-cell *matHeaderCellDef style='width: 40%'>End</th>
+                <th mat-header-cell *matHeaderCellDef style='width: 35%'>End</th>
                 <td mat-cell *matCellDef='let session'>{{session.end|date:'yyyy-MM-dd H:mm'}}</td>
                 <td mat-footer-cell *matFooterCellDef>Total</td>
             </ng-container>
@@ -22,6 +22,16 @@
                 <th mat-header-cell *matHeaderCellDef style='width: 20%'>Duration</th>
                 <td mat-cell *matCellDef='let session'>{{(session.end-session.start)|duration}}</td>
                 <td mat-footer-cell *matFooterCellDef>{{taskDuration$|async}}</td>
+            </ng-container>
+            <ng-container matColumnDef='action'>
+                <th mat-header-cell *matHeaderCellDef style='width: 10%'></th>
+                <td mat-cell *matCellDef='let session'>
+                    <button-session-actions
+                        [session]='session'
+                        [taskId]='task.id'
+                    ></button-session-actions>
+                </td>
+                <td mat-footer-cell *matFooterCellDef></td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
