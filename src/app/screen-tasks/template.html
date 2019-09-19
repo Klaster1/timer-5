@@ -9,7 +9,15 @@
         <cdk-virtual-scroll-viewport itemSize='48' scrollViewport>
             <mat-nav-list>
                 <mat-list-item *cdkVirtualFor='let task of tasks; trackBy taskId'>
-                    <a matLine [routerLink]='[task.id]' routerLinkActive='nav-link-active' class='task-link'>{{task.name}}</a>
+                    <a
+                        matLine
+                        [routerLink]='[task.id]'
+                        routerLinkActive='nav-link-active'
+                        class='task-link'
+                    >
+                        <span>{{task.name}}</span>
+                        <span class='duration'>{{task|taskDuration|async|formatDuration}}</span>
+                    </a>
                     <button-task-actions [task]='task'></button-task-actions>
                 </mat-list-item>
             </mat-nav-list>

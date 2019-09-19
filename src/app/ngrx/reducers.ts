@@ -1,71 +1,81 @@
 import {routerReducer} from '@ngrx/router-store'
 import {createReducer, Action, on} from '@ngrx/store'
 import * as actions from './actions'
-import {StoreState, TaskWithId} from '@app/types'
-import {fromEntries} from '@app/utils/from-entries'
+import {StoreState, Task, Session} from '@app/types'
 
-export function tasks(state: StoreState['tasks'], action: Action) {
-    return createReducer<StoreState['tasks']>(
-        {},
-        on(actions.logout, (state, action) => ({})),
-        on(actions.task, (state, action) => ({
-            ...state,
-            [action.task.id]: action.task
-        })),
-        on(actions.tasks, (state, action) => fromEntries(action.tasks.map(t => [t.id, t]))),
-        on(actions.renameTask, (state, action) => ({
-            ...state,
-            [action.taskId]: {
-                ...state[action.taskId],
-                name: action.name
+function tasks(state: StoreState['tasks'], action: Action) {
+    const tasks = createReducer<StoreState['tasks']>(
+        {ids: [], values: {}},
+        on(actions.createTask, (s, a) => ({
+            ids: [...s.ids, a.taskId],
+            values: {
+                ...s.values,
+                [a.taskId]: {
+                    id: a.taskId,
+                    name: a.name,
+                    sessions: [],
+                    state: 'active'
+                }
             }
         })),
-        on(actions.deleteTask, (state, action) => fromEntries(Object.entries(state).filter(e => e[1].id !== action.taskId))),
-        on(actions.changeTaskState, (state, action) => fromEntries(Object.entries(state).map(e => e[1].id === action.taskId ? [e[0], {...e[1], state: action.state}] : e))),
-        on(actions.sessionStart, (state, action) => fromEntries(Object.entries(state).map(([id, task]) => [id, action.taskId === id ? {
-            ...task,
-            lastSession: {id: action.sessionId, start: action.timestamp}
-        } : task]))),
-        on(actions.sessionStop, (state, action) => fromEntries(Object.entries(state).map(([id, task]) => [id, action.taskId === id ? {
-            ...task,
-            completeSessionsDuration: task.completeSessionsDuration + (action.timestamp - task.lastSession.start),
-            lastSession: {...task.lastSession, end: action.timestamp}
-        } : task])))
-    )(state, action)
-}
-
-export function sessions(state: StoreState['sessions'], action: Action) {
-    return createReducer<typeof state>(
-        {},
-        on(actions.sessionStart, (state, action) => ({
-            ...state, 
-            [action.sessionId]: {
-                userId: action.userId,
-                taskId: action.taskId,
-                id: action.sessionId,
-                start: action.timestamp
+        on(actions.renameTask, (s, a) => ({
+            ...s,
+            values: {
+                ...s.values,
+                [a.taskId]: {...s.values[a.taskId], name: a.name}
             }
         })),
-        on(actions.sessionStop, (state, action) => ({
-            ...state,
-            [action.sessionId]: {
-                ...state[action.sessionId],
-                end: action.timestamp
+        on(actions.updateTaskState, (s, a) => ({
+            ...s,
+            values: {
+                ...s.values,
+                [a.taskId]: {...s.values[a.taskId], state: a.state}
+            }
+        })),
+        on(
+            actions.startTask,
+            actions.stopTask,
+            actions.updateSession,
+            actions.moveSessionToTask,
+            actions.deleteSession,
+            (s,a) => ({
+                ...s,
+                values: {
+                    ...s.values,
+                    [a.taskId]: {...s.values[a.taskId], sessions: sessions(s.values[a.taskId].sessions, a)}
+                }
+            })
+        ),
+        on(actions.moveSessionToTask, (s,a) => ({
+            ...s,
+            values: {
+                ...s.values,
+                [a.toTaskId]: {
+                    ...s.values[a.toTaskId],
+                    sessions: [
+                        ...s.values[a.toTaskId].sessions,
+                        s.values[a.taskId].sessions.find(s=>s.id===a.sessionId)!
+                    ]
+                },
+                [a.taskId]: {
+                    ...s.values[a.taskId],
+                    sessions: s.values[a.taskId].sessions.filter(s=>s.id!==a.sessionId)
+                }
             }
         }))
-    )(state, action)
-}
+    )
+    const sessions = createReducer<Task['sessions']>(
+        [],
+        on(actions.startTask, (s,a) => [...s, {id: a.sessionId, start: a.timestamp}]),
+        on(actions.stopTask, (s,a)=>s.map(s=>!s.end?{...s, end: a.timestamp}:s)),
+        on(actions.updateSession,(s,a)=>s.map(s=>s.id===a.sessionId?{...s,start:a.start,end:a.end}:s)),
+        on(actions.deleteSession, (s,a)=>s.filter(s=>s.id!==a.sessionId))
+    )
 
-export function user(state: StoreState['user'], action: Action) {
-    return createReducer<StoreState['user']>(
-        null,
-        on(actions.user, (state, action) => action.user),
-    )(state, action)
+    return tasks(state, action)
 }
 
 export const combinedReducers = {
-    user,
     tasks,
-    sessions,
     router: routerReducer
 }

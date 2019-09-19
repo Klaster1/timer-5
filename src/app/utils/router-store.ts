@@ -14,11 +14,11 @@ import {StoreState} from '@app/types'
 type ArrayContents<U> = U extends Array<infer T> ? T : never;
 type ActivatedRouteSnapshot = ArrayContents<RouterNavigatedPayload['routerState']['root']['children']>;
 
-export const findRoute = (rootChildren: ActivatedRouteSnapshot[], path: string[]): ActivatedRouteSnapshot  => {
+export const findRoute = (rootChildren: ActivatedRouteSnapshot[], path: string[]): ActivatedRouteSnapshot|undefined  => {
     const found = path.reduce((children, child, i) => {
         if (!children.length) return [];
         if (i === path.length - 1) return children;
-        const found = children.find(c => c.routeConfig.path === path[i]);
+        const found = children.find(c => c.routeConfig && c.routeConfig.path === path[i]);
         return found ? found.children : [];
     }, rootChildren)
     return found.length ? found[0] : void 0;
@@ -28,5 +28,3 @@ export const pathNavigate = (path: string[]) => pipe(
     ofType<RouterNavigatedAction>(ROUTER_NAVIGATED),
     map(a => findRoute(a.payload.routerState.root.children, path))
 );
-
-export const stateParam = (param: string, store: Store<StoreState>) => store.select(selectRouteParam(param))

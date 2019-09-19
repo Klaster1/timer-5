@@ -9,7 +9,7 @@
         <div mat-menu-item (click)='$event.stopPropagation()'>
             <mat-select
                 [value]='task.state'
-                (selectionChange)='changeTaskState(task, $event.value)'
+                (selectionChange)='changeTaskState($event.value)'
             >
                 <mat-option value="active">Active</mat-option>
                 <mat-option value="done">Done</mat-option>

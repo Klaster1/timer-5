@@ -13,6 +13,8 @@ import {NgScrollbarModule} from 'ngx-scrollbar'
 import {ScreenTasksComponent} from './component'
 import {ButtonTaskActionsModule} from '@app/button-task-actions'
 import {TaskStatePipeModule} from '@app/pipes/task-state.pipe'
+import {FormatDurationPipeModule} from '@app/pipes/format-duration.pipe'
+import {TaskDurationPipeModule} from '@app/pipes/task-duration.pipe'
 
 export {ScreenTasksComponent}
 
@@ -23,6 +25,8 @@ export {ScreenTasksComponent}
     imports: [
         CommonModule,
         TaskStatePipeModule,
+        FormatDurationPipeModule,
+        TaskDurationPipeModule,
         RouterModule,
         ScrollingModule,
         NgScrollbarModule,

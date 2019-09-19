@@ -23,6 +23,7 @@ import {
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import * as reducers from './ngrx/reducers'
+import {metaReducers} from './ngrx/metareducers'
 import {Effects} from './ngrx/effects'
 import {ScreenTasksModule} from './screen-tasks'
 import {ScreenTaskModule} from './screen-task'
@@ -46,7 +47,12 @@ import {ButtonUserActionsModule} from './button-user-actions'
     MatListModule,
     MatIconModule,
     MatTooltipModule,
-    StoreModule.forRoot(reducers.combinedReducers),
+    StoreModule.forRoot(reducers.combinedReducers, {
+      metaReducers,
+      runtimeChecks: {
+        strictStateImmutability: true,
+      }
+    }),
     StoreRouterConnectingModule.forRoot(),
     StoreDevtoolsModule.instrument({
       maxAge: 25,

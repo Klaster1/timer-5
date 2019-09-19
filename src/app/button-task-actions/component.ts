@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core'
 import {Store} from '@ngrx/store'
-import {StoreState, TaskWithId, TaskState} from '@app/types'
+import {StoreState, Task, TaskState} from '@app/types'
 import * as actions from '@app/ngrx/actions'
 
 @Component({
@@ -14,17 +14,20 @@ export class ButtonTaskActionsComponent {
     ) {}
 
     @Input()
-    task: TaskWithId
+    task?: Task
 
-    renameTask(task: TaskWithId) {
-        const name = window.prompt('Rename task', task.name)
+    renameTask() {
+        if (!this.task) return
+        const name = window.prompt('Rename task', this.task.name)
         if (!name) return
-        this.store.dispatch(actions.renameTask({taskId: task.id, name}))
+        this.store.dispatch(actions.renameTask({taskId: this.task.id, name}))
     }
-    deleteTask(task: TaskWithId) {
-        this.store.dispatch(actions.deleteTask({taskId: task.id}))
+    deleteTask() {
+        if (!this.task) return
+        this.store.dispatch(actions.deleteTask({taskId: this.task.id}))
     }
-    changeTaskState(task: TaskWithId, state: TaskState) {
-        this.store.dispatch(actions.changeTaskState({taskId: task.id, state}))
+    changeTaskState(state: TaskState) {
+        if (!this.task) return
+        this.store.dispatch(actions.updateTaskState({taskId: this.task.id, state}))
     }
 }

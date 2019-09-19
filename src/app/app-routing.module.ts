@@ -20,11 +20,11 @@ const routes: Routes = [
     {
         path: 'login',
         component: ScreenLoginComponent,
-        ...canActivate(redirectLoggedInTo(['tasks', 'active']))
+        // ...canActivate(redirectLoggedInTo(['tasks', 'active']))
     },
     {
         path: 'tasks',
-        ...canActivate(redirectUnauthorizedTo(['login'])),
+        // ...canActivate(redirectUnauthorizedTo(['login'])),
         children: [
             {path: '', redirectTo: 'tasks/active', pathMatch: 'full'},
             {

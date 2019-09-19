@@ -1,46 +1,30 @@
 import {createFeatureSelector,createSelector} from '@ngrx/store'
-import {StoreState, TaskState, SessionWithId} from '@app/types'
+import {StoreState, TaskState, Session} from '@app/types'
 import {getSelectors} from '@ngrx/router-store'
 
-export const user = createFeatureSelector<StoreState, StoreState['user']>('user')
-export const isLoggedIn = createSelector(
-    user,
-    (user) => !!user
-)
 export const tasks = createFeatureSelector<StoreState, StoreState['tasks']>('tasks')
-export const userTasks = createSelector(
-    tasks, user,
-    (tasks: StoreState['tasks'], user: StoreState['user'], props: {state?: TaskState}) => {
-        return Object.values(tasks).filter(task => task.userId === user.id && props.state ? task.state === props.state : true)
-    }
-)
 export const router = createFeatureSelector<StoreState, StoreState['router']>('router')
-export const {
-  selectQueryParams,    // select the current route query params
-  selectQueryParam,     // factory function to select a query param
-  selectRouteParams,    // select the current route params
-  selectRouteParam,     // factory function to select a route param
-  selectRouteData,      // select the current route data
-  selectUrl,            // select the current url
-} = getSelectors(router);
+export const {selectRouteParam} = getSelectors(router);
 export const currentTaskId = selectRouteParam('taskId')
 export const currentTasksState = selectRouteParam('state')
 export const taskById = createSelector(
     tasks,
-    (tasks: StoreState['tasks'], props: {taskId: string}) => tasks[props.taskId]
+    (tasks: StoreState['tasks'], props: {taskId: string}) => tasks.values[props.taskId]
 )
 export const currentTask = createSelector(
     currentTaskId,
     tasks,
-    (id, tasks) => tasks[id]
+    (id, tasks) => id ? tasks.values[id] : undefined
 )
-export const sessions = createFeatureSelector<StoreState, StoreState['sessions']>('sessions')
-export const sessionById = createSelector(
-  sessions,
-  (sessions: StoreState['sessions'], props: {sessionId: string}) => sessions[props.sessionId]
-)
-export const currentTaskSessions = createSelector(
-  currentTaskId,
-  sessions,
-  (taskId, sessions) => Object.values(sessions).filter(s => s.taskId === taskId)
+export const currentStateTasks = createSelector(
+  tasks,
+  currentTasksState,
+  (tasks, state) => {
+    return tasks.ids.map(id=>state==='all'
+      ? tasks.values[id]
+      : tasks.values[id].state === state
+        ? tasks.values[id]
+        : undefined
+    ).filter(v=>!!v)
+  }
 )

@@ -1,5 +1,5 @@
 <mat-drawer-container>
-    <mat-drawer mode='side' [opened]='isLoggedIn$|async'>
+    <mat-drawer mode='side' [opened]='true'>
         <div class="drawer-container">
             <mat-nav-list>
                 <a
@@ -43,7 +43,7 @@
                     matTooltip='Dropped'
                 ><mat-icon>delete</mat-icon></a>
             </mat-nav-list>
-            <button-user-actions *ngIf='isLoggedIn$|async'></button-user-actions>
+            <button-user-actions *ngIf='false'></button-user-actions>
         </div>
     </mat-drawer>
     <mat-drawer-content>

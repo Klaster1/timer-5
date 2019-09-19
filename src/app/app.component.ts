@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import {Store} from '@ngrx/store'
-import {isLoggedIn, user} from '@app/ngrx/selectors'
 import {StoreState} from '@app/types'
+import {of} from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +12,7 @@ export class AppComponent {
     constructor(
         private store: Store<StoreState>
     ) {}
-    isLoggedIn$ = this.store.select(isLoggedIn)
-    user$ = this.store.select(user)
+    isLoggedIn$ = of(false)
+    user$ = of(null)
   title = 'timer';
 }

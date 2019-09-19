@@ -1,16 +1,14 @@
 import {RouterReducerState} from '@ngrx/router-store'
 
 export interface Task {
+    id: string
     name: string
     state: TaskState
-    completeSessionsDuration: number
-    lastSession?: Omit<SessionWithId, 'userId'|'taskId'>
-    userId: string
+    sessions: Session[]
 }
 
 export interface Session {
-    userId: string
-    taskId: string
+    id: string
     start: number
     end?: number
 }
@@ -23,16 +21,11 @@ export type User = null | {
     email?: string
 }
 
-export type WithId<T> = T & {
-    id: string
-}
-
-export type TaskWithId = WithId<Task>
-export type SessionWithId = WithId<Session>
-
 export interface StoreState {
-    user: User | null,
-    tasks: {[taskId: string]: TaskWithId},
-    sessions: {[sessionId: string]: SessionWithId},
+    user: User,
+    tasks: {
+        ids: string[],
+        values: {[id: string]: Task}
+    },
     router: RouterReducerState
 }
