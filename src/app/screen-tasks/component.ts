@@ -5,6 +5,7 @@ import {currentTasksState, currentStateTasks, currentTask} from '@app/ngrx/selec
 import * as actions from '@app/ngrx/actions'
 import {map, tap} from 'rxjs/operators';
 import {generate as id} from 'shortid'
+import {HotkeysService, Hotkey} from 'angular2-hotkeys'
 
 @Component({
     templateUrl: './template.html',
@@ -14,7 +15,10 @@ import {generate as id} from 'shortid'
 export class ScreenTasksComponent {
     constructor(
         private store: Store<StoreState>,
-    ) {}
+        keys: HotkeysService
+    ) {
+        keys.add(new Hotkey('a', (e) => (this.addTask(),e), void 0, 'Add task'))
+    }
     state$ = this.store.select(currentTasksState)
     tasks$ = this.store.select(currentStateTasks)
     @HostBinding('class.task-opened')
