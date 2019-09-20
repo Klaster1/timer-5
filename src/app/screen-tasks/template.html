@@ -13,6 +13,7 @@
                         matLine
                         [routerLink]='[task.id]'
                         routerLinkActive='nav-link-active'
+                        [routerLinkActiveOptions]="{__change_detection_hack__: tasks }"
                         class='task-link'
                     >
                         <span>{{task.name}}</span>

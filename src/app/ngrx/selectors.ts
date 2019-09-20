@@ -25,6 +25,13 @@ export const currentStateTasks = createSelector(
       : tasks.values[id].state === state
         ? tasks.values[id]
         : undefined
-    ).filter(v=>!!v)
+    ).filter(<T>(v?: T): v is T =>!!v).sort((a,b) => {
+      const as = a.sessions && a.sessions[a.sessions.length - 1]
+      const bs = b.sessions && b.sessions[b.sessions.length - 1]
+      if (!as && bs) return -1
+      if (as && !bs) return 1
+      if (!as && !bs) return 0
+      return bs.start-as.start
+    })
   }
 )
