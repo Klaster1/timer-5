@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core'
+import {Component, Input, ChangeDetectionStrategy} from '@angular/core'
 import {Store} from '@ngrx/store'
 import * as actions from '@app/ngrx/actions'
 import {StoreState, Session} from '@app/types'
@@ -6,7 +6,8 @@ import {StoreState, Session} from '@app/types'
 @Component({
     templateUrl: './template.html',
     styleUrls: ['./style.scss'],
-    selector: 'button-session-actions'
+    selector: 'button-session-actions',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ButtonSessionActionsComponent {
     constructor(private store: Store<StoreState>) {}

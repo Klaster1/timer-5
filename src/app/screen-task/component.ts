@@ -1,4 +1,4 @@
-import {Component} from '@angular/core'
+import {Component, ChangeDetectionStrategy} from '@angular/core'
 import {Store} from '@ngrx/store'
 import {StoreState, Task, TaskState} from '@app/types'
 import * as selectors from '@app/ngrx/selectors'
@@ -8,7 +8,8 @@ import {generate as id} from 'shortid'
 
 @Component({
     templateUrl: './template.html',
-    styleUrls: ['./style.scss']
+    styleUrls: ['./style.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ScreenTaskComponent {
     constructor(private store: Store<StoreState>) {}

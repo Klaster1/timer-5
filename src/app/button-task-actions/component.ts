@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core'
+import {Component, Input, ChangeDetectionStrategy} from '@angular/core'
 import {Store} from '@ngrx/store'
 import {StoreState, Task, TaskState} from '@app/types'
 import * as actions from '@app/ngrx/actions'
@@ -6,7 +6,8 @@ import * as actions from '@app/ngrx/actions'
 @Component({
     templateUrl: './template.html',
     styleUrls: ['./style.scss'],
-    selector: 'button-task-actions'
+    selector: 'button-task-actions',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ButtonTaskActionsComponent {
     constructor(
