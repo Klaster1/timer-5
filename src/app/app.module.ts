@@ -19,6 +19,7 @@ import {
     MatIconModule,
     MatTooltipModule
 } from '@angular/material'
+import {HotkeyModule} from 'angular2-hotkeys'
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -49,6 +50,7 @@ import {TaskStateIconPipeModule} from '@app/pipes/task-state-icon.pipe'
     MatIconModule,
     MatTooltipModule,
     TaskStateIconPipeModule,
+    HotkeyModule.forRoot({cheatSheetCloseEsc: true}),
     StoreModule.forRoot(reducers.combinedReducers, {
       metaReducers,
       runtimeChecks: {
