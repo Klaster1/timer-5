@@ -19,6 +19,7 @@ export {ScreenTaskComponent}
 import {ButtonTaskActionsModule} from '@app/button-task-actions'
 import {FormatDurationPipeModule} from '@app/pipes/format-duration.pipe'
 import {TaskDurationPipeModule} from '@app/pipes/task-duration.pipe'
+import {SessionDurationPipeModule} from '@app/pipes/session-duration.pipe'
 import {ButtonSessionActionsModule} from '@app/button-session-actions'
 
 @NgModule({
@@ -38,6 +39,7 @@ import {ButtonSessionActionsModule} from '@app/button-session-actions'
         NgScrollbarModule,
         FormatDurationPipeModule,
         TaskDurationPipeModule,
+        SessionDurationPipeModule,
         ButtonTaskActionsModule,
         ButtonSessionActionsModule
     ]

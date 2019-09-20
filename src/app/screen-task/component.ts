@@ -14,6 +14,7 @@ export class ScreenTaskComponent {
     constructor(private store: Store<StoreState>) {}
     displayedColumns = ['start', 'end', 'duration', 'action']
     task$ = this.store.select(selectors.currentTask)
+    sortedSessions$ = this.task$.pipe(map(t => t ? [...t.sessions].sort((a,b)=>b.start-a.start) : []))
     taskIsInProgress$ = this.task$.pipe(map(t => !!t && !!t.sessions.some(s=>!s.end)))
     start(taskId?: string) {
         if (!taskId) return
