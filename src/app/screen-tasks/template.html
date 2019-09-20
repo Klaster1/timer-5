@@ -16,6 +16,7 @@
                         [routerLinkActiveOptions]="{__change_detection_hack__: tasks }"
                         class='task-link'
                     >
+                        <mat-icon>{{task|taskStateIcon}}</mat-icon>
                         <span>{{task.name}}</span>
                         <span class='duration'>{{task|taskDuration|async|formatDuration}}</span>
                     </a>

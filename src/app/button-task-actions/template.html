@@ -11,10 +11,12 @@
                 [value]='task.state'
                 (selectionChange)='changeTaskState($event.value)'
             >
-                <mat-option value="active">Active</mat-option>
-                <mat-option value="done">Done</mat-option>
-                <mat-option value="on-hold">On hold</mat-option>
-                <mat-option value="to-do">To do</mat-option>
+                <mat-select-trigger>{{task.state|taskState}}</mat-select-trigger>
+                <mat-option value="active"><mat-icon>{{"active"|taskStateIcon}}</mat-icon>Active</mat-option>
+                <mat-option value="done"><mat-icon>{{"done"|taskStateIcon}}</mat-icon>Done</mat-option>
+                <mat-option value="on-hold"><mat-icon>{{"on-hold"|taskStateIcon}}</mat-icon>On hold</mat-option>
+                <mat-option value="to-do"><mat-icon>{{"to-do"|taskStateIcon}}</mat-icon>To do</mat-option>
+                <mat-option value="to-do"><mat-icon>{{"dropped"|taskStateIcon}}</mat-icon>Dropped</mat-option>
             </mat-select>
         </div>
         <button

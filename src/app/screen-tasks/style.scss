@@ -16,6 +16,11 @@
 .task-link {
     padding: calc((48px - 1.25em) / 2) 0 !important;
     display: flex !important;
+    align-items: center;
+
+    mat-icon {
+        margin-right: 0.25em;
+    }
 }
 .duration {
     margin-left: auto;

@@ -29,6 +29,7 @@ import {ScreenTasksModule} from './screen-tasks'
 import {ScreenTaskModule} from './screen-task'
 import {ScreenLoginModule} from './screen-login'
 import {ButtonUserActionsModule} from './button-user-actions'
+import {TaskStateIconPipeModule} from '@app/pipes/task-state-icon.pipe'
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import {ButtonUserActionsModule} from './button-user-actions'
     MatListModule,
     MatIconModule,
     MatTooltipModule,
+    TaskStateIconPipeModule,
     StoreModule.forRoot(reducers.combinedReducers, {
       metaReducers,
       runtimeChecks: {

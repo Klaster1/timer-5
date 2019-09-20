@@ -16,32 +16,32 @@
                     routerLinkActive='nav-link-active'
                     matTooltip='Active'
                 >
-                    <mat-icon>play_circle_filled</mat-icon>
+                    <mat-icon>{{"active"|taskStateIcon}}</mat-icon>
                 </a>
                 <a
                     mat-list-item
                     routerLink='/tasks/done'
                     routerLinkActive='nav-link-active'
                     matTooltip='Done'
-                ><mat-icon>check_circled</mat-icon></a>
+                ><mat-icon>{{"done"|taskStateIcon}}</mat-icon></a>
                 <a
                     mat-list-item
                     routerLink='/tasks/to-do'
                     routerLinkActive='nav-link-active'
                     matTooltip='To do'
-                ><mat-icon>bookmark</mat-icon></a>
+                ><mat-icon>{{"to-do"|taskStateIcon}}</mat-icon></a>
                 <a
                     mat-list-item
                     routerLink='/tasks/on-hold'
                     routerLinkActive='nav-link-active'
                     matTooltip='On hold'
-                ><mat-icon>low_priority</mat-icon></a>
+                ><mat-icon>{{"on-hold"|taskStateIcon}}</mat-icon></a>
                 <a
                     mat-list-item
                     routerLink='/tasks/dropped'
                     routerLinkActive='nav-link-active'
                     matTooltip='Dropped'
-                ><mat-icon>delete</mat-icon></a>
+                ><mat-icon>{{"dropped"|taskStateIcon}}</mat-icon></a>
             </mat-nav-list>
             <button-user-actions *ngIf='false'></button-user-actions>
         </div>

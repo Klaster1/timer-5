@@ -21,6 +21,7 @@ import {FormatDurationPipeModule} from '@app/pipes/format-duration.pipe'
 import {TaskDurationPipeModule} from '@app/pipes/task-duration.pipe'
 import {SessionDurationPipeModule} from '@app/pipes/session-duration.pipe'
 import {ButtonSessionActionsModule} from '@app/button-session-actions'
+import {TaskStateIconPipeModule} from '@app/pipes/task-state-icon.pipe'
 
 @NgModule({
     declarations: [ScreenTaskComponent],
@@ -29,6 +30,7 @@ import {ButtonSessionActionsModule} from '@app/button-session-actions'
     imports: [
         CommonModule,
         RouterModule,
+        TaskStateIconPipeModule,
         MatCardModule,
         MatButtonModule,
         MatToolbarModule,

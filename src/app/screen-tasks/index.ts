@@ -15,6 +15,7 @@ import {ButtonTaskActionsModule} from '@app/button-task-actions'
 import {TaskStatePipeModule} from '@app/pipes/task-state.pipe'
 import {FormatDurationPipeModule} from '@app/pipes/format-duration.pipe'
 import {TaskDurationPipeModule} from '@app/pipes/task-duration.pipe'
+import {TaskStateIconPipeModule} from '@app/pipes/task-state-icon.pipe'
 
 export {ScreenTasksComponent}
 
@@ -27,6 +28,7 @@ export {ScreenTasksComponent}
         TaskStatePipeModule,
         FormatDurationPipeModule,
         TaskDurationPipeModule,
+        TaskStateIconPipeModule,
         RouterModule,
         ScrollingModule,
         NgScrollbarModule,
