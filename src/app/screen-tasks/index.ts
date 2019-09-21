@@ -17,10 +17,12 @@ import {FormatDurationPipeModule} from '@app/pipes/format-duration.pipe'
 import {TaskDurationPipeModule} from '@app/pipes/task-duration.pipe'
 import {TaskStateIconPipeModule} from '@app/pipes/task-state-icon.pipe'
 
+import {ScrollIntoViewIfDirective} from './scrollIntoViewIf.directive'
+
 export {ScreenTasksComponent}
 
 @NgModule({
-    declarations: [ScreenTasksComponent],
+    declarations: [ScreenTasksComponent, ScrollIntoViewIfDirective],
     entryComponents: [ScreenTasksComponent],
     exports: [ScreenTasksComponent],
     imports: [
