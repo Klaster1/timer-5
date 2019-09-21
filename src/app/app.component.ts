@@ -1,4 +1,4 @@
-import { Component, HostBinding } from '@angular/core';
+import { Component } from '@angular/core';
 import {Store} from '@ngrx/store'
 import {updateTheme} from '@app/ngrx/actions'
 import {theme} from '@app/ngrx/selectors'
@@ -31,11 +31,11 @@ export class AppComponent {
             router.navigate(['tasks', 'done'])
             return e
         }, void 0, 'Go to done tasks'))
-        this.theme$.pipe(map(t=>t==='dark'?'theme-alternate':''), tap(tc=>this.themeClass=tc)).subscribe()
+        this.theme$.pipe(
+            tap(t=>document.body.classList.toggle('theme-alternate', t === 'dark'))
+        ).subscribe()
     }
     theme$ = this.store.select(theme)
-    @HostBinding('class')
-    themeClass?: string
     toggleTheme() {
         this.theme$.pipe(take(1)).subscribe(t => this.store.dispatch(updateTheme({theme: t === 'dark' ? 'light' : 'dark'})))
     }
