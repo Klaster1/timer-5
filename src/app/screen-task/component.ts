@@ -30,7 +30,19 @@ export class ScreenTaskComponent implements OnDestroy, OnInit {
                 this.store.dispatch(actions.updateTaskState({taskId: task.id, state}))
             })
             return e
-        })))
+        }))),
+        new Hotkey('r t', (e) => {
+            this.task$.pipe(take(1)).toPromise().then(task => {
+                this.rename(task)
+            })
+            return e
+        }, [], 'Rename task'),
+        new Hotkey('d t', (e) => {
+            this.task$.pipe(take(1)).toPromise().then(task => {
+                this.deleteTask(task)
+            })
+            return e
+        }, [], 'Delete task')
     ]
     ngOnInit() {
         this.keys.add(this.hotkeys)
@@ -49,5 +61,15 @@ export class ScreenTaskComponent implements OnDestroy, OnInit {
     stop(taskId?: string) {
         if (!taskId) return
         this.store.dispatch(actions.stopTask({taskId, timestamp: Date.now()}))
+    }
+    rename(task?: Task) {
+        if (!task) return
+        const name = window.prompt('Rename task', task.name)
+        if (!name) return
+        this.store.dispatch(actions.renameTask({taskId: task.id, name}))
+    }
+    deleteTask(task?: Task) {
+        if (!task) return
+        this.store.dispatch(actions.deleteTask({taskId: task.id}))
     }
 }
