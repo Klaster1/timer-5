@@ -3,7 +3,7 @@ import { localStorageSync } from 'ngrx-store-localstorage';
 
 export function localStorageSyncReducer<T>(reducer: ActionReducer<any>): ActionReducer<any> {
   return localStorageSync({
-      keys: ['tasks'],
+      keys: ['tasks', 'theme'],
       rehydrate: true
   })(reducer);
 }

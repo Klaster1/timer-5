@@ -27,11 +27,14 @@ export type User = null | {
     email?: string
 }
 
+export type Theme = 'light' | 'dark'
+
 export interface StoreState {
     user: User,
     tasks: {
         ids: string[],
         values: {[id: string]: Task}
     },
-    router: RouterReducerState
+    router: RouterReducerState,
+    theme: Theme
 }

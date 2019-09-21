@@ -29,3 +29,4 @@ export const currentStateTasks = createSelector(
     ).filter(isTask).sort(compareTasks)
   }
 )
+export const theme = createFeatureSelector<StoreState['theme']>('theme')

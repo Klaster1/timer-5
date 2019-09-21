@@ -80,7 +80,13 @@ function tasks(state: StoreState['tasks'], action: Action) {
     return tasks(state, action)
 }
 
+const theme = createReducer<StoreState['theme']>(
+    'dark',
+    on(actions.updateTheme, (s,a) => a.theme)
+)
+
 export const combinedReducers = {
     tasks,
-    router: routerReducer
+    router: routerReducer,
+    theme
 }
