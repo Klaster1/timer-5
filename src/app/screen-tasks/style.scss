@@ -12,6 +12,16 @@
         grid-template-areas: "tasks task";
         grid-template-columns: 1fr 1fr;
     }
+    @media (max-width: 900px) {
+        &:not(.task-opened) {
+
+        }
+        &.task-opened {
+            grid-template-areas: "tasks" "task";
+            grid-template-columns: 1fr;
+            grid-template-rows: 1fr 1fr;
+        }
+    }
 }
 .task-link {
     padding: calc((48px - 1.25em) / 2) 0 !important;
