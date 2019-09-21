@@ -16,6 +16,7 @@ import {TaskStatePipeModule} from '@app/pipes/task-state.pipe'
 import {FormatDurationPipeModule} from '@app/pipes/format-duration.pipe'
 import {TaskDurationPipeModule} from '@app/pipes/task-duration.pipe'
 import {TaskStateIconPipeModule} from '@app/pipes/task-state-icon.pipe'
+import {TasksDurationPipeModule} from '@app/pipes/tasks-duration.pipe'
 
 import {ScrollIntoViewIfDirective} from './scrollIntoViewIf.directive'
 
@@ -30,6 +31,7 @@ export {ScreenTasksComponent}
         TaskStatePipeModule,
         FormatDurationPipeModule,
         TaskDurationPipeModule,
+        TasksDurationPipeModule,
         TaskStateIconPipeModule,
         RouterModule,
         ScrollingModule,

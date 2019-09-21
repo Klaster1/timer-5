@@ -1,4 +1,4 @@
-import {Observable, timer, of} from 'rxjs';
+import {Observable, timer, of, combineLatest} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {Task, Session} from '@app/types'
 export const isTask = (v: any): v is Task => typeof v === 'object' && v.id && v.name && v.state && Array.isArray(v.sessions)
@@ -34,13 +34,15 @@ export const completeTaskDuration = (task?: Task): number => task
     ? task.sessions.reduce((t, s) => t + (s.end ? s.end - s.start : 0), 0)
     : 0
 
-export const taskDuration = (task?: Task): Observable<number> => {
+export const taskDuration = (task?: Task, interval = 1000): Observable<number> => {
     const completeDuration = completeTaskDuration(task)
     const lastSession = getTaskRunningSession(task)
     return lastSession
         ? (sessionIsOver(lastSession))
             ? of(completeDuration)
-            : timer(0, 1000).pipe(map((() => completeDuration + Date.now() - lastSession.start)))
+            : timer(0, interval).pipe(map((() => completeDuration + Date.now() - lastSession.start)))
         : of(completeDuration)
-
 }
+export const tasksDuration = (tasks: Task[], interval = 1000): Observable<number> => combineLatest(tasks.map(t => taskDuration(t, interval))).pipe(
+  map((durations) => durations.reduce((acc, d) => acc + d,0))
+)

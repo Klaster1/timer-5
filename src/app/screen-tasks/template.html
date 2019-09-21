@@ -1,6 +1,11 @@
 <section class='tasks'>
     <mat-toolbar>
-        <h1>{{state$|async|taskState}}</h1>
+        <h1>
+            {{state$|async|taskState}}
+            <span *ngIf='(tasks$|async|tasksDuration:20000|async|formatDuration) as duration'>
+                ({{duration}})
+            </span>
+        </h1>
     </mat-toolbar>
     <button (click)='addTask()' mat-fab color='accent'>
         <mat-icon>add</mat-icon>
