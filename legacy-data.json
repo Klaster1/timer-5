@@ -1,0 +1,1289 @@
+[
+{
+    "state": "finished",
+    "title": "Selfed",
+    "id": "k0hoxfvw",
+    "sessions": [
+    {
+        "start": 1568353078381,
+        "stop": 1568354376970
+    }]
+},
+{
+    "state": "finished",
+    "title": "Emails",
+    "id": "k0hppc4x",
+    "sessions": [
+    {
+        "start": 1568354379639,
+        "stop": 1568354423537
+    },
+    {
+        "start": 1568364088553,
+        "stop": 1568364108840
+    },
+    {
+        "start": 1568364112718,
+        "stop": 1568364170769
+    },
+    {
+        "start": 1568365198380,
+        "stop": 1568365200839
+    },
+    {
+        "start": 1568366730088,
+        "stop": 1568366861059
+    },
+    {
+        "start": 1568367771354,
+        "stop": 1568367851600
+    },
+    {
+        "start": 1568370388146,
+        "stop": 1568370407892
+    },
+    {
+        "start": 1568370492589,
+        "stop": 1568370520500
+    },
+    {
+        "start": 1568370785619,
+        "stop": 1568370836323
+    },
+    {
+        "start": 1568370957040,
+        "stop": 1568370983802
+    },
+    {
+        "start": 1568371872674,
+        "stop": 1568371944152
+    },
+    {
+        "start": 1568372098817,
+        "stop": 1568372132773
+    },
+    {
+        "start": 1568373171444,
+        "stop": 1568373197364
+    },
+    {
+        "start": 1568373283220,
+        "stop": 1568373308801
+    },
+    {
+        "start": 1568373483222,
+        "stop": 1568374056233
+    },
+    {
+        "start": 1568374826004,
+        "stop": 1568374964202
+    },
+    {
+        "start": 1568376748659,
+        "stop": 1568376766484
+    },
+    {
+        "start": 1568376941847,
+        "stop": 1568377153932
+    },
+    {
+        "start": 1568379957018,
+        "stop": 1568379986350
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23916 Investigate the issue",
+    "id": "k0hpqest",
+    "sessions": [
+    {
+        "start": 1568354429825,
+        "stop": 1568356086417
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23916 Write test for the issue",
+    "id": "k0hqq2pp",
+    "sessions": [
+    {
+        "start": 1568356093680,
+        "stop": 1568360537947
+    },
+    {
+        "start": 1568362160579,
+        "stop": 1568362166392
+    },
+    {
+        "start": 1568362380439,
+        "stop": 1568364079998
+    }]
+},
+{
+    "state": "finished",
+    "title": "Inspect dependencies issue",
+    "id": "k0htdlbp",
+    "sessions": [
+    {
+        "start": 1568360550278,
+        "stop": 1568361642147
+    },
+    {
+        "start": 1568362153635,
+        "stop": 1568362156328
+    }]
+},
+{
+    "state": "finished",
+    "title": "Meeting",
+    "id": "k0hu11ry",
+    "sessions": [
+    {
+        "start": 1568361644612,
+        "stop": 1568362151939
+    }]
+},
+{
+    "state": "finished",
+    "title": "Inspect GG backend issue",
+    "id": "k0hucpih",
+    "sessions": [
+    {
+        "start": 1568362188602,
+        "stop": 1568362378608
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23804 Code review, merge",
+    "id": "k0hvj98l",
+    "sessions": [
+    {
+        "start": 1568364173813,
+        "stop": 1568365180514
+    },
+    {
+        "start": 1568370410192,
+        "stop": 1568370490926
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23929 Inspect the issue, fix it, submit PR",
+    "id": "k0hx4y67",
+    "sessions": [
+    {
+        "start": 1568366865394,
+        "stop": 1568367761461
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23930 Inspect the issue, fix it",
+    "id": "k0hxq6ew",
+    "sessions": [
+    {
+        "start": 1568367855890,
+        "stop": 1568368410997
+    },
+    {
+        "start": 1568368565665,
+        "stop": 1568369937392
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23916 Help Sergey to reproduce the issue",
+    "id": "k0hy2dsf",
+    "sessions": [
+    {
+        "start": 1568368425254,
+        "stop": 1568368563984
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23930 Provide feedback, submit PR",
+    "id": "k0hyz4it",
+    "sessions": [
+    {
+        "start": 1568369953683,
+        "stop": 1568370383482
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23927 Code review",
+    "id": "k0hzbcl4",
+    "sessions": [
+    {
+        "start": 1568370523234,
+        "stop": 1568370783769
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23929 Merge it",
+    "id": "k0hzi848",
+    "sessions": [
+    {
+        "start": 1568370844084,
+        "stop": 1568370955537
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23892 Code review",
+    "id": "k0hzla1x",
+    "sessions": [
+    {
+        "start": 1568370986509,
+        "stop": 1568371870756
+    },
+    {
+        "start": 1568373199633,
+        "stop": 1568373281398
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23930 Start visa run",
+    "id": "k0i060e9",
+    "sessions": [
+    {
+        "start": 1568371953705,
+        "stop": 1568372097079
+    },
+    {
+        "start": 1568376889170,
+        "stop": 1568376938646
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23916 Test the fix",
+    "id": "k0i09xhd",
+    "sessions": [
+    {
+        "start": 1568372136599,
+        "stop": 1568372805189
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23916 Submit PR, provide feedback, run for visa",
+    "id": "k0i0od2j",
+    "sessions": [
+    {
+        "start": 1568372810014,
+        "stop": 1568373167791
+    },
+    {
+        "start": 1568373311006,
+        "stop": 1568373481145
+    },
+    {
+        "start": 1568376771333,
+        "stop": 1568376885472
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23863 Inspect the issue",
+    "id": "k0i1f66a",
+    "sessions": [
+    {
+        "start": 1568374060746,
+        "stop": 1568374808753
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23950 Create the task",
+    "id": "k0i1yo7n",
+    "sessions": [
+    {
+        "start": 1568374970681,
+        "stop": 1568374984802
+    },
+    {
+        "start": 1568374986133,
+        "stop": 1568375493965
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23951 Create the task",
+    "id": "k0i2a15m",
+    "sessions": [
+    {
+        "start": 1568375500604,
+        "stop": 1568375646661
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23952 Create the task",
+    "id": "k0i2d7as",
+    "sessions": [
+    {
+        "start": 1568375648529,
+        "stop": 1568375925211
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23953 Create the task",
+    "id": "k0i2jdzh",
+    "sessions": [
+    {
+        "start": 1568375937246,
+        "stop": 1568376064679
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23954 Create the task",
+    "id": "k0i2m7o7",
+    "sessions": [
+    {
+        "start": 1568376069065,
+        "stop": 1568376226974
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23955 Create the task",
+    "id": "k0i2ponl",
+    "sessions": [
+    {
+        "start": 1568376231354,
+        "stop": 1568376312633
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23956 Create the task",
+    "id": "k0i2ri8w",
+    "sessions": [
+    {
+        "start": 1568376315871,
+        "stop": 1568376503034
+    },
+    {
+        "start": 1568376503610,
+        "stop": 1568376507330
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23866 Code review",
+    "id": "k0i39ka4",
+    "sessions": [
+    {
+        "start": 1568377158328,
+        "stop": 1568377199769
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-21926 Add context menu to nodes widget",
+    "id": "k0i3amla",
+    "sessions": [
+    {
+        "start": 1568377207973,
+        "stop": 1568379936871
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23885 Add node config viewer dialog structure",
+    "id": "k0i4yodo",
+    "sessions": [
+    {
+        "start": 1568380009704,
+        "stop": 1568380351339
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23885 Add dialog route",
+    "id": "k0i5676q",
+    "sessions": [
+    {
+        "start": 1568380360672,
+        "stop": 1568381114202
+    },
+    {
+        "start": 1568381115496,
+        "stop": 1568383506334
+    }]
+},
+{
+    "state": "finished",
+    "title": "Reports",
+    "id": "k0i71pys",
+    "sessions": [
+    {
+        "start": 1568383510966,
+        "stop": 1568383969545
+    }]
+},
+{
+    "state": "finished",
+    "title": "Selfed",
+    "id": "k0lzgxjt",
+    "sessions": [
+    {
+        "start": 1568612648426,
+        "stop": 1568615589278
+    }]
+},
+{
+    "state": "finished",
+    "title": "Emails",
+    "id": "k0m180gj",
+    "sessions": [
+    {
+        "start": 1568615591461,
+        "stop": 1568615608309
+    },
+    {
+        "start": 1568617163400,
+        "stop": 1568617194899
+    },
+    {
+        "start": 1568617734434,
+        "stop": 1568617786225
+    },
+    {
+        "start": 1568617812515,
+        "stop": 1568617834942
+    },
+    {
+        "start": 1568618643475,
+        "stop": 1568618783774
+    },
+    {
+        "start": 1568621849805,
+        "stop": 1568621868524
+    },
+    {
+        "start": 1568627148748,
+        "stop": 1568627167028
+    },
+    {
+        "start": 1568639510965,
+        "stop": 1568639566863
+    },
+    {
+        "start": 1568639783151,
+        "stop": 1568639832776
+    },
+    {
+        "start": 1568641183462,
+        "stop": 1568641226484
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23898 Code review",
+    "id": "k0m18fyu",
+    "sessions": [
+    {
+        "start": 1568615611674,
+        "stop": 1568617161627
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23946 Code review",
+    "id": "k0m26g4d",
+    "sessions": [
+    {
+        "start": 1568617198092,
+        "stop": 1568617729919
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23979 Inspect the task",
+    "id": "k0m2j5hz",
+    "sessions": [
+    {
+        "start": 1568617790850,
+        "stop": 1568617811083
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23916 Check visa run results, merge it (-32m to GG-24003)",
+    "id": "k0m2kcbq",
+    "sessions": [
+    {
+        "start": 1568617846477,
+        "stop": 1568618150447
+    },
+    {
+        "start": 1568636908438,
+        "stop": 1568636926806
+    },
+    {
+        "start": 1568637499710,
+        "stop": 1568639464944
+    },
+    {
+        "start": 1568639571450,
+        "stop": 1568639777412
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23930 Check visa run results, merge it",
+    "id": "k0m2qzyw",
+    "sessions": [
+    {
+        "start": 1568618157033,
+        "stop": 1568618636136
+    },
+    {
+        "start": 1568636930179,
+        "stop": 1568637496763
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23981 Check E2E test regression",
+    "id": "k0m34mf0",
+    "sessions": [
+    {
+        "start": 1568618792658,
+        "stop": 1568620374904
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23981 Debug the regression, submit PR",
+    "id": "k0m42w05",
+    "sessions": [
+    {
+        "start": 1568620391271,
+        "stop": 1568620768000
+    },
+    {
+        "start": 1568621372414,
+        "stop": 1568621841640
+    },
+    {
+        "start": 1568622588746,
+        "stop": 1568622749139
+    }]
+},
+{
+    "state": "finished",
+    "title": "Meeting",
+    "id": "k0m4b0o1",
+    "sessions": [
+    {
+        "start": 1568620770613,
+        "stop": 1568621352191
+    },
+    {
+        "start": 1568626193680,
+        "stop": 1568626859710
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23885 Refactor GMC dialogs module",
+    "id": "k0m4z778",
+    "sessions": [
+    {
+        "start": 1568621898817,
+        "stop": 1568622587089
+    },
+    {
+        "start": 1568622752193,
+        "stop": 1568624624150
+    },
+    {
+        "start": 1568627169272,
+        "stop": 1568630961897
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23996 Create the task",
+    "id": "k0m7xlsf",
+    "sessions": [
+    {
+        "start": 1568626863232,
+        "stop": 1568627147117
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23885 Add effect to fetch configuration from backend",
+    "id": "k0mae2p5",
+    "sessions": [
+    {
+        "start": 1568630990911,
+        "stop": 1568636878803
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-24003 Move WC version to build.json",
+    "id": "k0mfg52v",
+    "sessions": [
+    {
+        "start": 1568639485485,
+        "stop": 1568639485858
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23943 Code review",
+    "id": "k0mfnnlv",
+    "sessions": [
+    {
+        "start": 1568639835983,
+        "stop": 1568641181752
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23885 Cover configuration with TS types",
+    "id": "k0mghr9c",
+    "sessions": [
+    {
+        "start": 1568641240404,
+        "stop": 1568644438223
+    }]
+},
+{
+    "state": "finished",
+    "title": "Reports",
+    "id": "k0miemb3",
+    "sessions": [
+    {
+        "start": 1568644453291,
+        "stop": 1568644721911
+    }]
+},
+{
+    "state": "finished",
+    "title": "Selfed",
+    "id": "k0neu4vf",
+    "sessions": [
+    {
+        "start": 1568698924886,
+        "stop": 1568698937762
+    },
+    {
+        "start": 1568698938613,
+        "stop": 1568699512479
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23916 Inspect the run, merge",
+    "id": "k0nf74i5",
+    "sessions": [
+    {
+        "start": 1568699530875,
+        "stop": 1568701309692
+    }]
+},
+{
+    "state": "finished",
+    "title": "Emails (-27m to GG-17402)",
+    "id": "k0ng9b5n",
+    "sessions": [
+    {
+        "start": 1568701312397,
+        "stop": 1568701355669
+    },
+    {
+        "start": 1568702493181,
+        "stop": 1568702510303
+    },
+    {
+        "start": 1568703239910,
+        "stop": 1568703306108
+    },
+    {
+        "start": 1568703350512,
+        "stop": 1568703371907
+    },
+    {
+        "start": 1568706759706,
+        "stop": 1568706779496
+    },
+    {
+        "start": 1568706873824,
+        "stop": 1568706946917
+    },
+    {
+        "start": 1568712948245,
+        "stop": 1568713466840
+    },
+    {
+        "start": 1568715402797,
+        "stop": 1568715419481
+    },
+    {
+        "start": 1568719172647,
+        "stop": 1568719225886
+    },
+    {
+        "start": 1568719535379,
+        "stop": 1568721185643
+    },
+    {
+        "start": 1568721193435,
+        "stop": 1568721273286
+    },
+    {
+        "start": 1568726036272,
+        "stop": 1568726089236
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23996 Code review",
+    "id": "k0ngaaqk",
+    "sessions": [
+    {
+        "start": 1568701358523,
+        "stop": 1568702491049
+    },
+    {
+        "start": 1568703309602,
+        "stop": 1568703348642
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23943 Code review",
+    "id": "k0ngz1ex",
+    "sessions": [
+    {
+        "start": 1568702512879,
+        "stop": 1568703238145
+    },
+    {
+        "start": 1568706781738,
+        "stop": 1568706871927
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23885 Display configuration as tree view",
+    "id": "k0nhhs6j",
+    "sessions": [
+    {
+        "start": 1568703387450,
+        "stop": 1568703675836
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23885 Pass the data into dialog",
+    "id": "k0nhoiuc",
+    "sessions": [
+    {
+        "start": 1568703701828,
+        "stop": 1568706756411
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-24003 Adjust version",
+    "id": "k0njmfty",
+    "sessions": [
+    {
+        "start": 1568706963839,
+        "stop": 1568707341860
+    },
+    {
+        "start": 1568708769022,
+        "stop": 1568709107082
+    }]
+},
+{
+    "state": "finished",
+    "title": "Meeting",
+    "id": "k0njuldz",
+    "sessions": [
+    {
+        "start": 1568707344325,
+        "stop": 1568708764180
+    },
+    {
+        "start": 1568713739775,
+        "stop": 1568714621883
+    },
+    {
+        "start": 1568714625828,
+        "stop": 1568714628539
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-24003 Investigate failing test",
+    "id": "k0nkwnl3",
+    "sessions": [
+    {
+        "start": 1568709120149,
+        "stop": 1568709837299
+    },
+    {
+        "start": 1568712179322,
+        "stop": 1568712946164
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23928 Help Maxim to debug the issue",
+    "id": "k0nlc3p8",
+    "sessions": [
+    {
+        "start": 1568709840748,
+        "stop": 1568710605536
+    },
+    {
+        "start": 1568712151097,
+        "stop": 1568712176711
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23957 Code review",
+    "id": "k0nni2ig",
+    "sessions": [
+    {
+        "start": 1568713478465,
+        "stop": 1568713639594
+    },
+    {
+        "start": 1568715421540,
+        "stop": 1568715455745
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23885 Use tree view to display configuration",
+    "id": "k0nnlvfj",
+    "sessions": [
+    {
+        "start": 1568713655944,
+        "stop": 1568713737211
+    },
+    {
+        "start": 1568715460113,
+        "stop": 1568715541205
+    },
+    {
+        "start": 1568721283772,
+        "stop": 1568726031564
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-24030 Create the task",
+    "id": "k0no6qtj",
+    "sessions": [
+    {
+        "start": 1568714630157,
+        "stop": 1568715399866
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23885 Rebase to master",
+    "id": "k0noqegz",
+    "sessions": [
+    {
+        "start": 1568715546805,
+        "stop": 1568717080130
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23885 Fix close button",
+    "id": "k0npndvr",
+    "sessions": [
+    {
+        "start": 1568717085768,
+        "stop": 1568719169301
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-24021 Code review",
+    "id": "k0nqxbg9",
+    "sessions": [
+    {
+        "start": 1568719228765,
+        "stop": 1568719533509
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-24026 Code review",
+    "id": "k0nv0hwg",
+    "sessions": [
+    {
+        "start": 1568726095482,
+        "stop": 1568726197522
+    }]
+},
+{
+    "state": "finished",
+    "title": "Reports",
+    "id": "k0nv30gz",
+    "sessions": [
+    {
+        "start": 1568726217558,
+        "stop": 1568726654254
+    }]
+},
+{
+    "state": "finished",
+    "title": "Selfed",
+    "id": "k0oulho5",
+    "sessions": [
+    {
+        "start": 1568785861784,
+        "stop": 1568786070429
+    },
+    {
+        "start": 1568804098662,
+        "stop": 1568804374657
+    },
+    {
+        "start": 1568805376836,
+        "stop": 1568805423354
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-24026 Code review",
+    "id": "k0ouq9z0",
+    "sessions": [
+    {
+        "start": 1568786084841,
+        "stop": 1568786787466
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-24049 Change links, run the tests, merge",
+    "id": "k0ov5f4s",
+    "sessions": [
+    {
+        "start": 1568786792941,
+        "stop": 1568787726297
+    },
+    {
+        "start": 1568788464922,
+        "stop": 1568788588112
+    },
+    {
+        "start": 1568790776345,
+        "stop": 1568790867479
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-24049 Check failing tests",
+    "id": "k0ovpkm1",
+    "sessions": [
+    {
+        "start": 1568787731651,
+        "stop": 1568788459796
+    }]
+},
+{
+    "state": "finished",
+    "title": "Emails",
+    "id": "k0ow7z2d",
+    "sessions": [
+    {
+        "start": 1568788590111,
+        "stop": 1568788663552
+    },
+    {
+        "start": 1568790748397,
+        "stop": 1568790773368
+    },
+    {
+        "start": 1568790869221,
+        "stop": 1568790883134
+    },
+    {
+        "start": 1568801824702,
+        "stop": 1568801937107
+    },
+    {
+        "start": 1568803383689,
+        "stop": 1568803426119
+    },
+    {
+        "start": 1568803602846,
+        "stop": 1568803618434
+    },
+    {
+        "start": 1568803683190,
+        "stop": 1568803967357
+    },
+    {
+        "start": 1568807840155,
+        "stop": 1568808103392
+    },
+    {
+        "start": 1568808104498,
+        "stop": 1568808197806
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-24025 Code review",
+    "id": "k0ow9oqy",
+    "sessions": [
+    {
+        "start": 1568788670096,
+        "stop": 1568788779141
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-24045 Inspect the issue",
+    "id": "k0owc5g8",
+    "sessions": [
+    {
+        "start": 1568788785016,
+        "stop": 1568789226383
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-24045 Add e2e test",
+    "id": "k0owlqsr",
+    "sessions": [
+    {
+        "start": 1568789232584,
+        "stop": 1568790745684
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-24045 Fix the issue",
+    "id": "k0oxlb3n",
+    "sessions": [
+    {
+        "start": 1568790891899,
+        "stop": 1568791852058
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-24045 Re-run tests",
+    "id": "k0oy60gt",
+    "sessions": [
+    {
+        "start": 1568791857869,
+        "stop": 1568793691865
+    },
+    {
+        "start": 1568794794419,
+        "stop": 1568795747335
+    },
+    {
+        "start": 1568795875978,
+        "stop": 1568797026422
+    }]
+},
+{
+    "state": "finished",
+    "title": "Meeting",
+    "id": "k0oz9di0",
+    "sessions": [
+    {
+        "start": 1568793694279,
+        "stop": 1568794793137
+    },
+    {
+        "start": 1568798717720,
+        "stop": 1568798911110
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-24056 Create the task",
+    "id": "k0p0hg1g",
+    "sessions": [
+    {
+        "start": 1568795750516,
+        "stop": 1568795874593
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-24045 Submit PR, provide feedback, run for visa",
+    "id": "k0p18y7g",
+    "sessions": [
+    {
+        "start": 1568797033792,
+        "stop": 1568797047750
+    },
+    {
+        "start": 1568803092470,
+        "stop": 1568803381752
+    },
+    {
+        "start": 1568803714064,
+        "stop": 1568803875949
+    },
+    {
+        "start": 1568809535877,
+        "stop": 1568809560388
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23867 Design and discuss query APIs",
+    "id": "k0p19cee",
+    "sessions": [
+    {
+        "start": 1568797052121,
+        "stop": 1568797314671
+    },
+    {
+        "start": 1568798705756,
+        "stop": 1568798715829
+    },
+    {
+        "start": 1568798912990,
+        "stop": 1568801768365
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-24067 Create the task",
+    "id": "k0p4664i",
+    "sessions": [
+    {
+        "start": 1568801942851,
+        "stop": 1568803089131
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-24003 Adjust version",
+    "id": "k0p520uo",
+    "sessions": [
+    {
+        "start": 1568803429104,
+        "stop": 1568803599752
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-24003 Code review",
+    "id": "k0p568ri",
+    "sessions": [
+    {
+        "start": 1568803625994,
+        "stop": 1568803681698
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-24067 Add the link",
+    "id": "k0p5dnum",
+    "sessions": [
+    {
+        "start": 1568803972058,
+        "stop": 1568804096034
+    },
+    {
+        "start": 1568804376581,
+        "stop": 1568805368930
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-24068 Fix the issue",
+    "id": "k0p68vwx",
+    "sessions": [
+    {
+        "start": 1568805429069,
+        "stop": 1568805991916
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-24068 Add a test",
+    "id": "k0p6l2qg",
+    "sessions": [
+    {
+        "start": 1568805997533,
+        "stop": 1568807440361
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-24068 Run tests",
+    "id": "k0p7g47a",
+    "sessions": [
+    {
+        "start": 1568807446949,
+        "stop": 1568807837448
+    },
+    {
+        "start": 1568808199816,
+        "stop": 1568809229322
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-24068 Submit PR",
+    "id": "k0p8ifli",
+    "sessions": [
+    {
+        "start": 1568809233531,
+        "stop": 1568809528158
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23885 Display config JSON as tree",
+    "id": "k0p8ppoo",
+    "sessions": [
+    {
+        "start": 1568809573259,
+        "stop": 1568812767594
+    }]
+},
+{
+    "state": "finished",
+    "title": "GG-23885 Improve how tree looks",
+    "id": "k0pamckc",
+    "sessions": [
+    {
+        "start": 1568812775404,
+        "stop": 1568814893957
+    }]
+},
+{
+    "state": "finished",
+    "title": "Reports",
+    "id": "k0pbxl0y",
+    "sessions": [
+    {
+        "start": 1568814979309,
+        "stop": 1568815492984
+    }]
+}]
