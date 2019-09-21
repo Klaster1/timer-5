@@ -1,6 +1,7 @@
 import {createFeatureSelector,createSelector} from '@ngrx/store'
 import {StoreState, TaskState, Session} from '@app/types'
 import {getSelectors} from '@ngrx/router-store'
+import {isTask, compareTasks} from '@app/domain'
 
 export const tasks = createFeatureSelector<StoreState, StoreState['tasks']>('tasks')
 export const router = createFeatureSelector<StoreState, StoreState['router']>('router')
@@ -25,19 +26,6 @@ export const currentStateTasks = createSelector(
       : tasks.values[id].state === state
         ? tasks.values[id]
         : undefined
-    ).filter(<T>(v?: T): v is T =>!!v).sort((a,b) => {
-      const as = a.sessions && a.sessions[a.sessions.length - 1]
-      const bs = b.sessions && b.sessions[b.sessions.length - 1]
-      if (!as && bs) return -1
-      if (as && !bs) return 1
-      if (!as && !bs) return 0
-      if (as && bs) {
-        if (!as.end && !bs.end) return bs.start-as.start
-        if (as.end && bs.end) return bs.start-as.start
-        if (!as.end && bs.end) return -1
-        if (as.end && !bs.end) return 1
-      }
-      return 0
-    })
+    ).filter(isTask).sort(compareTasks)
   }
 )

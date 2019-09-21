@@ -1,5 +1,6 @@
 import {Pipe, NgModule} from '@angular/core'
 import {Task} from '@app/types'
+import {isTaskRunning, isTask} from '@app/domain'
 
 @Pipe({
     name: 'taskStateIcon',
@@ -7,10 +8,8 @@ import {Task} from '@app/types'
 export class TaskStateIconPipe {
     transform(t?: Task | string) {
         if (!t) return 'timer-logo'
-        if (typeof t !== 'string' && !!t.sessions && !!t.sessions.length && t.sessions.some(s=>!s.end)) {
-            return 'pause_circle_filled'
-        }
-        const v = typeof t === 'string' ? t : t.state
+        if (isTask(t) && isTaskRunning(t)) return 'pause_circle_filled'
+        const v = isTask(t) ? t.state : t
         switch (v) {
             case 'active': return 'play_circle_outline'
             case 'done': return 'check_circle_outline'

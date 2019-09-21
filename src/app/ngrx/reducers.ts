@@ -1,7 +1,7 @@
 import {routerReducer} from '@ngrx/router-store'
 import {createReducer, Action, on} from '@ngrx/store'
 import * as actions from './actions'
-import {StoreState, Task, Session} from '@app/types'
+import {StoreState, Task, Session, TaskState} from '@app/types'
 
 function tasks(state: StoreState['tasks'], action: Action) {
     const tasks = createReducer<StoreState['tasks']>(
@@ -14,7 +14,7 @@ function tasks(state: StoreState['tasks'], action: Action) {
                     id: a.taskId,
                     name: a.name,
                     sessions: [],
-                    state: 'active'
+                    state: TaskState.ACTIVE
                 }
             }
         })),

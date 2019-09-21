@@ -13,7 +13,13 @@ export interface Session {
     end?: number
 }
 
-export type TaskState = 'active' | 'done' | 'dropped' | 'on-hold' | 'to-do'
+export enum TaskState {
+    ACTIVE = 'active',
+    DONE = 'done',
+    DROPPED = 'dropped',
+    ON_HOLD = 'on-hold',
+    TO_DO = 'to-do'
+}
 
 export type User = null | {
     id: string,

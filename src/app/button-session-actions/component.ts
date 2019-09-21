@@ -2,6 +2,7 @@ import {Component, Input, ChangeDetectionStrategy} from '@angular/core'
 import {Store} from '@ngrx/store'
 import * as actions from '@app/ngrx/actions'
 import {StoreState, Session} from '@app/types'
+import {sessionEndToString, stringToSessionEnd} from '@app/domain'
 
 @Component({
     templateUrl: './template.html',
@@ -18,13 +19,13 @@ export class ButtonSessionActionsComponent {
     edit() {
         if (!this.taskId || !this.session) return
         const start = window.prompt('Start', this.session.start.toString())
-        const end = window.prompt('End', typeof this.session.end === 'number' ? this.session.end.toString() : '')
+        const end = window.prompt('End', sessionEndToString(this.session))
         if (!start) return
         this.store.dispatch(actions.updateSession({
             taskId: this.taskId,
             sessionId: this.session.id,
             start: Number.parseInt(start),
-            end: typeof end === 'string' ? Number.parseInt(end) : undefined
+            end: stringToSessionEnd(end)
         }))
     }
     remove() {

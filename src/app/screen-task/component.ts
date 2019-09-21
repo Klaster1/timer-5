@@ -7,6 +7,7 @@ import {combineLatest} from 'rxjs';
 import {map, take} from 'rxjs/operators';
 import {generate as id} from 'shortid'
 import {HotkeysService, Hotkey} from 'angular2-hotkeys'
+import {sortSessions, isTaskRunning} from '@app/domain'
 
 @Component({
     templateUrl: './template.html',
@@ -23,7 +24,7 @@ export class ScreenTaskComponent implements OnDestroy, OnInit {
             })
             return e
         }, undefined, 'Start/stop task'),
-        ...((['active', 'done'] as TaskState[]).map((state) => new Hotkey(`m ${state[0]}`, e => {
+        ...(([TaskState.ACTIVE, TaskState.DONE]).map((state) => new Hotkey(`m ${state[0]}`, e => {
             this.task$.pipe(take(1)).toPromise().then((task) => {
                 if (!task) return
                 this.store.dispatch(actions.updateTaskState({taskId: task.id, state}))
@@ -39,8 +40,8 @@ export class ScreenTaskComponent implements OnDestroy, OnInit {
     }
     displayedColumns = ['start', 'end', 'duration', 'action']
     task$ = this.store.select(selectors.currentTask)
-    sortedSessions$ = this.task$.pipe(map(t => t ? [...t.sessions].sort((a,b)=>b.start-a.start) : []))
-    taskIsInProgress$ = this.task$.pipe(map(t => !!t && !!t.sessions.some(s=>!s.end)))
+    sortedSessions$ = this.task$.pipe(map(t => t ? sortSessions(t.sessions) : []))
+    taskIsInProgress$ = this.task$.pipe(map(isTaskRunning))
     start(taskId?: string) {
         if (!taskId) return
         this.store.dispatch(actions.startTask({taskId, sessionId: id(), timestamp: Date.now()}))
