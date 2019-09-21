@@ -8,6 +8,7 @@ import {map, take} from 'rxjs/operators';
 import {generate as id} from 'shortid'
 import {HotkeysService, Hotkey} from 'angular2-hotkeys'
 import {sortSessions, isTaskRunning} from '@app/domain'
+import {TasksFacade} from '@app/providers/tasks-facade.provider'
 
 @Component({
     templateUrl: './template.html',
@@ -15,7 +16,11 @@ import {sortSessions, isTaskRunning} from '@app/domain'
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ScreenTaskComponent implements OnDestroy, OnInit {
-    constructor(private store: Store<StoreState>, private keys: HotkeysService) {}
+    constructor(
+        private store: Store<StoreState>,
+        private keys: HotkeysService,
+        private tasksFacade: TasksFacade
+    ) {}
     hotkeys = [
         new Hotkey('s', (e) => {
             combineLatest(this.task$, this.taskIsInProgress$).pipe(take(1)).toPromise().then(([task, inProgress]) => {
@@ -33,7 +38,7 @@ export class ScreenTaskComponent implements OnDestroy, OnInit {
         }, [], `Mark as ${state}`))),
         new Hotkey('r t', (e) => {
             this.task$.pipe(take(1)).toPromise().then(task => {
-                this.rename(task)
+                if (task) this.rename(task)
             })
             return e
         }, [], 'Rename task'),
@@ -62,11 +67,8 @@ export class ScreenTaskComponent implements OnDestroy, OnInit {
         if (!taskId) return
         this.store.dispatch(actions.stopTask({taskId, timestamp: Date.now()}))
     }
-    rename(task?: Task) {
-        if (!task) return
-        const name = window.prompt('Rename task', task.name)
-        if (!name) return
-        this.store.dispatch(actions.renameTask({taskId: task.id, name}))
+    rename(task: Task) {
+        this.tasksFacade.renameTask(task.id, task.name)
     }
     deleteTask(task?: Task) {
         if (!task) return

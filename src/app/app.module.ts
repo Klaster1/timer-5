@@ -17,7 +17,8 @@ import {
     MatListModule,
     MatIconRegistry,
     MatIconModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatDialogModule
 } from '@angular/material'
 import {HotkeyModule} from 'angular2-hotkeys'
 
@@ -31,6 +32,7 @@ import {ScreenTaskModule} from './screen-task'
 import {ScreenLoginModule} from './screen-login'
 import {ButtonUserActionsModule} from './button-user-actions'
 import {TaskStateIconPipeModule} from '@app/pipes/task-state-icon.pipe'
+import {DialogPromptModule} from './dialog-prompt'
 
 @NgModule({
   declarations: [
@@ -49,7 +51,9 @@ import {TaskStateIconPipeModule} from '@app/pipes/task-state-icon.pipe'
     MatListModule,
     MatIconModule,
     MatTooltipModule,
+    MatDialogModule,
     TaskStateIconPipeModule,
+    DialogPromptModule,
     HotkeyModule.forRoot({cheatSheetCloseEsc: true}),
     StoreModule.forRoot(reducers.combinedReducers, {
       metaReducers,
