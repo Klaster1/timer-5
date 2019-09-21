@@ -30,7 +30,7 @@ export class ScreenTaskComponent implements OnDestroy, OnInit {
                 this.store.dispatch(actions.updateTaskState({taskId: task.id, state}))
             })
             return e
-        }))),
+        }, [], `Mark as ${state}`))),
         new Hotkey('r t', (e) => {
             this.task$.pipe(take(1)).toPromise().then(task => {
                 this.rename(task)
