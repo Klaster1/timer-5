@@ -18,15 +18,7 @@ export class ButtonSessionActionsComponent {
     session?: Session
     edit() {
         if (!this.taskId || !this.session) return
-        const start = window.prompt('Start', this.session.start.toString())
-        const end = window.prompt('End', sessionEndToString(this.session))
-        if (!start) return
-        this.store.dispatch(actions.updateSession({
-            taskId: this.taskId,
-            sessionId: this.session.id,
-            start: Number.parseInt(start),
-            end: stringToSessionEnd(end)
-        }))
+        this.store.dispatch(actions.updateSessionIntent({taskId: this.taskId, sessionId: this.session.id}))
     }
     remove() {
         if (!this.taskId || !this.session) return

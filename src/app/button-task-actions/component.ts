@@ -19,9 +19,7 @@ export class ButtonTaskActionsComponent {
 
     renameTask() {
         if (!this.task) return
-        const name = window.prompt('Rename task', this.task.name)
-        if (!name) return
-        this.store.dispatch(actions.renameTask({taskId: this.task.id, name}))
+        this.store.dispatch(actions.renameTaskIntent({taskId: this.task.id}))
     }
     deleteTask() {
         if (!this.task) return

@@ -1,0 +1,13 @@
+<h1 mat-dialog-title>Edit session</h1>
+<form mat-dialog-content id='promptForm' (submit)='$event.preventDefault();onSubmit($event.target.elements.start.valueAsNumber, $event.target.elements.end.valueAsNumber)'>
+    <mat-form-field>
+        <input type="number" matInput required [value]='data.start' name='start' placeholder="Start">
+    </mat-form-field>
+    <mat-form-field>
+        <input type="number" matInput [value]='data.end' name='end' placeholder="End">
+    </mat-form-field>
+</form>
+<div mat-dialog-actions>
+    <button type='button' mat-button mat-dialog-close>Cancel</button>
+    <button type='submit' form='promptForm' mat-button>Save</button>
+</div>

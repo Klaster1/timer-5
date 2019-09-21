@@ -46,3 +46,4 @@ export const taskDuration = (task?: Task, interval = 1000): Observable<number> =
 export const tasksDuration = (tasks: Task[], interval = 1000): Observable<number> => combineLatest(tasks.map(t => taskDuration(t, interval))).pipe(
   map((durations) => durations.reduce((acc, d) => acc + d,0))
 )
+export const getTaskSession = (task: Task, sessionId: string) => task.sessions.find(s=>s.id===sessionId)

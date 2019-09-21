@@ -50,9 +50,7 @@ export class ScreenTasksComponent {
     private taskOpened: boolean = false
     taskOpened$ = this.currentTask$.pipe(map(t => !!t), tap(v=>setTimeout(()=>this.taskOpened = v)))
     addTask() {
-        const name = window.prompt('Add task')
-        if (!name) return
-        this.store.dispatch(actions.createTask({name, taskId: id()}))
+        this.store.dispatch(actions.createTaskIntent())
     }
     taskId = (task: Task) => task.id
 }

@@ -33,6 +33,7 @@ import {ScreenLoginModule} from './screen-login'
 import {ButtonUserActionsModule} from './button-user-actions'
 import {TaskStateIconPipeModule} from '@app/pipes/task-state-icon.pipe'
 import {DialogPromptModule} from './dialog-prompt'
+import {DialogEditSessionModule} from './dialog-edit-session'
 
 @NgModule({
   declarations: [
@@ -54,6 +55,7 @@ import {DialogPromptModule} from './dialog-prompt'
     MatDialogModule,
     TaskStateIconPipeModule,
     DialogPromptModule,
+    DialogEditSessionModule,
     HotkeyModule.forRoot({cheatSheetCloseEsc: true}),
     StoreModule.forRoot(reducers.combinedReducers, {
       metaReducers,
