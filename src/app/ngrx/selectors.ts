@@ -31,7 +31,13 @@ export const currentStateTasks = createSelector(
       if (!as && bs) return -1
       if (as && !bs) return 1
       if (!as && !bs) return 0
-      return bs.start-as.start
+      if (as && bs) {
+        if (!as.end && !bs.end) return bs.start-as.start
+        if (as.end && bs.end) return bs.start-as.start
+        if (!as.end && bs.end) return -1
+        if (as.end && !bs.end) return 1
+      }
+      return 0
     })
   }
 )
