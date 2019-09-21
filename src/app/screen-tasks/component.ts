@@ -27,11 +27,11 @@ export class ScreenTasksComponent {
                 if (!tasks.length) return
                 if (!task) task = tasks[0]
                 let index = tasks.indexOf(task)
-                if (index === -1) return
+                // if (index === -1)
                 if (e.key === 'j') index += 1
                 if (e.key === 'k') index -= 1
                 if (index >= tasks.length) index = 0
-                if (index === -1) index = tasks.length - 1
+                if (index < 0) index = tasks.length - 1
                 this.router.navigate(['tasks', state, tasks[index].id])
             })
             return e

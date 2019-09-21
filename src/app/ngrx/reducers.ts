@@ -2,6 +2,7 @@ import {routerReducer} from '@ngrx/router-store'
 import {createReducer, Action, on} from '@ngrx/store'
 import * as actions from './actions'
 import {StoreState, Task, Session, TaskState} from '@app/types'
+import {fromEntries} from '@app/utils/from-entries'
 
 function tasks(state: StoreState['tasks'], action: Action) {
     const tasks = createReducer<StoreState['tasks']>(
@@ -31,6 +32,10 @@ function tasks(state: StoreState['tasks'], action: Action) {
                 ...s.values,
                 [a.taskId]: {...s.values[a.taskId], state: a.state}
             }
+        })),
+        on(actions.deleteTask, (s, a) => ({
+            ids: s.ids.filter(id=>id!==a.taskId),
+            values: fromEntries(Object.entries(s.values).filter(([id])=>id!==a.taskId))
         })),
         on(
             actions.startTask,
