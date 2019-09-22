@@ -4,7 +4,7 @@ import {StoreState, Task, TaskState} from '@app/types';
 import {currentTasksState, currentStateTasks, currentTask} from '@app/ngrx/selectors';
 import * as actions from '@app/ngrx/actions';
 import {combineLatest, BehaviorSubject, Subject} from 'rxjs';
-import {map, tap, take, filter, startWith} from 'rxjs/operators';
+import {map, tap, take, filter, startWith, shareReplay} from 'rxjs/operators';
 import {generate as id} from 'shortid';
 import {HotkeysService} from 'angular2-hotkeys';
 import {hotkey} from '@app/utils/hotkey';
@@ -41,12 +41,13 @@ export class ScreenTasksComponent {
     searchOpened$ = new BehaviorSubject<boolean>(false);
     searchTermInput$ = new Subject<string>();
     searchTerm$ = combineLatest(
-        this.searchOpened$.pipe(filter(Boolean), tap(() => setTimeout(() => this.searchInput && this.searchInput.nativeElement.focus()))),
+        this.searchOpened$.pipe(tap((opened) => setTimeout(() => opened && this.searchInput && this.searchInput.nativeElement.focus()))),
         this.searchTermInput$
     ).pipe(map(([opened, term]) => opened ? term : ''), startWith(''));
     state$ = this.store.select(currentTasksState);
     tasks$ = combineLatest(this.store.select(currentStateTasks), this.searchTerm$).pipe(
-        map(([tasks, term]) => term ? tasks.filter(t => t.name.toLowerCase().includes(term.toLowerCase())) : tasks)
+        map(([tasks, term]) => term ? tasks.filter(t => t.name.toLowerCase().includes(term.toLowerCase())) : tasks),
+        shareReplay(1)
     );
     currentTask$ = this.store.select(currentTask);
     @HostBinding('class.task-opened')
@@ -62,4 +63,13 @@ export class ScreenTasksComponent {
         this.store.dispatch(actions.createTaskIntent());
     }
     taskId = (task: Task) => task.id;
+    onSearchSubmit() {
+        combineLatest(
+            this.tasks$,
+            this.state$
+        ).pipe(take(1), tap(([tasks, state]) => {
+            this.searchOpened$.next(false)
+            if (tasks.length) this.router.navigate(['tasks', state, tasks[0].id])
+        })).subscribe()
+    }
 }

@@ -13,8 +13,9 @@
                 matTooltip='Seach'
             ><mat-icon>search</mat-icon></button>
         </h1>
-        <form class='search-form mat-body' *ngIf='searchOpened$|async'>
+        <form class='search-form mat-body' *ngIf='searchOpened$|async' (submit)='$event.preventDefault();onSearchSubmit()'>
             <button
+                type='button'
                 mat-icon-button
                 (click)='searchOpened$.next(false)'
                 matTooltip='Close search'
