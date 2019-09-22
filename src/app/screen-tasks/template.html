@@ -2,7 +2,7 @@
     <mat-toolbar>
         <h1>
             {{state$|async|taskState}}
-            <span *ngIf='(tasks$|async|tasksDuration:20000|formatDuration|async) as duration'>
+            <span *ngIf='(tasks$|async|tasksDuration:20000|formatDuration|async) as duration' class='state-duration'>
                 ({{duration}})
             </span>
             <button
