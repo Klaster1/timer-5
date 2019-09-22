@@ -1,6 +1,6 @@
 import {Observable, timer, of, combineLatest} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {Task, Session} from '@app/types';
+import {Task, Session, TaskIndexes} from '@app/types';
 export const isTask = (v: any): v is Task => typeof v === 'object' && v.id && v.name && v.state && Array.isArray(v.sessions);
 export const isTaskRunning = (t?: Task): boolean => !!t && !!t.sessions && t.sessions.some(s => !s.end);
 export const getTaskRunningSession = (t?: Task) => t ? t.sessions[t.sessions.length - 1] : undefined;
@@ -47,3 +47,41 @@ export const tasksDuration = (tasks: Task[], interval = 1000): Observable<number
   map((durations) => durations.reduce((acc, d) => acc + d, 0))
 );
 export const getTaskSession = (task: Task, sessionId: string) => task.sessions.find(s => s.id === sessionId);
+export const taskIndexes = (task: Task): TaskIndexes => task.sessions
+    .flatMap(s => [new Date(s.start), !!s.end ? new Date(s.end) : undefined], 2)
+    .filter(<T>(v?: T): v is T => !!v)
+    .reduce((acc, d) => {
+        const year = `${d.getFullYear()}`;
+        if (!acc.year.includes(year)) acc.year.push(year)
+        const yearMonth = `${year}.${d.getMonth()+1}`;
+        if (!acc.yearMonth.includes(yearMonth)) acc.yearMonth.push(yearMonth)
+        const yearMonthDate = `${yearMonth}.${d.getDate()}`;
+        if (!acc.yearMonthDate.includes(yearMonthDate)) acc.yearMonthDate.push(yearMonthDate)
+        return acc
+    }, {year: [], yearMonth: [], yearMonthDate: []} as TaskIndexes)
+
+// export const addTasksToStats = (stats: TimelineStats, tasks: Task[]): TimelineStats => tasks.reduce((acc, t) => {
+//     const i = taskIndexes(t)
+//     const reduceSpan = (acc: SpanStats, span: string): SpanStats => ({
+//         ...acc,
+//         [span]: {
+//             tasks: acc[span]
+//                 ? acc[span].tasks.includes(t.id)
+//                     ? acc[span].tasks
+//                     : [...acc[span].tasks, t.id]
+//                 : [t.id],
+//             duration: acc[span]
+//                 ? acc[span].duration + completeTaskDuration(t)
+//                 : completeTaskDuration(t)
+//         }
+//     })
+//     return {
+//         year: i.year.reduce(reduceSpan, {...acc.year}),
+//         yearMonth: i.year.reduce(reduceSpan, {...acc.yearMonth}),
+//         yearMonthDate: i.year.reduce(reduceSpan, {...acc.yearMonthDate})
+//     }
+// }, stats)
+
+// export const removeTasksFromStats = (stats: TimelineStats, tasks: Task[]): TimelineStats => 
+
+// export const allStats = (tasks: Task[]) => addTasksToStats({year: {}, yearMonth: {}, yearMonthDate: {}}, tasks)

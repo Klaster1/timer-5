@@ -38,3 +38,24 @@ export interface StoreState {
     router: RouterReducerState;
     theme: Theme;
 }
+
+export type TimeSpanIndex = string[]
+
+export type TaskIndexes = {
+    year: TimeSpanIndex,
+    yearMonth: TimeSpanIndex,
+    yearMonthDate: TimeSpanIndex
+}
+
+// export interface SpanStats {
+//     [key: string]: {
+//         tasks: string[],
+//         duration: number
+//     }
+// }
+
+// export interface TimelineStats {
+//     year: SpanStats,
+//     yearMonth: SpanStats,
+//     yearMonthDate: SpanStats
+// }
