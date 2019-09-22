@@ -1,15 +1,15 @@
 import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
-import {CommonModule} from '@angular/common'
+import {CommonModule} from '@angular/common';
 
 import { AngularFireModule } from '@angular/fire';
-import {AngularFirestoreModule} from '@angular/fire/firestore'
-import {AngularFireAuthModule} from '@angular/fire/auth'
+import {AngularFirestoreModule} from '@angular/fire/firestore';
+import {AngularFireAuthModule} from '@angular/fire/auth';
 import { environment } from '../environments/environment';
-import {StoreModule} from '@ngrx/store'
-import {StoreRouterConnectingModule, routerReducer} from '@ngrx/router-store'
+import {StoreModule} from '@ngrx/store';
+import {StoreRouterConnectingModule, routerReducer} from '@ngrx/router-store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import {EffectsModule} from '@ngrx/effects'
+import {EffectsModule} from '@ngrx/effects';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { NgxAuthFirebaseUIModule } from 'ngx-auth-firebaseui';
 import {
@@ -19,21 +19,21 @@ import {
     MatIconModule,
     MatTooltipModule,
     MatDialogModule
-} from '@angular/material'
-import {HotkeyModule} from 'angular2-hotkeys'
+} from '@angular/material';
+import {HotkeyModule} from 'angular2-hotkeys';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import * as reducers from './ngrx/reducers'
-import {metaReducers} from './ngrx/metareducers'
-import {Effects} from './ngrx/effects'
-import {ScreenTasksModule} from './screen-tasks'
-import {ScreenTaskModule} from './screen-task'
-import {ScreenLoginModule} from './screen-login'
-import {ButtonUserActionsModule} from './button-user-actions'
-import {TaskStateIconPipeModule} from '@app/pipes/task-state-icon.pipe'
-import {DialogPromptModule} from './dialog-prompt'
-import {DialogEditSessionModule} from './dialog-edit-session'
+import * as reducers from './ngrx/reducers';
+import {metaReducers} from './ngrx/metareducers';
+import {Effects} from './ngrx/effects';
+import {ScreenTasksModule} from './screen-tasks';
+import {ScreenTaskModule} from './screen-task';
+import {ScreenLoginModule} from './screen-login';
+import {ButtonUserActionsModule} from './button-user-actions';
+import {TaskStateIconPipeModule} from '@app/pipes/task-state-icon.pipe';
+import {DialogPromptModule} from './dialog-prompt';
+import {DialogEditSessionModule} from './dialog-edit-session';
 
 @NgModule({
   declarations: [
@@ -79,7 +79,7 @@ import {DialogEditSessionModule} from './dialog-edit-session'
         icons.addSvgIcon(
           'timer-logo',
           sanitizer.bypassSecurityTrustResourceUrl('../assets/logo.svg')
-        )
+        );
       },
       deps: [MatIconRegistry, DomSanitizer]
     }

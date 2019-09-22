@@ -1,16 +1,16 @@
-import {RouterReducerState} from '@ngrx/router-store'
+import {RouterReducerState} from '@ngrx/router-store';
 
 export interface Task {
-    id: string
-    name: string
-    state: TaskState
-    sessions: Session[]
+    id: string;
+    name: string;
+    state: TaskState;
+    sessions: Session[];
 }
 
 export interface Session {
-    id: string
-    start: number
-    end?: number
+    id: string;
+    start: number;
+    end?: number;
 }
 
 export enum TaskState {
@@ -25,16 +25,16 @@ export type User = null | {
     id: string,
     photoURL?: string,
     email?: string
-}
+};
 
-export type Theme = 'light' | 'dark'
+export type Theme = 'light' | 'dark';
 
 export interface StoreState {
-    user: User,
+    user: User;
     tasks: {
         ids: string[],
         values: {[id: string]: Task}
-    },
-    router: RouterReducerState,
-    theme: Theme
+    };
+    router: RouterReducerState;
+    theme: Theme;
 }

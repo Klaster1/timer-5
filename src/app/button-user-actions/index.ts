@@ -1,7 +1,7 @@
-import {NgModule} from '@angular/core'
-import {CommonModule} from '@angular/common'
-import {MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule} from '@angular/material'
-import {ButtonUserActionsComponent} from './component'
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule} from '@angular/material';
+import {ButtonUserActionsComponent} from './component';
 
 @NgModule({
     imports: [

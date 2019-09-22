@@ -1,9 +1,9 @@
 import { Pipe, PipeTransform, NgModule } from '@angular/core';
-import {taskDuration} from '@app/domain'
+import {taskDuration} from '@app/domain';
 
 @Pipe({name: 'taskDuration'})
 export class TaskDurationPipe implements PipeTransform {
-    transform = taskDuration
+    transform = taskDuration;
 }
 
 @NgModule({declarations: [TaskDurationPipe], exports: [TaskDurationPipe]})

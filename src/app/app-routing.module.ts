@@ -5,11 +5,11 @@ import {
     redirectLoggedInTo,
     redirectUnauthorizedTo,
     AngularFireAuthGuardModule
-} from '@angular/fire/auth-guard'
+} from '@angular/fire/auth-guard';
 
-import {ScreenTasksComponent} from './screen-tasks'
-import {ScreenTaskComponent} from './screen-task'
-import {ScreenLoginComponent} from './screen-login'
+import {ScreenTasksComponent} from './screen-tasks';
+import {ScreenTaskComponent} from './screen-task';
+import {ScreenLoginComponent} from './screen-login';
 
 const routes: Routes = [
     {

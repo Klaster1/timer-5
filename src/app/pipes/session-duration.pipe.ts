@@ -1,9 +1,9 @@
 import { Pipe, PipeTransform, NgModule } from '@angular/core';
-import {sessionDuration} from '@app/domain'
+import {sessionDuration} from '@app/domain';
 
 @Pipe({name: 'sessionDuration'})
 export class SessionDurationPipe implements PipeTransform {
-    transform = sessionDuration
+    transform = sessionDuration;
 }
 
 @NgModule({declarations: [SessionDurationPipe], exports: [SessionDurationPipe]})

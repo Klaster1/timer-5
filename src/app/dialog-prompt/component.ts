@@ -1,10 +1,10 @@
-import {Component, Inject} from '@angular/core'
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material'
+import {Component, Inject} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 
 export interface DialogPromptData {
-    title: string,
-    placeholder?: string,
-    value?: string
+    title: string;
+    placeholder?: string;
+    value?: string;
 }
 
 @Component({
@@ -15,8 +15,8 @@ export class DialogPromptComponent {
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: DialogPromptData,
         private dialog: MatDialogRef<DialogPromptComponent, string>
-    ){}
+    ) {}
     onSubmit(value?: string) {
-        this.dialog.close(value)
+        this.dialog.close(value);
     }
 }

@@ -1,7 +1,7 @@
 import {Observable} from 'rxjs';
-import {Injectable} from '@angular/core'
-import {MatDialog} from '@angular/material'
-import {DialogPromptComponent, DialogPromptData} from '@app/dialog-prompt'
+import {Injectable} from '@angular/core';
+import {MatDialog} from '@angular/material';
+import {DialogPromptComponent, DialogPromptData} from '@app/dialog-prompt';
 
 @Injectable({providedIn: 'root'})
 export class Prompt {
@@ -9,6 +9,6 @@ export class Prompt {
         private dialog: MatDialog
     ) {}
     prompt(title: string, value = '', placeholder = ''): Observable<string|undefined> {
-        return this.dialog.open<DialogPromptComponent, DialogPromptData, string>(DialogPromptComponent, {data: {title, value, placeholder}}).afterClosed()
+        return this.dialog.open<DialogPromptComponent, DialogPromptData, string>(DialogPromptComponent, {data: {title, value, placeholder}}).afterClosed();
     }
 }

@@ -1,8 +1,8 @@
-import {NgModule} from '@angular/core'
-import {ScreenLoginComponent} from './component'
-import {NgxAuthFirebaseUIModule} from 'ngx-auth-firebaseui'
+import {NgModule} from '@angular/core';
+import {ScreenLoginComponent} from './component';
+import {NgxAuthFirebaseUIModule} from 'ngx-auth-firebaseui';
 
-export {ScreenLoginComponent}
+export {ScreenLoginComponent};
 
 @NgModule({
     declarations: [ScreenLoginComponent],

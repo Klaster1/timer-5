@@ -1,4 +1,4 @@
-import {Directive, Input, ElementRef} from '@angular/core'
+import {Directive, Input, ElementRef} from '@angular/core';
 
 @Directive({
     selector: '[scrollIntoViewIf]'
@@ -8,7 +8,7 @@ export class ScrollIntoViewIfDirective {
     @Input()
     set scrollIntoViewIf(isActive: boolean) {
         if (isActive) {
-            this.el.nativeElement.scrollIntoView({behavior: 'smooth', block: 'center'})
+            this.el.nativeElement.scrollIntoView({behavior: 'smooth', block: 'center'});
         }
     }
 }

@@ -1,9 +1,9 @@
-import {Component, Inject} from '@angular/core'
-import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material'
+import {Component, Inject} from '@angular/core';
+import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 
 export interface DialogEditSessionData {
-    start: number,
-    end?: number
+    start: number;
+    end?: number;
 }
 
 @Component({
@@ -14,8 +14,8 @@ export class DialogEditSessionComponent {
     constructor(
         @Inject(MAT_DIALOG_DATA) public data: DialogEditSessionData,
         private dialog: MatDialogRef<DialogEditSessionComponent, DialogEditSessionData>
-    ){}
+    ) {}
     onSubmit(start: number, end: number) {
-        this.dialog.close({start: start, end: Number.isNaN(end) ? undefined : end})
+        this.dialog.close({start, end: Number.isNaN(end) ? undefined : end});
     }
 }

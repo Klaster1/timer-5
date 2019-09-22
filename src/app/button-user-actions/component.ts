@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import {Store} from '@ngrx/store'
+import {Store} from '@ngrx/store';
 // import {user} from '@app/ngrx/selectors'
-import * as actions from '@app/ngrx/actions'
-import {StoreState} from '@app/types'
+import * as actions from '@app/ngrx/actions';
+import {StoreState} from '@app/types';
 
 @Component({
   selector: 'button-user-actions',

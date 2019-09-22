@@ -1,16 +1,16 @@
-import {Injectable} from '@angular/core'
-import {createEffect, ofType, Actions} from '@ngrx/effects'
-import {Store} from '@ngrx/store'
-import * as actions from '@app/ngrx/actions'
-import * as selectors from '@app/ngrx/selectors'
-import {Router} from '@angular/router'
-import {ROUTER_NAVIGATION, RouterNavigationAction} from '@ngrx/router-store'
-import {AngularFirestore} from '@angular/fire/firestore'
-import {AngularFireAuth} from '@angular/fire/auth'
+import {Injectable} from '@angular/core';
+import {createEffect, ofType, Actions} from '@ngrx/effects';
+import {Store} from '@ngrx/store';
+import * as actions from '@app/ngrx/actions';
+import * as selectors from '@app/ngrx/selectors';
+import {Router} from '@angular/router';
+import {ROUTER_NAVIGATION, RouterNavigationAction} from '@ngrx/router-store';
+import {AngularFirestore} from '@angular/fire/firestore';
+import {AngularFireAuth} from '@angular/fire/auth';
 import {EMPTY, combineLatest, pipe} from 'rxjs';
 import {tap, map, withLatestFrom, exhaustMap, switchMap, filter, pluck, take} from 'rxjs/operators';
-import {StoreState, Task, TaskState} from '@app/types'
-import {pathNavigate} from '@app/utils/router-store'
+import {StoreState, Task, TaskState} from '@app/types';
+import {pathNavigate} from '@app/utils/router-store';
 
 @Injectable()
 export class Effects {
