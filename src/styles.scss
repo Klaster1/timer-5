@@ -8,10 +8,15 @@ body {
     display: flex;
 }
 
-.nav-link-active {
-  color: var(--primary-darker-color) !important;
+@mixin nav-link-active($color) {
+    .mat-list-base .mat-list-item.nav-link-active .mat-icon-no-color,
+    .nav-link-active, .nav-link-active .mat-icon {
+      color: $color !important;
+    }
 }
 
-.theme-alternate .nav-link-active {
-  color: var(--primary-color) !important;
+@include nav-link-active(var(--primary-darker-color));
+
+.theme-alternate {
+    @include nav-link-active(var(--primary-color));
 }

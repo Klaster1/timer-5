@@ -211,11 +211,40 @@ $theme-warn: mat-palette($mat-warn, main, lighter, darker);;
 $theme: mat-light-theme($theme-primary, $theme-accent, $theme-warn);
 $altTheme: mat-dark-theme($theme-primary, $theme-accent, $theme-warn);
 
+// https://github.com/angular/components/issues/9664
+@mixin fix-icon-color($active-focused, $active-unfocused) {
+  .mat-icon-no-color.fix-icon-color {
+    color: $active-focused
+  }
+  .mat-list-base .mat-list-item,
+  .mat-option,
+  .mat-icon-button {
+     .mat-icon-no-color {
+      color: $active-focused
+    }
+  }
+  .mat-list-item:hover,
+  .mat-option.mat-active, .mat-option:hover,
+  .mat-icon-button:hover {
+     .mat-icon-no-color {
+        color: $active-unfocused
+     }
+  }  
+}
+
 // Theme Init
 @include angular-material-theme($theme);
+@include fix-icon-color(
+  map-get($mat-light-theme-foreground, 'icon'),
+  map-get($mat-light-theme-foreground, 'text')
+);
 
 .theme-alternate {
   @include angular-material-theme($altTheme);
+  @include fix-icon-color(
+    map-get($mat-dark-theme-foreground, 'secondary-text'),
+    map-get($mat-dark-theme-foreground, 'icon')
+  );
 }
 
 

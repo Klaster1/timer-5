@@ -3,7 +3,7 @@
         <a routerLink='./..' mat-icon-button>
             <mat-icon>arrow_back</mat-icon>
         </a>
-        <h2><mat-icon>{{task|taskStateIcon}}</mat-icon>{{task.name}}</h2>
+        <h2><mat-icon class='fix-icon-color'>{{task|taskStateIcon}}</mat-icon>{{task.name}}</h2>
         <button-task-actions [task]='task'></button-task-actions>
     </mat-toolbar>
     <ng-scrollbar>
