@@ -4,7 +4,8 @@ import {updateTheme} from '@app/ngrx/actions'
 import {theme} from '@app/ngrx/selectors'
 import {StoreState} from '@app/types'
 import {of} from 'rxjs';
-import {HotkeysService, Hotkey} from 'angular2-hotkeys'
+import {HotkeysService} from 'angular2-hotkeys'
+import {hotkey} from '@app/utils/hotkey'
 import {Router} from '@angular/router'
 import {map, tap, take} from 'rxjs/operators';
 
@@ -19,18 +20,11 @@ export class AppComponent {
         keys: HotkeysService,
         router: Router
     ) {
-        keys.add(new Hotkey('g t', (e) => {
-            router.navigate(['tasks', 'all'])
-            return e
-        }, void 0, 'Go to all tasks'))
-        keys.add(new Hotkey('g a', (e) => {
-            router.navigate(['tasks', 'active'])
-            return e
-        }, void 0, 'Go to active tasks'))
-        keys.add(new Hotkey('g d', (e) => {
-            router.navigate(['tasks', 'done'])
-            return e
-        }, void 0, 'Go to done tasks'))
+        keys.add([
+            hotkey('g t', 'Go to all tasks', () => router.navigate(['tasks', 'all'])),
+            hotkey('g a', 'Go to active tasks', () => router.navigate(['tasks', 'active'])),
+            hotkey('g d', 'Go to done tasks', () => router.navigate(['tasks', 'done'])),
+        ])
         this.theme$.pipe(
             tap(t=>document.body.classList.toggle('theme-alternate', t === 'dark'))
         ).subscribe()

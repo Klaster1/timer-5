@@ -6,7 +6,8 @@ import * as actions from '@app/ngrx/actions'
 import {combineLatest, BehaviorSubject, Subject} from 'rxjs';
 import {map, tap, take, filter, startWith} from 'rxjs/operators';
 import {generate as id} from 'shortid'
-import {HotkeysService, Hotkey} from 'angular2-hotkeys'
+import {HotkeysService} from 'angular2-hotkeys'
+import {hotkey} from '@app/utils/hotkey'
 import {Router} from '@angular/router'
 
 @Component({
@@ -21,21 +22,19 @@ export class ScreenTasksComponent {
         private router: Router,
     ) {}
     hotkeys = [
-        new Hotkey('a', (e) => (this.addTask(),e), void 0, 'Add task'),
-        new Hotkey(['j', 'k'], e => {
-            combineLatest(this.tasks$, this.state$, this.currentTask$).pipe(take(1)).toPromise().then(([tasks, state, task]) => {
-                if (!tasks.length) return
-                if (!task) task = tasks[0]
-                let index = tasks.indexOf(task)
-                if (e.key === 'j') index += 1
-                if (e.key === 'k') index -= 1
-                if (index >= tasks.length) index = 0
-                if (index < 0) index = tasks.length - 1
-                this.router.navigate(['tasks', state, tasks[index].id])
-            })
-            return e
-        }, [], 'Next/prev task'),
-        new Hotkey('f', (e) => (this.searchOpened$.next(true),e), [], 'Search')
+        hotkey('a', 'Add task', () => this.addTask()),
+        hotkey(['j', 'k'], 'Next/prev task', async (e) => {
+            let [tasks, state, task] = await combineLatest(this.tasks$, this.state$, this.currentTask$).pipe(take(1)).toPromise()
+            if (!tasks.length) return
+            if (!task) task = tasks[0]
+            let index = tasks.indexOf(task)
+            if (e.key === 'j') index += 1
+            if (e.key === 'k') index -= 1
+            if (index >= tasks.length) index = 0
+            if (index < 0) index = tasks.length - 1
+            this.router.navigate(['tasks', state, tasks[index].id])
+        }),
+        hotkey('f', 'Search', () => this.searchOpened$.next(true))
     ]
     ngOnInit() {
         this.keys.add(this.hotkeys)

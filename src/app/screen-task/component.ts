@@ -6,8 +6,9 @@ import * as actions from '@app/ngrx/actions'
 import {combineLatest} from 'rxjs';
 import {map, take} from 'rxjs/operators';
 import {generate as id} from 'shortid'
-import {HotkeysService, Hotkey} from 'angular2-hotkeys'
+import {HotkeysService} from 'angular2-hotkeys'
 import {sortSessions, isTaskRunning} from '@app/domain'
+import {hotkey} from '@app/utils/hotkey'
 
 @Component({
     templateUrl: './template.html',
@@ -20,32 +21,21 @@ export class ScreenTaskComponent implements OnDestroy, OnInit {
         private keys: HotkeysService,
     ) {}
     hotkeys = [
-        new Hotkey('s', (e) => {
-            combineLatest(this.task$, this.taskIsInProgress$).pipe(take(1)).toPromise().then(([task, inProgress]) => {
+        hotkey('s', 'Start/stop task', async (e) => {
+            combineLatest(this.task$, this.taskIsInProgress$).pipe(take(1)).subscribe(([task, inProgress]) => {
                 if (!task) return
                 inProgress ? this.stop(task.id) : this.start(task.id)
             })
-            return e
-        }, undefined, 'Start/stop task'),
-        ...(([TaskState.ACTIVE, TaskState.DONE]).map((state) => new Hotkey(`m ${state[0]}`, e => {
-            this.task$.pipe(take(1)).toPromise().then((task) => {
-                if (!task) return
-                this.store.dispatch(actions.updateTaskState({taskId: task.id, state}))
+        }),
+        ...[TaskState.ACTIVE, TaskState.DONE].map((state) => hotkey(`m ${state[0]}`, `Mark as ${state}`, e => {
+            this.task$.pipe(take(1)).subscribe((task) => {
+                if (task) this.store.dispatch(actions.updateTaskState({taskId: task.id, state}))
             })
-            return e
-        }, [], `Mark as ${state}`))),
-        new Hotkey('r t', (e) => {
-            this.task$.pipe(take(1)).toPromise().then(task => {
-                if (task) this.store.dispatch(actions.renameTaskIntent({taskId: task.id}))
-            })
-            return e
-        }, [], 'Rename task'),
-        new Hotkey('d t', (e) => {
-            this.task$.pipe(take(1)).toPromise().then(task => {
-                this.deleteTask(task)
-            })
-            return e
-        }, [], 'Delete task')
+        })),
+        hotkey('r t', 'Rename task', () => this.task$.pipe(take(1)).subscribe(task => {
+            if (task) this.store.dispatch(actions.renameTaskIntent({taskId: task.id}))
+        })),
+        hotkey('d t', 'Delete task', () => this.task$.pipe(take(1)).subscribe(task => this.deleteTask(task)))
     ]
     ngOnInit() {
         this.keys.add(this.hotkeys)
