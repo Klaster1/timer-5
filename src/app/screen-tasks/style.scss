@@ -59,7 +59,13 @@ mat-toolbar {
 .active {
     background: var(--active-link-background)
 }
-.search, h1 {
+h1 {
+    width: 100%;
+}
+.search-form, h1 {
     display: flex;
     align-items: center;
+}
+.search-button, .search-form {
+    margin-left: auto;
 }

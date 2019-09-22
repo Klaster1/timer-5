@@ -27,7 +27,6 @@ export class ScreenTasksComponent {
                 if (!tasks.length) return
                 if (!task) task = tasks[0]
                 let index = tasks.indexOf(task)
-                // if (index === -1)
                 if (e.key === 'j') index += 1
                 if (e.key === 'k') index -= 1
                 if (index >= tasks.length) index = 0
@@ -35,7 +34,8 @@ export class ScreenTasksComponent {
                 this.router.navigate(['tasks', state, tasks[index].id])
             })
             return e
-        }, [], 'Next/prev task')
+        }, [], 'Next/prev task'),
+        new Hotkey('f', (e) => (this.searchOpened$.next(true),e), [], 'Search')
     ]
     ngOnInit() {
         this.keys.add(this.hotkeys)
