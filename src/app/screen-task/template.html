@@ -24,8 +24,8 @@
                     mat-cell
                     *matCellDef='let session'
                     [matTooltip]='(session|sessionDuration|async)/1000'
-                >{{session|sessionDuration|async|formatDuration}}</td>
-                <td mat-footer-cell *matFooterCellDef [matTooltip]='task|taskDuration|async'>{{task|taskDuration|async|formatDuration}}</td>
+                >{{session|sessionDuration|formatDuration|async}}</td>
+                <td mat-footer-cell *matFooterCellDef [matTooltip]='task|taskDuration|async'>{{task|taskDuration|formatDuration|async}}</td>
             </ng-container>
             <ng-container matColumnDef='action'>
                 <th mat-header-cell *matHeaderCellDef style='width: 10%'></th>

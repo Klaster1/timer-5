@@ -2,7 +2,7 @@
     <mat-toolbar>
         <h1>
             {{state$|async|taskState}}
-            <span *ngIf='(tasks$|async|tasksDuration:20000|async|formatDuration) as duration'>
+            <span *ngIf='(tasks$|async|tasksDuration:20000|formatDuration|async) as duration'>
                 ({{duration}})
             </span>
         </h1>
@@ -25,7 +25,7 @@
                     >
                         <mat-icon>{{task|taskStateIcon}}</mat-icon>
                         <span>{{task.name}}</span>
-                        <span class='duration'>{{task|taskDuration|async|formatDuration}}</span>
+                        <span class='duration'>{{task|taskDuration:5000|formatDuration|async}}</span>
                     </a>
                     <button-task-actions [task]='task'></button-task-actions>
                 </mat-list-item>
