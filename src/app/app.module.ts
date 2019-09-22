@@ -59,6 +59,7 @@ import {DialogEditSessionModule} from './dialog-edit-session';
     HotkeyModule.forRoot({cheatSheetCloseEsc: true}),
     StoreModule.forRoot(reducers.combinedReducers, {
       metaReducers,
+      initialState: {router: null},
       runtimeChecks: {
         strictStateImmutability: true,
       }
