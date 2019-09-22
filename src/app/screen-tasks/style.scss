@@ -4,22 +4,22 @@
     flex: 1;
     --fab-offset: 1rem;
 
-    &:not(.task-opened) {
-        grid-template-areas: 'left tasks right';
-        grid-template-columns: 1fr 50% 1fr;
-    }
-    &.task-opened {
-        grid-template-areas: "tasks task";
-        grid-template-columns: 1fr 1fr;
-    }
-    @media (max-width: 900px) {
+    @media (min-width: 900px) {
         &:not(.task-opened) {
-
+            grid-template-areas: 'left tasks right';
+            grid-template-columns: 1fr 50% 1fr;
         }
         &.task-opened {
-            grid-template-areas: "tasks" "task";
-            grid-template-columns: 1fr;
-            grid-template-rows: 1fr 1fr;
+            grid-template-areas: "tasks task";
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+    @media (max-width: 900px) {
+        grid-template-columns: [tasks-start task-start] 1fr;
+        grid-template-rows: [tasks-start task-start] 1fr;
+
+        .task {
+            z-index: 1;
         }
     }
 }
@@ -54,7 +54,6 @@ mat-toolbar {
     position: absolute;
     bottom: var(--fab-offset);
     right: var(--fab-offset);
-    z-index: 2;
     left: 50%;
 }
 .active {
