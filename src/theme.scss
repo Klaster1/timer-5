@@ -216,20 +216,23 @@ $altTheme: mat-dark-theme($theme-primary, $theme-accent, $theme-warn);
   .mat-icon-no-color.fix-icon-color {
     color: $active-focused
   }
+
   .mat-list-base .mat-list-item,
   .mat-option,
   .mat-icon-button {
-     .mat-icon-no-color {
+    .mat-icon-no-color {
       color: $active-focused
     }
   }
+
   .mat-list-item:hover,
-  .mat-option.mat-active, .mat-option:hover,
+  .mat-option.mat-active,
+  .mat-option:hover,
   .mat-icon-button:hover {
-     .mat-icon-no-color {
-        color: $active-unfocused
-     }
-  }  
+    .mat-icon-no-color {
+      color: $active-unfocused
+    }
+  }
 }
 
 // Theme Init
