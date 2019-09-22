@@ -1,7 +1,7 @@
 <h1 mat-dialog-title>{{data.title}}</h1>
 <form mat-dialog-content id='promptForm' (submit)='$event.preventDefault();onSubmit($event.target[0].value)'>
     <mat-form-field>
-        <input type="text" matInput required [value]='data.value'>
+        <input type="text" matInput required [value]='data.value' [placeholder]='data.placeholder'>
     </mat-form-field>
 </form>
 <div mat-dialog-actions>

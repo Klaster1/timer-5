@@ -1,10 +1,10 @@
-import {Component, HostBinding, ChangeDetectionStrategy, OnInit, OnDestroy} from '@angular/core'
+import {Component, HostBinding, ChangeDetectionStrategy, OnInit, OnDestroy, ViewChild, ElementRef} from '@angular/core'
 import {Store} from '@ngrx/store'
 import {StoreState, Task, TaskState} from '@app/types'
 import {currentTasksState, currentStateTasks, currentTask} from '@app/ngrx/selectors'
 import * as actions from '@app/ngrx/actions'
-import {combineLatest} from 'rxjs';
-import {map, tap, take} from 'rxjs/operators';
+import {combineLatest, BehaviorSubject, Subject} from 'rxjs';
+import {map, tap, take, filter, startWith} from 'rxjs/operators';
 import {generate as id} from 'shortid'
 import {HotkeysService, Hotkey} from 'angular2-hotkeys'
 import {Router} from '@angular/router'
@@ -43,8 +43,18 @@ export class ScreenTasksComponent {
     ngOnDestroy() {
         this.keys.remove(this.hotkeys)
     }
+    @ViewChild('searchInput', {static: false})
+    searchInput?: ElementRef<HTMLInputElement>
+    searchOpened$ = new BehaviorSubject<boolean>(false)
+    searchTermInput$ = new Subject<string>()
+    searchTerm$ = combineLatest(
+        this.searchOpened$.pipe(filter(Boolean), tap(() => setTimeout(()=>this.searchInput && this.searchInput.nativeElement.focus()))), 
+        this.searchTermInput$
+    ).pipe(map(([opened, term]) => opened ? term : ''), startWith(''))
     state$ = this.store.select(currentTasksState)
-    tasks$ = this.store.select(currentStateTasks)
+    tasks$ = combineLatest(this.store.select(currentStateTasks), this.searchTerm$).pipe(
+        map(([tasks, term]) => term ? tasks.filter(t => t.name.toLowerCase().includes(term.toLowerCase())) : tasks)
+    )
     currentTask$ = this.store.select(currentTask)
     @HostBinding('class.task-opened')
     private taskOpened: boolean = false

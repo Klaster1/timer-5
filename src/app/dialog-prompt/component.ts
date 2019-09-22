@@ -3,6 +3,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material'
 
 export interface DialogPromptData {
     title: string,
+    placeholder?: string,
     value?: string
 }
 

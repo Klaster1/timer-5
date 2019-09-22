@@ -8,7 +8,7 @@ export class Prompt {
     constructor(
         private dialog: MatDialog
     ) {}
-    prompt(title: string, value = ''): Observable<string|undefined> {
-        return this.dialog.open<DialogPromptComponent, DialogPromptData, string>(DialogPromptComponent, {data: {title, value}}).afterClosed()
+    prompt(title: string, value = '', placeholder = ''): Observable<string|undefined> {
+        return this.dialog.open<DialogPromptComponent, DialogPromptData, string>(DialogPromptComponent, {data: {title, value, placeholder}}).afterClosed()
     }
 }

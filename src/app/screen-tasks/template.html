@@ -1,11 +1,18 @@
 <section class='tasks'>
     <mat-toolbar>
-        <h1>
+        <h1 *ngIf='(searchOpened$|async) === false'>
             {{state$|async|taskState}}
             <span *ngIf='(tasks$|async|tasksDuration:20000|formatDuration|async) as duration'>
                 ({{duration}})
             </span>
+            <button mat-icon-button (click)='searchOpened$.next(true)' matTooltip='Seach'><mat-icon>search</mat-icon></button>
         </h1>
+        <form class='search mat-body' *ngIf='searchOpened$|async'>
+            <button mat-icon-button (click)='searchOpened$.next(false)' matTooltip='Close search'><mat-icon>arrow_back</mat-icon></button>
+            <mat-form-field>
+                <input type="search" matInput placeholder='Search' name='search' [value]='searchTerm$|async' (input)='searchTermInput$.next($event.target.value)' #searchInput (blur)='searchOpened$.next(false)' (keyup.esc)='searchOpened$.next(false)'>
+            </mat-form-field>
+        </form>
     </mat-toolbar>
     <button (click)='addTask()' mat-fab color='accent'>
         <mat-icon>add</mat-icon>

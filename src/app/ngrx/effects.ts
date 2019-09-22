@@ -25,7 +25,7 @@ export class Effects {
 
     createTask$ = createEffect(() => this.actions$.pipe(
         ofType(actions.createTaskIntent),
-        switchMap(() => this.prompt.prompt('Create task')),
+        switchMap(() => this.prompt.prompt('Create task', '', 'Task name')),
         switchMap(result => result ? [actions.createTask({taskId: id(), name: result})] : [])
     ))
 
@@ -48,7 +48,7 @@ export class Effects {
         ofType(actions.renameTaskIntent),
         switchMap(a => this.store.select(selectors.taskById, {taskId: a.taskId}).pipe(
             take(1),
-            exhaustMap(t => this.prompt.prompt('Rename task', t.name)),
+            exhaustMap(t => this.prompt.prompt('Rename task', t.name, 'Task name')),
             switchMap(result => result ? [actions.renameTask({taskId: a.taskId, name: result})] : [])
         ))
     ))
