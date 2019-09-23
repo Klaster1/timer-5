@@ -66,7 +66,11 @@ h1 {
     display: flex;
     align-items: center;
 }
-.search-button, .search-form {
+.range-filter {
+    margin-left: auto;
+    flex: 0 0 42.5px;
+}
+.search-form {
     margin-left: auto;
 }
 .state-duration {

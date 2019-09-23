@@ -5,6 +5,14 @@
             <span *ngIf='(tasks$|async|tasksDuration:20000|formatDuration|async) as duration' class='state-duration'>
                 ({{duration}})
             </span>
+            <mat-select class='mat-body range-filter' [value]='rangeFilter' (selectionChange)='onRangeFilterChange($event.value)'>
+                <mat-select-trigger>
+                    <mat-icon>filter_list</mat-icon>
+                </mat-select-trigger>
+                <mat-option value="all">All</mat-option>
+                <mat-option value="today">Today</mat-option>
+                <mat-option value="yesterday">Yesterday</mat-option>
+            </mat-select>
             <button
                 *ngIf='(searchOpened$|async) === false'
                 class='search-button'

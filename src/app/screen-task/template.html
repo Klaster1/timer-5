@@ -6,6 +6,7 @@
         <h2><mat-icon class='fix-icon-color'>{{task|taskStateIcon}}</mat-icon>{{task.name}}</h2>
         <button-task-actions [task]='task'></button-task-actions>
     </mat-toolbar>
+    <pre>{{task.indexes|json}}</pre>
     <ng-scrollbar>
         <table mat-table [dataSource]='sortedSessions$'>
             <ng-container matColumnDef='start'>

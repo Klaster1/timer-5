@@ -3,6 +3,7 @@ import {createReducer, Action, on} from '@ngrx/store';
 import * as actions from './actions';
 import {StoreState, Task, Session, TaskState} from '@app/types';
 import {fromEntries} from '@app/utils/from-entries';
+import {taskIndexes} from '@app/domain'
 
 function tasks(state: StoreState['tasks'], action: Action) {
     const tasks = createReducer<StoreState['tasks']>(
@@ -41,33 +42,42 @@ function tasks(state: StoreState['tasks'], action: Action) {
             actions.startTask,
             actions.stopTask,
             actions.updateSession,
-            actions.moveSessionToTask,
             actions.deleteSession,
-            (s, a) => ({
+            (s, a) => {
+                const task = {...s.values[a.taskId], sessions: sessions(s.values[a.taskId].sessions, a)}
+                const indexes = taskIndexes(task)
+                return {
+                    ...s,
+                    values: {
+                        ...s.values,
+                        [a.taskId]: {...task, indexes}
+                    }
+                }
+            }
+        ),
+        on(actions.moveSessionToTask, (s, a) => {
+            const toTask = {
+                ...s.values[a.toTaskId],
+                sessions: [
+                    ...s.values[a.toTaskId].sessions,
+                    s.values[a.taskId].sessions.find(s => s.id === a.sessionId)!
+                ]
+            }
+            toTask.indexes = taskIndexes(toTask)
+            const fromTask = {
+                ...s.values[a.taskId],
+                sessions: s.values[a.taskId].sessions.filter(s => s.id !== a.sessionId)
+            }
+            fromTask.indexes = taskIndexes(fromTask)
+            return {
                 ...s,
                 values: {
                     ...s.values,
-                    [a.taskId]: {...s.values[a.taskId], sessions: sessions(s.values[a.taskId].sessions, a)}
-                }
-            })
-        ),
-        on(actions.moveSessionToTask, (s, a) => ({
-            ...s,
-            values: {
-                ...s.values,
-                [a.toTaskId]: {
-                    ...s.values[a.toTaskId],
-                    sessions: [
-                        ...s.values[a.toTaskId].sessions,
-                        s.values[a.taskId].sessions.find(s => s.id === a.sessionId)!
-                    ]
-                },
-                [a.taskId]: {
-                    ...s.values[a.taskId],
-                    sessions: s.values[a.taskId].sessions.filter(s => s.id !== a.sessionId)
+                    [a.toTaskId]: toTask,
+                    [a.taskId]: fromTask
                 }
             }
-        }))
+        })
     );
     const sessions = createReducer<Task['sessions']>(
         [],

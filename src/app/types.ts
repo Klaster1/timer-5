@@ -3,6 +3,7 @@ import {RouterReducerState} from '@ngrx/router-store';
 export interface Task {
     id: string;
     name: string;
+    indexes?: TaskIndexes;
     state: TaskState;
     sessions: Session[];
 }

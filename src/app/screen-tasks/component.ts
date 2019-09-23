@@ -1,6 +1,6 @@
 import {Component, HostBinding, ChangeDetectionStrategy, OnInit, OnDestroy, ViewChild, ElementRef} from '@angular/core';
 import {Store} from '@ngrx/store';
-import {StoreState, Task, TaskState} from '@app/types';
+import {StoreState, Task, TaskState, TaskIndexes} from '@app/types';
 import {currentTasksState, currentStateTasks, currentTask} from '@app/ngrx/selectors';
 import * as actions from '@app/ngrx/actions';
 import {combineLatest, BehaviorSubject, Subject} from 'rxjs';
@@ -9,6 +9,7 @@ import {generate as id} from 'shortid';
 import {HotkeysService} from 'angular2-hotkeys';
 import {hotkey} from '@app/utils/hotkey';
 import {Router} from '@angular/router';
+import {taskIndexes} from '@app/domain'
 
 @Component({
     templateUrl: './template.html',
@@ -45,8 +46,41 @@ export class ScreenTasksComponent {
         this.searchTermInput$
     ).pipe(map(([opened, term]) => opened ? term : ''), startWith(''));
     state$ = this.store.select(currentTasksState);
-    tasks$ = combineLatest(this.store.select(currentStateTasks), this.searchTerm$).pipe(
-        map(([tasks, term]) => term ? tasks.filter(t => t.name.toLowerCase().includes(term.toLowerCase())) : tasks),
+    rangeFilter = 'all'
+    rangeFilterPredicate$ = new BehaviorSubject<{index: keyof TaskIndexes, value: string}|null>(null)
+    onRangeFilterChange(value: string) {
+        if (value === 'all') this.rangeFilterPredicate$.next(null)
+        if (value === 'today') {
+            const now = new Date()
+            const year = now.getFullYear()
+            const month = now.getMonth()+1
+            const date = now.getDate()
+            this.rangeFilterPredicate$.next({index: 'yearMonthDate', value: `${year}.${month}.${date}`})
+        }
+        if (value === 'yesterday') {
+            const now = new Date()
+            now.setDate(now.getDate()-1)
+            const year = now.getFullYear()
+            const month = now.getMonth()+1
+            const date = now.getDate()
+            this.rangeFilterPredicate$.next({index: 'yearMonthDate', value: `${year}.${month}.${date}`})
+        }
+    }
+
+    tasks$ = combineLatest(this.store.select(currentStateTasks), this.searchTerm$, this.rangeFilterPredicate$).pipe(
+        map(([tasks, term, range]) => {
+            return term || range
+                ? tasks.filter(t => {
+                    const indexes = t.indexes || taskIndexes(t)
+                    return t.name.toLowerCase().includes(term.toLowerCase()) &&
+                        range
+                            ? indexes
+                                ? indexes[range.index].includes(range.value)
+                                : false
+                            : true
+                })
+                : tasks
+        }),
         shareReplay(1)
     );
     currentTask$ = this.store.select(currentTask);

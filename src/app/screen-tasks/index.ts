@@ -8,7 +8,8 @@ import {
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatSelectModule
 } from '@angular/material';
 import {ScrollingModule} from '@angular/cdk/scrolling';
 import {NgScrollbarModule} from 'ngx-scrollbar';
@@ -46,6 +47,7 @@ export {ScreenTasksComponent};
         MatFormFieldModule,
         MatInputModule,
         MatTooltipModule,
+        MatSelectModule,
         ButtonTaskActionsModule
     ]
 })
