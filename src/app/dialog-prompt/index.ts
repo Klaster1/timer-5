@@ -8,7 +8,9 @@ import { ToStringPipeModule } from '@app/pipes/to-string.pipe';
 export { DialogPromptComponent, DialogPromptData };
 
 @NgModule({
-  imports: [MatDialogModule, MatButtonModule, MatFormFieldModule, MatInputModule, ToStringPipeModule],
+  imports: [
+    MatDialogModule, MatButtonModule, MatFormFieldModule, MatInputModule, ToStringPipeModule
+  ],
   declarations: [DialogPromptComponent],
   exports: [DialogPromptComponent],
   entryComponents: [DialogPromptComponent]

@@ -1,8 +1,11 @@
 import {Observable, timer, of, combineLatest} from 'rxjs';
 import {map} from 'rxjs/operators';
-import {Task, Session, TaskIndexes} from '@app/types';
+import {Task, Session, TaskIndexes, TaskState} from '@app/types';
 export const isTask = (v: any): v is Task => typeof v === 'object' && v.id && v.name && v.state && Array.isArray(v.sessions);
 export const isTaskRunning = (t?: Task): boolean => !!t && !!t.sessions && t.sessions.some(s => !s.end);
+export const isValidTaskState = (state: string): boolean => (new Set([
+  TaskState.ACTIVE, TaskState.DONE, TaskState.DROPPED, TaskState.DROPPED, TaskState.ON_HOLD, TaskState.TO_DO
+]) as Set<string>).has(state)
 export const getTaskRunningSession = (t?: Task) => t ? t.sessions[t.sessions.length - 1] : undefined;
 export const compareSessions = (a: Session, b: Session) => b.start - a.start;
 export const sortSessions = (sessions: Session[]): Session[] => [...sessions].sort(compareSessions);
@@ -82,6 +85,6 @@ export const taskIndexes = (task: Task): TaskIndexes => task.sessions
 //     }
 // }, stats)
 
-// export const removeTasksFromStats = (stats: TimelineStats, tasks: Task[]): TimelineStats => 
+// export const removeTasksFromStats = (stats: TimelineStats, tasks: Task[]): TimelineStats =>
 
 // export const allStats = (tasks: Task[]) => addTasksToStats({year: {}, yearMonth: {}, yearMonthDate: {}}, tasks)

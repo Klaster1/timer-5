@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { ScreenTasksComponent } from './screen-tasks';
 import { ScreenTaskComponent } from './screen-task';
+import { GameStateGuard } from './guards/game-state.guard';
 
 const routes: Routes = [
   {
@@ -16,6 +17,7 @@ const routes: Routes = [
       {
         path: ':state',
         component: ScreenTasksComponent,
+        canActivate: [GameStateGuard],
         children: [
           {
             path: ':taskId',
