@@ -1,8 +1,10 @@
-<section class='tasks'>
+<section class='tasks' *ngIf='(tasks$|async) as tasks'>
     <mat-toolbar>
         <h1>
-            {{state$|async|taskState}}
-            <span *ngIf='(tasks$|async|tasksDuration:20000|formatDuration|async) as duration' class='state-duration'>
+            <ng-container *ngIf='state$|async as state'>
+              {{state|taskState}}
+            </ng-container>
+            <span *ngIf='(tasks|tasksDuration:20000|formatDuration|async) as duration' class='state-duration'>
                 ({{duration}})
             </span>
             <mat-select class='mat-body range-filter' [value]='rangeFilter' (selectionChange)='onRangeFilterChange($event.value)'>
@@ -34,7 +36,7 @@
                 matInput
                 placeholder='Search'
                 name='search'
-                [value]='searchTerm$|async'
+                [value]='(searchTerm$|async) || ""'
                 (input)='searchTermInput$.next($event.target.value)'
                 #searchInput
                 (blur)='searchOpened$.next(false)'
@@ -45,15 +47,14 @@
     <button (click)='addTask()' mat-fab color='accent'>
         <mat-icon>add</mat-icon>
     </button>
-    <ng-scrollbar *ngIf='(tasks$|async) as tasks'>
-        <cdk-virtual-scroll-viewport itemSize='48' scrollViewport>
+    <ng-scrollbar>
+        <cdk-virtual-scroll-viewport [itemSize]='48' scrollViewport>
             <mat-nav-list>
                 <mat-list-item *cdkVirtualFor='let task of tasks; trackBy taskId'>
                     <a
                         matLine
                         [routerLink]='[task.id]'
                         routerLinkActive='nav-link-active'
-                        [routerLinkActiveOptions]="{__change_detection_hack__: tasks }"
                         class='task-link'
                         #rla='routerLinkActive'
                         [scrollIntoViewIf]='rla.isActive'

@@ -1,12 +1,16 @@
-import {NgModule} from '@angular/core';
-import {MatDialogModule, MatButtonModule, MatFormFieldModule, MatInputModule} from '@angular/material';
-import {DialogPromptComponent, DialogPromptData} from './component';
-export {DialogPromptComponent, DialogPromptData};
+import { NgModule } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { DialogPromptComponent, DialogPromptData } from './component';
+import { ToStringPipeModule } from '@app/pipes/to-string.pipe';
+export { DialogPromptComponent, DialogPromptData };
 
 @NgModule({
-    imports: [MatDialogModule, MatButtonModule, MatFormFieldModule, MatInputModule],
-    declarations: [DialogPromptComponent],
-    exports: [DialogPromptComponent],
-    entryComponents: [DialogPromptComponent]
+  imports: [MatDialogModule, MatButtonModule, MatFormFieldModule, MatInputModule, ToStringPipeModule],
+  declarations: [DialogPromptComponent],
+  exports: [DialogPromptComponent],
+  entryComponents: [DialogPromptComponent]
 })
-export class DialogPromptModule {}
+export class DialogPromptModule { }

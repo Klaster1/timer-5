@@ -1,6 +1,6 @@
 import {Observable} from 'rxjs';
 import {Injectable} from '@angular/core';
-import {MatDialog} from '@angular/material';
+import {MatDialog} from '@angular/material/dialog';
 import {DialogPromptComponent, DialogPromptData} from '@app/dialog-prompt';
 
 @Injectable({providedIn: 'root'})

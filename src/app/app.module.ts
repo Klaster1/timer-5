@@ -4,7 +4,7 @@ import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TaskStateIconPipeModule } from '@app/pipes/task-state-icon.pipe';
 import { EffectsModule } from '@ngrx/effects';
-import { StoreRouterConnectingModule } from '@ngrx/router-store';
+import { StoreRouterConnectingModule, MinimalRouterStateSerializer } from '@ngrx/router-store';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { MatSidenavModule } from '@angular/material/sidenav'
@@ -16,15 +16,14 @@ import { HotkeyModule } from 'angular2-hotkeys';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ButtonUserActionsModule } from './button-user-actions';
 import { DialogEditSessionModule } from './dialog-edit-session';
 import { DialogPromptModule } from './dialog-prompt';
 import { Effects } from './ngrx/effects';
 import { metaReducers } from './ngrx/metareducers';
 import * as reducers from './ngrx/reducers';
-import { ScreenLoginModule } from './screen-login';
 import { ScreenTaskModule } from './screen-task';
 import { ScreenTasksModule } from './screen-tasks';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -35,10 +34,8 @@ import { ScreenTasksModule } from './screen-tasks';
     BrowserAnimationsModule,
     CommonModule,
     AppRoutingModule,
-    ScreenLoginModule,
     ScreenTasksModule,
     ScreenTaskModule,
-    ButtonUserActionsModule,
     MatSidenavModule,
     MatListModule,
     MatIconModule,
@@ -47,6 +44,7 @@ import { ScreenTasksModule } from './screen-tasks';
     TaskStateIconPipeModule,
     DialogPromptModule,
     DialogEditSessionModule,
+    HttpClientModule,
     HotkeyModule.forRoot({ cheatSheetCloseEsc: true }),
     StoreModule.forRoot(reducers.combinedReducers, {
       metaReducers,
@@ -55,7 +53,9 @@ import { ScreenTasksModule } from './screen-tasks';
         strictStateImmutability: true,
       }
     }),
-    StoreRouterConnectingModule.forRoot(),
+    StoreRouterConnectingModule.forRoot({
+      serializer: MinimalRouterStateSerializer
+    }),
     StoreDevtoolsModule.instrument({
       maxAge: 25,
       logOnly: environment.production, // Restrict extension to log-only mode

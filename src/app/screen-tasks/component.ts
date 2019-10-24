@@ -1,4 +1,4 @@
-import {Component, HostBinding, ChangeDetectionStrategy, OnInit, OnDestroy, ViewChild, ElementRef} from '@angular/core';
+import {Component, HostBinding, ChangeDetectionStrategy, OnInit, OnDestroy, ViewChild, ElementRef, TrackByFunction} from '@angular/core';
 import {Store} from '@ngrx/store';
 import {StoreState, Task, TaskState, TaskIndexes} from '@app/types';
 import {currentTasksState, currentStateTasks, currentTask} from '@app/ngrx/selectors';
@@ -96,7 +96,7 @@ export class ScreenTasksComponent {
     addTask() {
         this.store.dispatch(actions.createTaskIntent());
     }
-    taskId = (task: Task) => task.id;
+    taskId: TrackByFunction<Task> = (index, task) => task.id;
     onSearchSubmit() {
         combineLatest(
             this.tasks$,

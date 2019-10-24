@@ -9,7 +9,7 @@ import {switchMap, withLatestFrom, exhaustMap, filter, take, map} from 'rxjs/ope
 import {StoreState} from '@app/types';
 import {Prompt} from '@app/providers/prompt.provider';
 import {generate as id} from 'shortid';
-import {MatDialog} from '@angular/material';
+import {MatDialog} from '@angular/material/dialog';
 import {DialogEditSessionComponent, DialogEditSessionData} from '@app/dialog-edit-session';
 import {getTaskSession} from '@app/domain';
 
