@@ -37,7 +37,7 @@ export class ScreenTasksComponent {
         }),
         hotkey('f', 'Search', () => this.searchOpened$.next(true))
     ];
-    @ViewChild('searchInput', {static: false})
+    @ViewChild('searchInput')
     searchInput?: ElementRef<HTMLInputElement>;
     searchOpened$ = new BehaviorSubject<boolean>(false);
     searchTermInput$ = new Subject<string>();
