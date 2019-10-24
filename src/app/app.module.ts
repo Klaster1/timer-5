@@ -1,39 +1,30 @@
+import { CommonModule } from '@angular/common';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
-import { NgModule, APP_INITIALIZER } from '@angular/core';
-import {CommonModule} from '@angular/common';
-
-import { AngularFireModule } from '@angular/fire';
-import {AngularFirestoreModule} from '@angular/fire/firestore';
-import {AngularFireAuthModule} from '@angular/fire/auth';
-import { environment } from '../environments/environment';
-import {StoreModule} from '@ngrx/store';
-import {StoreRouterConnectingModule, routerReducer} from '@ngrx/router-store';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TaskStateIconPipeModule } from '@app/pipes/task-state-icon.pipe';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreRouterConnectingModule } from '@ngrx/router-store';
+import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import {EffectsModule} from '@ngrx/effects';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import { NgxAuthFirebaseUIModule } from 'ngx-auth-firebaseui';
-import {
-    MatSidenavModule,
-    MatListModule,
-    MatIconRegistry,
-    MatIconModule,
-    MatTooltipModule,
-    MatDialogModule
-} from '@angular/material';
-import {HotkeyModule} from 'angular2-hotkeys';
-
+import { MatSidenavModule } from '@angular/material/sidenav'
+import { MatListModule } from '@angular/material/list'
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon'
+import { MatTooltipModule } from '@angular/material/tooltip'
+import { MatDialogModule } from '@angular/material/dialog'
+import { HotkeyModule } from 'angular2-hotkeys';
+import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { ButtonUserActionsModule } from './button-user-actions';
+import { DialogEditSessionModule } from './dialog-edit-session';
+import { DialogPromptModule } from './dialog-prompt';
+import { Effects } from './ngrx/effects';
+import { metaReducers } from './ngrx/metareducers';
 import * as reducers from './ngrx/reducers';
-import {metaReducers} from './ngrx/metareducers';
-import {Effects} from './ngrx/effects';
-import {ScreenTasksModule} from './screen-tasks';
-import {ScreenTaskModule} from './screen-task';
-import {ScreenLoginModule} from './screen-login';
-import {ButtonUserActionsModule} from './button-user-actions';
-import {TaskStateIconPipeModule} from '@app/pipes/task-state-icon.pipe';
-import {DialogPromptModule} from './dialog-prompt';
-import {DialogEditSessionModule} from './dialog-edit-session';
+import { ScreenLoginModule } from './screen-login';
+import { ScreenTaskModule } from './screen-task';
+import { ScreenTasksModule } from './screen-tasks';
 
 @NgModule({
   declarations: [
@@ -56,10 +47,10 @@ import {DialogEditSessionModule} from './dialog-edit-session';
     TaskStateIconPipeModule,
     DialogPromptModule,
     DialogEditSessionModule,
-    HotkeyModule.forRoot({cheatSheetCloseEsc: true}),
+    HotkeyModule.forRoot({ cheatSheetCloseEsc: true }),
     StoreModule.forRoot(reducers.combinedReducers, {
       metaReducers,
-      initialState: {router: null},
+      initialState: { router: null },
       runtimeChecks: {
         strictStateImmutability: true,
       }
@@ -69,8 +60,7 @@ import {DialogEditSessionModule} from './dialog-edit-session';
       maxAge: 25,
       logOnly: environment.production, // Restrict extension to log-only mode
     }),
-    EffectsModule.forRoot([Effects]),
-    NgxAuthFirebaseUIModule.forRoot(environment.firebase)
+    EffectsModule.forRoot([Effects])
   ],
   providers: [
     {
