@@ -2,6 +2,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
+    --native-scrollbar-size: -17px;
 }
 .link-all mat-icon {
     transform: scale(calc(32/24));
