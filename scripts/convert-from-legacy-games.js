@@ -12,6 +12,9 @@ const shortid = require('shortid')
 /**
  * @typedef {import('../src/app/types').TaskState} TaskState
  */
+/**
+ * @typedef {import('../src/app/types').Session} Session
+ */
 
 /**
  * @typedef {{
@@ -42,10 +45,10 @@ const gamesToTasks = (games) => {
           hold: 'on-hold',
           wish: 'to-do'
         })[game.state],
-        sessions: game.sessions.map(s => ({
+        sessions: game.sessions.map(/** @returns {Session} */ s => ({
           id: shortid(),
           start: s.start,
-          stop: s.stop
+          end: s.stop
         }))
       }
     ]
