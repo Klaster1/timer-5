@@ -106,4 +106,10 @@ export class ScreenTasksComponent {
             if (tasks.length) this.router.navigate(['tasks', state, tasks[0].id])
         })).subscribe()
     }
+    @ViewChild('scroll')
+    set scroll(value: any) {
+      setTimeout(() => {
+        value.checkViewportSize()
+      })
+    }
 }

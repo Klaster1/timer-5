@@ -8,7 +8,9 @@ export class ScrollIntoViewIfDirective {
     @Input()
     set scrollIntoViewIf(isActive: boolean) {
         if (isActive) {
+          setTimeout(() => {
             this.el.nativeElement.scrollIntoView({behavior: 'smooth', block: 'center'});
+          })
         }
     }
 }
