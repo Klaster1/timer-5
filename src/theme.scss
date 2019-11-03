@@ -9,7 +9,7 @@
 
 // Fonts
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500');
-     
+
 $fontConfig: (
   display-4: mat-typography-level(112px, 112px, 300, 'Roboto', -0.0134em),
   display-3: mat-typography-level(56px, 56px, 400, 'Roboto', -0.0089em),
@@ -217,18 +217,24 @@ $altTheme: mat-dark-theme($theme-primary, $theme-accent, $theme-warn);
     color: $active-focused
   }
 
+  mat-select,
   .mat-list-base .mat-list-item,
   .mat-option,
   .mat-icon-button {
-    .mat-icon-no-color {
+    .mat-icon-no-color, .mat-select-arrow {
       color: $active-focused
     }
   }
+  .mat-select-arrow-wrapper .mat-select-arrow {
+    color: $active-focused
+  }
 
+  mat-select:hover,
   .mat-list-item:hover,
   .mat-option.mat-active,
   .mat-option:hover,
   .mat-icon-button:hover {
+    .mat-select-arrow,
     .mat-icon-no-color {
       color: $active-unfocused
     }

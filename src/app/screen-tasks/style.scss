@@ -35,6 +35,10 @@
 .duration {
     margin-left: auto;
 }
+.name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .tasks {
     grid-area: tasks;
     position: relative;
@@ -46,6 +50,7 @@
     grid-area: task;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 mat-toolbar {
     flex: 0 0 auto;
@@ -76,4 +81,8 @@ h1 {
 }
 .state-duration {
     margin-left: 0.25em;
+}
+.filter-trigger-icon {
+  position: relative;
+  top: 3px;
 }

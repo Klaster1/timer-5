@@ -20,3 +20,6 @@ body {
 .theme-alternate {
     @include nav-link-active(var(--primary-color));
 }
+.ng-scroll-content {
+  max-width: 100%;
+}

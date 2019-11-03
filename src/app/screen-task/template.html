@@ -9,17 +9,17 @@
     <ng-scrollbar>
         <table mat-table [dataSource]='sortedSessions$'>
             <ng-container matColumnDef='start'>
-                <th mat-header-cell *matHeaderCellDef style='width: 35%'>Start</th>
+                <th mat-header-cell *matHeaderCellDef>Start</th>
                 <td mat-cell *matCellDef='let session'>{{session.start|date:'yyyy-MM-dd H:mm'}}</td>
                 <td mat-footer-cell *matFooterCellDef>Total</td>
             </ng-container>
             <ng-container matColumnDef='end'>
-                <th mat-header-cell *matHeaderCellDef style='width: 35%'>End</th>
+                <th mat-header-cell *matHeaderCellDef>End</th>
                 <td mat-cell *matCellDef='let session'>{{session.end|date:'yyyy-MM-dd H:mm'}}</td>
                 <td mat-footer-cell *matFooterCellDef></td>
             </ng-container>
             <ng-container matColumnDef='duration'>
-                <th mat-header-cell *matHeaderCellDef style='width: 20%'>Duration</th>
+                <th mat-header-cell *matHeaderCellDef>Duration</th>
                 <td
                     mat-cell
                     *matCellDef='let session'
@@ -28,8 +28,8 @@
                 <td mat-footer-cell *matFooterCellDef [matTooltip]='task|taskDuration|async|toString'>{{task|taskDuration|formatDuration|async}}</td>
             </ng-container>
             <ng-container matColumnDef='action'>
-                <th mat-header-cell *matHeaderCellDef style='width: 10%'></th>
-                <td mat-cell *matCellDef='let session'>
+                <th mat-header-cell *matHeaderCellDef style='width: 40px'></th>
+                <td mat-cell *matCellDef='let session' class='cell-action'>
                     <button-session-actions
                         [session]='session'
                         [taskId]='task.id'

@@ -9,7 +9,7 @@
             </span>
             <mat-select class='mat-body range-filter' [value]='rangeFilter' (selectionChange)='onRangeFilterChange($event.value)'>
                 <mat-select-trigger>
-                    <mat-icon>filter_list</mat-icon>
+                    <mat-icon class='filter-trigger-icon'>filter_list</mat-icon>
                 </mat-select-trigger>
                 <mat-option value="all">All</mat-option>
                 <mat-option value="today">Today</mat-option>
@@ -60,7 +60,7 @@
                         [scrollIntoViewIf]='rla.isActive'
                     >
                         <mat-icon>{{task|taskStateIcon}}</mat-icon>
-                        <span>{{task.name}}</span>
+                        <span class='name'>{{task.name}}</span>
                         <span class='duration'>{{task|taskDuration:5000|formatDuration|async}}</span>
                     </a>
                     <button-task-actions [task]='task'></button-task-actions>
