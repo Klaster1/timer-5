@@ -1,13 +1,16 @@
 /**
 * Generated theme by Material Theme Generator
-* https://material-theme-generator.travetto.io
+* https://materialtheme.arcsine.dev
 */
+
+// https://materialtheme.arcsine.dev/?c=eyJwYWxldHRlIjp7InByaW1hcnkiOnsibWFpbiI6IiNiMmZmNTkiLCJsaWdodGVyIjoiI2U3ZmY4YyIsImRhcmtlciI6IiM3ZWNiMjAifSwiYWNjZW50Ijp7Im1haW4iOiIjNjA3Yjg3IiwibGlnaHRlciI6IiNjZmQ3ZGIiLCJkYXJrZXIiOiIjNDQ1ZTZhIn0sIndhcm4iOnsibWFpbiI6IiNmZjAwMDAiLCJsaWdodGVyIjoiI2ZmYjNiMyIsImRhcmtlciI6IiNmZjAwMDAifSwibGlnaHRUZXh0IjoiIzAwMDAwMCIsImxpZ2h0QmFja2dyb3VuZCI6IiNmYWZhZmEiLCJkYXJrVGV4dCI6IiNmZmZmZmYiLCJkYXJrQmFja2dyb3VuZCI6IiMyYzJjMmMifSwiZm9udHMiOlt7InRhcmdldCI6ImRpc3BsYXktNCJ9LHsidGFyZ2V0IjoiZGlzcGxheS0zIn0seyJ0YXJnZXQiOiJkaXNwbGF5LTIifSx7InRhcmdldCI6ImRpc3BsYXktMSJ9LHsidGFyZ2V0IjoiaGVhZGxpbmUifSx7InRhcmdldCI6InRpdGxlIn0seyJ0YXJnZXQiOiJzdWJoZWFkaW5nLTIifSx7InRhcmdldCI6InN1YmhlYWRpbmctMSJ9LHsidGFyZ2V0IjoiYm9keS0yIn0seyJ0YXJnZXQiOiJib2R5LTEifSx7InRhcmdldCI6ImJ1dHRvbiJ9LHsidGFyZ2V0IjoiY2FwdGlvbiJ9LHsidGFyZ2V0IjoiaW5wdXQiLCJzaXplIjpudWxsfV0sImljb25zIjoiRmlsbGVkIiwibGlnaHRuZXNzIjpmYWxzZX0=
 
 @import '~@angular/material/theming';
 // Include the common styles for Angular Material. We include this here so that you only
 // have to load a single css file for Angular Material in your app.
 
 // Fonts
+@import 'https://fonts.googleapis.com/css?family=Material+Icons';
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,500');
 
 $fontConfig: (
@@ -90,6 +93,7 @@ $light-bg-darker-10:  darken($light-background, 10%);
 $light-bg-darker-20:  darken($light-background, 20%);
 $light-bg-darker-30:  darken($light-background, 30%);
 $light-bg-lighter-5:  lighten($light-background, 5%);
+$dark-bg-tooltip:     lighten(#2c2c2c, 20%);
 $dark-bg-alpha-4:     rgba(#2c2c2c, 0.04);
 $dark-bg-alpha-12:    rgba(#2c2c2c, 0.12);
 
@@ -100,6 +104,7 @@ $mat-light-theme-background: (
   hover:                    $dark-bg-alpha-4,
   card:                     $light-bg-lighter-5,
   dialog:                   $light-bg-lighter-5,
+  tooltip:                  $dark-bg-tooltip,
   disabled-button:          $dark-bg-alpha-12,
   raised-button:            $light-bg-lighter-5,
   focused-button:           $dark-focused,
@@ -127,6 +132,7 @@ $mat-dark-theme-background: (
   hover:                    $light-bg-alpha-4,
   card:                     $dark-bg-lighter-5,
   dialog:                   $dark-bg-lighter-5,
+  tooltip:                  $dark-bg-lighter-20,
   disabled-button:          $light-bg-alpha-12,
   raised-button:            $dark-bg-lighter-5,
   focused-button:           $light-focused,
@@ -146,9 +152,9 @@ body {
   --primary-color: #b2ff59;
   --primary-lighter-color: #e7ff8c;
   --primary-darker-color: #7ecb20;
-  --text-primary-color: $dark-primary-text;
-  --text-primary-lighter-color: $dark-primary-text;
-  --text-primary-darker-color: $dark-primary-text;
+  --text-primary-color: #{$dark-primary-text};
+  --text-primary-lighter-color: #{$dark-primary-text};
+  --text-primary-darker-color: #{$dark-primary-text};
 }
 
 $mat-primary: (
@@ -165,19 +171,19 @@ $mat-primary: (
 $theme-primary: mat-palette($mat-primary, main, lighter, darker);
 
 body {
-  --accent-color: #546e7a;
-  --accent-lighter-color: #819ca9;
-  --accent-darker-color: #29434e;
-  --text-accent-color: $light-primary-text;
-  --text-accent-lighter-color: $dark-primary-text;
-  --text-accent-darker-color: $light-primary-text;
+  --accent-color: #607b87;
+  --accent-lighter-color: #cfd7db;
+  --accent-darker-color: #445e6a;
+  --text-accent-color: #{$light-primary-text};
+  --text-accent-lighter-color: #{$dark-primary-text};
+  --text-accent-darker-color: #{$light-primary-text};
 }
 
 $mat-accent: (
-  main: #546e7a,
-  lighter: #819ca9,
-  darker: #29434e,
-  200: #546e7a, // For slide toggle,
+  main: #607b87,
+  lighter: #cfd7db,
+  darker: #445e6a,
+  200: #607b87, // For slide toggle,
   contrast : (
     main: $light-primary-text,
     lighter: $dark-primary-text,
@@ -190,9 +196,9 @@ body {
   --warn-color: #ff0000;
   --warn-lighter-color: #ffb3b3;
   --warn-darker-color: #ff0000;
-  --text-warn-color: $light-primary-text;
-  --text-warn-lighter-color: $dark-primary-text;
-  --text-warn-darker-color: $light-primary-text;
+  --text-warn-color: #{$light-primary-text};
+  --text-warn-lighter-color: #{$dark-primary-text};
+  --text-warn-darker-color: #{$light-primary-text};
 }
 
 $mat-warn: (
@@ -270,4 +276,12 @@ $altTheme: mat-dark-theme($theme-primary, $theme-accent, $theme-warn);
 .mat-standard-chip {
   padding: .5em .85em;
   min-height: 2.5em;
+}
+
+.material-icons {
+  font-size: 24px;
+  font-family: 'Material Icons', 'Material Icons';
+  .mat-badge-content {
+    font-family: 'Roboto';
+  }
 }
