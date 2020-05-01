@@ -10,6 +10,6 @@ export { DialogEditSessionComponent, DialogEditSessionData };
   imports: [MatDialogModule, MatButtonModule, MatFormFieldModule, MatInputModule],
   declarations: [DialogEditSessionComponent],
   exports: [DialogEditSessionComponent],
-  entryComponents: [DialogEditSessionComponent]
+  entryComponents: [DialogEditSessionComponent],
 })
-export class DialogEditSessionModule { }
+export class DialogEditSessionModule {}

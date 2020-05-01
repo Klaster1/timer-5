@@ -44,7 +44,7 @@ export { ScreenTasksComponent };
     MatInputModule,
     MatTooltipModule,
     MatSelectModule,
-    ButtonTaskActionsModule
-  ]
+    ButtonTaskActionsModule,
+  ],
 })
-export class ScreenTasksModule { }
+export class ScreenTasksModule {}

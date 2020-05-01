@@ -1,60 +1,47 @@
 <mat-drawer-container>
-    <mat-drawer mode='side' [opened]='true'>
-        <div class="drawer-container">
-            <mat-nav-list>
-                <a
-                    mat-list-item
-                    routerLink='/tasks/all'
-                    routerLinkActive='nav-link-active'
-                    class='link-all'
-                    matTooltip='All tasks'
-                >
-                    <mat-icon svgIcon='timer-logo'></mat-icon>
-                </a>
-            </mat-nav-list>
-            <mat-nav-list class='states'>
-                <a
-                    mat-list-item
-                    routerLink='/tasks/active'
-                    routerLinkActive='nav-link-active'
-                    matTooltip='Active tasks'
-                >
-                    <mat-icon>{{"active"|taskStateIcon}}</mat-icon>
-                </a>
-                <a
-                    mat-list-item
-                    routerLink='/tasks/done'
-                    routerLinkActive='nav-link-active'
-                    matTooltip='Done tasks'
-                ><mat-icon>{{"done"|taskStateIcon}}</mat-icon></a>
-                <a
-                    mat-list-item
-                    routerLink='/tasks/to-do'
-                    routerLinkActive='nav-link-active'
-                    matTooltip='To do tasks'
-                ><mat-icon>{{"to-do"|taskStateIcon}}</mat-icon></a>
-                <a
-                    mat-list-item
-                    routerLink='/tasks/on-hold'
-                    routerLinkActive='nav-link-active'
-                    matTooltip='On hold tasks'
-                ><mat-icon>{{"on-hold"|taskStateIcon}}</mat-icon></a>
-                <a
-                    mat-list-item
-                    routerLink='/tasks/dropped'
-                    routerLinkActive='nav-link-active'
-                    matTooltip='Dropped tasks'
-                ><mat-icon>{{"dropped"|taskStateIcon}}</mat-icon></a>
-            </mat-nav-list>
-            <mat-action-list>
-                <button mat-list-item (click)='toggleTheme()' [matTooltip]='(theme$|async) !== "dark" ? "Dark mode":"Day mode"'>
-                    <mat-icon>{{(theme$|async) !== 'dark' ? 'nights_stay' : 'wb_sunny'}}</mat-icon>
-                </button>
-            </mat-action-list>
-        </div>
-    </mat-drawer>
-    <mat-drawer-content>
-        <router-outlet></router-outlet>
-    </mat-drawer-content>
+  <mat-drawer mode="side" [opened]="true">
+    <div class="drawer-container">
+      <mat-nav-list>
+        <a
+          mat-list-item
+          routerLink="/tasks/all"
+          routerLinkActive="nav-link-active"
+          class="link-all"
+          matTooltip="All tasks"
+        >
+          <mat-icon svgIcon="timer-logo"></mat-icon>
+        </a>
+      </mat-nav-list>
+      <mat-nav-list class="states">
+        <a mat-list-item routerLink="/tasks/active" routerLinkActive="nav-link-active" matTooltip="Active tasks">
+          <mat-icon>{{ 'active' | taskStateIcon }}</mat-icon>
+        </a>
+        <a mat-list-item routerLink="/tasks/done" routerLinkActive="nav-link-active" matTooltip="Done tasks"
+          ><mat-icon>{{ 'done' | taskStateIcon }}</mat-icon></a
+        >
+        <a mat-list-item routerLink="/tasks/to-do" routerLinkActive="nav-link-active" matTooltip="To do tasks"
+          ><mat-icon>{{ 'to-do' | taskStateIcon }}</mat-icon></a
+        >
+        <a mat-list-item routerLink="/tasks/on-hold" routerLinkActive="nav-link-active" matTooltip="On hold tasks"
+          ><mat-icon>{{ 'on-hold' | taskStateIcon }}</mat-icon></a
+        >
+        <a mat-list-item routerLink="/tasks/dropped" routerLinkActive="nav-link-active" matTooltip="Dropped tasks"
+          ><mat-icon>{{ 'dropped' | taskStateIcon }}</mat-icon></a
+        >
+      </mat-nav-list>
+      <mat-action-list>
+        <button
+          mat-list-item
+          (click)="toggleTheme()"
+          [matTooltip]="(theme$ | async) !== 'dark' ? 'Dark mode' : 'Day mode'"
+        >
+          <mat-icon>{{ (theme$ | async) !== 'dark' ? 'nights_stay' : 'wb_sunny' }}</mat-icon>
+        </button>
+      </mat-action-list>
+    </div>
+  </mat-drawer>
+  <mat-drawer-content>
+    <router-outlet></router-outlet>
+  </mat-drawer-content>
 </mat-drawer-container>
 <hotkeys-cheatsheet></hotkeys-cheatsheet>

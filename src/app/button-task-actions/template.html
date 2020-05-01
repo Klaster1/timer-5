@@ -1,35 +1,21 @@
-<ng-container *ngIf='task'>
-  <button
-      mat-icon-button
-      [matMenuTriggerFor]='menu'
-  >
-      <mat-icon>more_vert</mat-icon>
+<ng-container *ngIf="task">
+  <button mat-icon-button [matMenuTriggerFor]="menu">
+    <mat-icon>more_vert</mat-icon>
   </button>
-  <mat-menu #menu='matMenu'>
-      <ng-template matMenuContent>
-          <div mat-menu-item (click)='$event.stopPropagation()'>
-              <mat-select
-                  [value]='task.state'
-                  (selectionChange)='changeTaskState($event.value)'
-              >
-                  <mat-select-trigger>{{task.state|taskState}}</mat-select-trigger>
-                  <mat-option value="active"><mat-icon>{{"active"|taskStateIcon}}</mat-icon>Active</mat-option>
-                  <mat-option value="done"><mat-icon>{{"done"|taskStateIcon}}</mat-icon>Done</mat-option>
-                  <mat-option value="on-hold"><mat-icon>{{"on-hold"|taskStateIcon}}</mat-icon>On hold</mat-option>
-                  <mat-option value="to-do"><mat-icon>{{"to-do"|taskStateIcon}}</mat-icon>To do</mat-option>
-                  <mat-option value="to-do"><mat-icon>{{"dropped"|taskStateIcon}}</mat-icon>Dropped</mat-option>
-              </mat-select>
-          </div>
-          <button
-              mat-menu-item
-              type='button'
-              (click)='renameTask()'
-          >Rename</button>
-          <button
-              mat-menu-item
-              type='button'
-              (click)='deleteTask()'
-          >Delete</button>
-      </ng-template>
+  <mat-menu #menu="matMenu">
+    <ng-template matMenuContent>
+      <div mat-menu-item (click)="$event.stopPropagation()">
+        <mat-select [value]="task.state" (selectionChange)="changeTaskState($event.value)">
+          <mat-select-trigger>{{task.state|taskState}}</mat-select-trigger>
+          <mat-option value="active"><mat-icon>{{"active"|taskStateIcon}}</mat-icon>Active</mat-option>
+          <mat-option value="done"><mat-icon>{{"done"|taskStateIcon}}</mat-icon>Done</mat-option>
+          <mat-option value="on-hold"><mat-icon>{{"on-hold"|taskStateIcon}}</mat-icon>On hold</mat-option>
+          <mat-option value="to-do"><mat-icon>{{"to-do"|taskStateIcon}}</mat-icon>To do</mat-option>
+          <mat-option value="to-do"><mat-icon>{{"dropped"|taskStateIcon}}</mat-icon>Dropped</mat-option>
+        </mat-select>
+      </div>
+      <button mat-menu-item type="button" (click)="renameTask()">Rename</button>
+      <button mat-menu-item type="button" (click)="deleteTask()">Delete</button>
+    </ng-template>
   </mat-menu>
 </ng-container>

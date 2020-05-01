@@ -41,7 +41,7 @@ export { ScreenTaskComponent };
     SessionDurationPipeModule,
     ButtonTaskActionsModule,
     ButtonSessionActionsModule,
-    ToStringPipeModule
-  ]
+    ToStringPipeModule,
+  ],
 })
-export class ScreenTaskModule { }
+export class ScreenTaskModule {}

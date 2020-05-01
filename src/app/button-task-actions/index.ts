@@ -16,9 +16,9 @@ import { CommonModule } from '@angular/common';
     MatIconModule,
     TaskStateIconPipeModule,
     TaskStatePipeModule,
-    CommonModule
+    CommonModule,
   ],
   declarations: [ButtonTaskActionsComponent],
-  exports: [ButtonTaskActionsComponent]
+  exports: [ButtonTaskActionsComponent],
 })
-export class ButtonTaskActionsModule { }
+export class ButtonTaskActionsModule {}

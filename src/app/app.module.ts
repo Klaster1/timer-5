@@ -7,11 +7,11 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreRouterConnectingModule, MinimalRouterStateSerializer } from '@ngrx/router-store';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { MatSidenavModule } from '@angular/material/sidenav'
-import { MatListModule } from '@angular/material/list'
-import { MatIconModule, MatIconRegistry } from '@angular/material/icon'
-import { MatTooltipModule } from '@angular/material/tooltip'
-import { MatDialogModule } from '@angular/material/dialog'
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialogModule } from '@angular/material/dialog';
 import { HotkeyModule } from 'angular2-hotkeys';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
@@ -26,9 +26,7 @@ import { ScreenTasksModule } from './screen-tasks';
 import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -51,30 +49,27 @@ import { HttpClientModule } from '@angular/common/http';
       initialState: { router: null },
       runtimeChecks: {
         strictStateImmutability: true,
-      }
+      },
     }),
     StoreRouterConnectingModule.forRoot({
-      serializer: MinimalRouterStateSerializer
+      serializer: MinimalRouterStateSerializer,
     }),
     StoreDevtoolsModule.instrument({
       maxAge: 25,
       logOnly: environment.production, // Restrict extension to log-only mode
     }),
-    EffectsModule.forRoot([Effects])
+    EffectsModule.forRoot([Effects]),
   ],
   providers: [
     {
       provide: APP_INITIALIZER,
       multi: true,
       useFactory: (icons: MatIconRegistry, sanitizer: DomSanitizer) => () => {
-        icons.addSvgIcon(
-          'timer-logo',
-          sanitizer.bypassSecurityTrustResourceUrl('../assets/logo.svg')
-        );
+        icons.addSvgIcon('timer-logo', sanitizer.bypassSecurityTrustResourceUrl('../assets/logo.svg'));
       },
-      deps: [MatIconRegistry, DomSanitizer]
-    }
+      deps: [MatIconRegistry, DomSanitizer],
+    },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

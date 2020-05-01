@@ -1,16 +1,19 @@
-import {Directive, Input, ElementRef} from '@angular/core';
+import { Directive, Input, ElementRef } from '@angular/core';
 
 @Directive({
-    selector: '[scrollIntoViewIf]'
+  selector: '[scrollIntoViewIf]',
 })
 export class ScrollIntoViewIfDirective {
-    constructor(private el: ElementRef<HTMLAnchorElement>) {}
-    @Input()
-    set scrollIntoViewIf(isActive: boolean) {
-        if (isActive) {
-          setTimeout(() => {
-            this.el.nativeElement.scrollIntoView({behavior: 'smooth', block: 'center'});
-          })
-        }
+  constructor(private el: ElementRef<HTMLAnchorElement>) {}
+  @Input()
+  set scrollIntoViewIf(isActive: boolean) {
+    if (isActive) {
+      setTimeout(() => {
+        this.el.nativeElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+      });
     }
+  }
 }

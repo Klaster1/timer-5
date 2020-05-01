@@ -1,13 +1,13 @@
-import { Pipe, NgModule } from '@angular/core';
+import { Pipe, NgModule, PipeTransform } from '@angular/core';
 
 @Pipe({ name: 'toString' })
-export class ToStringPipe {
+export class ToStringPipe implements PipeTransform {
   transform(value: unknown) {
-    if (typeof value !== 'number') return ''
-    if (typeof value === 'string') return value
+    if (typeof value !== 'number') return '';
+    if (typeof value === 'string') return value;
     else return value.toString(10);
   }
 }
 
 @NgModule({ declarations: [ToStringPipe], exports: [ToStringPipe] })
-export class ToStringPipeModule { }
+export class ToStringPipeModule {}
