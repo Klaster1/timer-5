@@ -31,7 +31,7 @@
     "hammerjs": "^2.0.8",
     "ngrx-store-localstorage": "^8.0.0",
     "ngx-scrollbar": "^6.0.0",
-    "rxjs": "~6.5.3",
+    "rxjs": "~6.5.5",
     "shortid": "^2.2.15",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.3"
