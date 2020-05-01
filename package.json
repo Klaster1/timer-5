@@ -13,7 +13,7 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "^9.1.4",
-    "@angular/cdk": "^9.0.0-rc.0",
+    "@angular/cdk": "^9.2.2",
     "@angular/common": "^9.1.4",
     "@angular/compiler": "^9.1.4",
     "@angular/core": "^9.1.4",
@@ -30,7 +30,7 @@
     "angular2-hotkeys": "^2.1.5",
     "hammerjs": "^2.0.8",
     "ngrx-store-localstorage": "^8.0.0",
-    "ngx-scrollbar": "^6.0.0",
+    "ngx-scrollbar": "^7.2.1-beta.0",
     "rxjs": "~6.5.5",
     "shortid": "^2.2.15",
     "tslib": "^1.10.0",
