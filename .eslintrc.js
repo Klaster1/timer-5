@@ -9,8 +9,7 @@ module.exports = {
       parser: '@typescript-eslint/parser',
       parserOptions: {
         ecmaVersion: 2020,
-        sourceType: 'module',
-        project: './tsconfig.json',
+        sourceType: 'module'
       },
       plugins: ['@typescript-eslint', '@angular-eslint'],
 
@@ -18,13 +17,14 @@ module.exports = {
        * TODO: Look up what this actually includes
        */
       // "extends": "tslint:recommended",
+      "extends": ["plugin:prettier/recommended"],
 
       rules: {
         // ORIGINAL tslint.json -> "array-type": false,
         '@typescript-eslint/array-type': 'off',
 
         // ORIGINAL tslint.json -> "arrow-parens": false,
-        'arrow-parens': 'off',
+        // 'arrow-parens': 'off',
 
         // ORIGINAL tslint.json -> "deprecation": { "severity": "warning" },
         /**
@@ -42,16 +42,16 @@ module.exports = {
         '@angular-eslint/directive-class-suffix': 'error',
 
         // ORIGINAL tslint.json -> "directive-selector": [true, "attribute", "app", "camelCase"],
-        '@angular-eslint/directive-selector': [
-          'error',
-          { type: 'attribute', prefix: 'app', style: 'camelCase' },
-        ],
+        // '@angular-eslint/directive-selector': [
+        //   'error',
+        //   { type: 'attribute', prefix: 'app', style: 'camelCase' },
+        // ],
 
         // ORIGINAL tslint.json -> "component-selector": [true, "element", "app", "kebab-case"],
-        '@angular-eslint/component-selector': [
-          'error',
-          { type: 'element', prefix: 'app', style: 'kebab-case' },
-        ],
+        // '@angular-eslint/component-selector': [
+        //   'error',
+        //   { type: 'element', prefix: 'app', style: 'kebab-case' },
+        // ],
 
         // ORIGINAL tslint.json -> "import-blacklist": [true, "rxjs/Rx"],
         'no-restricted-imports': [
@@ -73,7 +73,7 @@ module.exports = {
         'max-classes-per-file': 'off',
 
         // ORIGINAL tslint.json -> "max-line-length": [true, 140],
-        'max-len': ['error', { code: 140 }],
+        // 'max-len': ['error', { code: 140 }],
 
         // ORIGINAL tslint.json -> "member-access": false,
         '@typescript-eslint/explicit-member-accessibility': 'off',
@@ -116,7 +116,7 @@ module.exports = {
         ],
 
         // ORIGINAL tslint.json -> "no-non-null-assertion": true,
-        '@typescript-eslint/no-non-null-assertion': 'error',
+        '@typescript-eslint/no-non-null-assertion': 'warn',
 
         // ORIGINAL tslint.json -> "no-redundant-jsdoc": true,
         /**
@@ -130,10 +130,10 @@ module.exports = {
         '@typescript-eslint/no-var-requires': 'off',
 
         // ORIGINAL tslint.json -> "object-literal-key-quotes": [true, "as-needed"],
-        'quote-props': ['error', 'as-needed'],
+        // 'quote-props': ['error', 'as-needed'],
 
         // ORIGINAL tslint.json -> "object-literal-sort-keys": false,
-        'sort-keys': 'off',
+        // 'sort-keys': 'off',
 
         // ORIGINAL tslint.json -> "ordered-imports": false,
         /**
@@ -141,10 +141,10 @@ module.exports = {
          */
 
         // ORIGINAL tslint.json -> "quotemark": [true, "single"],
-        quotes: ['error', 'single'],
+        // quotes: ['error', 'single'],
 
         // ORIGINAL tslint.json -> "trailing-comma": false,
-        'comma-dangle': 'off',
+        // 'comma-dangle': 'off',
 
         // ORIGINAL tslint.json -> "no-conflicting-lifecycle": true,
         '@angular-eslint/no-conflicting-lifecycle': 'error',
