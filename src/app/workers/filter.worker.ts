@@ -28,8 +28,8 @@ const filterByTo = (filter: TasksFilterParams, t: Task): boolean => {
   }
 };
 
-export const stats = (filter: TasksFilterParams, values: Task[]): Task[] => {
+export const filter = (filter: TasksFilterParams, values: Task[]): Task[] => {
   return values.filter((t) => [filterByName, filterByTo, filterByFrom].every((predicate) => predicate(filter, t)));
 };
 
-Comlink.expose(stats);
+Comlink.expose(filter);
