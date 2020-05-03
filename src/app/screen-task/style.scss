@@ -1,36 +1,41 @@
 :host {
-    position: relative;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    max-height: 100vh;
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-height: 100vh;
 }
 h2 {
-    margin-right: auto;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  margin-right: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
-    mat-icon {
-        vertical-align: text-bottom;
-        margin-right: 0.25em;
-    }
+  mat-icon {
+    vertical-align: text-bottom;
+    margin-right: 0.25em;
+  }
 }
 [mat-fab] {
-    position: absolute;
-    bottom: var(--fab-offset);
-    right: var(--fab-offset);
-    left: 50%;
+  position: absolute;
+  bottom: var(--fab-offset);
+  right: var(--fab-offset);
+  left: 50%;
 }
 .session-tabular-data {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
 }
 mat-toolbar {
-    flex: 0 0 auto;
+  flex: 0 0 auto;
 }
 table {
-    width: 100%;
+  width: 100%;
 }
-th.mat-header-cell:last-of-type, td.mat-cell:last-of-type, td.mat-footer-cell:last-of-type{
+th.mat-header-cell:last-of-type,
+td.mat-cell:last-of-type,
+td.mat-footer-cell:last-of-type {
   padding-right: 16px;
+}
+ng-scrollbar {
+  flex: 1;
 }
