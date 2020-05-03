@@ -14,9 +14,10 @@ import { FormatDurationPipeModule } from '@app/pipes/format-duration.pipe';
 import { SessionDurationPipeModule } from '@app/pipes/session-duration.pipe';
 import { TaskDurationPipeModule } from '@app/pipes/task-duration.pipe';
 import { TaskStateIconPipeModule } from '@app/pipes/task-state-icon.pipe';
+import { ToStringPipeModule } from '@app/pipes/to-string.pipe';
+import { ReactiveComponentModule } from '@ngrx/component';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { ScreenTaskComponent } from './component';
-import { ToStringPipeModule } from '@app/pipes/to-string.pipe';
 
 export { ScreenTaskComponent };
 
@@ -26,6 +27,7 @@ export { ScreenTaskComponent };
   exports: [ScreenTaskComponent],
   imports: [
     CommonModule,
+    ReactiveComponentModule,
     RouterModule,
     TaskStateIconPipeModule,
     MatCardModule,

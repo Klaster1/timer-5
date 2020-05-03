@@ -24,6 +24,7 @@ import * as reducers from './ngrx/reducers';
 import { ScreenTaskModule } from './screen-task';
 import { ScreenTasksModule } from './screen-tasks';
 import { HttpClientModule } from '@angular/common/http';
+import { ReactiveComponentModule } from '@ngrx/component';
 
 @NgModule({
   declarations: [AppComponent],
@@ -31,6 +32,7 @@ import { HttpClientModule } from '@angular/common/http';
     BrowserModule,
     BrowserAnimationsModule,
     CommonModule,
+    ReactiveComponentModule,
     AppRoutingModule,
     ScreenTasksModule,
     ScreenTaskModule,

@@ -16,6 +16,7 @@ import { TaskDurationPipeModule } from '@app/pipes/task-duration.pipe';
 import { TaskStateIconPipeModule } from '@app/pipes/task-state-icon.pipe';
 import { TaskStatePipeModule } from '@app/pipes/task-state.pipe';
 import { TasksDurationPipeModule } from '@app/pipes/tasks-duration.pipe';
+import { ReactiveComponentModule } from '@ngrx/component';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { ScreenTasksComponent } from './component';
 import { ScrollIntoViewIfDirective } from './scrollIntoViewIf.directive';
@@ -28,6 +29,7 @@ export { ScreenTasksComponent };
   exports: [ScreenTasksComponent],
   imports: [
     CommonModule,
+    ReactiveComponentModule,
     TaskStatePipeModule,
     FormatDurationPipeModule,
     TaskDurationPipeModule,

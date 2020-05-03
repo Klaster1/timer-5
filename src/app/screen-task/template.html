@@ -1,4 +1,4 @@
-<ng-container *ngIf="(task$|async) as task">
+<ng-container *ngIf="(task$|ngrxPush) as task">
   <mat-toolbar>
     <a routerLink="./.." mat-icon-button>
       <mat-icon>arrow_back</mat-icon>
@@ -24,11 +24,11 @@
       </ng-container>
       <ng-container matColumnDef="duration">
         <th mat-header-cell *matHeaderCellDef>Duration</th>
-        <td mat-cell *matCellDef="let session" [matTooltip]="(((session|sessionDuration|async)||0)/1000)|toString">
-          {{session|sessionDuration|formatDuration|async}}
+        <td mat-cell *matCellDef="let session" [matTooltip]="(((session|sessionDuration|ngrxPush)||0)/1000)|toString">
+          {{session|sessionDuration|formatDuration|ngrxPush}}
         </td>
-        <td mat-footer-cell *matFooterCellDef [matTooltip]="task|taskDuration|async|toString">
-          {{task|taskDuration|formatDuration|async}}
+        <td mat-footer-cell *matFooterCellDef [matTooltip]="task|taskDuration|ngrxPush|toString">
+          {{task|taskDuration|formatDuration|ngrxPush}}
         </td>
       </ng-container>
       <ng-container matColumnDef="action">
@@ -45,14 +45,20 @@
   </ng-scrollbar>
   <button
     (click)="start(task.id)"
-    *ngIf="(taskIsInProgress$|async) === false"
+    *ngIf="(taskIsInProgress$|ngrxPush) === false"
     mat-fab
     color="accent"
     matTooltip="Start"
   >
     <mat-icon>play_arrow</mat-icon>
   </button>
-  <button (click)="stop(task.id)" *ngIf="(taskIsInProgress$|async) === true" mat-fab color="primary" matTooltip="Stop">
+  <button
+    (click)="stop(task.id)"
+    *ngIf="(taskIsInProgress$|ngrxPush) === true"
+    mat-fab
+    color="primary"
+    matTooltip="Stop"
+  >
     <mat-icon>pause</mat-icon>
   </button>
 </ng-container>

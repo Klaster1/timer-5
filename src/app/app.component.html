@@ -29,13 +29,9 @@
           ><mat-icon>{{ 'dropped' | taskStateIcon }}</mat-icon></a
         >
       </mat-nav-list>
-      <mat-action-list>
-        <button
-          mat-list-item
-          (click)="toggleTheme()"
-          [matTooltip]="(theme$ | async) !== 'dark' ? 'Dark mode' : 'Day mode'"
-        >
-          <mat-icon>{{ (theme$ | async) !== 'dark' ? 'nights_stay' : 'wb_sunny' }}</mat-icon>
+      <mat-action-list *ngrxLet="theme$ as theme">
+        <button mat-list-item (click)="toggleTheme()" [matTooltip]="theme !== 'dark' ? 'Dark mode' : 'Day mode'">
+          <mat-icon>{{ theme !== 'dark' ? 'nights_stay' : 'wb_sunny' }}</mat-icon>
         </button>
       </mat-action-list>
     </div>

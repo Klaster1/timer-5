@@ -26,6 +26,7 @@
     "@angular/platform-browser-dynamic": "^9.1.4",
     "@angular/router": "^9.1.4",
     "@ng-stack/forms": "^2.0.0",
+    "@ngrx/component": "github:ngrx/component-builds",
     "@ngrx/effects": "^9.1.0",
     "@ngrx/router-store": "^9.1.0",
     "@ngrx/store": "^9.1.0",

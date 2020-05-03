@@ -1,10 +1,10 @@
-<section class="tasks" *ngIf="(tasks$|async) as tasks">
+<section class="tasks" *ngIf="(tasks$|ngrxPush) as tasks">
   <mat-toolbar>
     <h1>
-      <ng-container *ngIf="state$|async as state">
+      <ng-container *ngIf="state$|ngrxPush as state">
         {{state|taskState}}
       </ng-container>
-      <span *ngIf="(tasks|tasksDuration:20000|formatDuration|async) as duration" class="state-duration">
+      <span *ngIf="(tasks|tasksDuration:20000|formatDuration|ngrxPush) as duration" class="state-duration">
         ({{duration}})
       </span>
       <mat-select
@@ -20,7 +20,7 @@
         <mat-option value="yesterday">Yesterday</mat-option>
       </mat-select>
       <button
-        *ngIf="(searchOpened$|async) === false"
+        *ngIf="(searchOpened$|ngrxPush) === false"
         class="search-button"
         mat-icon-button
         (click)="searchOpened$.next(true)"
@@ -29,7 +29,11 @@
         <mat-icon>search</mat-icon>
       </button>
     </h1>
-    <form class="search-form mat-body" *ngIf="searchOpened$|async" (submit)="$event.preventDefault();onSearchSubmit()">
+    <form
+      class="search-form mat-body"
+      *ngIf="searchOpened$|ngrxPush"
+      (submit)="$event.preventDefault();onSearchSubmit()"
+    >
       <button type="button" mat-icon-button (click)="searchOpened$.next(false)" matTooltip="Close search">
         <mat-icon>arrow_back</mat-icon>
       </button>
@@ -39,7 +43,7 @@
           matInput
           placeholder="Search"
           name="search"
-          [value]='(searchTerm$|async) || ""'
+          [value]='(searchTerm$|ngrxPush) || ""'
           (input)="searchTermInput$.next($event.target.value)"
           #searchInput
           (blur)="searchOpened$.next(false)"
@@ -64,7 +68,7 @@
           >
             <mat-icon>{{task|taskStateIcon}}</mat-icon>
             <span class="name">{{task.name}}</span>
-            <span class="duration">{{task|taskDuration:5000|formatDuration|async}}</span>
+            <span class="duration">{{task|taskDuration:5000|formatDuration|ngrxPush}}</span>
           </a>
           <button-task-actions [task]="task"></button-task-actions>
         </mat-list-item>
@@ -72,6 +76,6 @@
     </cdk-virtual-scroll-viewport>
   </ng-scrollbar>
 </section>
-<section class="task mat-app-background" *ngIf="taskOpened$|async">
+<section class="task mat-app-background" *ngIf="taskOpened$|ngrxPush">
   <router-outlet></router-outlet>
 </section>
