@@ -13,6 +13,7 @@
   "private": true,
   "dependencies": {
     "@angular-eslint/schematics": "0.0.1-alpha.29",
+    "@angular-material-components/datetime-picker": "^2.0.4",
     "@angular/animations": "^9.1.4",
     "@angular/cdk": "^9.2.2",
     "@angular/common": "^9.1.4",
@@ -24,6 +25,7 @@
     "@angular/platform-browser": "^9.1.4",
     "@angular/platform-browser-dynamic": "^9.1.4",
     "@angular/router": "^9.1.4",
+    "@ng-stack/forms": "^2.0.0",
     "@ngrx/effects": "^9.1.0",
     "@ngrx/router-store": "^9.1.0",
     "@ngrx/store": "^9.1.0",
@@ -68,7 +70,6 @@
     "prettier": "^2.0.5",
     "protractor": "~5.4.4",
     "ts-node": "~8.9.1",
-    "tslint": "~6.1.2",
     "typescript": "~3.8.3",
     "webpack-bundle-analyzer": "^3.7.0"
   }

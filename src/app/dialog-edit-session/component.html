@@ -1,0 +1,17 @@
+<h1 mat-dialog-title>Edit session</h1>
+<form mat-dialog-content [formGroup]="form" id="promptForm" (submit)="onSubmit()">
+  <mat-form-field>
+    <input matInput [ngxMatDatetimePicker]="start" placeholder="Start" formControlName="start" />
+    <mat-datepicker-toggle matSuffix [for]="start"></mat-datepicker-toggle>
+    <ngx-mat-datetime-picker #start [showSeconds]="true"> </ngx-mat-datetime-picker>
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput [ngxMatDatetimePicker]="end" placeholder="End" formControlName="end" />
+    <mat-datepicker-toggle matSuffix [for]="end"></mat-datepicker-toggle>
+    <ngx-mat-datetime-picker #end [showSeconds]="true"> </ngx-mat-datetime-picker>
+  </mat-form-field>
+</form>
+<div mat-dialog-actions>
+  <button type="button" mat-button mat-dialog-close>Cancel</button>
+  <button type="submit" form="promptForm" mat-button>Save</button>
+</div>
