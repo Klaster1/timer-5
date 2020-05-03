@@ -21,3 +21,43 @@ body {
 .ng-scroll-content {
   max-width: 100%;
 }
+
+// https://github.com/angular/components/issues/9664
+@mixin fix-icon-color($active-focused, $active-unfocused) {
+  .mat-icon-no-color.fix-icon-color {
+    color: $active-focused;
+  }
+
+  mat-select,
+  .mat-list-base .mat-list-item,
+  .mat-option,
+  .mat-icon-button {
+    .mat-icon-no-color,
+    .mat-select-arrow {
+      color: $active-focused;
+    }
+  }
+  .mat-select-arrow-wrapper .mat-select-arrow {
+    color: $active-focused;
+  }
+
+  mat-select:hover,
+  .mat-list-item:hover,
+  .mat-option.mat-active,
+  .mat-option:hover,
+  .mat-icon-button:hover {
+    .mat-select-arrow,
+    .mat-icon-no-color {
+      color: $active-unfocused;
+    }
+  }
+}
+
+@include fix-icon-color(
+  map-get($mat-dark-theme-foreground, 'secondary-text'),
+  map-get($mat-dark-theme-foreground, 'icon')
+);
+
+.theme-alternate {
+  @include fix-icon-color(map-get($mat-light-theme-foreground, 'icon'), map-get($mat-light-theme-foreground, 'text'));
+}
