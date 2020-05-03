@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { ScreenTasksComponent } from './screen-tasks';
 import { ScreenTaskComponent } from './screen-task';
 import { GameStateGuard } from './guards/game-state.guard';
+import { ScreenStatsComponent } from './screen-stats/component';
 
 const routes: Routes = [
   {
@@ -26,6 +27,10 @@ const routes: Routes = [
         ],
       },
     ],
+  },
+  {
+    path: 'stats',
+    component: ScreenStatsComponent,
   },
 ];
 

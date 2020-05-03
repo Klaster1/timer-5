@@ -1,7 +1,6 @@
 export interface Task {
   id: string;
   name: string;
-  indexes?: TaskIndexes;
   state: TaskState;
   sessions: Session[];
 }
@@ -37,3 +36,20 @@ export type TaskIndexes = {
 };
 
 export type TasksFilterParams = { from?: Date; to?: Date; search?: string };
+
+export type StatsParams = {};
+export type Stats = {
+  top10: { name: string; id: string; duration: number }[];
+  today: {
+    duration: number;
+    diff: number;
+  };
+  thisWeek: {
+    duration: number;
+    diff: number;
+  };
+  thisYear: {
+    duration: number;
+    diff: number;
+  };
+};

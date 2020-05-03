@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
 
 import * as Comlink from 'comlink';
-import { filter } from '@app/domain/filter';
+import { stats } from '@app/domain/stats';
 
-Comlink.expose(filter);
+Comlink.expose(stats);

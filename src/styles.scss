@@ -71,3 +71,12 @@ body {
   @include fix-icon-color(map-get($mat-light-theme-foreground, 'icon'), map-get($mat-light-theme-foreground, 'text'));
   @include fix-focused-label-color(#{var(--primary-darker-color)});
 }
+
+a:not([class*='mat-']) {
+  color: var(--primary-darker-color);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

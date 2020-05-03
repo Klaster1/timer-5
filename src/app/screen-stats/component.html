@@ -1,0 +1,42 @@
+<ng-container *ngIf="stats$|ngrxPush as stats">
+  <mat-card>
+    <mat-card-title>Quick stats</mat-card-title>
+    <!-- Bar chart per hour -->
+    <mat-card-content>
+      Today: {{stats.today.duration|formatDuration}} ({{stats.today.diff > 0 ? '+':'-'}}
+      {{stats.today.diff|formatDuration}})
+    </mat-card-content>
+  </mat-card>
+  <mat-card>
+    <mat-card-title>Top 10</mat-card-title>
+    <mat-card-content>
+      <ng-scrollbar>
+        <table mat-table [dataSource]="stats.top10">
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td mat-cell *matCellDef="let row">
+              <a [routerLink]="['..', 'tasks', 'all', row.id]">{{row.name}}</a>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="value">
+            <th mat-header-cell *matHeaderCellDef>Duration</th>
+            <td mat-cell *matCellDef="let row">
+              {{row.duration|formatDuration}}
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </ng-scrollbar>
+    </mat-card-content>
+  </mat-card>
+  <mat-card class="all">
+    <mat-card-title>All time</mat-card-title>
+    <!-- Bar chart per year/month/day -->
+    <mat-card-content>
+      <ng-scrollbar>
+        <pre>{{stats|json}}</pre>
+      </ng-scrollbar>
+    </mat-card-content>
+  </mat-card>
+</ng-container>

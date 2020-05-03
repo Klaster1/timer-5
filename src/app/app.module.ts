@@ -25,6 +25,7 @@ import { metaReducers } from './ngrx/metareducers';
 import * as reducers from './ngrx/reducers';
 import { ScreenTaskModule } from './screen-task';
 import { ScreenTasksModule } from './screen-tasks';
+import { ScreenStatsModule } from './screen-stats';
 
 @NgModule({
   declarations: [AppComponent],
@@ -36,6 +37,7 @@ import { ScreenTasksModule } from './screen-tasks';
     AppRoutingModule,
     ScreenTasksModule,
     ScreenTaskModule,
+    ScreenStatsModule,
     MatSidenavModule,
     MatListModule,
     MatIconModule,

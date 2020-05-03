@@ -13,6 +13,7 @@ import { timer, Observable, BehaviorSubject, Subject, combineLatest } from 'rxjs
 import { shareReplay, map, tap, startWith, take } from 'rxjs/operators';
 import { FormControl, FormGroup, Control } from '@ng-stack/forms';
 import { WrapControls } from '@app/types/form';
+import { dateDayStart, dateYesterdayStart, dateMonday, dateMonthStart, dateYearStart } from '@app/domain/date';
 
 @Component({
   selector: 'tasks-filter',
@@ -50,45 +51,18 @@ export class TasksFilterComponent implements OnDestroy {
     this.subscriber.unsubscribe();
   }
   setFromToday() {
-    const date = new Date();
-    date.setHours(0);
-    date.setMinutes(0);
-    date.setSeconds(0);
-    this._form.controls.from.setValue(date);
+    this._form.controls.from.setValue(dateDayStart(new Date()));
   }
   setFromYesterday() {
-    const date = new Date();
-    date.setDate(date.getDate() - 1);
-    date.setHours(0);
-    date.setMinutes(0);
-    date.setSeconds(0);
-    this._form.controls.from.setValue(date);
+    this._form.controls.from.setValue(dateYesterdayStart(new Date()));
   }
   setFromWeek() {
-    const date = new Date();
-    date.setHours(0);
-    date.setMinutes(0);
-    date.setSeconds(0);
-    const day = date.getDay();
-    const diff = date.getDate() - day + (day == 0 ? -6 : 1);
-    date.setDate(diff);
-    this._form.controls.from.setValue(date);
+    this._form.controls.from.setValue(dateMonday(new Date()));
   }
   setFromMonth() {
-    const date = new Date();
-    date.setDate(1);
-    date.setHours(0);
-    date.setMinutes(0);
-    date.setSeconds(0);
-    this._form.controls.from.setValue(date);
+    this._form.controls.from.setValue(dateMonthStart(new Date()));
   }
   setFromYear() {
-    const date = new Date();
-    date.setMonth(0);
-    date.setDate(1);
-    date.setHours(0);
-    date.setMinutes(0);
-    date.setSeconds(0);
-    this._form.controls.from.setValue(date);
+    this._form.controls.from.setValue(dateYearStart(new Date()));
   }
 }

@@ -23,7 +23,6 @@ export { ScreenTaskComponent };
 
 @NgModule({
   declarations: [ScreenTaskComponent],
-  entryComponents: [ScreenTaskComponent],
   exports: [ScreenTaskComponent],
   imports: [
     CommonModule,

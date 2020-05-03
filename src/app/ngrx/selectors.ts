@@ -1,5 +1,5 @@
 import { compareTasks, isTask } from '@app/domain';
-import { TasksFilterParams, StoreState, Task } from '@app/types';
+import { TasksFilterParams, StoreState, Task, StatsParams, Stats } from '@app/types';
 import { getSelectors } from '@ngrx/router-store';
 import { createFeatureSelector, createSelector, select } from '@ngrx/store';
 import * as Comlink from 'comlink';
@@ -23,13 +23,24 @@ export const currentStateTasks = createSelector(tasks, currentTasksState, (tasks
     .sort(compareTasks);
 });
 
-const worker = new Worker('../workers/filter.worker.ts', { type: 'module' });
-const stats = Comlink.wrap<(f: TasksFilterParams, v: Task[]) => Task[]>(worker);
+const filterWorker = new Worker('../workers/filter.worker.ts', { type: 'module' });
+const filter = Comlink.wrap<(f: TasksFilterParams, v: Task[]) => Task[]>(filterWorker);
 
-export const currentStateTasksWithRange = (range: TasksFilterParams) => {
+export const currentStateTasksWithFilter = (range: TasksFilterParams) => {
   return pipe(
     select(currentStateTasks),
-    switchMap((tasks) => stats(range, tasks))
+    switchMap((tasks) => filter(range, tasks))
   );
 };
+
+const statsWorker = new Worker('../workers/stats.worker.ts', { type: 'module' });
+const stats = Comlink.wrap<(f: StatsParams, v: Task[]) => Stats>(statsWorker);
+
+export const currentStateTasksStats = (params: StatsParams) => {
+  return pipe(
+    select(tasks),
+    switchMap((tasks) => stats(params, [...Object.values(tasks.values)]))
+  );
+};
+
 export const theme = createFeatureSelector<StoreState['theme']>('theme');
