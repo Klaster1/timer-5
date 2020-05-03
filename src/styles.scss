@@ -58,6 +58,16 @@ body {
   map-get($mat-dark-theme-foreground, 'icon')
 );
 
+@mixin fix-focused-label-color($color) {
+  .mat-form-field.mat-focused .mat-form-field-label {
+    color: $color;
+  }
+  .mat-form-field.mat-focused .mat-form-field-ripple {
+    background-color: $color;
+  }
+}
+
 .theme-alternate {
   @include fix-icon-color(map-get($mat-light-theme-foreground, 'icon'), map-get($mat-light-theme-foreground, 'text'));
+  @include fix-focused-label-color(#{var(--primary-darker-color)});
 }

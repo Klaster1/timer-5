@@ -7,53 +7,13 @@
       <span *ngIf="(tasks|tasksDuration:20000|formatDuration|ngrxPush) as duration" class="state-duration">
         ({{duration}})
       </span>
-      <mat-select
-        class="mat-body range-filter"
-        [value]="rangeFilter"
-        (selectionChange)="onRangeFilterChange($event.value)"
-      >
-        <mat-select-trigger>
-          <mat-icon class="filter-trigger-icon">filter_list</mat-icon>
-        </mat-select-trigger>
-        <mat-option value="all">All</mat-option>
-        <mat-option value="today">Today</mat-option>
-        <mat-option value="yesterday">Yesterday</mat-option>
-      </mat-select>
-      <button
-        *ngIf="(searchOpened$|ngrxPush) === false"
-        class="search-button"
-        mat-icon-button
-        (click)="searchOpened$.next(true)"
-        matTooltip="Seach"
-      >
-        <mat-icon>search</mat-icon>
-      </button>
     </h1>
-    <form
-      class="search-form mat-body"
-      *ngIf="searchOpened$|ngrxPush"
-      (submit)="$event.preventDefault();onSearchSubmit()"
-    >
-      <button type="button" mat-icon-button (click)="searchOpened$.next(false)" matTooltip="Close search">
-        <mat-icon>arrow_back</mat-icon>
-      </button>
-      <mat-form-field>
-        <input
-          type="search"
-          matInput
-          placeholder="Search"
-          name="search"
-          [value]='(searchTerm$|ngrxPush) || ""'
-          (input)="searchTermInput$.next($event.target.value)"
-          #searchInput
-          (blur)="searchOpened$.next(false)"
-          (keyup.esc)="searchOpened$.next(false)"
-      /></mat-form-field>
-    </form>
+    <button mat-icon-button (click)="toggleFilter()"><mat-icon>filter_list</mat-icon></button>
   </mat-toolbar>
   <button (click)="addTask()" mat-fab color="accent">
     <mat-icon>add</mat-icon>
   </button>
+  <tasks-filter *ngIf="searchOpened" (value)="filterParams$.next($event)" (keyup.esc)="toggleFilter()"></tasks-filter>
   <ng-scrollbar>
     <cdk-virtual-scroll-viewport #scroll [itemSize]="48" scrollViewport>
       <mat-nav-list>

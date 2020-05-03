@@ -20,6 +20,8 @@ import { ReactiveComponentModule } from '@ngrx/component';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { ScreenTasksComponent } from './component';
 import { ScrollIntoViewIfDirective } from './scrollIntoViewIf.directive';
+import { NgStackFormsModule } from '@ng-stack/forms';
+import { TasksFilterModule } from './tasks-filter/module';
 
 export { ScreenTasksComponent };
 
@@ -28,7 +30,9 @@ export { ScreenTasksComponent };
   entryComponents: [ScreenTasksComponent],
   exports: [ScreenTasksComponent],
   imports: [
+    TasksFilterModule,
     CommonModule,
+    NgStackFormsModule,
     ReactiveComponentModule,
     TaskStatePipeModule,
     FormatDurationPipeModule,

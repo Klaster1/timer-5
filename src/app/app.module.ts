@@ -1,17 +1,19 @@
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TaskStateIconPipeModule } from '@app/pipes/task-state-icon.pipe';
+import { ReactiveComponentModule } from '@ngrx/component';
 import { EffectsModule } from '@ngrx/effects';
-import { StoreRouterConnectingModule, MinimalRouterStateSerializer } from '@ngrx/router-store';
+import { MinimalRouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatListModule } from '@angular/material/list';
-import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatDialogModule } from '@angular/material/dialog';
 import { HotkeyModule } from 'angular2-hotkeys';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
@@ -23,8 +25,6 @@ import { metaReducers } from './ngrx/metareducers';
 import * as reducers from './ngrx/reducers';
 import { ScreenTaskModule } from './screen-task';
 import { ScreenTasksModule } from './screen-tasks';
-import { HttpClientModule } from '@angular/common/http';
-import { ReactiveComponentModule } from '@ngrx/component';
 
 @NgModule({
   declarations: [AppComponent],

@@ -1,0 +1,33 @@
+<form class="mat-body" (submit)="$event.preventDefault()" [formGroup]="_form">
+  <mat-form-field class="name">
+    <mat-label>Name</mat-label>
+    <input
+      type="search"
+      matInput
+      placeholder="Search"
+      name="search"
+      formControlName="search"
+      #searchInput
+      cdkFocusRegionStart
+      cdkFocusInitial
+    />
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput [ngxMatDatetimePicker]="from" placeholder="From" formControlName="from" />
+    <mat-datepicker-toggle matSuffix [for]="from"></mat-datepicker-toggle>
+    <button mat-icon-button matSuffix [matMenuTriggerFor]="fromMenu"><mat-icon>expand_more</mat-icon></button>
+    <ngx-mat-datetime-picker #from [showSeconds]="true"> </ngx-mat-datetime-picker>
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput [ngxMatDatetimePicker]="to" placeholder="To" formControlName="to" cdkFocusRegionEnd />
+    <mat-datepicker-toggle matSuffix [for]="to"></mat-datepicker-toggle>
+    <ngx-mat-datetime-picker #to [showSeconds]="true"> </ngx-mat-datetime-picker>
+  </mat-form-field>
+</form>
+<mat-menu #fromMenu="matMenu">
+  <button mat-menu-item (click)="setFromToday()">Start of today</button>
+  <button mat-menu-item (click)="setFromYesterday()">Start of yesterday</button>
+  <button mat-menu-item (click)="setFromWeek()">Start of this week</button>
+  <button mat-menu-item (click)="setFromMonth()">Start of this month</button>
+  <button mat-menu-item (click)="setFromYear()">Start of this year</button>
+</mat-menu>

@@ -7,18 +7,20 @@ import {
   ViewChild,
   ElementRef,
   TrackByFunction,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { StoreState, Task, TaskState, TaskIndexes } from '@app/types';
-import { currentTasksState, currentStateTasks, currentTask } from '@app/ngrx/selectors';
+import { StoreState, Task, TaskState, TaskIndexes, TasksFilterParams } from '@app/types';
+import { currentTasksState, currentStateTasks, currentTask, currentStateTasksWithRange } from '@app/ngrx/selectors';
 import * as actions from '@app/ngrx/actions';
-import { combineLatest, BehaviorSubject, Subject } from 'rxjs';
-import { map, tap, take, filter, startWith, shareReplay } from 'rxjs/operators';
+import { combineLatest, BehaviorSubject, Subject, timer, Observable } from 'rxjs';
+import { map, tap, take, filter, startWith, shareReplay, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { generate as id } from 'shortid';
 import { HotkeysService } from 'angular2-hotkeys';
 import { hotkey } from '@app/utils/hotkey';
 import { Router } from '@angular/router';
 import { taskIndexes } from '@app/domain';
+import { TasksFilterComponent } from './tasks-filter/component';
 
 @Component({
   templateUrl: './template.html',
@@ -26,7 +28,12 @@ import { taskIndexes } from '@app/domain';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScreenTasksComponent implements OnInit, OnDestroy {
-  constructor(private store: Store<StoreState>, private keys: HotkeysService, private router: Router) {}
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private store: Store<StoreState>,
+    private keys: HotkeysService,
+    private router: Router
+  ) {}
   hotkeys = [
     hotkey('a', 'Add task', () => this.addTask()),
     hotkey(['j', 'k'], 'Next/prev task', async (e) => {
@@ -54,42 +61,17 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
       }
       this.router.navigate(['tasks', state, tasks[index].id]);
     }),
-    hotkey('f', 'Search', () => this.searchOpened$.next(true)),
-  ];
-  @ViewChild('searchInput')
-  searchInput?: ElementRef<HTMLInputElement>;
-  searchOpened$ = new BehaviorSubject<boolean>(false);
-  searchTermInput$ = new Subject<string>();
-  searchTerm$ = combineLatest(
-    this.searchOpened$.pipe(
-      tap((opened) => setTimeout(() => opened && this.searchInput && this.searchInput.nativeElement.focus()))
-    ),
-    this.searchTermInput$
-  ).pipe(
-    map(([opened, term]) => (opened ? term : '')),
-    startWith('')
-  );
-  state$ = this.store.select(currentTasksState);
-  rangeFilter = 'all';
-  rangeFilterPredicate$ = new BehaviorSubject<{
-    index: keyof TaskIndexes;
-    value: string;
-  } | null>(null);
-  tasks$ = combineLatest(this.store.select(currentStateTasks), this.searchTerm$, this.rangeFilterPredicate$).pipe(
-    map(([tasks, term, range]) => {
-      return term || range
-        ? tasks.filter((t) => {
-            const indexes = t.indexes || taskIndexes(t);
-            return t.name.toLowerCase().includes(term.toLowerCase()) && range
-              ? indexes
-                ? indexes[range.index].includes(range.value)
-                : false
-              : true;
-          })
-        : tasks;
+    hotkey('ctrl+f', 'Search', (e) => {
+      e.preventDefault();
+      this.toggleFilter();
+      this.cdr.detectChanges();
     }),
-    shareReplay(1)
-  );
+  ];
+  state$ = this.store.select(currentTasksState);
+  searchOpened = false;
+  filterParams$: Subject<TasksFilterParams> = new BehaviorSubject({});
+
+  tasks$ = this.filterParams$.pipe(switchMap((filter) => this.store.pipe(currentStateTasksWithRange(filter))));
   currentTask$ = this.store.select(currentTask);
   @HostBinding('class.task-opened')
   private taskOpened = false;
@@ -98,48 +80,18 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
     tap((v) => setTimeout(() => (this.taskOpened = v)))
   );
   taskId: TrackByFunction<Task> = (index, task) => task.id;
-  onRangeFilterChange(value: string) {
-    if (value === 'all') this.rangeFilterPredicate$.next(null);
-    if (value === 'today') {
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = now.getMonth() + 1;
-      const date = now.getDate();
-      this.rangeFilterPredicate$.next({
-        index: 'yearMonthDate',
-        value: `${year}.${month}.${date}`,
-      });
-    }
-    if (value === 'yesterday') {
-      const now = new Date();
-      now.setDate(now.getDate() - 1);
-      const year = now.getFullYear();
-      const month = now.getMonth() + 1;
-      const date = now.getDate();
-      this.rangeFilterPredicate$.next({
-        index: 'yearMonthDate',
-        value: `${year}.${month}.${date}`,
-      });
-    }
-  }
   ngOnInit() {
     this.keys.add(this.hotkeys);
   }
   ngOnDestroy() {
     this.keys.remove(this.hotkeys);
+    this.filterParams$.complete();
   }
   addTask() {
     this.store.dispatch(actions.createTaskIntent());
   }
-  onSearchSubmit() {
-    combineLatest(this.tasks$, this.state$)
-      .pipe(
-        take(1),
-        tap(([tasks, state]) => {
-          this.searchOpened$.next(false);
-          if (tasks.length) this.router.navigate(['tasks', state, tasks[0].id]);
-        })
-      )
-      .subscribe();
+  toggleFilter() {
+    this.searchOpened = !this.searchOpened;
+    if (!this.searchOpened) this.filterParams$.next({});
   }
 }

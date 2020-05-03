@@ -1,7 +1,10 @@
-import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { StoreState, TaskState, Session } from '@app/types';
+import { compareTasks, isTask } from '@app/domain';
+import { TasksFilterParams, StoreState, Task } from '@app/types';
 import { getSelectors } from '@ngrx/router-store';
-import { isTask, compareTasks } from '@app/domain';
+import { createFeatureSelector, createSelector, select } from '@ngrx/store';
+import * as Comlink from 'comlink';
+import { pipe } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 export const tasks = createFeatureSelector<StoreState, StoreState['tasks']>('tasks');
 export const router = createFeatureSelector<StoreState, StoreState['router']>('router');
@@ -19,4 +22,14 @@ export const currentStateTasks = createSelector(tasks, currentTasksState, (tasks
     .filter(isTask)
     .sort(compareTasks);
 });
+
+const worker = new Worker('../workers/filter.worker.ts', { type: 'module' });
+const stats = Comlink.wrap<(f: TasksFilterParams, v: Task[]) => Task[]>(worker);
+
+export const currentStateTasksWithRange = (range: TasksFilterParams) => {
+  return pipe(
+    select(currentStateTasks),
+    switchMap((tasks) => stats(range, tasks))
+  );
+};
 export const theme = createFeatureSelector<StoreState['theme']>('theme');

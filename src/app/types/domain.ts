@@ -1,5 +1,3 @@
-import { RouterReducerState } from '@ngrx/router-store';
-
 export interface Task {
   id: string;
   name: string;
@@ -30,16 +28,6 @@ export type User = null | {
 
 export type Theme = 'light' | 'dark';
 
-export interface StoreState {
-  user: User;
-  tasks: {
-    ids: string[];
-    values: { [id: string]: Task };
-  };
-  router: RouterReducerState;
-  theme: Theme;
-}
-
 export type TimeSpanIndex = string[];
 
 export type TaskIndexes = {
@@ -48,15 +36,4 @@ export type TaskIndexes = {
   yearMonthDate: TimeSpanIndex;
 };
 
-// export interface SpanStats {
-//     [key: string]: {
-//         tasks: string[],
-//         duration: number
-//     }
-// }
-
-// export interface TimelineStats {
-//     year: SpanStats,
-//     yearMonth: SpanStats,
-//     yearMonthDate: SpanStats
-// }
+export type TasksFilterParams = { from?: Date; to?: Date; search?: string };

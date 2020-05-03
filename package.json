@@ -32,6 +32,7 @@
     "@ngrx/store": "^9.1.0",
     "@ngrx/store-devtools": "^9.1.0",
     "angular2-hotkeys": "^2.2.0",
+    "comlink": "^4.3.0",
     "hammerjs": "^2.0.8",
     "ngrx-store-localstorage": "^9.0.0",
     "ngx-scrollbar": "^7.2.1-beta.0",
