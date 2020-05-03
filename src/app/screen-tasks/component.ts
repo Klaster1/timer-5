@@ -142,10 +142,4 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
       )
       .subscribe();
   }
-  // @ViewChild('scroll')
-  // set scroll(value: any) {
-  //   setTimeout(() => {
-  //     value.checkViewportSize()
-  //   })
-  // }
 }
