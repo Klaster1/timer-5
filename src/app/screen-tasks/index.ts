@@ -16,17 +16,18 @@ import { TaskDurationPipeModule } from '@app/pipes/task-duration.pipe';
 import { TaskStateIconPipeModule } from '@app/pipes/task-state-icon.pipe';
 import { TaskStatePipeModule } from '@app/pipes/task-state.pipe';
 import { TasksDurationPipeModule } from '@app/pipes/tasks-duration.pipe';
+import { NgStackFormsModule } from '@ng-stack/forms';
 import { ReactiveComponentModule } from '@ngrx/component';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { ScreenTasksComponent } from './component';
-import { ScrollIntoViewIfDirective } from './scrollIntoViewIf.directive';
-import { NgStackFormsModule } from '@ng-stack/forms';
+import { FixRouterLinkActiveDirective } from './fixRouterLinkActive.directive';
+import { ScrollToIndexDirective } from './scrollToIndex.directive';
 import { TasksFilterModule } from './tasks-filter/module';
 
 export { ScreenTasksComponent };
 
 @NgModule({
-  declarations: [ScreenTasksComponent, ScrollIntoViewIfDirective],
+  declarations: [ScreenTasksComponent, ScrollToIndexDirective, FixRouterLinkActiveDirective],
   entryComponents: [ScreenTasksComponent],
   exports: [ScreenTasksComponent],
   imports: [

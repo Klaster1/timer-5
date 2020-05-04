@@ -15,16 +15,16 @@
   </button>
   <tasks-filter *ngIf="searchOpened" (value)="filterParams$.next($event)" (keyup.esc)="toggleFilter()"></tasks-filter>
   <ng-scrollbar>
-    <cdk-virtual-scroll-viewport #scroll [itemSize]="48" scrollViewport>
+    <cdk-virtual-scroll-viewport #scroll [itemSize]="48" scrollViewport [scrollToIndex]="currentTaskIndex$|ngrxPush">
       <mat-nav-list>
-        <mat-list-item *ngFor="let task of tasks; trackBy taskId">
+        <mat-list-item *cdkVirtualFor="let task of tasks; trackBy taskId">
           <a
             matLine
             [routerLink]="[task.id]"
+            fixRouterLinkActive
             routerLinkActive="nav-link-active"
             class="task-link"
             #rla="routerLinkActive"
-            [scrollIntoViewIf]="rla.isActive"
           >
             <mat-icon>{{task|taskStateIcon}}</mat-icon>
             <span class="name">{{task.name}}</span>
