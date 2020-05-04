@@ -48,8 +48,9 @@ export const sessionEndToString = (s: Session) => (s && typeof s.end === 'number
 export const stringToSessionEnd = (end: any): Session['end'] =>
   typeof end === 'string' ? Number.parseInt(end) : undefined;
 export const sessionIsOver = (s?: Session): s is Session & { end: number } => !!s && typeof s.end === 'number';
+export const sessionDurationPure = (s: Session): number => (s.end ? s.end - s.start : 0);
 export const completeTaskDuration = (task?: Task): number =>
-  task ? task.sessions.reduce((t, s) => t + (s.end ? s.end - s.start : 0), 0) : 0;
+  task ? task.sessions.reduce((t, s) => t + sessionDurationPure(s), 0) : 0;
 
 export const getTaskSession = (task: Task, sessionId: string) => task.sessions.find((s) => s.id === sessionId);
 

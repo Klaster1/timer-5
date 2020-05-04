@@ -43,7 +43,12 @@
             <mat-option *ngFor="let step of timelineSteps" [value]="step">{{step}}</mat-option>
           </mat-select>
         </mat-form-field>
-        <pre>{{stats|json}}</pre>
+        <ul>
+          <li *ngFor='let bar of stats.timeline.bars.values()'>
+            {{bar.start}} {{bar.duration|formatDuration}} ({{bar.tasks.size}})
+          </li>
+        </ul>
+        <!-- <pre>{{stats|json}}</pre> -->
       </ng-scrollbar>
     </mat-card-content>
   </mat-card>
