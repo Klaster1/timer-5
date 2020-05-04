@@ -24,11 +24,17 @@ import { FixRouterLinkActiveDirective } from './fixRouterLinkActive.directive';
 import { ScrollToIndexDirective } from './scrollToIndex.directive';
 import { TasksFilterModule } from './tasks-filter/module';
 import { EmptyStateModule } from '@app/empty-state';
+import { CheckViewportSizeWhenValueChangesDirective } from './checkViewportSizeWhenValueChanges.directive';
 
 export { ScreenTasksComponent };
 
 @NgModule({
-  declarations: [ScreenTasksComponent, ScrollToIndexDirective, FixRouterLinkActiveDirective],
+  declarations: [
+    ScreenTasksComponent,
+    ScrollToIndexDirective,
+    FixRouterLinkActiveDirective,
+    CheckViewportSizeWhenValueChangesDirective,
+  ],
   entryComponents: [ScreenTasksComponent],
   exports: [ScreenTasksComponent],
   imports: [
