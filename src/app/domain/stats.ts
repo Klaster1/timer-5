@@ -22,6 +22,12 @@ export const stats = (params: StatsParams, tasks: Task[]): Stats => {
       tasks
     )
   );
+  const earliestSession = tasks
+    .map((t) => t.sessions)
+    .reduce((a, b) => [...a, ...b], [])
+    .sort((a, b) => b.start - a.start)
+    .pop();
+  console.log(earliestSession?.start ? new Date(earliestSession.start) : earliestSession?.start);
 
   return {
     top10: tasks
@@ -31,5 +37,9 @@ export const stats = (params: StatsParams, tasks: Task[]): Stats => {
     today: { duration: todayTasksDuration, diff: todayTasksDuration - yesterdayTaskDuration },
     thisWeek: { duration: 0, diff: 0 },
     thisYear: { duration: 0, diff: 0 },
+    timeline: {
+      barWidthInMs: 36_000,
+      bars: [],
+    },
   };
 };

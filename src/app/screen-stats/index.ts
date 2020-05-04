@@ -7,13 +7,19 @@ import { RouterModule } from '@angular/router';
 import { MatTableModule } from '@angular/material/table';
 import { FormatDurationPipeModule } from '@app/pipes/format-duration.pipe';
 import { NgScrollbarModule } from 'ngx-scrollbar';
+import { NgStackFormsModule } from '@ng-stack/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @NgModule({
   imports: [
     MatCardModule,
     ReactiveComponentModule,
+    NgStackFormsModule,
     CommonModule,
     RouterModule,
+    MatFormFieldModule,
+    MatSelectModule,
     MatTableModule,
     FormatDurationPipeModule,
     NgScrollbarModule,

@@ -31,10 +31,18 @@
     </mat-card-content>
   </mat-card>
   <mat-card class="all">
-    <mat-card-title>All time</mat-card-title>
-    <!-- Bar chart per year/month/day -->
+    <mat-card-title>
+      Timeline
+      <!-- Bar chart per year/month/day -->
+    </mat-card-title>
     <mat-card-content>
       <ng-scrollbar>
+        <mat-form-field>
+          <mat-label>Step</mat-label>
+          <mat-select [formControl]="form.controls.timelineStep">
+            <mat-option *ngFor="let step of timelineSteps" [value]="step">{{step}}</mat-option>
+          </mat-select>
+        </mat-form-field>
         <pre>{{stats|json}}</pre>
       </ng-scrollbar>
     </mat-card-content>

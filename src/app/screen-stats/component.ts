@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { currentStateTasksStats } from '@app/ngrx/selectors';
-import { StoreState } from '@app/types';
+import { StoreState, StatsParams } from '@app/types';
 import { Store } from '@ngrx/store';
+import { FormBuilder } from '@ng-stack/forms';
+import { startWith, switchMap } from 'rxjs/operators';
 
 @Component({
   templateUrl: './component.html',
@@ -9,7 +11,14 @@ import { Store } from '@ngrx/store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScreenStatsComponent {
-  constructor(private store: Store<StoreState>) {}
-  stats$ = this.store.pipe(currentStateTasksStats({}));
+  constructor(private fb: FormBuilder, private store: Store<StoreState>) {}
   displayedColumns = ['name', 'value'];
+  timelineSteps: StatsParams['timelineStep'][] = ['year', 'month', 'week', 'day', 'hour'];
+  form = this.fb.group<StatsParams>({
+    timelineStep: ['day'],
+  });
+  stats$ = this.form.valueChanges.pipe(
+    startWith(this.form.value),
+    switchMap((params) => this.store.pipe(currentStateTasksStats(params)))
+  );
 }
