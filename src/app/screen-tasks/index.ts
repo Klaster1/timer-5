@@ -23,6 +23,7 @@ import { ScreenTasksComponent } from './component';
 import { FixRouterLinkActiveDirective } from './fixRouterLinkActive.directive';
 import { ScrollToIndexDirective } from './scrollToIndex.directive';
 import { TasksFilterModule } from './tasks-filter/module';
+import { EmptyStateModule } from '@app/empty-state';
 
 export { ScreenTasksComponent };
 
@@ -31,6 +32,7 @@ export { ScreenTasksComponent };
   entryComponents: [ScreenTasksComponent],
   exports: [ScreenTasksComponent],
   imports: [
+    EmptyStateModule,
     TasksFilterModule,
     CommonModule,
     NgStackFormsModule,

@@ -1,0 +1,29 @@
+empty-state {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  gap: 10px;
+
+  .title {
+    font-size: 1.5em;
+  }
+
+  .title,
+  .subtitle {
+    text-align: center;
+  }
+  .actions:not(:empty) {
+    margin: auto;
+    margin-top: 10px;
+  }
+  .illustration:not(:empty) {
+    margin: auto;
+    margin-bottom: 10px;
+    mat-icon {
+      width: 128px;
+      height: 128px;
+      font-size: 128px;
+    }
+  }
+}
