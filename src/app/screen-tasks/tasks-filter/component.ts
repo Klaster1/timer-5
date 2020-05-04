@@ -41,7 +41,6 @@ export class TasksFilterComponent implements OnDestroy {
     .pipe(
       startWith(this._form.value),
       tap((value) => {
-        console.log(value);
         this.value.emit(value);
       })
     )
