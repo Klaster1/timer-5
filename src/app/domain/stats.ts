@@ -10,16 +10,15 @@ const clampSession = (session: Session, start: number, end: number, now: number)
 });
 
 type DateRange = [Date, Date];
-type DateRanges = Map<number, DateRange>;
 
 type RangeWidth = 'hour' | 'day' | 'month' | 'year';
 
-const generateHourRanges = (start: Date, end: Date): Map<number, DateRange> => {
+const generateHourRanges = (start: Date, end: Date): DateRange[] => {
   let rangeStart: Date = start;
-  const result = new Map();
+  const result: DateRange[] = [];
   while (rangeStart.valueOf() < end.valueOf()) {
-    const range = [closestHourStart(rangeStart), closestHourEnd(rangeStart)];
-    result.set(range[0].valueOf(), range);
+    const range: DateRange = [closestHourStart(rangeStart), closestHourEnd(rangeStart)];
+    result.push(range);
     rangeStart = new Date(range[1].valueOf() + 1);
   }
   return result;
@@ -40,27 +39,30 @@ const getEraliestSessionStart = (tasks: Task[]): number | undefined => {
 const tasksToHourBars = (tasks: Task[]): Stats['timeline']['bars'] => {
   const now = new Date();
   const earliestStart = getEraliestSessionStart(tasks);
-  const result: Stats['timeline']['bars'] = new Map();
-  if (earliestStart === undefined) return result;
-  const ranges = generateHourRanges(new Date(earliestStart), now);
+  if (earliestStart === undefined) return new Map();
+  const result: Stats['timeline']['bars'] = new Map(
+    generateHourRanges(new Date(earliestStart), now).map(([s, e]) => [
+      s.valueOf(),
+      {
+        start: s,
+        end: e,
+        tasks: new Set(),
+        duration: 0,
+      },
+    ])
+  );
   return tasks.reduce((bars: Stats['timeline']['bars'], task: Task) => {
     task.sessions.forEach((s) => {
       let duration = sessionDurationPure(s);
       while (duration >= 10) {
-        const range = ranges.get(getSessionRangeId(s, closestHourStart));
-        if (!range) break;
-        const sessionSlice = clampSession(s, range[0].valueOf(), range[1].valueOf(), now.valueOf());
+        const bar = bars.get(getSessionRangeId(s, closestHourStart));
+        if (!bar) break;
+        const sessionSlice = clampSession(s, bar.start.valueOf(), bar.end.valueOf(), now.valueOf());
         const sliceDuration = sessionDurationPure(sessionSlice);
-        let bar = bars.get(range[0].valueOf());
-        if (!bar) {
-          bars.set(range[0].valueOf(), (bar = { start: range[0], tasks: new Set(), duration: 0 }));
-        }
-        if (bar) {
-          bar.tasks.add(task.id);
-          bar.duration += sliceDuration;
-        }
+        bar.tasks.add(task.id);
+        bar.duration += sliceDuration;
         duration = duration - sliceDuration;
-        s = { ...s, start: range[1].valueOf() + 1 };
+        s = { ...s, start: bar.end.valueOf() + 1 };
       }
     });
     return bars;
@@ -87,7 +89,9 @@ export const stats = (params: StatsParams, tasks: Task[]): Stats => {
     )
   );
 
+  console.time('bars');
   const bars = tasksToHourBars(tasks);
+  console.timeEnd('bars');
   console.log(bars);
 
   return {

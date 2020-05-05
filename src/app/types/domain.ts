@@ -56,6 +56,6 @@ export type Stats = {
   };
   timeline: {
     barWidthInMs: number;
-    bars: Map<number, { start: Date; tasks: Set<Task['id']>; duration: number }>;
+    bars: Map<number, { start: Date; end: Date; tasks: Set<Task['id']>; duration: number }>;
   };
 };
