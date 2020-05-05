@@ -43,7 +43,10 @@
             <mat-option *ngFor="let step of timelineSteps" [value]="step">{{step}}</mat-option>
           </mat-select>
         </mat-form-field>
-        <timeline-chart [chartData]="timeline$|ngrxPush"></timeline-chart>
+        <!-- <timeline-chart [chartData]="timeline$|ngrxPush"></timeline-chart> -->
+        <ng-container *ngrxLet="timelineUplot$ as data">
+          <timeline-chart-uplot *ngIf="data && data.length" [chartData]="data"></timeline-chart-uplot>
+        </ng-container>
       </article>
     </mat-card-content>
   </mat-card>

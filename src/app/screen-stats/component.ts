@@ -22,4 +22,5 @@ export class ScreenStatsComponent {
     switchMap((params) => this.store.pipe(currentStateTasksStats(params)))
   );
   timeline$ = this.stats$.pipe(pluck('timeline', 'chartjsData'));
+  timelineUplot$ = this.stats$.pipe(pluck('timeline', 'uPlotData'));
 }

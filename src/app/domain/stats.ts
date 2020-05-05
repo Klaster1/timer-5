@@ -83,6 +83,10 @@ export const barsToChartjsData = (bars: Stats['timeline']['bars']): any => {
   };
 };
 
+export const barsTouPlotData = (bars: Stats['timeline']['bars']): number[][] => {
+  return [[...bars.values()].map((b) => b.start.valueOf() / 1000), [...bars.values()].map((b) => b.duration)];
+};
+
 export const stats = (params: StatsParams, tasks: Task[]): Stats => {
   const todayTasksDuration = tasksDurationPure(
     filter(
@@ -120,6 +124,7 @@ export const stats = (params: StatsParams, tasks: Task[]): Stats => {
       barWidthInMs: 36_000,
       bars: bars,
       chartjsData: barsToChartjsData(bars),
+      uPlotData: barsTouPlotData(bars),
     },
   };
 };
