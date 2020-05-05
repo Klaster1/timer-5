@@ -36,20 +36,15 @@
       <!-- Bar chart per year/month/day -->
     </mat-card-title>
     <mat-card-content>
-      <ng-scrollbar>
+      <article class="container">
         <mat-form-field>
           <mat-label>Step</mat-label>
           <mat-select [formControl]="form.controls.timelineStep">
             <mat-option *ngFor="let step of timelineSteps" [value]="step">{{step}}</mat-option>
           </mat-select>
         </mat-form-field>
-        <ul>
-          <li *ngFor='let bar of stats.timeline.bars.values()'>
-            {{bar.start}} {{bar.duration|formatDuration}} ({{bar.tasks.size}})
-          </li>
-        </ul>
-        <!-- <pre>{{stats|json}}</pre> -->
-      </ng-scrollbar>
+        <timeline-chart [chartData]="timeline$|ngrxPush"></timeline-chart>
+      </article>
     </mat-card-content>
   </mat-card>
 </ng-container>

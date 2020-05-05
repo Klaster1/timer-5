@@ -9,6 +9,9 @@
 .all {
   grid-column: span 2;
 }
+timeline-chart {
+  flex: 1;
+}
 mat-card {
   display: flex;
   flex-direction: column;
@@ -19,7 +22,13 @@ mat-card {
     position: relative;
     flex: 1;
 
-    ng-scrollbar {
+    .container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    ng-scrollbar,
+    .container {
       overflow: auto;
       position: absolute;
       top: 0;

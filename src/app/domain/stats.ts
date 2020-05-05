@@ -1,7 +1,7 @@
-import { Task, Stats, StatsParams, Session } from '../types/domain';
-import { taskDurationPure, tasksDurationPure, sessionDurationPure } from '@app/domain/no-dom';
+import { sessionDurationPure, taskDurationPure, tasksDurationPure } from '@app/domain/no-dom';
+import { Session, Stats, StatsParams, Task } from '../types/domain';
+import { closestHourEnd, closestHourStart, dateDayStart, toDateEnd, toYesterday } from './date';
 import { filter } from './filter';
-import { dateDayStart, toDateEnd, toYesterday, closestHourStart, closestHourEnd } from './date';
 
 const clampSession = (session: Session, start: number, end: number, now: number): Session => ({
   ...session,
@@ -69,6 +69,20 @@ const tasksToHourBars = (tasks: Task[]): Stats['timeline']['bars'] => {
   }, result);
 };
 
+export const barsToChartjsData = (bars: Stats['timeline']['bars']): any => {
+  return {
+    labels: [...bars.values()].slice(-24 * 60).map((b) => b.start.toISOString()),
+    datasets: [
+      {
+        label: 'Per hour tasks',
+        data: [...bars.values()].slice(-24 * 60).map((b) => ({ y: b.duration, x: b.start })),
+        backgroundColor: '#f00',
+        borderColor: '#f50',
+      },
+    ],
+  };
+};
+
 export const stats = (params: StatsParams, tasks: Task[]): Stats => {
   const todayTasksDuration = tasksDurationPure(
     filter(
@@ -105,6 +119,7 @@ export const stats = (params: StatsParams, tasks: Task[]): Stats => {
     timeline: {
       barWidthInMs: 36_000,
       bars: bars,
+      chartjsData: barsToChartjsData(bars),
     },
   };
 };

@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { currentStateTasksStats } from '@app/ngrx/selectors';
-import { StoreState, StatsParams } from '@app/types';
-import { Store } from '@ngrx/store';
+import { StatsParams, StoreState } from '@app/types';
 import { FormBuilder } from '@ng-stack/forms';
-import { startWith, switchMap } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { pluck, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
   templateUrl: './component.html',
@@ -21,4 +21,5 @@ export class ScreenStatsComponent {
     startWith(this.form.value),
     switchMap((params) => this.store.pipe(currentStateTasksStats(params)))
   );
+  timeline$ = this.stats$.pipe(pluck('timeline', 'chartjsData'));
 }

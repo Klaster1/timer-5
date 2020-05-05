@@ -10,6 +10,7 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
 import { NgStackFormsModule } from '@ng-stack/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { TimelineChartComponent } from './timeline-chart.component';
 
 @NgModule({
   imports: [
@@ -24,7 +25,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     FormatDurationPipeModule,
     NgScrollbarModule,
   ],
-  declarations: [ScreenStatsComponent],
+  declarations: [ScreenStatsComponent, TimelineChartComponent],
   exports: [ScreenStatsComponent],
 })
 export class ScreenStatsModule {}
