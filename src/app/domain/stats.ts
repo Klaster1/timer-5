@@ -1,6 +1,21 @@
 import { sessionDurationPure, taskDurationPure, tasksDurationPure } from '@app/domain/no-dom';
-import { Session, Stats, StatsParams, Task } from '../types/domain';
-import { closestHourEnd, closestHourStart, dateDayStart, toDateEnd, toYesterday } from './date';
+import { Session, Stats, StatsParams, Task, RangeWidth } from '../types/domain';
+import {
+  closestHourEnd,
+  closestHourStart,
+  dateDayStart,
+  toDateEnd,
+  toYesterday,
+  closestDayStart,
+  closestDayEnd,
+  closestMonthStart,
+  closestMonthEnd,
+  closestYearStart,
+  closestYearEnd,
+  DateFn,
+  startEndFns,
+  barWidths,
+} from './date';
 import { filter } from './filter';
 
 const clampSession = (session: Session, start: number, end: number, now: number): Session => ({
@@ -11,20 +26,18 @@ const clampSession = (session: Session, start: number, end: number, now: number)
 
 type DateRange = [Date, Date];
 
-type RangeWidth = 'hour' | 'day' | 'month' | 'year';
-
-const generateHourRanges = (start: Date, end: Date): DateRange[] => {
+const generateRanges = (start: Date, end: Date, startFn: DateFn, endFn: DateFn): DateRange[] => {
   let rangeStart: Date = start;
   const result: DateRange[] = [];
   while (rangeStart.valueOf() < end.valueOf()) {
-    const range: DateRange = [closestHourStart(rangeStart), closestHourEnd(rangeStart)];
+    const range: DateRange = [startFn(rangeStart), endFn(rangeStart)];
     result.push(range);
     rangeStart = new Date(range[1].valueOf() + 1);
   }
   return result;
 };
 
-const getSessionRangeId = (session: Session, getStartFn: (d: Date) => Date): number => {
+const getSessionRangeId = (session: Session, getStartFn: DateFn): number => {
   return getStartFn(new Date(session.start)).valueOf();
 };
 
@@ -36,12 +49,12 @@ const getEraliestSessionStart = (tasks: Task[]): number | undefined => {
     .pop()?.start;
 };
 
-const tasksToHourBars = (tasks: Task[]): Stats['timeline']['bars'] => {
+const tasksToBars = (tasks: Task[], startFn: DateFn, endFn: DateFn): Stats['timeline']['bars'] => {
   const now = new Date();
   const earliestStart = getEraliestSessionStart(tasks);
   if (earliestStart === undefined) return new Map();
   const result: Stats['timeline']['bars'] = new Map(
-    generateHourRanges(new Date(earliestStart), now).map(([s, e]) => [
+    generateRanges(new Date(earliestStart), now, startFn, endFn).map(([s, e]) => [
       s.valueOf(),
       {
         start: s,
@@ -55,7 +68,7 @@ const tasksToHourBars = (tasks: Task[]): Stats['timeline']['bars'] => {
     task.sessions.forEach((s) => {
       let duration = sessionDurationPure(s);
       while (duration >= 10) {
-        const bar = bars.get(getSessionRangeId(s, closestHourStart));
+        const bar = bars.get(getSessionRangeId(s, startFn));
         if (!bar) break;
         const sessionSlice = clampSession(s, bar.start.valueOf(), bar.end.valueOf(), now.valueOf());
         const sliceDuration = sessionDurationPure(sessionSlice);
@@ -108,7 +121,7 @@ export const stats = (params: StatsParams, tasks: Task[]): Stats => {
   );
 
   console.time('bars');
-  const bars = tasksToHourBars(tasks);
+  const bars = tasksToBars(tasks, ...startEndFns[params.timelineStep]);
   console.timeEnd('bars');
   console.log(bars);
 
@@ -121,7 +134,7 @@ export const stats = (params: StatsParams, tasks: Task[]): Stats => {
     thisWeek: { duration: 0, diff: 0 },
     thisYear: { duration: 0, diff: 0 },
     timeline: {
-      barWidthInMs: 36_000,
+      barWidthInMs: barWidths[params.timelineStep],
       bars: bars,
       chartjsData: barsToChartjsData(bars),
       uPlotData: barsTouPlotData(bars),

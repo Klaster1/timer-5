@@ -37,8 +37,10 @@ export type TaskIndexes = {
 
 export type TasksFilterParams = { from?: Date; to?: Date; search?: string };
 
+export type RangeWidth = 'hour' | 'day' | 'month' | 'year';
+
 export type StatsParams = {
-  timelineStep: 'year' | 'month' | 'week' | 'day' | 'hour';
+  timelineStep: RangeWidth;
 };
 export type Stats = {
   top10: { name: string; id: string; duration: number }[];

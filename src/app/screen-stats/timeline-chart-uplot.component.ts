@@ -1,5 +1,6 @@
 import { AfterViewInit, OnChanges, ViewChild, ElementRef, Input, Component, NgZone } from '@angular/core';
 import uPlot from 'uplot';
+import { barWidths } from '@app/domain/date';
 
 type DrawFn = (i: number, x0: number, y0: number, offs: number, totalWidth: number) => void;
 
@@ -74,7 +75,18 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges {
   constructor(private elementRef: ElementRef<HTMLElement>, private ngZone: NgZone) {}
   @Input()
   chartData: [number, number][] = [];
+  @Input()
+  barWidth?: 'hour' | 'day' | 'month' | 'year';
   private uplot?: uPlot;
+  getYAxisLabel(value: number) {
+    const scale = {
+      hour: barWidths.minute,
+      day: barWidths.hour,
+      month: barWidths.hour,
+      year: barWidths.hour,
+    }[this.barWidth!];
+    return Math.round(100 * (value / scale)) / 100;
+  }
   ngAfterViewInit() {
     this.ngZone.runOutsideAngular(() => {
       this.uplot = new uPlot(
@@ -86,7 +98,8 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges {
               (self: uPlot, key: string) => {
                 if (key === 'x') {
                   const scale = self.scales[key];
-                  const hoursInViewport = (scale.max! - scale.min!) / (60 * 60);
+                  const width = barWidths[this.barWidth as any] / 1000;
+                  const hoursInViewport = (scale.max! - scale.min!) / width!;
                   const hourWidth = (self.width / hoursInViewport) * 0.75;
                   barWidth = Math.max(1, hourWidth);
                 }
@@ -104,7 +117,7 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges {
               show: true,
               label: 'Minutes',
               scale: 'm',
-              value: (self, value) => Math.round(value / (1000 * 60)),
+              value: (self, value) => this.getYAxisLabel(value),
               stroke: 'cyan',
               fill: 'red',
               width: 0,
@@ -118,9 +131,9 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges {
             {},
             {
               scale: 'm',
-              size: 50,
+              size: 150,
               label: 'Minutes',
-              values: (self, ticks) => ticks.map((raw) => Math.round(raw / (1000 * 60))),
+              values: (self, ticks) => ticks.map((raw) => this.getYAxisLabel(raw)),
             },
           ],
         },

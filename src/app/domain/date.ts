@@ -10,7 +10,7 @@ export const closestHourEnd = (value: Date): Date => {
 };
 export const closestDayStart = (value: Date): Date => {
   const date = closestHourStart(value);
-  value.setHours(0);
+  date.setHours(0);
   return date;
 };
 export const closestDayEnd = (value: Date): Date => {
@@ -27,6 +27,11 @@ export const closestMonthEnd = (value: Date): Date => {
   const date = closestMonthStart(value);
   date.setMonth(date.getMonth() + 1);
   return new Date(date.valueOf() - 1);
+};
+export const closestYearStart = (d: Date) => {
+  const date = closestMonthStart(d);
+  date.setMonth(0);
+  return date;
 };
 export const closestYearEnd = (value: Date): Date => {
   const date = new Date(value);
@@ -53,8 +58,21 @@ export const dateMonday = (d: Date) => {
   return date;
 };
 export const dateMonthStart = closestMonthStart;
-export const dateYearStart = (d: Date) => {
-  const date = closestMonthStart(d);
-  date.setMonth(0);
-  return date;
+export const dateYearStart = closestYearStart;
+
+export type DateFn = (d: Date) => Date;
+
+export const barWidths = {
+  minute: 1000 * 60,
+  hour: 1000 * 60 * 60,
+  day: 1000 * 60 * 60 * 24,
+  month: 1000 * 60 * 60 * 24 * 30,
+  year: 1000 * 60 * 60 * 24 * 30 * 365,
+} as const;
+
+export const startEndFns: Record<string, [DateFn, DateFn]> = {
+  hour: [closestHourStart, closestHourEnd],
+  day: [closestDayStart, closestDayEnd],
+  month: [closestMonthStart, closestMonthEnd],
+  year: [closestYearStart, closestYearEnd],
 };
