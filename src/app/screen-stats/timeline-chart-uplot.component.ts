@@ -1,6 +1,8 @@
-import { AfterViewInit, OnChanges, ViewChild, ElementRef, Input, Component, NgZone } from '@angular/core';
+import { AfterViewInit, OnChanges, ViewChild, ElementRef, Input, Component, NgZone, OnDestroy } from '@angular/core';
 import uPlot from 'uplot';
 import { barWidths } from '@app/domain/date';
+import { NgResizeObserver, ngResizeObserverProviders } from 'ng-resize-observer';
+import { map, tap } from 'rxjs/operators';
 
 type DrawFn = (i: number, x0: number, y0: number, offs: number, totalWidth: number) => void;
 
@@ -50,6 +52,7 @@ const drawPoints = (self: uPlot, seriesIdx: number, idx0: number, idx1: number):
 @Component({
   selector: 'timeline-chart-uplot',
   template: `<canvas #canvas></canvas>`,
+  providers: [ngResizeObserverProviders],
   styles: [
     `
       :host {
@@ -71,13 +74,17 @@ const drawPoints = (self: uPlot, seriesIdx: number, idx0: number, idx1: number):
     `,
   ],
 })
-export class TimelineChartUplotComponent implements AfterViewInit, OnChanges {
-  constructor(private elementRef: ElementRef<HTMLElement>, private ngZone: NgZone) {}
+export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, OnDestroy {
+  constructor(private elementRef: ElementRef<HTMLElement>, private ngZone: NgZone, private ro: NgResizeObserver) {}
   @Input()
   chartData: [number, number][] = [];
   @Input()
   barWidth?: 'hour' | 'day' | 'month' | 'year';
   private uplot?: uPlot;
+  private readonly headerHeight = 31;
+  dimensionsSubscriber = this.ro.subscribe((e) => {
+    this.uplot?.setSize({ width: e.contentRect.width, height: e.contentRect.height + this.headerHeight });
+  });
   getYAxisLabel(value: number) {
     const scale = {
       hour: barWidths.minute,
@@ -96,9 +103,9 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges {
           hooks: {
             setScale: [
               (self: uPlot, key: string) => {
-                if (key === 'x') {
+                if (key === 'x' && this.barWidth) {
                   const scale = self.scales[key];
-                  const width = barWidths[this.barWidth as any] / 1000;
+                  const width = barWidths[this.barWidth] / 1000;
                   const hoursInViewport = (scale.max! - scale.min!) / width!;
                   const hourWidth = (self.width / hoursInViewport) * 0.75;
                   barWidth = Math.max(1, hourWidth);
@@ -146,5 +153,9 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges {
     if (this.chartData) {
       this.uplot?.setData(this.chartData);
     }
+  }
+  ngOnDestroy() {
+    this.dimensionsSubscriber.unsubscribe();
+    this.uplot?.destroy();
   }
 }
