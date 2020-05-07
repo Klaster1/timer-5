@@ -23,7 +23,7 @@
           [itemSize]="48"
           scrollViewport
           [scrollToIndex]="currentTaskIndex$|ngrxPush"
-          [checkViewportSizeWhenValueChanges]='tasks'
+          [checkViewportSizeWhenValueChanges]="tasks"
         >
           <mat-nav-list>
             <mat-list-item *cdkVirtualFor="let task of tasks; trackBy taskId">

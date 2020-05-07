@@ -6,7 +6,6 @@ import {
   OnDestroy,
   OnInit,
   TrackByFunction,
-  ViewChild,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import * as actions from '@app/ngrx/actions';
@@ -16,7 +15,7 @@ import { hotkey } from '@app/utils/hotkey';
 import { Store } from '@ngrx/store';
 import { HotkeysService } from 'angular2-hotkeys';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
-import { map, switchMap, take, tap, pluck, filter } from 'rxjs/operators';
+import { map, switchMap, take, tap } from 'rxjs/operators';
 
 @Component({
   templateUrl: './template.html',

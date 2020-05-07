@@ -83,7 +83,7 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
   private uplot?: uPlot;
   private readonly headerHeight = 31;
   dimensionsSubscriber = this.ro.subscribe((e) => {
-    this.uplot?.setSize({ width: e.contentRect.width, height: e.contentRect.height + this.headerHeight });
+    this.uplot?.setSize({ width: e.contentRect.width, height: e.contentRect.height - this.headerHeight });
   });
   getYAxisLabel(value: number) {
     const scale = {
@@ -99,7 +99,7 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
       this.uplot = new uPlot(
         {
           width: this.elementRef.nativeElement.offsetWidth,
-          height: this.elementRef.nativeElement.offsetHeight - 31,
+          height: this.elementRef.nativeElement.offsetHeight - this.headerHeight,
           hooks: {
             setScale: [
               (self: uPlot, key: string) => {
