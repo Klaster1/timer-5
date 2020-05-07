@@ -76,3 +76,22 @@ export const startEndFns: Record<string, [DateFn, DateFn]> = {
   month: [closestMonthStart, closestMonthEnd],
   year: [closestYearStart, closestYearEnd],
 };
+
+const pad = (value: number) => ((value || 0).toString().length === 1 ? '0' + value : value);
+
+export const formatHours = (value: number): string => {
+  if (value <= 0) {
+    return '';
+  }
+
+  return ['h', 'm']
+    .map((part) => {
+      switch (part) {
+        case 'h':
+          return pad(~~(value / 3600000));
+        case 'm':
+          return pad(~~((value % 3600000) / 60000));
+      }
+    })
+    .join(':');
+};

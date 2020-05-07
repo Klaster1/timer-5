@@ -1,8 +1,21 @@
-import { AfterViewInit, OnChanges, ViewChild, ElementRef, Input, Component, NgZone, OnDestroy } from '@angular/core';
+import {
+  AfterViewInit,
+  OnChanges,
+  ViewChild,
+  ElementRef,
+  Input,
+  Component,
+  NgZone,
+  OnDestroy,
+  SimpleChanges,
+} from '@angular/core';
 import uPlot from 'uplot';
-import { barWidths } from '@app/domain/date';
+import { barWidths, formatHours } from '@app/domain/date';
 import { NgResizeObserver, ngResizeObserverProviders } from 'ng-resize-observer';
 import { map, tap } from 'rxjs/operators';
+import { StoreState } from '@app/types';
+import { Store } from '@ngrx/store';
+import { theme } from '@app/ngrx/selectors';
 
 type DrawFn = (i: number, x0: number, y0: number, offs: number, totalWidth: number) => void;
 
@@ -75,7 +88,12 @@ const drawPoints = (self: uPlot, seriesIdx: number, idx0: number, idx1: number):
   ],
 })
 export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, OnDestroy {
-  constructor(private elementRef: ElementRef<HTMLElement>, private ngZone: NgZone, private ro: NgResizeObserver) {}
+  constructor(
+    private store: Store<StoreState>,
+    private elementRef: ElementRef<HTMLElement>,
+    private ngZone: NgZone,
+    private ro: NgResizeObserver
+  ) {}
   @Input()
   chartData: [number, number][] = [];
   @Input()
@@ -85,14 +103,21 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
   dimensionsSubscriber = this.ro.subscribe((e) => {
     this.uplot?.setSize({ width: e.contentRect.width, height: e.contentRect.height - this.headerHeight });
   });
-  getYAxisLabel(value: number) {
+  themeSubscriber = this.store.select(theme).subscribe((theme) => {
+    setTimeout(() => {
+      const stroke = window.getComputedStyle(this.elementRef.nativeElement)['color'];
+      this.uplot?.axes.forEach((a) => (a.stroke = stroke));
+      this.uplot?.redraw(false);
+    });
+  });
+  getLegendValue(value: number) {
     const scale = {
       hour: barWidths.minute,
       day: barWidths.hour,
       month: barWidths.hour,
       year: barWidths.hour,
     }[this.barWidth!];
-    return Math.round(100 * (value / scale)) / 100;
+    return value ? formatHours(value) : '--:--';
   }
   ngAfterViewInit() {
     this.ngZone.runOutsideAngular(() => {
@@ -122,10 +147,10 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
             {},
             {
               show: true,
-              label: 'Minutes',
+              label: this.getLegendLabel(),
               scale: 'm',
-              value: (self, value) => this.getYAxisLabel(value),
-              stroke: 'cyan',
+              value: (self, value) => this.getLegendValue(value),
+              // stroke: 'cyan',
               fill: 'red',
               width: 0,
               paths: drawBars,
@@ -138,9 +163,10 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
             {},
             {
               scale: 'm',
-              size: 150,
-              label: 'Minutes',
-              values: (self, ticks) => ticks.map((raw) => this.getYAxisLabel(raw)),
+              size: 50,
+              label: this.getLegendLabel(),
+              values: (self, ticks) => ticks.map((raw) => this.getLegendValue(raw)),
+              // stroke: 'cyan',
             },
           ],
         },
@@ -149,13 +175,28 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
       );
     });
   }
-  ngOnChanges() {
+  getLegendLabel() {
+    switch (this.barWidth) {
+      case 'hour':
+        return 'Minutes';
+      case 'day':
+      case 'month':
+      case 'year':
+        return 'Hours';
+    }
+  }
+  ngOnChanges(changes: SimpleChanges) {
     if (this.chartData) {
       this.uplot?.setData(this.chartData);
+    }
+    if (changes.barWidth && changes.barWidth.currentValue) {
+      const ySeries = this.uplot?.axes[1];
+      if (ySeries) ySeries.label = this.getLegendLabel();
     }
   }
   ngOnDestroy() {
     this.dimensionsSubscriber.unsubscribe();
+    this.themeSubscriber.unsubscribe();
     this.uplot?.destroy();
   }
 }
