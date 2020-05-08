@@ -3,7 +3,7 @@ import { currentStateTasksStats } from '@app/ngrx/selectors';
 import { StatsParams, StoreState } from '@app/types';
 import { FormBuilder } from '@ng-stack/forms';
 import { Store } from '@ngrx/store';
-import { pluck, startWith, switchMap, map, shareReplay } from 'rxjs/operators';
+import { map, pluck, shareReplay, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
   templateUrl: './component.html',
@@ -22,7 +22,6 @@ export class ScreenStatsComponent {
     switchMap((params) => this.store.pipe(currentStateTasksStats(params))),
     shareReplay(1)
   );
-  timeline$ = this.stats$.pipe(pluck('timeline', 'chartjsData'));
   barWidthInS$ = this.stats$.pipe(
     pluck('timeline', 'barWidthInMs'),
     map((v) => v / 1000)

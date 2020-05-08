@@ -1,21 +1,6 @@
 import { sessionDurationPure, taskDurationPure, tasksDurationPure } from '@app/domain/no-dom';
-import { Session, Stats, StatsParams, Task, RangeWidth } from '../types/domain';
-import {
-  closestHourEnd,
-  closestHourStart,
-  dateDayStart,
-  toDateEnd,
-  toYesterday,
-  closestDayStart,
-  closestDayEnd,
-  closestMonthStart,
-  closestMonthEnd,
-  closestYearStart,
-  closestYearEnd,
-  DateFn,
-  startEndFns,
-  barWidths,
-} from './date';
+import { Session, Stats, StatsParams, Task } from '../types/domain';
+import { barWidths, dateDayStart, DateFn, startEndFns, toDateEnd, toYesterday } from './date';
 import { filter } from './filter';
 
 const clampSession = (session: Session, start: number, end: number, now: number): Session => ({
@@ -82,20 +67,6 @@ const tasksToBars = (tasks: Task[], startFn: DateFn, endFn: DateFn): Stats['time
   }, result);
 };
 
-export const barsToChartjsData = (bars: Stats['timeline']['bars']): any => {
-  return {
-    labels: [...bars.values()].slice(-24 * 60).map((b) => b.start.toISOString()),
-    datasets: [
-      {
-        label: 'Per hour tasks',
-        data: [...bars.values()].slice(-24 * 60).map((b) => ({ y: b.duration, x: b.start })),
-        backgroundColor: '#f00',
-        borderColor: '#f50',
-      },
-    ],
-  };
-};
-
 export const barsTouPlotData = (bars: Stats['timeline']['bars']): number[][] => {
   return [[...bars.values()].map((b) => b.start.valueOf() / 1000), [...bars.values()].map((b) => b.duration)];
 };
@@ -120,10 +91,7 @@ export const stats = (params: StatsParams, tasks: Task[]): Stats => {
     )
   );
 
-  console.time('bars');
   const bars = tasksToBars(tasks, ...startEndFns[params.timelineStep]);
-  console.timeEnd('bars');
-  console.log(bars);
 
   return {
     top10: tasks
@@ -136,7 +104,6 @@ export const stats = (params: StatsParams, tasks: Task[]): Stats => {
     timeline: {
       barWidthInMs: barWidths[params.timelineStep],
       bars: bars,
-      chartjsData: barsToChartjsData(bars),
       uPlotData: barsTouPlotData(bars),
     },
   };
