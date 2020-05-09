@@ -67,7 +67,7 @@ export const barWidths = {
   hour: 1000 * 60 * 60,
   day: 1000 * 60 * 60 * 24,
   month: 1000 * 60 * 60 * 24 * 30,
-  year: 1000 * 60 * 60 * 24 * 30 * 365,
+  year: 1000 * 60 * 60 * 24 * 30 * 12,
 } as const;
 
 export const startEndFns: Record<string, [DateFn, DateFn]> = {
