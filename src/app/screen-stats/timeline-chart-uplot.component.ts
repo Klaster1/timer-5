@@ -19,47 +19,54 @@ import { theme } from '@app/ngrx/selectors';
 
 type DrawFn = (i: number, x0: number, y0: number, offs: number, totalWidth: number) => void;
 
-let barWidth = 1;
-
-function drawThings(u: uPlot, sidx: number, i0: number, i1: number, draw: DrawFn) {
-  const s = u.series[sidx];
-  const xdata = u.data[0];
-  const ydata = u.data[sidx];
-  const scaleX = 'x';
-  const scaleY = s.scale;
-
-  const totalWidth = (u.series.length - 1) * barWidth; //.show
-  const offs = (sidx - 1) * barWidth;
-
-  for (let i = i0; i <= i1; i++) {
-    let x0 = Math.round(u.valToPos(xdata[i]!, scaleX, true));
-    let y0 = Math.round(u.valToPos(ydata[i]!, scaleY!, true));
-
-    draw(i, x0, y0, offs, totalWidth);
-  }
-}
-
-const drawBars: uPlot.Series['paths'] = (u: uPlot, sidx: number, i0: number, i1: number) => {
-  const scaleY = u.series[sidx].scale;
-  const zeroY = Math.round(u.valToPos(0, scaleY!, true));
-  const fill = new Path2D();
-
-  drawThings(u, sidx, i0, i1, (i, x0, y0, offs, totalWidth) => {
-    fill.rect(x0 - totalWidth / 2 + offs, y0, barWidth, zeroY - y0);
-  });
-
-  return { fill };
+type PluginReturnValue = {
+  opts?: (self: uPlot, opts: uPlot.Options) => void;
+  hooks: uPlot.Hooks;
 };
-const drawPoints = (self: uPlot, seriesIdx: number, idx0: number, idx1: number): boolean => {
-  self.ctx.font = '8px Arial';
-  self.ctx.textAlign = 'center';
-  self.ctx.textBaseline = 'bottom';
-  self.ctx.fillStyle = 'black';
 
-  drawThings(self, seriesIdx, idx0, idx1, (i, x0, y0, offs, totalWidth) => {
-    self.ctx.fillText(`${self.data[seriesIdx][i]}`, x0 - totalWidth / 2 + offs + barWidth / 2, y0);
-  });
-  return false;
+const timerTimelinePlugin = (): PluginReturnValue => {
+  const draw = (u: uPlot) => {
+    u.ctx.save();
+
+    const seriesIndex = 1;
+    const indexStart = 0;
+    const indexEnd = u.data[0].length - 1;
+
+    const fill = new Path2D();
+    const scaleX = 'x';
+    const scaleY = u.series[seriesIndex].scale!;
+    const dataX = u.data[0];
+    const dataY = u.data[1];
+    const minX = u.valToPos(u.scales[scaleX].min!, scaleX, true);
+    const minY = u.valToPos(u.scales[scaleY].min!, scaleY, true);
+    const drawFromIndex = u.posToIdx(0);
+
+    u.ctx.fillStyle = u.series[seriesIndex].fill ?? 'red';
+
+    for (let i = indexStart; i <= indexEnd; i += 1) {
+      if (i % 2 === 0) {
+        const x0 = Math.max(minX, Math.round(u.valToPos(dataX[i]!, scaleX, true)));
+        if (i < drawFromIndex - 1) continue;
+        const x1 = Math.round(u.valToPos(dataX[i + 1]!, scaleX, true));
+        const y0 = Math.round(u.valToPos(dataY[i]!, scaleY!, true));
+        const y1 = minY;
+        fill.rect(x0, y0, x1 - x0, y1 - y0);
+      }
+    }
+    u.ctx.fill(fill);
+    u.ctx.stroke(fill);
+
+    u.ctx.restore();
+  };
+  return {
+    opts(u, opts) {
+      opts.series[1].paths = (() => null) as any;
+      opts.series[1].points = { show: false } as any;
+    },
+    hooks: {
+      draw: [draw],
+    },
+  };
 };
 
 @Component({
@@ -125,19 +132,7 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
         {
           width: this.elementRef.nativeElement.offsetWidth,
           height: this.elementRef.nativeElement.offsetHeight - this.headerHeight,
-          hooks: {
-            setScale: [
-              (self: uPlot, key: string) => {
-                if (key === 'x' && this.barWidth) {
-                  const scale = self.scales[key];
-                  const width = barWidths[this.barWidth] / 1000;
-                  const hoursInViewport = (scale.max! - scale.min!) / width!;
-                  const hourWidth = (self.width / hoursInViewport) * 0.75;
-                  barWidth = Math.max(1, hourWidth);
-                }
-              },
-            ],
-          },
+          plugins: [timerTimelinePlugin()],
           scales: {
             m: {
               auto: true,
@@ -150,13 +145,7 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
               label: this.getLegendLabel(),
               scale: 'm',
               value: (self, value) => this.getLegendValue(value),
-              // stroke: 'cyan',
-              fill: 'red',
-              width: 0,
-              paths: drawBars,
-              points: {
-                show: false,
-              } as any,
+              fill: 'rgb(126, 203, 32)',
             },
           ],
           axes: [
@@ -166,7 +155,6 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
               size: 50,
               label: this.getLegendLabel(),
               values: (self, ticks) => ticks.map((raw) => this.getLegendValue(raw)),
-              // stroke: 'cyan',
             },
           ],
         },

@@ -68,7 +68,10 @@ const tasksToBars = (tasks: Task[], startFn: DateFn, endFn: DateFn): Stats['time
 };
 
 export const barsTouPlotData = (bars: Stats['timeline']['bars']): number[][] => {
-  return [[...bars.values()].map((b) => b.start.valueOf() / 1000), [...bars.values()].map((b) => b.duration)];
+  return [
+    [...bars.values()].flatMap((b) => [b.start.valueOf() / 1000, b.end.valueOf() / 1000]),
+    [...bars.values()].flatMap((b) => [b.duration, b.duration]),
+  ];
 };
 
 export const stats = (params: StatsParams, tasks: Task[]): Stats => {
