@@ -1,5 +1,3 @@
-/// <reference lib="webworker" />
-
 import * as Comlink from 'comlink';
 import { stats } from '@app/domain/stats';
 
