@@ -35,7 +35,7 @@ export const closestYearStart = (d: Date) => {
 };
 export const closestYearEnd = (value: Date): Date => {
   const date = new Date(value);
-  date.setMonth(12);
+  date.setMonth(11);
   return closestMonthEnd(date);
 };
 
