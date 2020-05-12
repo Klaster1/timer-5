@@ -62,6 +62,12 @@ export const dateMonday = (d: Date) => {
   date.setDate(date.getDate() - day + (day == 0 ? -6 : 1));
   return date;
 };
+export const closestWeekStart = dateMonday;
+export const closestWeekEnd = (d: Date) => {
+  const date = dateMonday(new Date());
+  date.setDate(date.getDate() + 6);
+  return closestDayEnd(date);
+};
 export const dateMonthStart = closestMonthStart;
 export const dateYearStart = closestYearStart;
 

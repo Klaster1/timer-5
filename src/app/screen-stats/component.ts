@@ -27,7 +27,4 @@ export class ScreenStatsComponent {
     map((v) => v / 1000)
   );
   timelineUplot$ = this.stats$.pipe(pluck('timeline', 'uPlotData'));
-  onRangeChange(range: [Date, Date]) {
-    console.log(range);
-  }
 }

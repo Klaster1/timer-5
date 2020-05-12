@@ -13,7 +13,18 @@ import { timer, Observable, BehaviorSubject, Subject, combineLatest } from 'rxjs
 import { shareReplay, map, tap, startWith, take } from 'rxjs/operators';
 import { FormControl, FormGroup, Control } from '@ng-stack/forms';
 import { WrapControls } from '@app/types/form';
-import { dateDayStart, dateYesterdayStart, dateMonday, dateMonthStart, dateYearStart } from '@app/domain/date';
+import {
+  dateDayStart,
+  dateYesterdayStart,
+  dateMonday,
+  dateMonthStart,
+  dateYearStart,
+  closestDayStart,
+  closestDayEnd,
+  toYesterday,
+  closestWeekStart,
+  closestWeekEnd,
+} from '@app/domain/date';
 
 @Component({
   selector: 'tasks-filter',
@@ -49,19 +60,22 @@ export class TasksFilterComponent implements OnDestroy {
   ngOnDestroy() {
     this.subscriber.unsubscribe();
   }
-  setFromToday() {
-    this._form.controls.from.setValue(dateDayStart(new Date()));
+  setToday() {
+    this._form.patchValue({
+      from: closestDayStart(new Date()),
+      to: closestDayEnd(new Date()),
+    });
   }
-  setFromYesterday() {
-    this._form.controls.from.setValue(dateYesterdayStart(new Date()));
+  setYesterday() {
+    this._form.patchValue({
+      from: closestDayStart(toYesterday(new Date())),
+      to: closestDayEnd(toYesterday(new Date())),
+    });
   }
-  setFromWeek() {
-    this._form.controls.from.setValue(dateMonday(new Date()));
-  }
-  setFromMonth() {
-    this._form.controls.from.setValue(dateMonthStart(new Date()));
-  }
-  setFromYear() {
-    this._form.controls.from.setValue(dateYearStart(new Date()));
+  setThisWeek() {
+    this._form.patchValue({
+      from: closestWeekStart(new Date()),
+      to: closestWeekEnd(new Date()),
+    });
   }
 }

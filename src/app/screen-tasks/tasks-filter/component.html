@@ -15,7 +15,6 @@
   <mat-form-field>
     <input matInput [ngxMatDatetimePicker]="from" placeholder="From" formControlName="from" />
     <mat-datepicker-toggle matSuffix [for]="from"></mat-datepicker-toggle>
-    <button mat-icon-button matSuffix [matMenuTriggerFor]="fromMenu"><mat-icon>expand_more</mat-icon></button>
     <ngx-mat-datetime-picker #from [showSeconds]="true"> </ngx-mat-datetime-picker>
   </mat-form-field>
   <mat-form-field>
@@ -23,11 +22,10 @@
     <mat-datepicker-toggle matSuffix [for]="to"></mat-datepicker-toggle>
     <ngx-mat-datetime-picker #to [showSeconds]="true"> </ngx-mat-datetime-picker>
   </mat-form-field>
+  <button mat-icon-button matSuffix [matMenuTriggerFor]="fromMenu"><mat-icon>expand_more</mat-icon></button>
 </form>
 <mat-menu #fromMenu="matMenu">
-  <button mat-menu-item (click)="setFromToday()">Start of today</button>
-  <button mat-menu-item (click)="setFromYesterday()">Start of yesterday</button>
-  <button mat-menu-item (click)="setFromWeek()">Start of this week</button>
-  <button mat-menu-item (click)="setFromMonth()">Start of this month</button>
-  <button mat-menu-item (click)="setFromYear()">Start of this year</button>
+  <button mat-menu-item (click)="setToday()">Today</button>
+  <button mat-menu-item (click)="setYesterday()">Yesterday</button>
+  <button mat-menu-item (click)="setThisWeek()">This week</button>
 </mat-menu>

@@ -1,14 +1,53 @@
 <ng-container *ngIf="stats$|ngrxPush as stats">
+  <mat-card class="all">
+    <mat-card-title>
+      Timeline
+      <!-- Bar chart per year/month/day -->
+    </mat-card-title>
+    <mat-card-content>
+      <article class="container">
+        <mat-form-field>
+          <mat-label>Step</mat-label>
+          <mat-select [formControl]="form.controls.timelineStep">
+            <mat-option *ngFor="let step of timelineSteps" [value]="step">{{step}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <ng-container *ngrxLet="timelineUplot$ as data">
+          <timeline-chart-uplot
+            *ngIf="data && data.length"
+            [chartData]="data"
+            [barWidth]="form.controls.timelineStep.value"
+          ></timeline-chart-uplot>
+        </ng-container>
+      </article>
+    </mat-card-content>
+  </mat-card>
   <mat-card>
     <mat-card-title>Quick stats</mat-card-title>
     <!-- Bar chart per hour -->
     <mat-card-content>
-      Today: {{stats.today.duration|formatDuration}} ({{stats.today.diff > 0 ? '+':'-'}}
-      {{stats.today.diff|formatDuration}})
+      <dl>
+        <dt>Today</dt>
+        <dd>{{stats.today.duration|formatDuration}}</dd>
+        <dt>This week</dt>
+        <dd></dd>
+        <dt>This month</dt>
+        <dd></dd>
+        <dt>This year</dt>
+        <dd></dd>
+        <dt>Task count (all time)</dt>
+        <dd></dd>
+        <dt>Task count (from - to)</dt>
+        <dd></dd>
+        <dt>Tasks duration (all time)</dt>
+        <dd></dd>
+        <dt>Tasks duration (from - to)</dt>
+        <dd></dd>
+      </dl>
     </mat-card-content>
   </mat-card>
   <mat-card>
-    <mat-card-title>Top 10</mat-card-title>
+    <mat-card-title>Top 10 (from - to)</mat-card-title>
     <mat-card-content>
       <ng-scrollbar>
         <table mat-table [dataSource]="stats.top10">
@@ -28,30 +67,6 @@
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
       </ng-scrollbar>
-    </mat-card-content>
-  </mat-card>
-  <mat-card class="all">
-    <mat-card-title>
-      Timeline
-      <!-- Bar chart per year/month/day -->
-    </mat-card-title>
-    <mat-card-content>
-      <article class="container">
-        <mat-form-field>
-          <mat-label>Step</mat-label>
-          <mat-select [formControl]="form.controls.timelineStep">
-            <mat-option *ngFor="let step of timelineSteps" [value]="step">{{step}}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <ng-container *ngrxLet="timelineUplot$ as data">
-          <timeline-chart-uplot
-            *ngIf="data && data.length"
-            [chartData]="data"
-            [barWidth]="form.controls.timelineStep.value"
-            (rangeChange)="onRangeChange($event)"
-          ></timeline-chart-uplot>
-        </ng-container>
-      </article>
     </mat-card-content>
   </mat-card>
 </ng-container>
