@@ -48,6 +48,7 @@
             *ngIf="data && data.length"
             [chartData]="data"
             [barWidth]="form.controls.timelineStep.value"
+            (rangeChange)="onRangeChange($event)"
           ></timeline-chart-uplot>
         </ng-container>
       </article>

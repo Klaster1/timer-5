@@ -8,6 +8,9 @@ import {
   NgZone,
   OnDestroy,
   SimpleChanges,
+  Output,
+  EventEmitter,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import uPlot from 'uplot';
 import { barWidths, formatHours } from '@app/domain/date';
@@ -72,6 +75,7 @@ const timerTimelinePlugin = (): PluginReturnValue => {
 @Component({
   selector: 'timeline-chart-uplot',
   template: `<canvas #canvas></canvas>`,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [ngResizeObserverProviders],
   styles: [
     `
@@ -105,6 +109,8 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
   chartData: [number, number][] = [];
   @Input()
   barWidth?: 'hour' | 'day' | 'month' | 'year';
+  @Output()
+  rangeChange = new EventEmitter<[Date, Date]>();
   private uplot?: uPlot;
   private readonly headerHeight = 31;
   dimensionsSubscriber = this.ro.subscribe((e) => {
@@ -133,6 +139,15 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
           width: this.elementRef.nativeElement.offsetWidth,
           height: this.elementRef.nativeElement.offsetHeight - this.headerHeight,
           plugins: [timerTimelinePlugin()],
+          hooks: {
+            setScale: [
+              (self: uPlot, key: string) => {
+                const scale = self.scales[key];
+                if (key !== 'x' || !scale || typeof scale.min !== 'number' || typeof scale.max !== 'number') return;
+                this.rangeChange.emit([new Date(scale.min * 1000), new Date(scale.max * 1000)]);
+              },
+            ],
+          },
           scales: {
             m: {
               auto: true,

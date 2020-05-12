@@ -1,6 +1,16 @@
 import { sessionDurationPure, taskDurationPure, tasksDurationPure } from '@app/domain/no-dom';
 import { Session, Stats, StatsParams, Task } from '../types/domain';
-import { barWidths, dateDayStart, DateFn, startEndFns, toDateEnd, toYesterday } from './date';
+import {
+  barWidths,
+  dateDayStart,
+  DateFn,
+  startEndFns,
+  toDateEnd,
+  toYesterday,
+  closestDayStart,
+  closestDayEnd,
+  toTomorrow,
+} from './date';
 import { filter } from './filter';
 
 const clampSession = (session: Session, start: number, end: number, now: number): Session => ({
@@ -33,6 +43,51 @@ const getEraliestSessionStart = (tasks: Task[]): number | undefined => {
     .sort((a, b) => b.start - a.start)
     .pop()?.start;
 };
+
+type SessionsPerDay = Map<number, { sessions: Session[]; end: Date }>;
+
+const sessionsPerDay = (tasks: Task[]): SessionsPerDay => {
+  const now = new Date();
+  const earliestStart = getEraliestSessionStart(tasks);
+  if (earliestStart === undefined) return new Map();
+  const result: ReturnType<typeof sessionsPerDay> = new Map(
+    generateRanges(new Date(earliestStart), now, closestDayStart, closestDayEnd).map(([start, end]) => {
+      return [start.valueOf(), { sessions: [], end }];
+    })
+  );
+  return tasks.reduce((acc, task) => {
+    [...task.sessions].forEach((session, i, sessions) => {
+      const sessionDay = closestDayStart(new Date(session.start));
+      const todaySession = clampSession(
+        session,
+        closestDayStart(new Date(session.start)).valueOf(),
+        closestDayEnd(new Date(session.start)).valueOf(),
+        now.valueOf()
+      );
+      const tomorrowSession = clampSession(
+        session,
+        closestDayStart(toTomorrow(new Date(session.start))).valueOf(),
+        session.end ?? now.valueOf(),
+        now.valueOf()
+      );
+      if (sessionDurationPure(todaySession)) {
+        acc.get(sessionDay.valueOf())?.sessions.push(todaySession);
+      }
+      if (sessionDurationPure(tomorrowSession)) sessions.push(tomorrowSession);
+    });
+    return acc;
+  }, result);
+};
+
+const sessionsPerDayToUplotData = (sessionsPerDay: SessionsPerDay): number[][] => {
+  const maxSessionsPerDay = [...sessionsPerDay.values()].sort((a, b) => b.sessions.length - a.sessions.length)[0]
+    ?.sessions.length;
+  console.log(maxSessionsPerDay);
+  return [];
+};
+
+const sessionIdToTaskIdMap = (tasks: Task[]): Map<string, string> =>
+  new Map(tasks.flatMap((task) => task.sessions.map((session) => [session.id, task.id])));
 
 const tasksToBars = (tasks: Task[], startFn: DateFn, endFn: DateFn): Stats['timeline']['bars'] => {
   const now = new Date();
@@ -95,6 +150,9 @@ export const stats = (params: StatsParams, tasks: Task[]): Stats => {
   );
 
   const bars = tasksToBars(tasks, ...startEndFns[params.timelineStep]);
+
+  // console.log(sessionsPerDay(tasks), sessionIdToTaskIdMap(tasks));
+  console.log(sessionsPerDayToUplotData(sessionsPerDay(tasks)));
 
   return {
     top10: tasks

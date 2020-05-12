@@ -44,6 +44,11 @@ export const toYesterday = (d: Date): Date => {
   date.setDate(date.getDate() - 1);
   return date;
 };
+export const toTomorrow = (d: Date): Date => {
+  const date = new Date(d);
+  date.setDate(date.getDate() + 1);
+  return date;
+};
 export const toDateEnd = (d: Date): Date => {
   const date = new Date(d);
   date.setHours(23, 59, 59, 999);
