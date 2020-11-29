@@ -36,7 +36,7 @@
     "ng-resize-observer": "0.0.2",
     "ngrx-store-localstorage": "^9.0.0",
     "ngx-scrollbar": "^7.2.1-beta.0",
-    "rxjs": "~6.5.5",
+    "rxjs": "~6.6.3",
     "shortid": "^2.2.15",
     "tslib": "^2.0.0",
     "uplot": "git://github.com/Klaster1/uPlot.git#dts-fix-2",
