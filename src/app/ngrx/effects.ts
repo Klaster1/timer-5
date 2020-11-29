@@ -1,17 +1,16 @@
 import { Injectable } from '@angular/core';
-import { createEffect, ofType, Actions } from '@ngrx/effects';
-import { Store } from '@ngrx/store';
-import * as actions from '@app/ngrx/actions';
-import * as selectors from '@app/ngrx/selectors';
-import { Router } from '@angular/router';
-import { EMPTY } from 'rxjs';
-import { switchMap, withLatestFrom, exhaustMap, filter, take, map } from 'rxjs/operators';
-import { StoreState } from '@app/types';
-import { Prompt } from '@app/providers/prompt.provider';
-import { generate as id } from 'shortid';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { DialogEditSessionComponent, DialogEditSessionData } from '@app/dialog-edit-session';
 import { getTaskSession } from '@app/domain';
+import * as actions from '@app/ngrx/actions';
+import * as selectors from '@app/ngrx/selectors';
+import { Prompt } from '@app/providers/prompt.provider';
+import { StoreState } from '@app/types';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
+import { nanoid as id } from 'nanoid';
+import { exhaustMap, filter, switchMap, take, withLatestFrom } from 'rxjs/operators';
 
 @Injectable()
 export class Effects {

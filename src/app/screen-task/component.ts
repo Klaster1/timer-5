@@ -1,14 +1,14 @@
-import { Component, ChangeDetectionStrategy, OnDestroy, OnInit } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { StoreState, Task, TaskState } from '@app/types';
-import * as selectors from '@app/ngrx/selectors';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { isTaskRunning, sortSessions } from '@app/domain';
 import * as actions from '@app/ngrx/actions';
+import * as selectors from '@app/ngrx/selectors';
+import { StoreState, Task, TaskState } from '@app/types';
+import { hotkey } from '@app/utils/hotkey';
+import { Store } from '@ngrx/store';
+import { HotkeysService } from 'angular2-hotkeys';
+import { nanoid as id } from 'nanoid';
 import { combineLatest } from 'rxjs';
 import { map, take } from 'rxjs/operators';
-import { generate as id } from 'shortid';
-import { HotkeysService } from 'angular2-hotkeys';
-import { sortSessions, isTaskRunning } from '@app/domain';
-import { hotkey } from '@app/utils/hotkey';
 
 @Component({
   templateUrl: './template.html',

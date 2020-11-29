@@ -32,11 +32,11 @@
     "@ngrx/store-devtools": "^10.0.1",
     "angular2-hotkeys": "^2.2.0",
     "comlink": "^4.3.0",
+    "nanoid": "^3.1.18",
     "ng-resize-observer": "^1.0.2",
     "ngrx-store-localstorage": "^10.1.1",
     "ngx-scrollbar": "^7.4.1",
     "rxjs": "~6.6.3",
-    "shortid": "^2.2.15",
     "tslib": "^2.0.0",
     "uplot": "^1.4.6",
     "zone.js": "^0.11.3"
