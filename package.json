@@ -38,7 +38,7 @@
     "rxjs": "~6.6.3",
     "shortid": "^2.2.15",
     "tslib": "^2.0.0",
-    "uplot": "git://github.com/Klaster1/uPlot.git#dts-fix-2",
+    "uplot": "^1.4.6",
     "zone.js": "^0.11.3"
   },
   "devDependencies": {

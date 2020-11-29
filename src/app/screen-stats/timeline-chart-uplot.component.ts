@@ -12,7 +12,7 @@ import {
   EventEmitter,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import uPlot from 'uplot';
+import uPlot, { Hooks, Options, AlignedData } from 'uplot';
 import { barWidths, formatHours } from '@app/domain/date';
 import { NgResizeObserver, ngResizeObserverProviders } from 'ng-resize-observer';
 import { map, tap } from 'rxjs/operators';
@@ -23,8 +23,8 @@ import { theme } from '@app/ngrx/selectors';
 type DrawFn = (i: number, x0: number, y0: number, offs: number, totalWidth: number) => void;
 
 type PluginReturnValue = {
-  opts?: (self: uPlot, opts: uPlot.Options) => void;
-  hooks: uPlot.Hooks;
+  opts?: (self: uPlot, opts: Options) => void;
+  hooks: Hooks.Defs;
 };
 
 const timerTimelinePlugin = (): PluginReturnValue => {
@@ -67,7 +67,7 @@ const timerTimelinePlugin = (): PluginReturnValue => {
       opts.series[1].points = { show: false } as any;
     },
     hooks: {
-      draw: [draw],
+      draw,
     },
   };
 };
@@ -106,7 +106,7 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
     private ro: NgResizeObserver
   ) {}
   @Input()
-  chartData: [number, number][] = [];
+  chartData?: AlignedData;
   @Input()
   barWidth?: 'hour' | 'day' | 'month' | 'year';
   @Output()
@@ -173,7 +173,7 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
             },
           ],
         },
-        this.chartData ?? [[0, 0]],
+        this.chartData,
         this.elementRef.nativeElement
       );
     });

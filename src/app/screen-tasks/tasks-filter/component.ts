@@ -34,9 +34,9 @@ import {
 })
 export class TasksFilterComponent implements OnDestroy {
   _form = new FormGroup<WrapControls<TasksFilterParams>>({
-    search: new FormControl(''),
-    from: new FormControl(undefined),
-    to: new FormControl(undefined),
+    search: new FormControl(),
+    from: new FormControl(),
+    to: new FormControl(),
   });
   @Output()
   value = new EventEmitter<TasksFilterParams>();
