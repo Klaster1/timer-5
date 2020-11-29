@@ -1,30 +1,17 @@
 import {
+  ChangeDetectionStrategy,
   Component,
-  ViewChild,
   ElementRef,
-  Output,
   EventEmitter,
   OnDestroy,
-  Input,
-  ChangeDetectionStrategy,
+  Output,
+  ViewChild,
 } from '@angular/core';
+import { closestDayEnd, closestDayStart, closestWeekEnd, closestWeekStart, toYesterday } from '@app/domain/date';
 import { TasksFilterParams } from '@app/types';
-import { timer, Observable, BehaviorSubject, Subject, combineLatest } from 'rxjs';
-import { shareReplay, map, tap, startWith, take } from 'rxjs/operators';
-import { FormControl, FormGroup, Control } from '@ng-stack/forms';
 import { WrapControls } from '@app/types/form';
-import {
-  dateDayStart,
-  dateYesterdayStart,
-  dateMonday,
-  dateMonthStart,
-  dateYearStart,
-  closestDayStart,
-  closestDayEnd,
-  toYesterday,
-  closestWeekStart,
-  closestWeekEnd,
-} from '@app/domain/date';
+import { FormControl, FormGroup } from '@ng-stack/forms';
+import { startWith, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'tasks-filter',
