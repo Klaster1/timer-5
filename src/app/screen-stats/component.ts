@@ -11,7 +11,6 @@ import { map, pluck, shareReplay, startWith, switchMap } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScreenStatsComponent {
-  constructor(private fb: FormBuilder, private store: Store<StoreState>) {}
   displayedColumns = ['name', 'value'];
   timelineSteps: StatsParams['timelineStep'][] = ['year', 'month', 'day', 'hour'];
   form = this.fb.group<StatsParams>({
@@ -27,4 +26,5 @@ export class ScreenStatsComponent {
     map((v) => v / 1000)
   );
   timelineUplot$ = this.stats$.pipe(pluck('timeline', 'uPlotData'));
+  constructor(private fb: FormBuilder, private store: Store<StoreState>) {}
 }

@@ -16,31 +16,29 @@ export const taskById = createSelector(
   (tasks: StoreState['tasks'], props: { taskId: string }) => tasks.values[props.taskId]
 );
 export const currentTask = createSelector(currentTaskId, tasks, (id, tasks) => (id ? tasks.values[id] : undefined));
-export const currentStateTasks = createSelector(tasks, currentTasksState, (tasks, state) => {
-  return tasks.ids
+export const currentStateTasks = createSelector(tasks, currentTasksState, (tasks, state) =>
+  tasks.ids
     .map((id) => (state === 'all' ? tasks.values[id] : tasks.values[id].state === state ? tasks.values[id] : undefined))
     .filter(isTask)
-    .sort(compareTasks);
-});
+    .sort(compareTasks)
+);
 
 const filterWorker = new Worker('../workers/filter.worker.ts', { type: 'module' });
 const filter = Comlink.wrap<(f: TasksFilterParams, v: Task[]) => Task[]>(filterWorker);
 
-export const currentStateTasksWithFilter = (range: TasksFilterParams) => {
-  return pipe(
+export const currentStateTasksWithFilter = (range: TasksFilterParams) =>
+  pipe(
     select(currentStateTasks),
     switchMap((tasks) => filter(range, tasks))
   );
-};
 
 const statsWorker = new Worker('../workers/stats.worker.ts', { type: 'module' });
 const stats = Comlink.wrap<(f: StatsParams, v: Task[]) => Stats>(statsWorker);
 
-export const currentStateTasksStats = (params: StatsParams) => {
-  return pipe(
+export const currentStateTasksStats = (params: StatsParams) =>
+  pipe(
     select(tasks),
     switchMap((tasks) => stats(params, [...Object.values(tasks.values)]))
   );
-};
 
 export const theme = createFeatureSelector<StoreState['theme']>('theme');

@@ -59,7 +59,7 @@ export const dateYesterdayStart = (d: Date) => closestDayStart(toYesterday(d));
 export const dateMonday = (d: Date) => {
   const date = closestDayStart(d);
   const day = date.getDay();
-  date.setDate(date.getDate() - day + (day == 0 ? -6 : 1));
+  date.setDate(date.getDate() - day + (day === 0 ? -6 : 1));
   return date;
 };
 export const closestWeekStart = dateMonday;
@@ -99,8 +99,10 @@ export const formatHours = (value: number): string => {
     .map((part) => {
       switch (part) {
         case 'h':
+          // eslint-disable-next-line no-bitwise
           return pad(~~(value / 3600000));
         case 'm':
+          // eslint-disable-next-line no-bitwise
           return pad(~~((value % 3600000) / 60000));
       }
     })

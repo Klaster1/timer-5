@@ -15,6 +15,11 @@ import { map, tap, take } from 'rxjs/operators';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
+  theme$ = this.store.select(theme);
+  isLoggedIn$ = of(false);
+  user$ = of(null);
+
+  title = 'timer';
   constructor(private store: Store<StoreState>, keys: HotkeysService, router: Router) {
     keys.add([
       hotkey('g t', 'Go to all tasks', () => router.navigate(['tasks', 'all'])),
@@ -23,11 +28,6 @@ export class AppComponent {
     ]);
     this.theme$.pipe(tap((t) => document.body.classList.toggle('theme-alternate', t === 'dark'))).subscribe();
   }
-  theme$ = this.store.select(theme);
-  isLoggedIn$ = of(false);
-  user$ = of(null);
-
-  title = 'timer';
   toggleTheme() {
     this.theme$
       .pipe(take(1))

@@ -33,13 +33,20 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TasksFilterComponent implements OnDestroy {
-  _form = new FormGroup<WrapControls<TasksFilterParams>>({
+  @Output() value = new EventEmitter<TasksFilterParams>();
+  form = new FormGroup<WrapControls<TasksFilterParams>>({
     search: new FormControl(),
     from: new FormControl(),
     to: new FormControl(),
   });
-  @Output()
-  value = new EventEmitter<TasksFilterParams>();
+  private subscriber = this.form.valueChanges
+    .pipe(
+      startWith(this.form.value),
+      tap((value) => {
+        this.value.emit(value);
+      })
+    )
+    .subscribe();
 
   @ViewChild('searchInput')
   set searchInput(value: ElementRef<HTMLInputElement>) {
@@ -48,32 +55,23 @@ export class TasksFilterComponent implements OnDestroy {
     });
   }
 
-  private subscriber = this._form.valueChanges
-    .pipe(
-      startWith(this._form.value),
-      tap((value) => {
-        this.value.emit(value);
-      })
-    )
-    .subscribe();
-
   ngOnDestroy() {
     this.subscriber.unsubscribe();
   }
   setToday() {
-    this._form.patchValue({
+    this.form.patchValue({
       from: closestDayStart(new Date()),
       to: closestDayEnd(new Date()),
     });
   }
   setYesterday() {
-    this._form.patchValue({
+    this.form.patchValue({
       from: closestDayStart(toYesterday(new Date())),
       to: closestDayEnd(toYesterday(new Date())),
     });
   }
   setThisWeek() {
-    this._form.patchValue({
+    this.form.patchValue({
       from: closestWeekStart(new Date()),
       to: closestWeekEnd(new Date()),
     });

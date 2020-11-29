@@ -37,10 +37,13 @@ const timerTimelinePlugin = (): PluginReturnValue => {
 
     const fill = new Path2D();
     const scaleX = 'x';
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const scaleY = u.series[seriesIndex].scale!;
     const dataX = u.data[0];
     const dataY = u.data[1];
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const minX = u.valToPos(u.scales[scaleX].min!, scaleX, true);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const minY = u.valToPos(u.scales[scaleY].min!, scaleY, true);
     const drawFromIndex = u.posToIdx(0);
 
@@ -48,9 +51,14 @@ const timerTimelinePlugin = (): PluginReturnValue => {
 
     for (let i = indexStart; i <= indexEnd; i += 1) {
       if (i % 2 === 0) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const x0 = Math.max(minX, Math.round(u.valToPos(dataX[i]!, scaleX, true)));
-        if (i < drawFromIndex - 1) continue;
+        if (i < drawFromIndex - 1) {
+          continue;
+        }
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const x1 = Math.round(u.valToPos(dataX[i + 1]!, scaleX, true));
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const y0 = Math.round(u.valToPos(dataY[i]!, scaleY!, true));
         const y1 = minY;
         fill.rect(x0, y0, x1 - x0, y1 - y0);
@@ -62,7 +70,7 @@ const timerTimelinePlugin = (): PluginReturnValue => {
     u.ctx.restore();
   };
   return {
-    opts(u, opts) {
+    opts: (u, opts) => {
       opts.series[1].paths = (() => null) as any;
       opts.series[1].points = { show: false } as any;
     },
@@ -99,18 +107,9 @@ const timerTimelinePlugin = (): PluginReturnValue => {
   ],
 })
 export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, OnDestroy {
-  constructor(
-    private store: Store<StoreState>,
-    private elementRef: ElementRef<HTMLElement>,
-    private ngZone: NgZone,
-    private ro: NgResizeObserver
-  ) {}
-  @Input()
-  chartData?: AlignedData;
-  @Input()
-  barWidth?: 'hour' | 'day' | 'month' | 'year';
-  @Output()
-  rangeChange = new EventEmitter<[Date, Date]>();
+  @Input() chartData?: AlignedData;
+  @Input() barWidth?: 'hour' | 'day' | 'month' | 'year';
+  @Output() rangeChange = new EventEmitter<[Date, Date]>();
   private uplot?: uPlot;
   private readonly headerHeight = 31;
   dimensionsSubscriber = this.ro.subscribe((e) => {
@@ -118,17 +117,24 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
   });
   themeSubscriber = this.store.select(theme).subscribe((theme) => {
     setTimeout(() => {
-      const stroke = window.getComputedStyle(this.elementRef.nativeElement)['color'];
+      const stroke = window.getComputedStyle(this.elementRef.nativeElement).color;
       this.uplot?.axes.forEach((a) => (a.stroke = stroke));
       this.uplot?.redraw(false);
     });
   });
+  constructor(
+    private store: Store<StoreState>,
+    private elementRef: ElementRef<HTMLElement>,
+    private ngZone: NgZone,
+    private ro: NgResizeObserver
+  ) {}
   getLegendValue(value: number) {
     const scale = {
       hour: barWidths.minute,
       day: barWidths.hour,
       month: barWidths.hour,
       year: barWidths.hour,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     }[this.barWidth!];
     return value ? formatHours(value) : '--:--';
   }
@@ -143,7 +149,9 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
             setScale: [
               (self: uPlot, key: string) => {
                 const scale = self.scales[key];
-                if (key !== 'x' || !scale || typeof scale.min !== 'number' || typeof scale.max !== 'number') return;
+                if (key !== 'x' || !scale || typeof scale.min !== 'number' || typeof scale.max !== 'number') {
+                  return;
+                }
                 this.rangeChange.emit([new Date(scale.min * 1000), new Date(scale.max * 1000)]);
               },
             ],
@@ -194,7 +202,9 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
     }
     if (changes.barWidth && changes.barWidth.currentValue) {
       const ySeries = this.uplot?.axes[1];
-      if (ySeries) ySeries.label = this.getLegendLabel();
+      if (ySeries) {
+        ySeries.label = this.getLegendLabel();
+      }
     }
   }
   ngOnDestroy() {

@@ -16,7 +16,6 @@ import { map, take } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScreenTaskComponent implements OnDestroy, OnInit {
-  constructor(private store: Store<StoreState>, private keys: HotkeysService) {}
   hotkeys = [
     hotkey('s', 'Start/stop task', async (e) => {
       combineLatest(this.task$, this.taskIsInProgress$)
@@ -25,10 +24,14 @@ export class ScreenTaskComponent implements OnDestroy, OnInit {
           if (!task) {
             return;
           }
-          inProgress ? this.stop(task.id) : this.start(task.id);
+          if (inProgress) {
+            this.stop(task.id);
+          } else {
+            this.start(task.id);
+          }
         });
     }),
-    ...[TaskState.ACTIVE, TaskState.DONE].map((state) =>
+    ...[TaskState.active, TaskState.done].map((state) =>
       hotkey(`m ${state[0]}`, `Mark as ${state}`, (e) => {
         this.task$.pipe(take(1)).subscribe((task) => {
           if (task) {
@@ -50,6 +53,7 @@ export class ScreenTaskComponent implements OnDestroy, OnInit {
   task$ = this.store.select(selectors.currentTask);
   sortedSessions$ = this.task$.pipe(map((t) => (t ? sortSessions(t.sessions) : [])));
   taskIsInProgress$ = this.task$.pipe(map(isTaskRunning));
+  constructor(private store: Store<StoreState>, private keys: HotkeysService) {}
   ngOnInit() {
     this.keys.add(this.hotkeys);
   }

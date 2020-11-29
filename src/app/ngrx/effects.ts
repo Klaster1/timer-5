@@ -46,9 +46,7 @@ export class Effects {
         ofType(actions.deleteTask),
         withLatestFrom(this.store.select(selectors.currentTasksState)),
         filter(([, state]) => !!state),
-        exhaustMap(async ([action, state]) => {
-          return this.router.navigate(['tasks', state]);
-        })
+        exhaustMap(async ([action, state]) => this.router.navigate(['tasks', state]))
       ),
     { dispatch: false }
   );

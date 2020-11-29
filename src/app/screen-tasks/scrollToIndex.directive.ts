@@ -5,10 +5,9 @@ import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
   selector: '[scrollToIndex]',
 })
 export class ScrollToIndexDirective {
-  constructor(private viewport: CdkVirtualScrollViewport) {}
+  @Input() itemSize?: number;
   private previousIndex?: number;
-  @Input()
-  itemSize?: number;
+  constructor(private viewport: CdkVirtualScrollViewport) {}
   @Input()
   set scrollToIndex(index: number | undefined) {
     if (typeof index !== 'number' || index === -1 || !this.itemSize) {

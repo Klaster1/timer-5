@@ -32,28 +32,29 @@ const generateRanges = (start: Date, end: Date, startFn: DateFn, endFn: DateFn):
   return result;
 };
 
-const getSessionRangeId = (session: Session, getStartFn: DateFn): number => {
-  return getStartFn(new Date(session.start)).valueOf();
-};
+const getSessionRangeId = (session: Session, getStartFn: DateFn): number =>
+  getStartFn(new Date(session.start)).valueOf();
 
-const getEraliestSessionStart = (tasks: Task[]): number | undefined => {
-  return tasks
+const getEraliestSessionStart = (tasks: Task[]): number | undefined =>
+  tasks
     .map((t) => t.sessions)
     .reduce((a, b) => [...a, ...b], [])
     .sort((a, b) => b.start - a.start)
     .pop()?.start;
-};
 
 type SessionsPerDay = Map<number, { sessions: Session[]; end: Date }>;
 
 const sessionsPerDay = (tasks: Task[]): SessionsPerDay => {
   const now = new Date();
   const earliestStart = getEraliestSessionStart(tasks);
-  if (earliestStart === undefined) return new Map();
+  if (earliestStart === undefined) {
+    return new Map();
+  }
   const result: ReturnType<typeof sessionsPerDay> = new Map(
-    generateRanges(new Date(earliestStart), now, closestDayStart, closestDayEnd).map(([start, end]) => {
-      return [start.valueOf(), { sessions: [], end }];
-    })
+    generateRanges(new Date(earliestStart), now, closestDayStart, closestDayEnd).map(([start, end]) => [
+      start.valueOf(),
+      { sessions: [], end },
+    ])
   );
   return tasks.reduce((acc, task) => {
     [...task.sessions].forEach((session, i, sessions) => {
@@ -73,7 +74,9 @@ const sessionsPerDay = (tasks: Task[]): SessionsPerDay => {
       if (sessionDurationPure(todaySession)) {
         acc.get(sessionDay.valueOf())?.sessions.push(todaySession);
       }
-      if (sessionDurationPure(tomorrowSession)) sessions.push(tomorrowSession);
+      if (sessionDurationPure(tomorrowSession)) {
+        sessions.push(tomorrowSession);
+      }
     });
     return acc;
   }, result);
@@ -92,7 +95,9 @@ const sessionIdToTaskIdMap = (tasks: Task[]): Map<string, string> =>
 const tasksToBars = (tasks: Task[], startFn: DateFn, endFn: DateFn): Stats['timeline']['bars'] => {
   const now = new Date();
   const earliestStart = getEraliestSessionStart(tasks);
-  if (earliestStart === undefined) return new Map();
+  if (earliestStart === undefined) {
+    return new Map();
+  }
   const result: Stats['timeline']['bars'] = new Map(
     generateRanges(new Date(earliestStart), now, startFn, endFn).map(([s, e]) => [
       s.valueOf(),
@@ -109,7 +114,9 @@ const tasksToBars = (tasks: Task[], startFn: DateFn, endFn: DateFn): Stats['time
       let duration = sessionDurationPure(s);
       while (duration >= 10) {
         const bar = bars.get(getSessionRangeId(s, startFn));
-        if (!bar) break;
+        if (!bar) {
+          break;
+        }
         const sessionSlice = clampSession(s, bar.start.valueOf(), bar.end.valueOf(), now.valueOf());
         const sliceDuration = sessionDurationPure(sessionSlice);
         bar.tasks.add(task.id);
@@ -122,12 +129,10 @@ const tasksToBars = (tasks: Task[], startFn: DateFn, endFn: DateFn): Stats['time
   }, result);
 };
 
-export const barsTouPlotData = (bars: Stats['timeline']['bars']): number[][] => {
-  return [
-    [...bars.values()].flatMap((b) => [b.start.valueOf() / 1000, b.end.valueOf() / 1000]),
-    [...bars.values()].flatMap((b) => [b.duration, b.duration]),
-  ];
-};
+export const barsTouPlotData = (bars: Stats['timeline']['bars']): number[][] => [
+  [...bars.values()].flatMap((b) => [b.start.valueOf() / 1000, b.end.valueOf() / 1000]),
+  [...bars.values()].flatMap((b) => [b.duration, b.duration]),
+];
 
 export const stats = (params: StatsParams, tasks: Task[]): Stats => {
   const todayTasksDuration = tasksDurationPure(
@@ -164,7 +169,7 @@ export const stats = (params: StatsParams, tasks: Task[]): Stats => {
     thisYear: { duration: 0, diff: 0 },
     timeline: {
       barWidthInMs: barWidths[params.timelineStep],
-      bars: bars,
+      bars,
       uPlotData: barsTouPlotData(bars),
     },
   };

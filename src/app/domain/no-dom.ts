@@ -6,12 +6,12 @@ export const isTask = (v: any): v is Task =>
 export const isTaskRunning = (t?: Task): boolean => !!t && !!t.sessions && t.sessions.some((s) => !s.end);
 export const isValidTaskState = (state: string): boolean =>
   (new Set([
-    TaskState.ACTIVE,
-    TaskState.DONE,
-    TaskState.DROPPED,
-    TaskState.DROPPED,
-    TaskState.ON_HOLD,
-    TaskState.TO_DO,
+    TaskState.active,
+    TaskState.done,
+    TaskState.dropped,
+    TaskState.dropped,
+    TaskState.onHold,
+    TaskState.toDo,
   ]) as Set<string>).has(state);
 export const getTaskRunningSession = (t?: Task) => (t ? t.sessions[t.sessions.length - 1] : undefined);
 export const compareSessions = (a: Session, b: Session) => b.start - a.start;
@@ -46,7 +46,7 @@ export const compareTasks = (a: Task, b: Task): number => {
 };
 export const sessionEndToString = (s: Session) => (s && typeof s.end === 'number' ? s.end.toString() : '');
 export const stringToSessionEnd = (end: any): Session['end'] =>
-  typeof end === 'string' ? Number.parseInt(end) : undefined;
+  typeof end === 'string' ? Number.parseInt(end, 10) : undefined;
 export const sessionIsOver = (s?: Session): s is Session & { end: number } => !!s && typeof s.end === 'number';
 export const sessionDurationPure = (s: Session): number => (s.end ? s.end - s.start : 0);
 export const completeTaskDuration = (task?: Task): number =>

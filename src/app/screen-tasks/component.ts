@@ -23,12 +23,8 @@ import { map, switchMap, take, tap } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScreenTasksComponent implements OnInit, OnDestroy {
-  constructor(
-    private cdr: ChangeDetectorRef,
-    private store: Store<StoreState>,
-    private keys: HotkeysService,
-    private router: Router
-  ) {}
+  @HostBinding('class.task-opened') private taskOpened = false;
+
   state$ = this.store.select(currentTasksState);
   searchOpened = false;
   filterParams$: Subject<TasksFilterParams> = new BehaviorSubject({});
@@ -37,9 +33,7 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
   currentTaskId$ = this.currentTask$.pipe(map((t) => t?.id));
   taskIds$ = this.tasks$.pipe(map((tasks) => tasks.map((t) => t.id)));
   currentTaskIndex$ = combineLatest(this.taskIds$, this.currentTaskId$).pipe(
-    map(([taskIds, taskId]) => {
-      return taskId ? taskIds.indexOf(taskId) : -1;
-    })
+    map(([taskIds, taskId]) => (taskId ? taskIds.indexOf(taskId) : -1))
   );
   taskOpened$ = this.currentTask$.pipe(
     map((t) => !!t),
@@ -49,9 +43,9 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
   hotkeys = [
     hotkey('a', 'Add task', () => this.addTask()),
     hotkey(['j', 'k'], 'Next/prev task', async (e) => {
-      let [taskIds, state, taskId] = await combineLatest(this.taskIds$, this.state$, this.currentTaskId$)
-        .pipe(take(1))
-        .toPromise();
+      const result = await combineLatest(this.taskIds$, this.state$, this.currentTaskId$).pipe(take(1)).toPromise();
+      const [taskIds, state] = result;
+      let [, , taskId] = result;
       if (!taskIds.length) {
         return;
       }
@@ -80,10 +74,15 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
     }),
   ];
 
-  @HostBinding('class.task-opened')
-  private taskOpened = false;
-
   taskId: TrackByFunction<Task> = (index, task) => task.id;
+
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private store: Store<StoreState>,
+    private keys: HotkeysService,
+    private router: Router
+  ) {}
+
   ngOnInit() {
     this.keys.add(this.hotkeys);
   }
@@ -96,6 +95,8 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
   }
   toggleFilter() {
     this.searchOpened = !this.searchOpened;
-    if (!this.searchOpened) this.filterParams$.next({});
+    if (!this.searchOpened) {
+      this.filterParams$.next({});
+    }
   }
 }

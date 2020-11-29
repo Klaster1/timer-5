@@ -25,6 +25,5 @@ const filterByTo = (filter: TasksFilterParams, t: Task): boolean => {
   }
 };
 
-export const filter = (filter: TasksFilterParams, values: Task[]): Task[] => {
-  return values.filter((t) => [filterByName, filterByTo, filterByFrom].every((predicate) => predicate(filter, t)));
-};
+export const filter = (filter: TasksFilterParams, values: Task[]): Task[] =>
+  values.filter((t) => [filterByName, filterByTo, filterByFrom].every((predicate) => predicate(filter, t)));

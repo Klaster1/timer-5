@@ -5,6 +5,16 @@ import { StoreState, Task, Session, TaskState } from '@app/types';
 import { fromEntries } from '@app/utils/from-entries';
 
 function tasks(state: StoreState['tasks'], action: Action) {
+  const sessions = createReducer<Task['sessions']>(
+    [],
+    on(actions.startTask, (s, a) => [...s, { id: a.sessionId, start: a.timestamp }]),
+    on(actions.stopTask, (s, a) => s.map((s) => (!s.end ? { ...s, end: a.timestamp } : s))),
+    on(actions.updateSession, (s, a) =>
+      s.map((s) => (s.id === a.sessionId ? { ...s, start: a.start, end: a.end } : s))
+    ),
+    on(actions.deleteSession, (s, a) => s.filter((s) => s.id !== a.sessionId))
+  );
+
   const tasks = createReducer<StoreState['tasks']>(
     { ids: [], values: {} },
     on(actions.createTask, (s, a) => ({
@@ -15,7 +25,7 @@ function tasks(state: StoreState['tasks'], action: Action) {
           id: a.taskId,
           name: a.name,
           sessions: [],
-          state: TaskState.ACTIVE,
+          state: TaskState.active,
         },
       },
     })),
@@ -53,6 +63,7 @@ function tasks(state: StoreState['tasks'], action: Action) {
     on(actions.moveSessionToTask, (s, a) => {
       const toTask = {
         ...s.values[a.toTaskId],
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         sessions: [...s.values[a.toTaskId].sessions, s.values[a.taskId].sessions.find((s) => s.id === a.sessionId)!],
       };
       const fromTask = {
@@ -68,15 +79,6 @@ function tasks(state: StoreState['tasks'], action: Action) {
         },
       };
     })
-  );
-  const sessions = createReducer<Task['sessions']>(
-    [],
-    on(actions.startTask, (s, a) => [...s, { id: a.sessionId, start: a.timestamp }]),
-    on(actions.stopTask, (s, a) => s.map((s) => (!s.end ? { ...s, end: a.timestamp } : s))),
-    on(actions.updateSession, (s, a) =>
-      s.map((s) => (s.id === a.sessionId ? { ...s, start: a.start, end: a.end } : s))
-    ),
-    on(actions.deleteSession, (s, a) => s.filter((s) => s.id !== a.sessionId))
   );
 
   return tasks(state, action);
