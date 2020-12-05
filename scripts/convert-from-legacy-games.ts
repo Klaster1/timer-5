@@ -1,12 +1,9 @@
-// @ts-check
-
-import { StoreState } from '@app/types/store';
 import { Session } from '@app/types';
-
-const fs = require('fs');
-const path = require('path');
-const minimist = require('minimist');
-const shortid = require('shortid');
+import { StoreState } from '@app/types/store';
+import { readFileSync, writeFileSync } from 'fs';
+import { nanoid } from 'nanoid';
+import { resolve } from 'path';
+import yargs from 'yargs';
 
 type Game = {
   state: 'active' | 'finished' | 'dropped' | 'hold' | 'wish';
@@ -18,7 +15,7 @@ type Game = {
 const gamesToTasks = (games: Game[]): StoreState['tasks'] => {
   const tasks = Object.fromEntries(
     games.map((game) => {
-      const id = shortid();
+      const id = nanoid();
       return [
         id,
         {
@@ -33,7 +30,7 @@ const gamesToTasks = (games: Game[]): StoreState['tasks'] => {
           }[game.state],
           sessions: game.sessions.map(
             (s): Session => ({
-              id: shortid(),
+              id: nanoid(),
               start: s.start,
               end: s.stop,
             })
@@ -44,13 +41,20 @@ const gamesToTasks = (games: Game[]): StoreState['tasks'] => {
   );
   return {
     ids: Object.keys(tasks),
-    values: tasks,
+    values: tasks as any,
   };
 };
 
-const { games, tasks } = minimist(process.argv.slice(2));
-const tasksObject = gamesToTasks(JSON.parse(fs.readFileSync(path.resolve(games), 'utf8')));
+const { input, output } = yargs(process.argv).options({
+  input: { type: 'string', required: true },
+  output: { type: 'string', required: true },
+}).argv;
 
-fs.writeFileSync(path.resolve(tasks), JSON.stringify(tasksObject, null, '  '));
+console.log('Input', input);
+console.log('Output', output);
+
+const tasksObject = gamesToTasks(JSON.parse(readFileSync(resolve(input), 'utf8')));
+
+writeFileSync(resolve(output), JSON.stringify(tasksObject, null, '  '));
 
 console.log(`Converted ${tasksObject.ids.length} games to tasks.`);
