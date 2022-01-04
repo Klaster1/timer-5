@@ -4,7 +4,7 @@ import * as actions from './actions';
 import { StoreState, Task, Session, TaskState } from '@app/types';
 import { fromEntries } from '@app/utils/from-entries';
 
-function tasks(state: StoreState['tasks'], action: Action) {
+function tasks(state: StoreState['tasks'] | undefined, action: Action) {
   const sessions = createReducer<Task['sessions']>(
     [],
     on(actions.startTask, (s, a) => [...s, { id: a.sessionId, start: a.timestamp }]),

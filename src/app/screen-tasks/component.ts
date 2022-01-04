@@ -44,6 +44,7 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
     hotkey('a', 'Add task', () => this.addTask()),
     hotkey(['j', 'k'], 'Next/prev task', async (e) => {
       const result = await combineLatest(this.taskIds$, this.state$, this.currentTaskId$).pipe(take(1)).toPromise();
+      if (!result) return;
       const [taskIds, state] = result;
       let [, , taskId] = result;
       if (!taskIds.length) {
