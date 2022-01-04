@@ -2,9 +2,7 @@
   <ng-container *ngrxLet="state$ as state">
     <mat-toolbar>
       <h1>
-        <ng-container *ngIf="state">
-          {{state|taskState}}
-        </ng-container>
+        <ng-container *ngIf="state"> {{state|taskState}} </ng-container>
         <span *ngIf="(tasks|tasksDuration:20000|formatDuration|ngrxPush) as duration" class="state-duration">
           ({{duration}})
         </span>
@@ -59,9 +57,7 @@
           <mat-icon color="accent">search</mat-icon>
           <span title>Nothing found</span>
           <span subtitle>Could not find tasks matching the criteria</span>
-          <button mat-raised-button (click)="toggleFilter()" type="button">
-            Reset filter
-          </button>
+          <button mat-raised-button (click)="toggleFilter()" type="button">Reset filter</button>
         </empty-state>
       </ng-template>
     </ng-template>

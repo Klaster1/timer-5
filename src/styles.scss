@@ -70,7 +70,10 @@ body {
 }
 
 .theme-alternate {
-  @include fix-icon-color(map-get(mat.$light-theme-foreground-palette, 'icon'), map-get(mat.$light-theme-foreground-palette, 'text'));
+  @include fix-icon-color(
+    map-get(mat.$light-theme-foreground-palette, 'icon'),
+    map-get(mat.$light-theme-foreground-palette, 'text')
+  );
   @include fix-focused-label-color(#{var(--primary-darker-color)});
 }
 

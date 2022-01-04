@@ -56,7 +56,7 @@ mat.$light-theme-foreground-palette: (
   text: $dark-primary-text,
   slider-min: $dark-primary-text,
   slider-off: rgba($dark-text, 0.26),
-  slider-off-active: $dark-disabled-text,
+  slider-off-active: $dark-disabled-text
 );
 
 // Dark Theme text
@@ -83,7 +83,7 @@ mat.$dark-theme-foreground-palette: (
   text: $light-text,
   slider-min: $light-text,
   slider-off: rgba($light-text, 0.3),
-  slider-off-active: rgba($light-text, 0.3),
+  slider-off-active: rgba($light-text, 0.3)
 );
 
 // Background config
@@ -113,7 +113,7 @@ mat.$light-theme-background-palette: (
   selected-disabled-button: $light-bg-darker-30,
   disabled-button-toggle: $light-bg-darker-10,
   unselected-chip: $light-bg-darker-10,
-  disabled-list-option: $light-bg-darker-10,
+  disabled-list-option: $light-bg-darker-10
 );
 
 // Dark bg
@@ -141,7 +141,7 @@ mat.$dark-theme-background-palette: (
   selected-disabled-button: $dark-bg-lighter-30,
   disabled-button-toggle: $dark-bg-lighter-10,
   unselected-chip: $dark-bg-lighter-20,
-  disabled-list-option: $dark-bg-lighter-10,
+  disabled-list-option: $dark-bg-lighter-10
 );
 
 // Compute font config
@@ -164,7 +164,7 @@ $mat-primary: (
   darker: #7ecb20,
   200: #b2ff59,
   // For slide toggle,
-    contrast:
+  contrast:
     (
       main: $dark-primary-text,
       lighter: $dark-primary-text,
@@ -188,7 +188,7 @@ $mat-accent: (
   darker: #445e6a,
   200: #607b87,
   // For slide toggle,
-    contrast:
+  contrast:
     (
       main: $light-primary-text,
       lighter: $dark-primary-text,
@@ -212,7 +212,7 @@ $mat-warn: (
   darker: #ff0000,
   200: #ff0000,
   // For slide toggle,
-    contrast:
+  contrast:
     (
       main: $light-primary-text,
       lighter: $dark-primary-text,

@@ -6,8 +6,8 @@ import * as Comlink from 'comlink';
 import { pipe } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
-export const tasks = createFeatureSelector< StoreState['tasks']>('tasks');
-export const router = createFeatureSelector< StoreState['router']>('router');
+export const tasks = createFeatureSelector<StoreState['tasks']>('tasks');
+export const router = createFeatureSelector<StoreState['router']>('router');
 export const { selectRouteParam } = getSelectors(router);
 export const currentTaskId = selectRouteParam('taskId');
 export const currentTasksState = selectRouteParam('state');

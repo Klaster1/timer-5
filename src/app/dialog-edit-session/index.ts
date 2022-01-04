@@ -14,18 +14,18 @@ import { DialogEditSessionComponent, DialogEditSessionData } from './component';
 export { DialogEditSessionComponent, DialogEditSessionData };
 
 @NgModule({
-    imports: [
-        MatDialogModule,
-        MatButtonModule,
-        MatFormFieldModule,
-        MatInputModule,
-        NgStackFormsModule,
-        MatDatepickerModule,
-        NgxMatDatetimePickerModule,
-        NgxMatNativeDateModule,
-        NgxMatTimepickerModule,
-    ],
-    declarations: [DialogEditSessionComponent],
-    exports: [DialogEditSessionComponent]
+  imports: [
+    MatDialogModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    NgStackFormsModule,
+    MatDatepickerModule,
+    NgxMatDatetimePickerModule,
+    NgxMatNativeDateModule,
+    NgxMatTimepickerModule,
+  ],
+  declarations: [DialogEditSessionComponent],
+  exports: [DialogEditSessionComponent],
 })
 export class DialogEditSessionModule {}
