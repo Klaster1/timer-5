@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -6,7 +7,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { TaskStateIconPipeModule } from '@app/pipes/task-state-icon.pipe';
 import { TaskStatePipeModule } from '@app/pipes/task-state.pipe';
 import { ButtonTaskActionsComponent } from './component';
-import { CommonModule } from '@angular/common';
 
 @NgModule({
   imports: [

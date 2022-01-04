@@ -1,7 +1,7 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { StoreState, Task, TaskState } from '@app/types';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import * as actions from '@app/ngrx/actions';
+import { StoreState, Task, TaskState } from '@app/types';
+import { Store } from '@ngrx/store';
 
 @Component({
   templateUrl: './template.html',

@@ -2,14 +2,14 @@ import { sessionDurationPure, taskDurationPure, tasksDurationPure } from '@app/d
 import { Session, Stats, StatsParams, Task } from '../types/domain';
 import {
   barWidths,
+  closestDayEnd,
+  closestDayStart,
   dateDayStart,
   DateFn,
   startEndFns,
   toDateEnd,
-  toYesterday,
-  closestDayStart,
-  closestDayEnd,
   toTomorrow,
+  toYesterday,
 } from './date';
 import { filter } from './filter';
 

@@ -1,5 +1,5 @@
 import type { RouterReducerState } from '@ngrx/router-store';
-import { User, Task, Theme } from './domain';
+import { Task, Theme, User } from './domain';
 
 export interface StoreState {
   user: User;

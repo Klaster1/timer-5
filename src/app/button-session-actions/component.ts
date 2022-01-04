@@ -1,8 +1,7 @@
-import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import * as actions from '@app/ngrx/actions';
-import { StoreState, Session } from '@app/types';
-import { sessionEndToString, stringToSessionEnd } from '@app/domain';
+import { Session, StoreState } from '@app/types';
+import { Store } from '@ngrx/store';
 
 @Component({
   templateUrl: './template.html',

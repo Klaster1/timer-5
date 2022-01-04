@@ -1,24 +1,22 @@
 import {
   AfterViewInit,
-  OnChanges,
-  ViewChild,
-  ElementRef,
-  Input,
-  Component,
-  NgZone,
-  OnDestroy,
-  SimpleChanges,
-  Output,
-  EventEmitter,
   ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  NgZone,
+  OnChanges,
+  OnDestroy,
+  Output,
+  SimpleChanges,
 } from '@angular/core';
-import uPlot, { Hooks, Options, AlignedData } from 'uplot';
 import { barWidths, formatHours } from '@app/domain/date';
-import { NgResizeObserver, ngResizeObserverProviders } from 'ng-resize-observer';
-import { map, tap } from 'rxjs/operators';
+import { theme } from '@app/ngrx/selectors';
 import { StoreState } from '@app/types';
 import { Store } from '@ngrx/store';
-import { theme } from '@app/ngrx/selectors';
+import { NgResizeObserver, ngResizeObserverProviders } from 'ng-resize-observer';
+import uPlot, { AlignedData, Hooks, Options } from 'uplot';
 
 type DrawFn = (i: number, x0: number, y0: number, offs: number, totalWidth: number) => void;
 

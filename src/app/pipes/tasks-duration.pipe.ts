@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform, NgModule } from '@angular/core';
+import { NgModule, Pipe, PipeTransform } from '@angular/core';
 import { tasksDuration } from '@app/domain';
 
 @Pipe({ name: 'tasksDuration' })

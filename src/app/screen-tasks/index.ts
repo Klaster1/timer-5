@@ -11,6 +11,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { ButtonTaskActionsModule } from '@app/button-task-actions';
+import { EmptyStateModule } from '@app/empty-state';
 import { FormatDurationPipeModule } from '@app/pipes/format-duration.pipe';
 import { TaskDurationPipeModule } from '@app/pipes/task-duration.pipe';
 import { TaskStateIconPipeModule } from '@app/pipes/task-state-icon.pipe';
@@ -19,12 +20,11 @@ import { TasksDurationPipeModule } from '@app/pipes/tasks-duration.pipe';
 import { NgStackFormsModule } from '@ng-stack/forms';
 import { ReactiveComponentModule } from '@ngrx/component';
 import { NgScrollbarModule } from 'ngx-scrollbar';
+import { CheckViewportSizeWhenValueChangesDirective } from './checkViewportSizeWhenValueChanges.directive';
 import { ScreenTasksComponent } from './component';
 import { FixRouterLinkActiveDirective } from './fixRouterLinkActive.directive';
 import { ScrollToIndexDirective } from './scrollToIndex.directive';
 import { TasksFilterModule } from './tasks-filter/module';
-import { EmptyStateModule } from '@app/empty-state';
-import { CheckViewportSizeWhenValueChangesDirective } from './checkViewportSizeWhenValueChanges.directive';
 
 export { ScreenTasksComponent };
 

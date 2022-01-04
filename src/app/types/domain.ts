@@ -1,29 +1,20 @@
-// eslint-disable-next-line no-shadow
 export enum TaskState {
   active = 'active',
-  done = 'done',
+  finished = 'finished',
   dropped = 'dropped',
-  onHold = 'on-hold',
-  toDo = 'to-do',
 }
 
-export interface Task {
+export type Task = {
   id: string;
   name: string;
   state: TaskState;
   sessions: Session[];
-}
+};
 
-export interface Session {
+export type Session = {
   id: string;
   start: number;
   end?: number;
-}
-
-export type User = null | {
-  id: string;
-  photoURL?: string;
-  email?: string;
 };
 
 export type Theme = 'light' | 'dark';

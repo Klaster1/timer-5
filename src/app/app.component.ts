@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
-import { Store } from '@ngrx/store';
+import { Router } from '@angular/router';
 import { updateTheme } from '@app/ngrx/actions';
 import { theme } from '@app/ngrx/selectors';
 import { StoreState } from '@app/types';
-import { of } from 'rxjs';
-import { HotkeysService } from 'angular2-hotkeys';
 import { hotkey } from '@app/utils/hotkey';
-import { Router } from '@angular/router';
-import { map, tap, take } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { HotkeysService } from 'angular2-hotkeys';
+import { of } from 'rxjs';
+import { take, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',

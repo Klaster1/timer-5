@@ -8,7 +8,7 @@ export const isValidTaskState = (state: string): boolean =>
   (
     new Set([
       TaskState.active,
-      TaskState.done,
+      TaskState.finished,
       TaskState.dropped,
       TaskState.dropped,
       TaskState.onHold,

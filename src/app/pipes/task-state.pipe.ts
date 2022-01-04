@@ -1,4 +1,4 @@
-import { Pipe, NgModule, PipeTransform } from '@angular/core';
+import { NgModule, Pipe, PipeTransform } from '@angular/core';
 import { TaskState } from '@app/types';
 
 @Pipe({

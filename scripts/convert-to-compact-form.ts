@@ -39,7 +39,7 @@ const tasksToCompactTasks = (tasks: StoreState['tasks']): TasksCompactDocument =
         [TaskKey.state]:
           task.state === TaskState.active
             ? CompactTaskState.active
-            : task.state === TaskState.done
+            : task.state === TaskState.finished
             ? CompactTaskState.done
             : CompactTaskState.dropped,
         [TaskKey.sessions]: task.sessions.map((s) =>

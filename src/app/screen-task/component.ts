@@ -31,7 +31,7 @@ export class ScreenTaskComponent implements OnDestroy, OnInit {
           }
         });
     }),
-    ...[TaskState.active, TaskState.done].map((state) =>
+    ...[TaskState.active, TaskState.finished].map((state) =>
       hotkey(`m ${state[0]}`, `Mark as ${state}`, (e) => {
         this.task$.pipe(take(1)).subscribe((task) => {
           if (task) {

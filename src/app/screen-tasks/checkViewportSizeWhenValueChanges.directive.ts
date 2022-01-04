@@ -1,5 +1,5 @@
-import { Directive, Input } from '@angular/core';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { Directive, Input } from '@angular/core';
 
 @Directive({
   selector: '[checkViewportSizeWhenValueChanges]',

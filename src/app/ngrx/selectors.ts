@@ -1,5 +1,5 @@
 import { compareTasks, isTask } from '@app/domain';
-import { TasksFilterParams, StoreState, Task, StatsParams, Stats } from '@app/types';
+import { Stats, StatsParams, StoreState, Task, TasksFilterParams } from '@app/types';
 import { getSelectors } from '@ngrx/router-store';
 import { createFeatureSelector, createSelector, select } from '@ngrx/store';
 import * as Comlink from 'comlink';

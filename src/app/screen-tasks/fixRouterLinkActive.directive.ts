@@ -1,5 +1,5 @@
 import { Directive, Input } from '@angular/core';
-import { ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLinkActive } from '@angular/router';
 
 @Directive({
   selector: '[fixRouterLinkActive]',

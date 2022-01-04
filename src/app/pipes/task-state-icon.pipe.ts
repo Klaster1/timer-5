@@ -1,6 +1,6 @@
-import { Pipe, NgModule, PipeTransform } from '@angular/core';
+import { NgModule, Pipe, PipeTransform } from '@angular/core';
+import { isTask, isTaskRunning } from '@app/domain';
 import { Task } from '@app/types';
-import { isTaskRunning, isTask } from '@app/domain';
 
 @Pipe({
   name: 'taskStateIcon',

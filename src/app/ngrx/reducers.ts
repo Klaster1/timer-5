@@ -1,8 +1,8 @@
-import { routerReducer } from '@ngrx/router-store';
-import { createReducer, Action, on } from '@ngrx/store';
-import * as actions from './actions';
-import { StoreState, Task, Session, TaskState } from '@app/types';
+import { StoreState, Task, TaskState } from '@app/types';
 import { fromEntries } from '@app/utils/from-entries';
+import { routerReducer } from '@ngrx/router-store';
+import { Action, createReducer, on } from '@ngrx/store';
+import * as actions from './actions';
 
 function tasks(state: StoreState['tasks'] | undefined, action: Action) {
   const sessions = createReducer<Task['sessions']>(
@@ -86,7 +86,7 @@ function tasks(state: StoreState['tasks'] | undefined, action: Action) {
 
 const theme = createReducer<StoreState['theme']>(
   'dark',
-  on(actions.updateTheme, (s, a) => a.theme)
+  on(actions.updateTheme, (_s, a) => a.theme)
 );
 
 export const combinedReducers = {
