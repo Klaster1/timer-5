@@ -1,21 +1,35 @@
-import { Session } from '@app/types';
-import { StoreState } from '@app/types/store';
 import { readFileSync, writeFileSync } from 'fs';
 import { nanoid } from 'nanoid';
 import { resolve } from 'path';
 import yargs from 'yargs';
 
-type Game = {
-  state: 'active' | 'finished' | 'dropped' | 'hold' | 'wish';
-  title: string;
-  id: string;
-  sessions: { start: number; stop: number }[];
-};
+/**
+ * @typedef {import('../src/app/types').StoreState} StoreState
+ */
+/**
+ * @typedef {import('../src/app/types').TaskState} TaskState
+ */
+/**
+ * @typedef {import('../src/app/types').Session} Session
+ */
 
-const gamesToTasks = (games: Game[]): StoreState['tasks'] => {
+/**
+ * @typedef {{
+  state: 'active'|'finished'|'dropped'|'hold'|'wish',
+  title: string,
+  id: string,
+  sessions: {start: number, stop: number}[]
+}} Game
+ */
+
+/**
+ * @param {Game[]} games
+ * @returns {StoreState['tasks']}
+ */
+const gamesToTasks = (games) => {
   const tasks = Object.fromEntries(
     games.map((game) => {
-      const id = nanoid();
+      const id = nanoid(6);
       return [
         id,
         {
@@ -23,14 +37,17 @@ const gamesToTasks = (games: Game[]): StoreState['tasks'] => {
           name: game.title,
           state: {
             active: 'active',
-            finished: 'done',
+            finished: 'finished',
             dropped: 'dropped',
-            hold: 'on-hold',
-            wish: 'to-do',
+            hold: 'active',
+            wish: 'active',
           }[game.state],
           sessions: game.sessions.map(
-            (s): Session => ({
-              id: nanoid(),
+            /**
+             * @returns {Session}
+             */
+            (s) => ({
+              id: nanoid(6),
               start: s.start,
               end: s.stop,
             })
@@ -41,7 +58,7 @@ const gamesToTasks = (games: Game[]): StoreState['tasks'] => {
   );
   return {
     ids: Object.keys(tasks),
-    values: tasks as any,
+    values: tasks,
   };
 };
 
