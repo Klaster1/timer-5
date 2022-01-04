@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+@use '~@angular/material' as mat;
 @import './theme.scss';
 @import '~uplot/dist/uPlot.min.css';
 
@@ -55,8 +56,8 @@ body {
 }
 
 @include fix-icon-color(
-  map-get($mat-dark-theme-foreground, 'secondary-text'),
-  map-get($mat-dark-theme-foreground, 'icon')
+  map-get(mat.$dark-theme-foreground-palette, 'secondary-text'),
+  map-get(mat.$dark-theme-foreground-palette, 'icon')
 );
 
 @mixin fix-focused-label-color($color) {
@@ -69,7 +70,7 @@ body {
 }
 
 .theme-alternate {
-  @include fix-icon-color(map-get($mat-light-theme-foreground, 'icon'), map-get($mat-light-theme-foreground, 'text'));
+  @include fix-icon-color(map-get(mat.$light-theme-foreground-palette, 'icon'), map-get(mat.$light-theme-foreground-palette, 'text'));
   @include fix-focused-label-color(#{var(--primary-darker-color)});
 }
 
