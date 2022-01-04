@@ -17,6 +17,7 @@ function tasks(state: StoreState['tasks'] | undefined, action: Action) {
 
   const tasks = createReducer<StoreState['tasks']>(
     { ids: [], values: {} },
+    on(actions.loadTasks, (store, action) => action.data),
     on(actions.createTask, (s, a) => ({
       ids: [...s.ids, a.taskId],
       values: {

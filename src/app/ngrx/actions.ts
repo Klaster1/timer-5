@@ -1,4 +1,4 @@
-import { Session, TaskState, Theme } from '@app/types';
+import { Session, StoreState, TaskState, Theme } from '@app/types';
 import { createAction, props } from '@ngrx/store';
 
 export const createTaskIntent = createAction('[Task] Create intent');
@@ -37,3 +37,5 @@ export const moveSessionToTask = createAction(
 export const deleteSession = createAction('[Session] Delete', props<{ taskId: string; sessionId: string }>());
 
 export const updateTheme = createAction('[Theme] Update', props<{ theme: Theme }>());
+
+export const loadTasks = createAction('[Tasks] Load', props<{ data: StoreState['tasks'] }>());

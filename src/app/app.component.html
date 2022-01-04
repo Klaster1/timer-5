@@ -24,6 +24,17 @@
         >
       </mat-nav-list>
       <mat-action-list *ngrxLet="theme$ as theme">
+        <button mat-list-item matTooltip="Import/Export" [matMenuTriggerFor]="importExportMenu">
+          <mat-icon>import_export</mat-icon>
+        </button>
+        <mat-menu #importExportMenu="matMenu">
+          <label mat-menu-item class="import-label">
+            <input type="file" (input)="import($event)" />
+            Import
+          </label>
+          <button mat-menu-item (click)="export()">Export</button>
+        </mat-menu>
+
         <a mat-list-item routerLink="/stats" routerLinkActive="nav-link-active" matTooltip="Stats">
           <mat-icon>bar_chart</mat-icon>
         </a>

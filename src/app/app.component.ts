@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { updateTheme } from '@app/ngrx/actions';
-import { theme } from '@app/ngrx/selectors';
+import { loadTasks, updateTheme } from '@app/ngrx/actions';
+import { tasks, theme } from '@app/ngrx/selectors';
 import { StoreState, TaskState } from '@app/types';
 import { hotkey } from '@app/utils/hotkey';
 import { Store } from '@ngrx/store';
 import { HotkeysService } from 'angular2-hotkeys';
 import { of } from 'rxjs';
-import { take, tap } from 'rxjs/operators';
+import { map, take, tap } from 'rxjs/operators';
+import { fromStoredTasks, toStoredTasks } from './types/storage';
 
 @Component({
   selector: 'app-root',
@@ -33,5 +34,39 @@ export class AppComponent {
     this.theme$
       .pipe(take(1))
       .subscribe((t) => this.store.dispatch(updateTheme({ theme: t === 'dark' ? 'light' : 'dark' })));
+  }
+  import(event: Event) {
+    console.log(event);
+    const target = event.target;
+    if (!(target instanceof HTMLInputElement)) return;
+    const file = target?.files?.[0];
+    if (!file) return;
+    const fileReader = new FileReader();
+    fileReader.addEventListener(
+      'load',
+      () => {
+        if (typeof fileReader.result !== 'string') return;
+        this.store.dispatch(loadTasks({ data: fromStoredTasks(JSON.parse(fileReader.result)) }));
+      },
+      { once: true }
+    );
+    fileReader.readAsText(file);
+  }
+  export() {
+    this.store
+      .select(tasks)
+      .pipe(take(1), map(toStoredTasks))
+      .subscribe((data) => {
+        const blob = new Blob([JSON.stringify(data, null, '  ')], { type: 'application/json;charset=utf-8;' });
+        const downloadUrl = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = 'timer-data.json';
+
+        a.click();
+
+        setTimeout(() => URL.revokeObjectURL(downloadUrl), 100);
+      });
   }
 }

@@ -4,6 +4,7 @@ import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
@@ -39,6 +40,7 @@ import { ScreenTasksModule } from './screen-tasks';
     ScreenTaskModule,
     ScreenStatsModule,
     MatSidenavModule,
+    MatMenuModule,
     MatListModule,
     MatIconModule,
     MatTooltipModule,
