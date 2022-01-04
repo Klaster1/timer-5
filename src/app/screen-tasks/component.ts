@@ -53,7 +53,7 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
       if (typeof taskId !== 'string') {
         taskId = taskIds[0];
       }
-      let index = taskIds.indexOf(taskId);
+      let index = taskId ? taskIds.indexOf(taskId) : -1;
       if (e.key === 'j') {
         index += 1;
       }

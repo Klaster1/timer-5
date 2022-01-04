@@ -1,22 +1,16 @@
 import { NgModule, Pipe, PipeTransform } from '@angular/core';
-import { TaskState } from '@app/types';
+import { RouteTaskState } from '@app/types';
 
 @Pipe({
   name: 'taskState',
 })
 export class TaskStatePipe implements PipeTransform {
-  transform(value?: TaskState | 'all') {
+  transform(value?: RouteTaskState) {
     switch (value) {
       case 'active':
         return 'Active';
-      case 'done':
-        return 'Done';
       case 'dropped':
         return 'Dropped';
-      case 'on-hold':
-        return 'On Hold';
-      case 'to-do':
-        return 'To Do';
       case 'all':
         return 'All';
       default:

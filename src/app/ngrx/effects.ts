@@ -57,7 +57,7 @@ export class Effects {
       switchMap((a) =>
         this.store.select(selectors.taskById, { taskId: a.taskId }).pipe(
           take(1),
-          exhaustMap((t) => this.prompt.prompt('Rename task', t.name, 'Task name')),
+          exhaustMap((task) => this.prompt.prompt('Rename task', task?.name, 'Task name')),
           switchMap((result) => (result ? [actions.renameTask({ taskId: a.taskId, name: result })] : []))
         )
       )
@@ -70,31 +70,32 @@ export class Effects {
       switchMap((a) =>
         this.store.select(selectors.taskById, { taskId: a.taskId }).pipe(
           take(1),
-          exhaustMap((t) => {
-            const s = getTaskSession(t, a.sessionId);
-            return s
+          exhaustMap((task) => {
+            if (!task) return [];
+            const ssession = getTaskSession(task, a.sessionId);
+            return ssession
               ? this.dialog
-                  .open<DialogEditSessionComponent, DialogEditSessionData, DialogEditSessionData>(
-                    DialogEditSessionComponent,
-                    {
-                      data: { start: s.start, end: s.end },
-                    }
+                .open<DialogEditSessionComponent, DialogEditSessionData, DialogEditSessionData>(
+                  DialogEditSessionComponent,
+                  {
+                    data: { start: ssession.start, end: ssession.end },
+                  }
+                )
+                .afterClosed()
+                .pipe(
+                  switchMap((r) =>
+                    r
+                      ? [
+                        actions.updateSession({
+                          taskId: task.id,
+                          sessionId: ssession.id,
+                          start: r.start,
+                          end: r.end,
+                        }),
+                      ]
+                      : []
                   )
-                  .afterClosed()
-                  .pipe(
-                    switchMap((r) =>
-                      r
-                        ? [
-                            actions.updateSession({
-                              taskId: t.id,
-                              sessionId: s.id,
-                              start: r.start,
-                              end: r.end,
-                            }),
-                          ]
-                        : []
-                    )
-                  )
+                )
               : [];
           })
         )

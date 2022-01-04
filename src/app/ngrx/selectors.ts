@@ -1,5 +1,6 @@
-import { compareTasks, isTask } from '@app/domain';
-import { Stats, StatsParams, StoreState, Task, TasksFilterParams } from '@app/types';
+import { compareTasks, isValidTaskState } from '@app/domain';
+import { Stats, StatsParams, StoreState, Task, TasksFilterParams, TaskState } from '@app/types';
+import { isTruthy } from '@app/utils/assert';
 import { getSelectors } from '@ngrx/router-store';
 import { createFeatureSelector, createSelector, select } from '@ngrx/store';
 import * as Comlink from 'comlink';
@@ -10,7 +11,10 @@ export const tasks = createFeatureSelector<StoreState['tasks']>('tasks');
 export const router = createFeatureSelector<StoreState['router']>('router');
 export const { selectRouteParam } = getSelectors(router);
 export const currentTaskId = selectRouteParam('taskId');
-export const currentTasksState = selectRouteParam('state');
+export const currentTasksState = createSelector(selectRouteParam('state'), (value) => {
+  if (!value || !isValidTaskState(value)) return 'all' as const;
+  return value as TaskState;
+});
 export const taskById = createSelector(
   tasks,
   (tasks: StoreState['tasks'], props: { taskId: string }) => tasks.values[props.taskId]
@@ -18,8 +22,11 @@ export const taskById = createSelector(
 export const currentTask = createSelector(currentTaskId, tasks, (id, tasks) => (id ? tasks.values[id] : undefined));
 export const currentStateTasks = createSelector(tasks, currentTasksState, (tasks, state) =>
   tasks.ids
-    .map((id) => (state === 'all' ? tasks.values[id] : tasks.values[id].state === state ? tasks.values[id] : undefined))
-    .filter(isTask)
+    .map((id) => {
+      const task = tasks.values[id];
+      return state === 'all' ? task : task?.state === state ? task : undefined;
+    })
+    .filter(isTruthy)
     .sort(compareTasks)
 );
 

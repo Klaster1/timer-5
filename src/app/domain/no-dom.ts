@@ -1,20 +1,12 @@
 // Only type imports allowed, so function work in workers too
 import { Session, Task, TaskState } from '@app/types/domain';
 
-export const isTask = (v: any): v is Task =>
-  typeof v === 'object' && v.id && v.name && v.state && Array.isArray(v.sessions);
+export const isTask = (v: any) => {
+  return typeof v === 'object' && v.id && v.name && v.state && Array.isArray(v.sessions) ? (v as Task) : null;
+};
 export const isTaskRunning = (t?: Task): boolean => !!t && !!t.sessions && t.sessions.some((s) => !s.end);
 export const isValidTaskState = (state: string): boolean =>
-  (
-    new Set([
-      TaskState.active,
-      TaskState.finished,
-      TaskState.dropped,
-      TaskState.dropped,
-      TaskState.onHold,
-      TaskState.toDo,
-    ]) as Set<string>
-  ).has(state);
+  (new Set([TaskState.active, TaskState.finished, TaskState.dropped]) as Set<string>).has(state);
 export const getTaskRunningSession = (t?: Task) => (t ? t.sessions[t.sessions.length - 1] : undefined);
 export const compareSessions = (a: Session, b: Session) => b.start - a.start;
 export const sortSessions = (sessions: Session[]): Session[] => [...sessions].sort(compareSessions);

@@ -14,19 +14,13 @@
       </mat-nav-list>
       <mat-nav-list class="states">
         <a mat-list-item routerLink="/tasks/active" routerLinkActive="nav-link-active" matTooltip="Active tasks">
-          <mat-icon>{{ 'active' | taskStateIcon }}</mat-icon>
+          <mat-icon>{{ taskState.active| taskStateIcon }}</mat-icon>
         </a>
-        <a mat-list-item routerLink="/tasks/done" routerLinkActive="nav-link-active" matTooltip="Done tasks"
-          ><mat-icon>{{ 'done' | taskStateIcon }}</mat-icon></a
-        >
-        <a mat-list-item routerLink="/tasks/to-do" routerLinkActive="nav-link-active" matTooltip="To do tasks"
-          ><mat-icon>{{ 'to-do' | taskStateIcon }}</mat-icon></a
-        >
-        <a mat-list-item routerLink="/tasks/on-hold" routerLinkActive="nav-link-active" matTooltip="On hold tasks"
-          ><mat-icon>{{ 'on-hold' | taskStateIcon }}</mat-icon></a
+        <a mat-list-item routerLink="/tasks/finished" routerLinkActive="nav-link-active" matTooltip="Finished tasks"
+          ><mat-icon>{{ taskState.finished| taskStateIcon }}</mat-icon></a
         >
         <a mat-list-item routerLink="/tasks/dropped" routerLinkActive="nav-link-active" matTooltip="Dropped tasks"
-          ><mat-icon>{{ 'dropped' | taskStateIcon }}</mat-icon></a
+          ><mat-icon>{{ taskState.dropped| taskStateIcon }}</mat-icon></a
         >
       </mat-nav-list>
       <mat-action-list *ngrxLet="theme$ as theme">

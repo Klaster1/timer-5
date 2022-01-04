@@ -15,7 +15,7 @@
         <ng-container *ngrxLet="timelineUplot$ as data">
           <timeline-chart-uplot
             *ngIf="data && data.length"
-            [chartData]="data"
+            [chartData]="$any(data)"
             [barWidth]="form.controls.timelineStep.value"
           ></timeline-chart-uplot>
         </ng-container>

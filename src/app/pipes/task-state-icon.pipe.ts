@@ -1,31 +1,32 @@
 import { NgModule, Pipe, PipeTransform } from '@angular/core';
 import { isTask, isTaskRunning } from '@app/domain';
-import { Task } from '@app/types';
+import { Task, TaskState } from '@app/types';
+import { assertNever } from '@app/types/assert-never';
 
 @Pipe({
   name: 'taskStateIcon',
 })
 export class TaskStateIconPipe implements PipeTransform {
-  transform(t?: Task | string) {
-    if (!t) {
-      return 'timer-logo';
-    }
+  transform(stateOrTask?: Task | TaskState) {
+    const task = isTask(stateOrTask);
+    const inputState = typeof stateOrTask === 'string' ? stateOrTask : null;
+    const state = task?.state ?? inputState;
 
-    if (isTask(t) && isTaskRunning(t)) {
+    if (task && isTaskRunning(task)) {
       return 'pause_circle_filled';
     }
-    const v = isTask(t) ? t.state : t;
-    switch (v) {
-      case 'active':
+    if (!state) {
+      return 'timer-logo';
+    }
+    switch (state) {
+      case TaskState.active:
         return 'play_circle_outline';
-      case 'done':
+      case TaskState.finished:
         return 'check_circle_outline';
-      case 'dropped':
+      case TaskState.dropped:
         return 'delete_outline';
-      case 'on-hold':
-        return 'low_priority';
-      case 'to-do':
-        return 'bookmark_border';
+      default:
+        return assertNever(state);
     }
   }
 }

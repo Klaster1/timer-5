@@ -35,17 +35,21 @@ const timerTimelinePlugin = (): PluginReturnValue => {
 
     const fill = new Path2D();
     const scaleX = 'x';
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const scaleY = u.series[seriesIndex].scale!;
+    const series = u.series[seriesIndex];
+    if (!series) return;
+    const scaleY = series?.scale;
+    if (!scaleY) return;
     const dataX = u.data[0];
     const dataY = u.data[1];
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const minX = u.valToPos(u.scales[scaleX].min!, scaleX, true);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const minY = u.valToPos(u.scales[scaleY].min!, scaleY, true);
+    const xMin = u.scales[scaleX]?.min;
+    const yMin = u.scales[scaleY]?.min;
+    if (typeof xMin !== 'number') return;
+    if (typeof yMin !== 'number') return;
+    const minX = u.valToPos(xMin, scaleX, true);
+    const minY = u.valToPos(yMin, scaleY, true);
     const drawFromIndex = u.posToIdx(0);
 
-    u.ctx.fillStyle = u.series[seriesIndex].fill ?? 'red';
+    u.ctx.fillStyle = series.fill ?? 'red';
 
     for (let i = indexStart; i <= indexEnd; i += 1) {
       if (i % 2 === 0) {
@@ -54,10 +58,14 @@ const timerTimelinePlugin = (): PluginReturnValue => {
         if (i < drawFromIndex - 1) {
           continue;
         }
+        const valueX = dataX[i + 1];
+        const valueY = dataY?.[i];
+        if (typeof valueX !== 'number') return;
+        if (typeof valueY !== 'number') return;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const x1 = Math.round(u.valToPos(dataX[i + 1]!, scaleX, true));
+        const x1 = Math.round(u.valToPos(valueX, scaleX, true));
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const y0 = Math.round(u.valToPos(dataY[i]!, scaleY!, true));
+        const y0 = Math.round(u.valToPos(valueY, scaleY, true));
         const y1 = minY;
         fill.rect(x0, y0, x1 - x0, y1 - y0);
       }
@@ -69,8 +77,10 @@ const timerTimelinePlugin = (): PluginReturnValue => {
   };
   return {
     opts: (u, opts) => {
-      opts.series[1].paths = (() => null) as any;
-      opts.series[1].points = { show: false } as any;
+      const series = opts.series[1];
+      if (!series) return;
+      series.paths = (() => null) as any;
+      series.points = { show: false } as any;
     },
     hooks: {
       draw,

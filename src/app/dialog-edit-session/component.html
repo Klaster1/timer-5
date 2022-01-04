@@ -2,12 +2,12 @@
 <form mat-dialog-content [formGroup]="form" id="promptForm" (submit)="onSubmit()">
   <mat-form-field>
     <input matInput [ngxMatDatetimePicker]="start" placeholder="Start" formControlName="start" />
-    <mat-datepicker-toggle matSuffix [for]="start"></mat-datepicker-toggle>
+    <mat-datepicker-toggle matSuffix [for]="$any(start)"></mat-datepicker-toggle>
     <ngx-mat-datetime-picker #start [showSeconds]="true"> </ngx-mat-datetime-picker>
   </mat-form-field>
   <mat-form-field>
     <input matInput [ngxMatDatetimePicker]="end" placeholder="End" formControlName="end" />
-    <mat-datepicker-toggle matSuffix [for]="end"></mat-datepicker-toggle>
+    <mat-datepicker-toggle matSuffix [for]="$any(end)"></mat-datepicker-toggle>
     <ngx-mat-datetime-picker #end [showSeconds]="true"> </ngx-mat-datetime-picker>
   </mat-form-field>
 </form>

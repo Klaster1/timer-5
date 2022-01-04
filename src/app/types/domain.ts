@@ -4,6 +4,8 @@ export enum TaskState {
   dropped = 'dropped',
 }
 
+export type RouteTaskState = TaskState | 'all';
+
 export type Task = {
   id: string;
   name: string;

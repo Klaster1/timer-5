@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { updateTheme } from '@app/ngrx/actions';
 import { theme } from '@app/ngrx/selectors';
-import { StoreState } from '@app/types';
+import { StoreState, TaskState } from '@app/types';
 import { hotkey } from '@app/utils/hotkey';
 import { Store } from '@ngrx/store';
 import { HotkeysService } from 'angular2-hotkeys';
@@ -18,6 +18,7 @@ export class AppComponent {
   theme$ = this.store.select(theme);
   isLoggedIn$ = of(false);
   user$ = of(null);
+  taskState = TaskState;
 
   title = 'timer';
   constructor(private store: Store<StoreState>, keys: HotkeysService, router: Router) {

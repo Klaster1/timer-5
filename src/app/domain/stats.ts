@@ -154,7 +154,11 @@ export const stats = (params: StatsParams, tasks: Task[]): Stats => {
     )
   );
 
-  const bars = tasksToBars(tasks, ...startEndFns[params.timelineStep]);
+  const dateFns = startEndFns[params.timelineStep];
+  if (!dateFns) {
+    throw new Error('Missing date fns');
+  }
+  const bars = tasksToBars(tasks, ...dateFns);
 
   // console.log(sessionsPerDay(tasks), sessionIdToTaskIdMap(tasks));
   console.log(sessionsPerDayToUplotData(sessionsPerDay(tasks)));

@@ -12,6 +12,8 @@ import { Store } from '@ngrx/store';
 export class ButtonTaskActionsComponent {
   constructor(private store: Store<StoreState>) {}
 
+  taskState = TaskState;
+
   @Input()
   task?: Task;
 
