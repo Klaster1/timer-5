@@ -23,7 +23,7 @@ export const currentStateTasks = createSelector(tasks, currentTasksState, (tasks
     .sort(compareTasks)
 );
 
-const filterWorker = new Worker('../workers/filter.worker.ts', { type: 'module' });
+const filterWorker = new Worker(new URL('../workers/filter.worker.ts', import.meta.url), { type: 'module' });
 const filter = Comlink.wrap<(f: TasksFilterParams, v: Task[]) => Task[]>(filterWorker);
 
 export const currentStateTasksWithFilter = (range: TasksFilterParams) =>
@@ -32,7 +32,7 @@ export const currentStateTasksWithFilter = (range: TasksFilterParams) =>
     switchMap((tasks) => filter(range, tasks))
   );
 
-const statsWorker = new Worker('../workers/stats.worker.ts', { type: 'module' });
+const statsWorker = new Worker(new URL('../workers/stats.worker.ts', import.meta.url), { type: 'module' });
 const stats = Comlink.wrap<(f: StatsParams, v: Task[]) => Stats>(statsWorker);
 
 export const currentStateTasksStats = (params: StatsParams) =>
