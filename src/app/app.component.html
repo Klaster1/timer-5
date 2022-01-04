@@ -14,13 +14,13 @@
       </mat-nav-list>
       <mat-nav-list class="states">
         <a mat-list-item routerLink="/tasks/active" routerLinkActive="nav-link-active" matTooltip="Active tasks">
-          <mat-icon>{{ taskState.active| taskStateIcon }}</mat-icon>
+          <mat-icon>{{ taskState.active | taskStateIcon }}</mat-icon>
         </a>
         <a mat-list-item routerLink="/tasks/finished" routerLinkActive="nav-link-active" matTooltip="Finished tasks"
-          ><mat-icon>{{ taskState.finished| taskStateIcon }}</mat-icon></a
+          ><mat-icon>{{ taskState.finished | taskStateIcon }}</mat-icon></a
         >
         <a mat-list-item routerLink="/tasks/dropped" routerLinkActive="nav-link-active" matTooltip="Dropped tasks"
-          ><mat-icon>{{ taskState.dropped| taskStateIcon }}</mat-icon></a
+          ><mat-icon>{{ taskState.dropped | taskStateIcon }}</mat-icon></a
         >
       </mat-nav-list>
       <mat-action-list *ngrxLet="theme$ as theme">

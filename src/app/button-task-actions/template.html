@@ -7,9 +7,15 @@
       <div mat-menu-item (click)="$event.stopPropagation()">
         <mat-select [value]="task.state" (selectionChange)="changeTaskState($event.value)">
           <mat-select-trigger>{{task.state|taskState}}</mat-select-trigger>
-          <mat-option value="taskState.active"><mat-icon>{{taskState.active|taskStateIcon}}</mat-icon>Active</mat-option>
-          <mat-option value="taskState.finished"><mat-icon>{{taskState.finished|taskStateIcon}}</mat-icon>Done</mat-option>
-          <mat-option value="taskState.dropped"><mat-icon>{{taskState.dropped|taskStateIcon}}</mat-icon>Dropped</mat-option>
+          <mat-option value="taskState.active"
+            ><mat-icon>{{taskState.active|taskStateIcon}}</mat-icon>Active</mat-option
+          >
+          <mat-option value="taskState.finished"
+            ><mat-icon>{{taskState.finished|taskStateIcon}}</mat-icon>Done</mat-option
+          >
+          <mat-option value="taskState.dropped"
+            ><mat-icon>{{taskState.dropped|taskStateIcon}}</mat-icon>Dropped</mat-option
+          >
         </mat-select>
       </div>
       <button mat-menu-item type="button" (click)="renameTask()">Rename</button>
