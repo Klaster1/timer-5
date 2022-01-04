@@ -45,14 +45,14 @@ function tasks(state: StoreState['tasks'] | undefined, action: Action) {
       const task = s.values[a.taskId];
       if (!task) return s;
       const updatedTask = {
-        ...s.values[a.taskId],
+        ...task,
         sessions: sessions(task.sessions, a),
       };
       return {
         ...s,
         values: {
           ...s.values,
-          [a.taskId]: { ...task },
+          [a.taskId]: updatedTask,
         },
       };
     }),
