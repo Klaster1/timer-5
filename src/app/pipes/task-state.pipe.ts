@@ -1,5 +1,6 @@
 import { NgModule, Pipe, PipeTransform } from '@angular/core';
-import { RouteTaskState } from '@app/types';
+import { RouteTaskState, TaskState } from '@app/types';
+import { assertNever } from '@app/types/assert-never';
 
 @Pipe({
   name: 'taskState',
@@ -7,14 +8,18 @@ import { RouteTaskState } from '@app/types';
 export class TaskStatePipe implements PipeTransform {
   transform(value?: RouteTaskState) {
     switch (value) {
-      case 'active':
+      case TaskState.active:
         return 'Active';
-      case 'dropped':
+      case TaskState.dropped:
         return 'Dropped';
+      case TaskState.finished:
+        return 'Finished';
       case 'all':
         return 'All';
+      case undefined:
+        return '😵';
       default:
-        return null;
+        return assertNever(value);
     }
   }
 }

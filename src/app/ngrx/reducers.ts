@@ -29,13 +29,15 @@ function tasks(state: StoreState['tasks'] | undefined, action: Action) {
         },
       },
     })),
-    on(actions.renameTask, (s, a) => {
-      const task = s.values[a.taskId];
-      return task ? { ...s, [a.taskId]: { ...task, name: a.name } } : s;
+    on(actions.renameTask, (state, action) => {
+      const task = state.values[action.taskId];
+      return task ? { ...state, values: { ...state.values, [action.taskId]: { ...task, name: action.name } } } : state;
     }),
-    on(actions.updateTaskState, (s, a) => {
-      const task = s.values[a.taskId];
-      return task ? { ...s, [a.taskId]: { ...task, name: a.state } } : s;
+    on(actions.updateTaskState, (state, action) => {
+      const task = state.values[action.taskId];
+      return task
+        ? { ...state, values: { ...state.values, [action.taskId]: { ...task, state: action.state } } }
+        : state;
     }),
     on(actions.deleteTask, (s, a) => ({
       ids: s.ids.filter((id) => id !== a.taskId),

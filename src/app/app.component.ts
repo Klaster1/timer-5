@@ -24,8 +24,8 @@ export class AppComponent {
   constructor(private store: Store<StoreState>, keys: HotkeysService, router: Router) {
     keys.add([
       hotkey('g t', 'Go to all tasks', () => router.navigate(['tasks', 'all'])),
-      hotkey('g a', 'Go to active tasks', () => router.navigate(['tasks', 'active'])),
-      hotkey('g d', 'Go to done tasks', () => router.navigate(['tasks', 'done'])),
+      hotkey('g a', 'Go to active tasks', () => router.navigate(['tasks', TaskState.active])),
+      hotkey('g f', 'Go to finished tasks', () => router.navigate(['tasks', TaskState.finished])),
     ]);
     this.theme$.pipe(tap((t) => document.body.classList.toggle('theme-alternate', t === 'dark'))).subscribe();
   }
