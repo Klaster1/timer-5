@@ -18,7 +18,6 @@ import { TaskDurationPipeModule } from '@app/pipes/task-duration.pipe';
 import { TaskStateIconPipeModule } from '@app/pipes/task-state-icon.pipe';
 import { TaskStatePipeModule } from '@app/pipes/task-state.pipe';
 import { TasksDurationPipeModule } from '@app/pipes/tasks-duration.pipe';
-import { isTruthy } from '@app/utils/assert';
 import { NgStackFormsModule } from '@ng-stack/forms';
 import { ReactiveComponentModule } from '@ngrx/component';
 import { NgScrollbarModule } from 'ngx-scrollbar';
@@ -68,38 +67,28 @@ export type TasksFilterRouteParams = {
     MatSelectModule,
     ButtonTaskActionsModule,
     FilterFormModule.forChild<TasksFilterRouteParams>({
-      decode(v) {
-        const fragment = v.split('/')[2];
-        if (!fragment) return {};
-        return Object.fromEntries(
-          fragment
-            .split(';')
-            .filter((param) => param.includes('='))
-            .map((param) => param.split('='))
-            .map(([key, rawValue]) => {
-              if (!rawValue) return null;
-              switch (key) {
-                case 'search':
-                  return [key, decodeURIComponent(rawValue)];
-                case 'from':
-                case 'to':
-                  return [key, new Date(decodeURIComponent(rawValue))];
-                default:
-                  return null;
-              }
-            })
-            .filter(isTruthy)
-        );
+      urlFragmentIndex: 2,
+      encodeValue(pair) {
+        switch (pair?.[0]) {
+          case 'search':
+            return pair?.[1] ? ([pair?.[0], pair?.[1]] as const) : null;
+          case 'from':
+          case 'to':
+            return pair?.[1] ? ([pair?.[0], pair?.[1].toISOString()] as const) : null;
+          default:
+            return null;
+        }
       },
-      encode(v, url) {
-        const params = `${v.search ? `search=${encodeURIComponent(v.search)};` : ''}${
-          v.from instanceof Date ? `from=${encodeURIComponent(v.from.toISOString())};` : ''
-        }${v.to instanceof Date ? `to=${encodeURIComponent(v.to.toISOString())};` : ''}`;
-        // [ "", "tasks", "all", "kvb4yqd5" ]
-        return url
-          .split('/')
-          .map((fragment, i) => (i === 2 ? `${fragment.split(';')[0]}${params ? `;${params}` : ''}` : fragment))
-          .join('/');
+      decodeValue(key, rawValue) {
+        switch (key) {
+          case 'search':
+            return [key, rawValue];
+          case 'from':
+          case 'to':
+            return [key, new Date(rawValue)];
+          default:
+            return null;
+        }
       },
     }),
   ],
