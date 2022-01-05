@@ -118,7 +118,28 @@ const timerTimelinePlugin = (): PluginReturnValue => {
 export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() chartData?: AlignedData;
   @Input() barWidth?: 'hour' | 'day' | 'month' | 'year';
+  @Input() set range(value: [Date | null, Date | null]) {
+    const oldMin = Math.round(this.uplot?.scales.x?.min ?? -1);
+    const oldMax = Math.round(this.uplot?.scales.x?.max ?? -1);
+    const dataMin = this.chartData?.[0]?.[0];
+    const dataMax = this.chartData?.[0][this.chartData?.[0].length - 1];
+    const newMin =
+      value[0] instanceof Date
+        ? Math.round(value[0].valueOf() / 1000)
+        : typeof dataMin === 'number'
+        ? dataMin
+        : Date.now() / 1000;
+    const newMax =
+      value[1] instanceof Date
+        ? Math.round(value[1].valueOf() / 1000)
+        : typeof dataMax === 'number'
+        ? dataMax
+        : Date.now() / 1000;
+    if (oldMin === newMin && oldMax === newMax) return;
+    this.uplot?.setScale('x', { min: newMin, max: newMax });
+  }
   @Output() rangeChange = new EventEmitter<[Date, Date]>();
+  private firstRangeChangeSkipped = false;
   private uplot?: uPlot;
   private readonly headerHeight = 31;
   dimensionsSubscriber = this.ro.subscribe((e) => {
@@ -147,6 +168,7 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
     }[this.barWidth!];
     return value ? formatHours(value) : '--:--';
   }
+
   ngAfterViewInit() {
     this.ngZone.runOutsideAngular(() => {
       this.uplot = new uPlot(
@@ -157,11 +179,18 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
           hooks: {
             setScale: [
               (self: uPlot, key: string) => {
+                if (!this.firstRangeChangeSkipped) {
+                  this.firstRangeChangeSkipped = true;
+                  return;
+                }
                 const scale = self.scales[key];
                 if (key !== 'x' || !scale || typeof scale.min !== 'number' || typeof scale.max !== 'number') {
                   return;
                 }
-                this.rangeChange.emit([new Date(scale.min * 1000), new Date(scale.max * 1000)]);
+                const event: [Date, Date] = [new Date(scale.min * 1000), new Date(scale.max * 1000)];
+                this.ngZone.runTask(() => {
+                  this.rangeChange.emit(event);
+                });
               },
             ],
           },
@@ -210,7 +239,7 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
     }
   }
   ngOnChanges(changes: SimpleChanges) {
-    if (this.chartData) {
+    if (this.chartData && changes.chartData?.currentValue !== changes.chartData?.previousValue) {
       this.uplot?.setData(this.chartData);
     }
     if (changes.barWidth && changes.barWidth.currentValue) {

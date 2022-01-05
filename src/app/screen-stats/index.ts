@@ -26,6 +26,6 @@ import { TimelineChartUplotComponent } from './timeline-chart-uplot.component';
     NgScrollbarModule,
   ],
   declarations: [ScreenStatsComponent, TimelineChartUplotComponent],
-  exports: [ScreenStatsComponent],
+  exports: [ScreenStatsComponent, TimelineChartUplotComponent],
 })
 export class ScreenStatsModule {}

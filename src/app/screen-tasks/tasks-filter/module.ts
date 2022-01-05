@@ -15,6 +15,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FilterFormModule } from '@app/filter-form/filter-form.module';
+import { ScreenStatsModule } from '@app/screen-stats';
 import { NgStackFormsModule } from '@ng-stack/forms';
 import { ReactiveComponentModule } from '@ngrx/component';
 import { ButtonResetInputComponent } from './button-reset-input.component';
@@ -39,6 +40,7 @@ import { TasksFilterComponent } from './component';
     A11yModule,
     CommonModule,
     FilterFormModule,
+    ScreenStatsModule,
   ],
   exports: [TasksFilterComponent],
 })

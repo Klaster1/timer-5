@@ -8,10 +8,13 @@ import {
   ViewChild,
 } from '@angular/core';
 import { closestDayEnd, closestDayStart, closestWeekEnd, closestWeekStart, toYesterday } from '@app/domain/date';
-import { TasksFilterParams } from '@app/types';
+import { currentStateTasksStats } from '@app/ngrx/selectors';
+import { StoreState, TasksFilterParams } from '@app/types';
 import { WrapControls } from '@app/types/form';
 import { FormControl, FormGroup } from '@ng-stack/forms';
-import { startWith, tap } from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { map, pluck, startWith, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'tasks-filter',
@@ -20,12 +23,27 @@ import { startWith, tap } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TasksFilterComponent implements OnDestroy {
+  constructor(private store: Store<StoreState>) {}
   @Output() value = new EventEmitter<TasksFilterParams>();
   form = new FormGroup<WrapControls<TasksFilterParams>>({
     search: new FormControl(),
     from: new FormControl(),
     to: new FormControl(),
   });
+  timelineUplot$ = this.store.pipe(currentStateTasksStats({ timelineStep: 'day' }), pluck('timeline', 'uPlotData'));
+  chartRange$: Observable<[Date | null, Date]> = this.form.valueChanges.pipe(
+    startWith({}),
+    map(() => {
+      const { from, to } = this.form.getRawValue();
+      return [from ?? null, to ?? new Date()];
+    })
+  );
+  onChartRangeChange(e: [Date, Date]) {
+    this.form.patchValue({
+      from: e[0],
+      to: e[1],
+    });
+  }
   private subscriber = this.form.valueChanges
     .pipe(
       startWith(this.form.value),
