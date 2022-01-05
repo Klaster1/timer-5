@@ -8,3 +8,16 @@ form {
 .name {
   grid-column: span 3;
 }
+
+@media (max-width: 530px) {
+  form {
+    grid-template-columns: 1fr;
+  }
+  .name {
+    grid-column: span 1;
+  }
+
+  .dates-menu {
+    display: none;
+  }
+}
