@@ -11,20 +11,24 @@
       cdkFocusRegionStart
       cdkFocusInitial
     />
+    <button-reset-input-control matSuffix [control]="form.controls.search"></button-reset-input-control>
   </mat-form-field>
   <mat-form-field>
     <input matInput [ngxMatDatetimePicker]="from" placeholder="From" formControlName="from" />
+    <button-reset-input-control matSuffix [control]="form.controls.from"></button-reset-input-control>
     <mat-datepicker-toggle matSuffix [for]="$any(from)"></mat-datepicker-toggle>
     <ngx-mat-datetime-picker #from [showSeconds]="true"> </ngx-mat-datetime-picker>
   </mat-form-field>
   <mat-form-field>
     <input matInput [ngxMatDatetimePicker]="to" placeholder="To" formControlName="to" cdkFocusRegionEnd />
+    <button-reset-input-control matSuffix [control]="form.controls.to"></button-reset-input-control>
     <mat-datepicker-toggle matSuffix [for]="$any(to)"></mat-datepicker-toggle>
     <ngx-mat-datetime-picker #to [showSeconds]="true"> </ngx-mat-datetime-picker>
   </mat-form-field>
   <button mat-icon-button matSuffix [matMenuTriggerFor]="fromMenu"><mat-icon>expand_more</mat-icon></button>
 </form>
 <mat-menu #fromMenu="matMenu">
+  <button mat-menu-item (click)="setAnyTime()">Any time</button>
   <button mat-menu-item (click)="setToday()">Today</button>
   <button mat-menu-item (click)="setYesterday()">Yesterday</button>
   <button mat-menu-item (click)="setThisWeek()">This week</button>

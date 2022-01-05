@@ -45,6 +45,12 @@ export class TasksFilterComponent implements OnDestroy {
   ngOnDestroy() {
     this.subscriber.unsubscribe();
   }
+  setAnyTime() {
+    this.form.patchValue({
+      from: undefined,
+      to: undefined,
+    });
+  }
   setToday() {
     this.form.patchValue({
       from: closestDayStart(new Date()),

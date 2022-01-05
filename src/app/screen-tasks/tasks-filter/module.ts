@@ -17,10 +17,11 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { FilterFormModule } from '@app/filter-form/filter-form.module';
 import { NgStackFormsModule } from '@ng-stack/forms';
 import { ReactiveComponentModule } from '@ngrx/component';
+import { ButtonResetInputComponent } from './button-reset-input.component';
 import { TasksFilterComponent } from './component';
 
 @NgModule({
-  declarations: [TasksFilterComponent],
+  declarations: [TasksFilterComponent, ButtonResetInputComponent],
   imports: [
     MatButtonModule,
     MatSelectModule,
