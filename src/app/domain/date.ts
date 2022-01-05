@@ -1,3 +1,5 @@
+import { assertNever } from '@app/types/assert-never';
+
 export const closestHourStart = (value: Date): Date => {
   const date = new Date(value);
   date.setMinutes(0, 0, 0);
@@ -95,7 +97,7 @@ export const formatHours = (value: number): string => {
     return '';
   }
 
-  return ['h', 'm']
+  return (['h', 'm'] as const)
     .map((part) => {
       switch (part) {
         case 'h':
@@ -104,6 +106,8 @@ export const formatHours = (value: number): string => {
         case 'm':
           // eslint-disable-next-line no-bitwise
           return pad(~~((value % 3600000) / 60000));
+        default:
+          return assertNever(part);
       }
     })
     .join(':');

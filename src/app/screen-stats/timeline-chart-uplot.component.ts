@@ -14,6 +14,7 @@ import {
 import { barWidths, formatHours } from '@app/domain/date';
 import { theme } from '@app/ngrx/selectors';
 import { StoreState } from '@app/types';
+import { assertNever } from '@app/types/assert-never';
 import { Store } from '@ngrx/store';
 import { NgResizeObserver, ngResizeObserverProviders } from 'ng-resize-observer';
 import uPlot, { AlignedData, Hooks, Options } from 'uplot';
@@ -202,6 +203,10 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
       case 'month':
       case 'year':
         return 'Hours';
+      case undefined:
+        return undefined;
+      default:
+        return assertNever(this.barWidth);
     }
   }
   ngOnChanges(changes: SimpleChanges) {
