@@ -85,3 +85,11 @@ a:not([class*='mat-']) {
     text-decoration: underline;
   }
 }
+
+.mat-dialog-actions {
+  justify-content: flex-end;
+
+  button {
+    text-transform: uppercase;
+  }
+}

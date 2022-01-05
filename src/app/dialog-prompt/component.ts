@@ -1,5 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormControl, FormGroup, Validators } from '@ng-stack/forms';
 
 export interface DialogPromptData {
   title: string;
@@ -10,13 +11,20 @@ export interface DialogPromptData {
 @Component({
   selector: 'dialog-prompt',
   templateUrl: './template.html',
+  styleUrls: ['./style.scss'],
 })
 export class DialogPromptComponent {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: DialogPromptData,
     private dialog: MatDialogRef<DialogPromptComponent, string>
-  ) {}
-  onSubmit(value?: string) {
-    this.dialog.close(value);
+  ) {
+    if (data.value) this.form.setValue({ value: data.value });
+  }
+  form = new FormGroup({
+    value: new FormControl<string>(null, [Validators.required]),
+  });
+  onSubmit() {
+    if (this.form.invalid) return;
+    this.dialog.close(this.form.value.value);
   }
 }

@@ -1,3 +1,5 @@
-mat-form-field:first-of-type {
-  margin-right: 10px;
+form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }

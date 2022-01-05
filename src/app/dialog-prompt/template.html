@@ -1,14 +1,7 @@
 <h1 mat-dialog-title>{{data.title}}</h1>
-<form mat-dialog-content id="promptForm" (submit)="$event.preventDefault();onSubmit(input.value)">
+<form mat-dialog-content id="promptForm" [formGroup]="form" (ngSubmit)="onSubmit()">
   <mat-form-field>
-    <input
-      type="text"
-      matInput
-      [attr.required]="true"
-      [value]="data.value|toString"
-      [placeholder]="data.placeholder|toString"
-      #input
-    />
+    <input type="text" matInput formControlName="value" />
   </mat-form-field>
 </form>
 <div mat-dialog-actions>

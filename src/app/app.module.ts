@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogConfig, MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
@@ -74,6 +74,12 @@ import { ScreenTasksModule } from './screen-tasks';
         icons.addSvgIcon('timer-logo', sanitizer.bypassSecurityTrustResourceUrl('../assets/logo.svg'));
       },
       deps: [MatIconRegistry, DomSanitizer],
+    },
+    {
+      provide: MAT_DIALOG_DEFAULT_OPTIONS,
+      useFactory(): MatDialogConfig<any> {
+        return { width: '520px', autoFocus: true };
+      },
     },
   ],
   bootstrap: [AppComponent],
