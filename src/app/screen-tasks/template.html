@@ -7,9 +7,13 @@
           ({{duration}})
         </span>
       </h1>
-      <button mat-icon-button (click)="toggleFilter()"><mat-icon>filter_list</mat-icon></button>
+      <ng-container *ngrxLet="searchOpened$ as searchOpened">
+        <button mat-icon-button (click)="searchOpened ? closeFilter() : openFilter()">
+          <mat-icon>filter_list</mat-icon>
+        </button>
+      </ng-container>
     </mat-toolbar>
-    <tasks-filter *ngIf="searchOpened" (value)="filterParams$.next($event)" (keyup.esc)="toggleFilter()"></tasks-filter>
+    <tasks-filter *ngIf="searchOpened$|async" (keyup.esc)="closeFilter()"></tasks-filter>
     <ng-container *ngIf="tasks.length; else noTasks">
       <button (click)="addTask()" mat-fab color="accent">
         <mat-icon>add</mat-icon>
@@ -44,7 +48,7 @@
       </ng-scrollbar>
     </ng-container>
     <ng-template #noTasks>
-      <empty-state *ngIf="!searchOpened; else noSearchResults">
+      <empty-state *ngIf="(searchOpened$|async)===false; else noSearchResults">
         <mat-icon svgIcon="timer-logo" color="primary"></mat-icon>
         <span title>No tasks</span>
         <span subtitle>Looks like you have no {{state}} tasks</span>
@@ -57,7 +61,7 @@
           <mat-icon color="accent">search</mat-icon>
           <span title>Nothing found</span>
           <span subtitle>Could not find tasks matching the criteria</span>
-          <button mat-raised-button (click)="toggleFilter()" type="button">Reset filter</button>
+          <button mat-raised-button (click)="closeFilter()" type="button">Reset filter</button>
         </empty-state>
       </ng-template>
     </ng-template>

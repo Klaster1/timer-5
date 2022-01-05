@@ -12,6 +12,8 @@ export const router = createFeatureSelector<StoreState['router']>('router');
 export const { selectRouteParam } = getSelectors(router);
 export const currentTaskId = selectRouteParam('taskId');
 export const currentTasksState = createSelector(selectRouteParam('state'), (value) => {
+  if (typeof value !== 'string') return 'all' as const;
+  value = value.split(';')[0];
   if (!value || !isValidTaskState(value)) return 'all' as const;
   return value as TaskState;
 });

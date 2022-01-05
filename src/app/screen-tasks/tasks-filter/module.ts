@@ -14,6 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { FilterFormModule } from '@app/filter-form/filter-form.module';
 import { NgStackFormsModule } from '@ng-stack/forms';
 import { ReactiveComponentModule } from '@ngrx/component';
 import { TasksFilterComponent } from './component';
@@ -36,6 +37,7 @@ import { TasksFilterComponent } from './component';
     NgxMatTimepickerModule,
     A11yModule,
     CommonModule,
+    FilterFormModule,
   ],
   exports: [TasksFilterComponent],
 })

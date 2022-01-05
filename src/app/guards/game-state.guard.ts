@@ -6,7 +6,7 @@ import { isValidTaskState } from '@app/domain';
 export class GameStateGuard implements CanActivate {
   constructor(private router: Router) {}
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    const gamesState = next.params.state;
+    const gamesState = next.params.state.split(';')[0];
     return isValidTaskState(gamesState) || gamesState === 'all' ? true : this.router.navigate(['/tasks/active']);
   }
 }

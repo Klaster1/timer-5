@@ -8,14 +8,16 @@ import {
   TrackByFunction,
 } from '@angular/core';
 import { Router } from '@angular/router';
+import { FilterFormService } from '@app/filter-form/filter-form.service';
 import * as actions from '@app/ngrx/actions';
 import { currentStateTasksWithFilter, currentTask, currentTasksState } from '@app/ngrx/selectors';
-import { StoreState, Task, TasksFilterParams } from '@app/types';
+import { StoreState, Task } from '@app/types';
 import { hotkey } from '@app/utils/hotkey';
 import { Store } from '@ngrx/store';
 import { HotkeysService } from 'angular2-hotkeys';
-import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
-import { map, switchMap, take, tap } from 'rxjs/operators';
+import { combineLatest, merge, Observable, Subject } from 'rxjs';
+import { map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
+import { TasksFilterRouteParams } from '.';
 
 @Component({
   templateUrl: './template.html',
@@ -26,8 +28,12 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
   @HostBinding('class.task-opened') private taskOpened = false;
 
   state$ = this.store.select(currentTasksState);
-  searchOpened = false;
-  filterParams$: Subject<TasksFilterParams> = new BehaviorSubject({});
+  filterParams$ = this.filter.filterParams$;
+  filterToggles$ = new Subject<boolean>();
+  filterPresent$: Observable<boolean> = this.filterParams$.pipe(map((params) => !!Object.keys(params).length));
+  searchOpened$ = merge(this.filterPresent$.pipe(take(1)), this.filterToggles$).pipe(
+    shareReplay({ refCount: true, bufferSize: 1 })
+  );
   tasks$ = this.filterParams$.pipe(switchMap((filter) => this.store.pipe(currentStateTasksWithFilter(filter))));
   currentTask$ = this.store.select(currentTask);
   currentTaskId$ = this.currentTask$.pipe(map((t) => t?.id));
@@ -70,7 +76,7 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
     }),
     hotkey('ctrl+f', 'Search', (e) => {
       e.preventDefault();
-      this.toggleFilter();
+      this.openFilter();
       this.cdr.detectChanges();
     }),
   ];
@@ -81,7 +87,8 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     private store: Store<StoreState>,
     private keys: HotkeysService,
-    private router: Router
+    private router: Router,
+    private filter: FilterFormService<TasksFilterRouteParams>
   ) {}
 
   ngOnInit() {
@@ -89,15 +96,16 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
   }
   ngOnDestroy() {
     this.keys.remove(this.hotkeys);
-    this.filterParams$.complete();
+    this.filterToggles$.complete();
   }
   addTask() {
     this.store.dispatch(actions.createTaskIntent());
   }
-  toggleFilter() {
-    this.searchOpened = !this.searchOpened;
-    if (!this.searchOpened) {
-      this.filterParams$.next({});
-    }
+  openFilter() {
+    this.filterToggles$.next(true);
+  }
+  closeFilter() {
+    this.filter.next({});
+    this.filterToggles$.next(false);
   }
 }
