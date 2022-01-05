@@ -36,7 +36,6 @@ export class AppComponent {
       .subscribe((t) => this.store.dispatch(updateTheme({ theme: t === 'dark' ? 'light' : 'dark' })));
   }
   import(event: Event) {
-    console.log(event);
     const target = event.target;
     if (!(target instanceof HTMLInputElement)) return;
     const file = target?.files?.[0];

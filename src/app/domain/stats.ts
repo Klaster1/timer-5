@@ -85,7 +85,6 @@ const sessionsPerDay = (tasks: Task[]): SessionsPerDay => {
 const sessionsPerDayToUplotData = (sessionsPerDay: SessionsPerDay): number[][] => {
   const maxSessionsPerDay = [...sessionsPerDay.values()].sort((a, b) => b.sessions.length - a.sessions.length)[0]
     ?.sessions.length;
-  console.log(maxSessionsPerDay);
   return [];
 };
 
@@ -159,9 +158,6 @@ export const stats = (params: StatsParams, tasks: Task[]): Stats => {
     throw new Error('Missing date fns');
   }
   const bars = tasksToBars(tasks, ...dateFns);
-
-  // console.log(sessionsPerDay(tasks), sessionIdToTaskIdMap(tasks));
-  console.log(sessionsPerDayToUplotData(sessionsPerDay(tasks)));
 
   return {
     top10: tasks
