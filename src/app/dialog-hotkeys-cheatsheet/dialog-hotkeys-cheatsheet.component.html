@@ -1,0 +1,14 @@
+<h1 mat-dialog-title>Keyboard shortcuts</h1>
+<div mat-dialog-content>
+  <dl>
+    <ng-container *ngFor="let key of keys">
+      <dt>
+        <kbd *ngFor="let formatted of key.formatted">{{ formatted }}</kbd>
+      </dt>
+      <dd>{{ key.description }}</dd>
+    </ng-container>
+  </dl>
+</div>
+<div mat-dialog-actions>
+  <button mat-button mat-dialog-close>Close</button>
+</div>

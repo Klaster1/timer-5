@@ -2,6 +2,7 @@
 <form mat-dialog-content id="promptForm" [formGroup]="form" (ngSubmit)="onSubmit()">
   <mat-form-field>
     <input type="text" matInput formControlName="value" />
+    <mat-error>Value is required</mat-error>
   </mat-form-field>
 </form>
 <div mat-dialog-actions>

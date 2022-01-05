@@ -20,6 +20,7 @@ import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DialogEditSessionModule } from './dialog-edit-session';
+import { DialogHotkeysCheatsheetModule } from './dialog-hotkeys-cheatsheet/dialog-hotkeys-cheatsheet.module';
 import { DialogPromptModule } from './dialog-prompt';
 import { Effects } from './ngrx/effects';
 import { metaReducers } from './ngrx/metareducers';
@@ -49,6 +50,7 @@ import { ScreenTasksModule } from './screen-tasks';
     DialogPromptModule,
     DialogEditSessionModule,
     HttpClientModule,
+    DialogHotkeysCheatsheetModule,
     HotkeyModule.forRoot({ cheatSheetCloseEsc: true }),
     StoreModule.forRoot(reducers.combinedReducers, {
       metaReducers,
