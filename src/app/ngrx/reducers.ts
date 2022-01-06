@@ -1,72 +1,72 @@
 import { StoreState, Task, TaskState } from '@app/types';
-import { fromEntries } from '@app/utils/from-entries';
 import { routerReducer } from '@ngrx/router-store';
-import { Action, createReducer, on } from '@ngrx/store';
+import { Action, on } from '@ngrx/store';
+import { createImmerReducer } from 'ngrx-immer/store';
 import * as actions from './actions';
 
 function tasks(state: StoreState['tasks'] | undefined, action: Action) {
-  const sessions = createReducer<Task['sessions']>(
+  const sessions = createImmerReducer<Task['sessions']>(
     [],
-    on(actions.startTask, (s, a) => [...s, { id: a.sessionId, start: a.timestamp }]),
-    on(actions.stopTask, (s, a) => s.map((s) => (!s.end ? { ...s, end: a.timestamp } : s))),
-    on(actions.updateSession, (s, a) =>
-      s.map((s) => (s.id === a.sessionId ? { ...s, start: a.start, end: a.end } : s))
-    ),
-    on(actions.deleteSession, (s, a) => s.filter((s) => s.id !== a.sessionId))
+    on(actions.startTask, (state, action) => {
+      state.push({ id: action.sessionId, start: action.timestamp });
+      return state;
+    }),
+    on(actions.stopTask, (state, action) => {
+      state.forEach((session) => {
+        if (typeof session.end !== 'number') session.end = action.timestamp;
+      });
+      return state;
+    }),
+    on(actions.updateSession, (state, action) => {
+      state.forEach((session) => {
+        if (session.id === action.sessionId) {
+          session.start = action.start;
+          session.end = action.end;
+        }
+      });
+      return state;
+    }),
+    on(actions.deleteSession, (state, action) => {
+      return state.filter((session) => session.id !== action.sessionId);
+    })
   );
 
-  const tasks = createReducer<StoreState['tasks']>(
+  const tasks = createImmerReducer<StoreState['tasks']>(
     { ids: [], values: {} },
     on(actions.loadTasks, (store, action) => action.data),
-    on(actions.createTask, (s, a) => ({
-      ids: [...s.ids, a.taskId],
-      values: {
-        ...s.values,
-        [a.taskId]: {
-          id: a.taskId,
-          name: a.name,
-          sessions: [],
-          state: TaskState.active,
-        },
-      },
-    })),
+    on(actions.createTask, (state, action) => {
+      state.ids.push(action.taskId);
+      state.values[action.taskId] = { id: action.taskId, name: action.name, sessions: [], state: TaskState.active };
+      return state;
+    }),
     on(actions.renameTask, (state, action) => {
       const task = state.values[action.taskId];
-      return task ? { ...state, values: { ...state.values, [action.taskId]: { ...task, name: action.name } } } : state;
+      if (task) task.name = action.name;
+      return state;
     }),
     on(actions.updateTaskState, (state, action) => {
       const task = state.values[action.taskId];
-      return task
-        ? { ...state, values: { ...state.values, [action.taskId]: { ...task, state: action.state } } }
-        : state;
+      if (task) task.state = action.state;
+      return state;
     }),
-    on(actions.deleteTask, (s, a) => ({
-      ids: s.ids.filter((id) => id !== a.taskId),
-      values: fromEntries(Object.entries(s.values).filter(([id]) => id !== a.taskId)),
-    })),
-    on(actions.startTask, actions.stopTask, actions.updateSession, actions.deleteSession, (s, a) => {
-      const task = s.values[a.taskId];
-      if (!task) return s;
-      const updatedTask = {
-        ...task,
-        sessions: sessions(task.sessions, a),
-      };
-      return {
-        ...s,
-        values: {
-          ...s.values,
-          [a.taskId]: updatedTask,
-        },
-      };
+    on(actions.deleteTask, (state, action) => {
+      state.ids = state.ids.filter((id) => id !== action.taskId);
+      delete state.values[action.taskId];
+      return state;
+    }),
+    on(actions.startTask, actions.stopTask, actions.updateSession, actions.deleteSession, (state, action) => {
+      const task = state.values[action.taskId];
+      if (task) task.sessions = sessions(task.sessions, action);
+      return state;
     })
   );
 
   return tasks(state, action);
 }
 
-const theme = createReducer<StoreState['theme']>(
+const theme = createImmerReducer<StoreState['theme']>(
   'dark',
-  on(actions.updateTheme, (_s, a) => a.theme)
+  on(actions.updateTheme, (state, action) => action.theme)
 );
 
 export const combinedReducers = {
