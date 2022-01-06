@@ -35,10 +35,11 @@
   <button mat-menu-item (click)="setYesterday()">Yesterday</button>
   <button mat-menu-item (click)="setThisWeek()">This week</button>
 </mat-menu>
-<ng-container *ngrxLet="timelineUplot$ as data">
-  <ng-container *ngrxLet="chartRange$ as range">
+<ng-container *ngIf="timelineUplot$|async as data; else ghost">
+  <ng-container *ngIf="chartRange$|async as range; else ghost">
     <timeline-chart-uplot
-      *ngIf="data && data.length"
+      *ngIf="data | map : hasChartData; else ghost"
+      [@inOutAnimation]
       [chartData]="$any(data)"
       barWidth="day"
       [range]="range"
@@ -46,3 +47,6 @@
     ></timeline-chart-uplot>
   </ng-container>
 </ng-container>
+<ng-template #ghost>
+  <timeline-chart-uplot [chartData]="[[],[]]" barWidth="day"></timeline-chart-uplot>
+</ng-template>

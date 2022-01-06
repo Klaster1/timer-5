@@ -1,3 +1,4 @@
+import { animate, style, transition, trigger } from '@angular/animations';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -21,9 +22,15 @@ import { map, pluck, startWith, tap } from 'rxjs/operators';
   templateUrl: './component.html',
   styleUrls: ['./component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [
+    trigger('inOutAnimation', [
+      transition(':enter', [style({ opacity: 0 }), animate('300ms ease-out', style({ opacity: 1 }))]),
+    ]),
+  ],
 })
 export class TasksFilterComponent implements OnDestroy {
   constructor(private store: Store<StoreState>) {}
+  hasChartData = (data: number[][]): boolean => !!data[0]?.length;
   @Output() value = new EventEmitter<TasksFilterParams>();
   form = new FormGroup<WrapControls<TasksFilterParams>>({
     search: new FormControl(),
