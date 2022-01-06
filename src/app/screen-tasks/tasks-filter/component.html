@@ -13,13 +13,21 @@
     />
     <button-reset-input-control matSuffix [control]="form.controls.search"></button-reset-input-control>
   </mat-form-field>
-  <mat-form-field>
+  <mat-form-field class="duration">
+    <mat-label>Sort by duration</mat-label>
+    <mat-select formControlName="durationSort">
+      <mat-option>Default</mat-option>
+      <mat-option value="longestFirst">Lognest first</mat-option>
+      <mat-option value="shortestFirst">Shortest first</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field class="from">
     <input matInput [ngxMatDatetimePicker]="from" placeholder="From" formControlName="from" />
     <button-reset-input-control matSuffix [control]="form.controls.from"></button-reset-input-control>
     <mat-datepicker-toggle matSuffix [for]="$any(from)"></mat-datepicker-toggle>
     <ngx-mat-datetime-picker #from [showSeconds]="true"> </ngx-mat-datetime-picker>
   </mat-form-field>
-  <mat-form-field>
+  <mat-form-field class="to">
     <input matInput [ngxMatDatetimePicker]="to" placeholder="To" formControlName="to" cdkFocusRegionEnd />
     <button-reset-input-control matSuffix [control]="form.controls.to"></button-reset-input-control>
     <mat-datepicker-toggle matSuffix [for]="$any(to)"></mat-datepicker-toggle>

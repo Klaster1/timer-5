@@ -6,7 +6,27 @@ form {
 }
 
 .name {
-  grid-column: span 3;
+  grid-row: 1;
+  grid-column: span 1;
+}
+
+.duration {
+  grid-row: 1;
+  grid-column: 2 / span 2;
+}
+
+.from {
+  grid-row: 2;
+  grid-column: 1;
+}
+.to {
+  grid-row: 2;
+  grid-column: 2;
+}
+
+.dates-menu {
+  grid-row: 2;
+  grid-column: 3;
 }
 
 @media (max-width: 530px) {

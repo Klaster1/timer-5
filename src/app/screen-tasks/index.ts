@@ -33,6 +33,7 @@ export type TasksFilterRouteParams = {
   search?: string;
   from?: Date;
   to?: Date;
+  durationSort?: 'longestFirst' | 'shortestFirst';
 };
 
 @NgModule({
@@ -75,6 +76,14 @@ export type TasksFilterRouteParams = {
           case 'from':
           case 'to':
             return pair?.[1] ? ([pair?.[0], pair?.[1].toISOString()] as const) : null;
+          case 'durationSort':
+            switch (pair?.[1]) {
+              case 'longestFirst':
+              case 'shortestFirst':
+                return [pair?.[0], pair?.[1]] as const;
+              default:
+                return null;
+            }
           default:
             return null;
         }
@@ -86,6 +95,15 @@ export type TasksFilterRouteParams = {
           case 'from':
           case 'to':
             return [key, new Date(rawValue)];
+          case 'durationSort': {
+            switch (rawValue) {
+              case 'longestFirst':
+              case 'shortestFirst':
+                return [key, rawValue];
+              default:
+                return null;
+            }
+          }
           default:
             return null;
         }

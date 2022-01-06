@@ -1,4 +1,5 @@
 import { Task, TasksFilterParams } from '../types/domain';
+import { taskDurationPure } from './no-dom';
 
 type Nullable<T> = T | null;
 
@@ -42,14 +43,30 @@ const filterByTo = (filter: TasksFilterParams, t: Nullable<Task>): Nullable<Task
   }
 };
 
+const sortByDuration = (filter: TasksFilterParams, tasks: Task[]): Task[] => {
+  const now = (filter.to ?? new Date()).valueOf();
+  if (filter.durationSort) {
+    return tasks.sort((a, b) =>
+      filter.durationSort === 'shortestFirst'
+        ? taskDurationPure(a, now) - taskDurationPure(b, now)
+        : taskDurationPure(b, now) - taskDurationPure(a, now)
+    );
+  } else {
+    return tasks;
+  }
+};
+
 const composedPredicate = (filter: TasksFilterParams, t: Nullable<Task>): Nullable<Task> =>
   filterByTo(filter, filterByFrom(filter, filterByName(filter, t)));
 
 export const filter = (filter: TasksFilterParams, values: Task[]): Task[] =>
-  values.reduce((acc: Task[], task) => {
-    const result = composedPredicate(filter, task);
-    if (result) {
-      acc.push(result);
-    }
-    return acc;
-  }, []);
+  sortByDuration(
+    filter,
+    values.reduce((acc: Task[], task) => {
+      const result = composedPredicate(filter, task);
+      if (result) {
+        acc.push(result);
+      }
+      return acc;
+    }, [])
+  );

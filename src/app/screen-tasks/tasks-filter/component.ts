@@ -37,6 +37,7 @@ export class TasksFilterComponent implements OnDestroy {
     from: new FormControl(),
     to: new FormControl(),
     taskId: new FormControl(),
+    durationSort: new FormControl(),
   });
   timelineUplot$ = this.store.pipe(currentStateTasksStats({ timelineStep: 'day' }), pluck('timeline', 'uPlotData'));
   chartRange$: Observable<[Date | null, Date]> = this.form.valueChanges.pipe(

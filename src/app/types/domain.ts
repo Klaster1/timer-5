@@ -31,7 +31,13 @@ export type TaskIndexes = {
   yearMonthDate: TimeSpanIndex;
 };
 
-export type TasksFilterParams = { from?: Date; to?: Date; search?: string; taskId?: TaskId };
+export type TasksFilterParams = {
+  from?: Date;
+  to?: Date;
+  search?: string;
+  taskId?: TaskId;
+  durationSort?: 'longestFirst' | 'shortestFirst';
+};
 
 export type RangeWidth = 'hour' | 'day' | 'month' | 'year';
 
