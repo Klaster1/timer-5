@@ -10,10 +10,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { ButtonTaskActionsModule } from '@app/button-task-actions/button-task-actions.module';
 import { FormatDurationPipeModule } from '@app/pipes/format-duration.pipe';
-import { SessionDurationPipeModule } from '@app/pipes/session-duration.pipe';
+import { MapPipeModule } from '@app/pipes/map.pipe';
 import { TaskDurationPipeModule } from '@app/pipes/task-duration.pipe';
 import { TaskStateIconPipeModule } from '@app/pipes/task-state-icon.pipe';
-import { ToStringPipeModule } from '@app/pipes/to-string.pipe';
 import { ReactiveComponentModule } from '@ngrx/component';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { ButtonSessionActionsModule } from './button-session-actions/button-session-actions.module';
@@ -37,10 +36,9 @@ import { ScreenTaskComponent } from './screen-task.component';
     NgScrollbarModule,
     FormatDurationPipeModule,
     TaskDurationPipeModule,
-    SessionDurationPipeModule,
     ButtonTaskActionsModule,
     ButtonSessionActionsModule,
-    ToStringPipeModule,
+    MapPipeModule,
   ],
 })
 export class ScreenTaskModule {}

@@ -26,11 +26,11 @@
         <td
           mat-cell
           *matCellDef="let session"
-          [matTooltip]="((session | sessionDuration | ngrxPush) || 0) / 1000 | toString"
+          [matTooltip]="((session | map: sessionDuration | ngrxPush) || 0) / 1000 | map: toString"
         >
-          {{ session | sessionDuration | formatDuration | ngrxPush }}
+          {{ session | map: sessionDuration | formatDuration | ngrxPush }}
         </td>
-        <td mat-footer-cell *matFooterCellDef [matTooltip]="task | taskDuration | ngrxPush | toString">
+        <td mat-footer-cell *matFooterCellDef [matTooltip]="task | taskDuration | ngrxPush | map: toString">
           {{ task | taskDuration | formatDuration | ngrxPush }}
         </td>
       </ng-container>

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { isTaskRunning, sortSessions } from '@app/domain/no-dom';
+import { sessionDuration } from '@app/domain/with-dom';
 import { FilterFormService } from '@app/filter-form/filter-form.service';
 import { deleteTask, renameTaskIntent, startTask, stopTask, updateTaskState } from '@app/ngrx/actions';
 import { currentTaskWithFilter } from '@app/ngrx/selectors';
@@ -17,6 +18,17 @@ import { map, switchMap, take } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScreenTaskComponent implements OnDestroy, OnInit {
+  sessionDuration = sessionDuration;
+  toString = (value: unknown) => {
+    if (typeof value !== 'number') {
+      return '';
+    }
+    if (typeof value === 'string') {
+      return value;
+    } else {
+      return value.toString(10);
+    }
+  };
   hotkeys = [
     hotkey('s', 'Start/stop task', async (e) => {
       combineLatest(this.task$, this.taskIsInProgress$)

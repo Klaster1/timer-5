@@ -15,7 +15,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FilterFormModule } from '@app/filter-form/filter-form.module';
-import { MapPipeModule } from '@app/map-pipe/map.pipe';
+import { MapPipeModule } from '@app/pipes/map.pipe';
 import { NgStackFormsModule } from '@ng-stack/forms';
 import { ReactiveComponentModule } from '@ngrx/component';
 import { ButtonResetInputComponent } from './button-reset-input.component';
