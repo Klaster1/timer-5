@@ -1,5 +1,6 @@
+import { msToS, Seconds, sToMs } from '@app/domain/date';
+import { makeTaskId } from '@app/domain/with-dom';
 import { isTruthy } from '@app/utils/assert';
-import { nanoid } from 'nanoid';
 import { Session, Task, TaskState } from '.';
 import { assertNever } from './assert-never';
 import { StoreState } from './store';
@@ -27,7 +28,7 @@ const fromLegacyGames = (data: LegacyGames): AppTasks => {
     throw new Error('Invalid legacy format');
   } else {
     const tasks: Task[] = data.map((game) => ({
-      id: game.id,
+      id: makeTaskId(),
       name: game.title,
       state: (
         {
@@ -38,11 +39,12 @@ const fromLegacyGames = (data: LegacyGames): AppTasks => {
           wish: TaskState.active,
         } as const
       )[game.state],
-      sessions: game.sessions.map((session) => ({
-        id: nanoid(3),
-        start: session.start,
-        end: typeof session.stop === 'number' ? session.stop : undefined,
-      })),
+      sessions: game.sessions.map(
+        (session): Session => ({
+          start: session.start,
+          end: typeof session.stop === 'number' ? session.stop : undefined,
+        })
+      ),
     }));
     return {
       ids: tasks.map(({ id }) => id),
@@ -52,7 +54,7 @@ const fromLegacyGames = (data: LegacyGames): AppTasks => {
 };
 
 // V1
-type StoredSessionV1 = Session;
+type StoredSessionV1 = [Seconds, Seconds] | [Seconds, null];
 enum StoredTaskStateV1 {
   active,
   finished,
@@ -92,9 +94,15 @@ const storedTaskStateToAppTaskStateV1 = (state: StoredTaskStateV1): TaskState =>
       return assertNever(state);
   }
 };
-// TODO: remopve id from sessions
-const appSessionToStoredSession = (session: Session): StoredSessionV1 => session;
-const storedSessionToAppSession = (storedSession: StoredSessionV1): Session => storedSession;
+
+const appSessionToStoredSession = (session: Session): StoredSessionV1 => [
+  msToS(session.start),
+  typeof session.end === 'number' ? msToS(session.end) : null,
+];
+const storedSessionToAppSession = (storedSession: StoredSessionV1): Session =>
+  storedSession[1] === null
+    ? { start: storedSession[0] }
+    : { start: sToMs(storedSession[0]), end: sToMs(storedSession[1]) };
 
 export const toStoredTasks = (appTasks: AppTasks): LatestStoredTasks => ({
   version: 1,
@@ -117,13 +125,15 @@ const fromStoredTasksV1 = (storedTasks: StoredTasksV1): AppTasks => {
     id: task.id,
     name: task.name,
     state: storedTaskStateToAppTaskStateV1(task.state),
-    sessions: task.sessions,
+    sessions: task.sessions.map(storedSessionToAppSession),
   }));
   return {
     ids: tasks.map(({ id }) => id),
     values: Object.fromEntries(tasks.map((task) => [task.id, task] as const)),
   };
 };
+
+// Public
 
 export const fromStoredTasks = (storedTasks: StoredTasks): AppTasks => {
   if (Array.isArray(storedTasks)) {

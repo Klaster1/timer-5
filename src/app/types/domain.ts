@@ -1,3 +1,5 @@
+import { Milliseconds } from '@app/domain/date';
+
 export enum TaskState {
   active = 'active',
   finished = 'finished',
@@ -6,7 +8,7 @@ export enum TaskState {
 
 export type RouteTaskState = TaskState | 'all';
 
-type TaskId = string;
+export type TaskId = string;
 
 export type Task = {
   id: TaskId;
@@ -16,9 +18,8 @@ export type Task = {
 };
 
 export type Session = {
-  id: string;
-  start: number;
-  end?: number;
+  start: Milliseconds;
+  end?: Milliseconds;
 };
 
 export type Theme = 'light' | 'dark';

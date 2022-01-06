@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FilterFormService } from '@app/filter-form/filter-form.service';
 import * as actions from '@app/ngrx/actions';
-import { Session, StoreState, TasksFilterParams } from '@app/types';
+import { Session, StoreState, Task, TasksFilterParams } from '@app/types';
 import { Store } from '@ngrx/store';
 import { take } from 'rxjs/operators';
 
@@ -13,26 +13,26 @@ import { take } from 'rxjs/operators';
 })
 export class ButtonSessionActionsComponent {
   constructor(private store: Store<StoreState>, private fitler: FilterFormService<TasksFilterParams>) {}
-  @Input()
-  taskId?: string;
-  @Input()
-  session?: Session;
+  @Input() task?: Task;
+  @Input() session?: Session;
   edit() {
-    if (!this.taskId || !this.session) {
+    const { task, session } = this;
+    if (!task || !session) {
       return;
     }
     this.store.dispatch(
       actions.updateSessionIntent({
-        taskId: this.taskId,
-        sessionId: this.session.id,
+        taskId: task.id,
+        sessionIndex: task.sessions.indexOf(session),
       })
     );
   }
   remove() {
-    if (!this.taskId || !this.session) {
+    const { task, session } = this;
+    if (!task || !session) {
       return;
     }
-    this.store.dispatch(actions.deleteSession({ taskId: this.taskId, sessionId: this.session.id }));
+    this.store.dispatch(actions.deleteSession({ taskId: task.id, sessionIndex: task.sessions.indexOf(session) }));
   }
   skipBefore() {
     const { session } = this;

@@ -46,7 +46,7 @@ export const sessionDurationPure = (s: Session): number => (s.end ? s.end - s.st
 export const completeTaskDuration = (task?: Task): number =>
   task ? task.sessions.reduce((t, s) => t + sessionDurationPure(s), 0) : 0;
 
-export const getTaskSession = (task: Task, sessionId: string) => task.sessions.find((s) => s.id === sessionId);
+export const getTaskSession = (task: Task, sessionIndex: number) => task.sessions[sessionIndex];
 
 export const taskDurationPure = (task: Task, now: number): number => {
   const completeDuration = completeTaskDuration(task);

@@ -1,4 +1,5 @@
-import { Session, Task } from '@app/types';
+import { Session, Task, TaskId } from '@app/types';
+import { nanoid } from 'nanoid';
 import { combineLatest, Observable, of, timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { completeTaskDuration, getTaskRunningSession, sessionIsOver } from './no-dom';
@@ -24,3 +25,5 @@ export const tasksDuration = (tasks: Task[], interval = 1000): Observable<number
   combineLatest(tasks.map((t) => taskDuration(t, interval))).pipe(
     map((durations) => durations.reduce((acc, d) => acc + d, 0))
   );
+
+export const makeTaskId = (): TaskId => nanoid(4);

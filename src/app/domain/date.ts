@@ -115,3 +115,9 @@ export const formatHours = (value: number): string => {
 
 const dateRe = /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/;
 export const isValidISO8601String = (value: string): boolean => dateRe.test(value);
+
+export const sToMs = (ms: Seconds): Milliseconds => Math.round(ms * 1000);
+export const msToS = (s: Milliseconds): Seconds => Math.round(s / 1000);
+
+export type Seconds = number;
+export type Milliseconds = number;

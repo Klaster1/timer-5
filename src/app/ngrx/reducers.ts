@@ -19,7 +19,7 @@ function tasks(state: StoreState['tasks'] | undefined, action: Action) {
   const sessions = createImmerReducer<Task['sessions']>(
     [],
     on(startTask, (state, action) => {
-      state.push({ id: action.sessionId, start: action.timestamp });
+      state.push({ start: action.timestamp });
       return state;
     }),
     on(stopTask, (state, action) => {
@@ -29,16 +29,16 @@ function tasks(state: StoreState['tasks'] | undefined, action: Action) {
       return state;
     }),
     on(updateSession, (state, action) => {
-      state.forEach((session) => {
-        if (session.id === action.sessionId) {
-          session.start = action.start;
-          session.end = action.end;
-        }
-      });
+      const session = state[action.sessionIndex];
+      if (session) {
+        session.start = action.start;
+        session.end = action.end;
+      }
       return state;
     }),
     on(deleteSession, (state, action) => {
-      return state.filter((session) => session.id !== action.sessionId);
+      state.splice(action.sessionIndex, 1);
+      return state;
     })
   );
 
