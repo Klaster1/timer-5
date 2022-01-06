@@ -55,7 +55,7 @@ export class Effects {
     this.actions$.pipe(
       ofType(actions.renameTaskIntent),
       switchMap((a) =>
-        this.store.select(selectors.taskById, { taskId: a.taskId }).pipe(
+        this.store.select(selectors.taskById(a.taskId)).pipe(
           take(1),
           exhaustMap((task) => this.prompt.prompt('Rename task', task?.name, 'Task name')),
           switchMap((result) => (result ? [actions.renameTask({ taskId: a.taskId, name: result })] : []))
@@ -68,7 +68,7 @@ export class Effects {
     this.actions$.pipe(
       ofType(actions.updateSessionIntent),
       switchMap((a) =>
-        this.store.select(selectors.taskById, { taskId: a.taskId }).pipe(
+        this.store.select(selectors.taskById(a.taskId)).pipe(
           take(1),
           exhaustMap((task) => {
             if (!task) return [];

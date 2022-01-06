@@ -18,10 +18,7 @@ export const currentTasksState = createSelector(selectRouteParam('state'), (valu
   if (!value || !isValidTaskState(value)) return 'all' as const;
   return value as TaskState;
 });
-export const taskById = createSelector(
-  tasks,
-  (tasks: StoreState['tasks'], props: { taskId: string }) => tasks.values[props.taskId]
-);
+export const taskById = (taskId: string) => createSelector(tasks, (tasks: StoreState['tasks']) => tasks.values[taskId]);
 export const currentTask = createSelector(currentTaskId, tasks, (id, tasks) => (id ? tasks.values[id] : undefined));
 export const currentStateTasks = createSelector(tasks, currentTasksState, (tasks, state) =>
   tasks.ids
