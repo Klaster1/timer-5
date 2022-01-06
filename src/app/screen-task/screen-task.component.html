@@ -23,14 +23,10 @@
       </ng-container>
       <ng-container matColumnDef="duration">
         <th mat-header-cell *matHeaderCellDef>Duration</th>
-        <td
-          mat-cell
-          *matCellDef="let session"
-          [matTooltip]="((session | map: sessionDuration | ngrxPush) || 0) / 1000 | map: toString"
-        >
+        <td mat-cell *matCellDef="let session">
           {{ session | map: sessionDuration | formatDuration | ngrxPush }}
         </td>
-        <td mat-footer-cell *matFooterCellDef [matTooltip]="task | taskDuration | ngrxPush | map: toString">
+        <td mat-footer-cell *matFooterCellDef>
           {{ task | taskDuration | formatDuration | ngrxPush }}
         </td>
       </ng-container>

@@ -19,16 +19,6 @@ import { map, switchMap, take } from 'rxjs/operators';
 })
 export class ScreenTaskComponent implements OnDestroy, OnInit {
   sessionDuration = sessionDuration;
-  toString = (value: unknown) => {
-    if (typeof value !== 'number') {
-      return '';
-    }
-    if (typeof value === 'string') {
-      return value;
-    } else {
-      return value.toString(10);
-    }
-  };
   hotkeys = [
     hotkey('s', 'Start/stop task', async (e) => {
       combineLatest(this.task$, this.taskIsInProgress$)

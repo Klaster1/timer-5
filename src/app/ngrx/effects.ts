@@ -7,13 +7,21 @@ import {
 } from '@app/dialog-edit-session/dialog-edit-session.component';
 import { Prompt } from '@app/dialog-prompt/dialog-prompt.service';
 import { getTaskSession } from '@app/domain/no-dom';
-import * as actions from '@app/ngrx/actions';
-import * as selectors from '@app/ngrx/selectors';
+import { currentTasksState, taskById } from '@app/ngrx/selectors';
 import { StoreState } from '@app/types';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { nanoid as id } from 'nanoid';
 import { exhaustMap, filter, switchMap, take, withLatestFrom } from 'rxjs/operators';
+import {
+  createTask,
+  createTaskIntent,
+  deleteTask,
+  renameTask,
+  renameTaskIntent,
+  updateSession,
+  updateSessionIntent,
+} from './actions';
 
 @Injectable()
 export class Effects {
@@ -27,17 +35,17 @@ export class Effects {
 
   createTask$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(actions.createTaskIntent),
+      ofType(createTaskIntent),
       switchMap(() => this.prompt.prompt('Create task', '', 'Task name')),
-      switchMap((result) => (result ? [actions.createTask({ taskId: id(), name: result })] : []))
+      switchMap((result) => (result ? [createTask({ taskId: id(), name: result })] : []))
     )
   );
 
   newTaskRedirect$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(actions.createTask),
-        withLatestFrom(this.store.select(selectors.currentTasksState)),
+        ofType(createTask),
+        withLatestFrom(this.store.select(currentTasksState)),
         exhaustMap(([a, state]) => this.router.navigate(['tasks', state === 'all' ? 'all' : 'active', a.taskId]))
       ),
     { dispatch: false }
@@ -46,8 +54,8 @@ export class Effects {
   deleteTaskRedirect$ = createEffect(
     () =>
       this.actions$.pipe(
-        ofType(actions.deleteTask),
-        withLatestFrom(this.store.select(selectors.currentTasksState)),
+        ofType(deleteTask),
+        withLatestFrom(this.store.select(currentTasksState)),
         filter(([, state]) => !!state),
         exhaustMap(async ([action, state]) => this.router.navigate(['tasks', state]))
       ),
@@ -56,12 +64,12 @@ export class Effects {
 
   renameTask$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(actions.renameTaskIntent),
+      ofType(renameTaskIntent),
       switchMap((a) =>
-        this.store.select(selectors.taskById(a.taskId)).pipe(
+        this.store.select(taskById(a.taskId)).pipe(
           take(1),
           exhaustMap((task) => this.prompt.prompt('Rename task', task?.name, 'Task name')),
-          switchMap((result) => (result ? [actions.renameTask({ taskId: a.taskId, name: result })] : []))
+          switchMap((result) => (result ? [renameTask({ taskId: a.taskId, name: result })] : []))
         )
       )
     )
@@ -69,9 +77,9 @@ export class Effects {
 
   editSession$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(actions.updateSessionIntent),
+      ofType(updateSessionIntent),
       switchMap((a) =>
-        this.store.select(selectors.taskById(a.taskId)).pipe(
+        this.store.select(taskById(a.taskId)).pipe(
           take(1),
           exhaustMap((task) => {
             if (!task) return [];
@@ -87,7 +95,7 @@ export class Effects {
                     switchMap((r) =>
                       r
                         ? [
-                            actions.updateSession({
+                            updateSession({
                               taskId: task.id,
                               sessionIndex: task.sessions.indexOf(session),
                               start: r.start,
