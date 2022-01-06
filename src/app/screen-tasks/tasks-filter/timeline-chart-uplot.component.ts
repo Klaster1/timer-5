@@ -26,7 +26,7 @@ type PluginReturnValue = {
   hooks: Hooks.Defs;
 };
 
-const timerTimelinePlugin = (): PluginReturnValue => {
+const timerTimelinePlugin = (params: { barColor: string }): PluginReturnValue => {
   const draw = (u: uPlot) => {
     u.ctx.save();
 
@@ -50,7 +50,7 @@ const timerTimelinePlugin = (): PluginReturnValue => {
     const minY = u.valToPos(yMin, scaleY, true);
     const drawFromIndex = u.posToIdx(0);
 
-    u.ctx.fillStyle = series.fill ?? 'red';
+    u.ctx.fillStyle = params.barColor;
 
     for (let i = indexStart; i <= indexEnd; i += 1) {
       if (i % 2 === 0) {
@@ -148,7 +148,7 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
   themeSubscriber = this.store.select(theme).subscribe((theme) => {
     setTimeout(() => {
       const stroke = window.getComputedStyle(this.elementRef.nativeElement).color;
-      this.uplot?.axes.forEach((a) => (a.stroke = stroke));
+      this.uplot?.axes.forEach((a) => (a.stroke = () => stroke));
       this.uplot?.redraw(false);
     });
   });
@@ -171,11 +171,12 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
 
   ngAfterViewInit() {
     this.ngZone.runOutsideAngular(() => {
+      const barColor = 'rgb(126, 203, 32)';
       this.uplot = new uPlot(
         {
           width: this.elementRef.nativeElement.offsetWidth,
           height: this.elementRef.nativeElement.offsetHeight - this.headerHeight,
-          plugins: [timerTimelinePlugin()],
+          plugins: [timerTimelinePlugin({ barColor })],
           hooks: {
             setScale: [
               (self: uPlot, key: string) => {
@@ -206,7 +207,7 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
               label: this.getLegendLabel(),
               scale: 'm',
               value: (self, value) => this.getLegendValue(value),
-              fill: 'rgb(126, 203, 32)',
+              fill: barColor,
             },
           ],
           axes: [
