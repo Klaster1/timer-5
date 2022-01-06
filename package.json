@@ -35,7 +35,7 @@
     "angular2-hotkeys": "^2.4.0",
     "comlink": "^4.3.1",
     "immer": "^9.0.7",
-    "nanoid": "^3.1.18",
+    "nanoid": "^3.1.30",
     "ng-resize-observer": "^1.0.2",
     "ngrx-immer": "^2.0.0",
     "ngrx-store-localstorage": "^12.0.1",
