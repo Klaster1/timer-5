@@ -26,14 +26,7 @@ export const updateSession = createAction(
     end: Session['end'];
   }>()
 );
-export const moveSessionToTaskIntent = createAction(
-  '[Session] Move to task intent',
-  props<{ taskId: string; sessionId: string }>()
-);
-export const moveSessionToTask = createAction(
-  '[Session] Move to task',
-  props<{ taskId: string; toTaskId: string; sessionId: string }>()
-);
+
 export const deleteSession = createAction('[Session] Delete', props<{ taskId: string; sessionId: string }>());
 
 export const updateTheme = createAction('[Theme] Update', props<{ theme: Theme }>());

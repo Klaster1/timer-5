@@ -32,20 +32,4 @@ export class ButtonSessionActionsComponent {
     }
     this.store.dispatch(actions.deleteSession({ taskId: this.taskId, sessionId: this.session.id }));
   }
-  moveToTask() {
-    if (!this.taskId || !this.session) {
-      return;
-    }
-    const toTaskId = window.prompt('To task');
-    if (!toTaskId) {
-      return;
-    }
-    this.store.dispatch(
-      actions.moveSessionToTask({
-        taskId: this.taskId,
-        toTaskId,
-        sessionId: this.session.id,
-      })
-    );
-  }
 }

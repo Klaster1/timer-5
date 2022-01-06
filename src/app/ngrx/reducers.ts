@@ -58,27 +58,6 @@ function tasks(state: StoreState['tasks'] | undefined, action: Action) {
           [a.taskId]: updatedTask,
         },
       };
-    }),
-    on(actions.moveSessionToTask, (s, a) => {
-      const toTask = s.values[a.toTaskId];
-      const fromTask = s.values[a.taskId];
-      if (!toTask || !fromTask) return s;
-      const toTaskUpdated = {
-        ...toTask,
-        sessions: [...toTask.sessions, ...fromTask.sessions.filter((s) => s.id === a.sessionId)],
-      };
-      const fromTaskUpdated = {
-        ...fromTask,
-        sessions: fromTask.sessions.filter((s) => s.id !== a.sessionId),
-      };
-      return {
-        ...s,
-        values: {
-          ...s.values,
-          [a.toTaskId]: toTaskUpdated,
-          [a.taskId]: fromTaskUpdated,
-        },
-      };
     })
   );
 
