@@ -17,7 +17,7 @@ import { StoreState } from '@app/types';
 import { assertNever } from '@app/types/assert-never';
 import { Store } from '@ngrx/store';
 import { NgResizeObserver, ngResizeObserverProviders } from 'ng-resize-observer';
-import uPlot, { AlignedData, Hooks, Options } from 'uplot';
+import { AlignedData, Hooks, Options } from 'uplot';
 
 type DrawFn = (i: number, x0: number, y0: number, offs: number, totalWidth: number) => void;
 
@@ -170,8 +170,9 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
   }
 
   ngAfterViewInit() {
-    this.ngZone.runOutsideAngular(() => {
+    this.ngZone.runOutsideAngular(async () => {
       const barColor = 'rgb(126, 203, 32)';
+      const uPlot = await import('uplot').then((m) => m.default);
       this.uplot = new uPlot(
         {
           width: this.elementRef.nativeElement.offsetWidth,
