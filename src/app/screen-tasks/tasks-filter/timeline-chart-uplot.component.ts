@@ -89,6 +89,8 @@ const timerTimelinePlugin = (params: { barColor: string }): PluginReturnValue =>
   };
 };
 
+export type ScaleRange = [Date | null, Date | null];
+
 @Component({
   selector: 'timeline-chart-uplot',
   template: `<canvas #canvas></canvas>`,
@@ -138,7 +140,7 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
     if (oldMin === newMin && oldMax === newMax) return;
     this.uplot?.setScale('x', { min: newMin, max: newMax });
   }
-  @Output() rangeChange = new EventEmitter<[Date, Date]>();
+  @Output() rangeChange = new EventEmitter<ScaleRange>();
   private firstRangeChangeSkipped = false;
   private uplot?: uPlot;
   private readonly headerHeight = 31;
@@ -188,7 +190,11 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
                 if (key !== 'x' || !scale || typeof scale.min !== 'number' || typeof scale.max !== 'number') {
                   return;
                 }
-                const event: [Date, Date] = [new Date(scale.min * 1000), new Date(scale.max * 1000)];
+                const dataMin = self.data[0][0];
+                const dataMax = self.data[0][self.data[0].length - 1];
+                const min = scale.min === dataMin ? null : new Date(scale.min * 1000);
+                const max = scale.max === dataMax ? null : new Date(scale.max * 1000);
+                const event: ScaleRange = [min, max];
                 this.ngZone.runTask(() => {
                   this.rangeChange.emit(event);
                 });

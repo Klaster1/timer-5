@@ -16,6 +16,7 @@ import { FormControl, FormGroup } from '@ng-stack/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { map, pluck, startWith, tap } from 'rxjs/operators';
+import { ScaleRange } from './timeline-chart-uplot.component';
 
 @Component({
   selector: 'tasks-filter',
@@ -40,17 +41,17 @@ export class TasksFilterComponent implements OnDestroy {
     durationSort: new FormControl(),
   });
   timelineUplot$ = this.store.pipe(currentStateTasksStats({ timelineStep: 'day' }), pluck('timeline', 'uPlotData'));
-  chartRange$: Observable<[Date | null, Date]> = this.form.valueChanges.pipe(
+  chartRange$: Observable<ScaleRange> = this.form.valueChanges.pipe(
     startWith({}),
     map(() => {
       const { from, to } = this.form.getRawValue();
-      return [from ?? null, to ?? new Date()];
+      return [from ?? null, to ?? null];
     })
   );
-  onChartRangeChange(e: [Date, Date]) {
+  onChartRangeChange(e: ScaleRange) {
     this.form.patchValue({
-      from: e[0],
-      to: e[1],
+      from: e[0] ?? undefined,
+      to: e[1] ?? undefined,
     });
   }
   private subscriber = this.form.valueChanges
