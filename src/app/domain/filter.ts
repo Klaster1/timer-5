@@ -2,6 +2,16 @@ import { Task, TasksFilterParams } from '../types/domain';
 
 type Nullable<T> = T | null;
 
+const filterByTaskId = (filter: TasksFilterParams, t: Nullable<Task>): Nullable<Task> => {
+  if (!t) return t;
+  const { taskId } = filter;
+  if (typeof taskId === 'string' && taskId.length) {
+    return t.id === taskId ? t : null;
+  } else {
+    return t;
+  }
+};
+
 const filterByName = (filter: TasksFilterParams, t: Nullable<Task>): Nullable<Task> => {
   if (!t) return t;
   const { search } = filter;

@@ -1,14 +1,16 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { isTaskRunning, sortSessions } from '@app/domain';
+import { FilterFormService } from '@app/filter-form/filter-form.service';
 import * as actions from '@app/ngrx/actions';
-import * as selectors from '@app/ngrx/selectors';
+import { currentTaskWithFilter } from '@app/ngrx/selectors';
+import { TasksFilterRouteParams } from '@app/screen-tasks';
 import { StoreState, Task, TaskState } from '@app/types';
 import { hotkey } from '@app/utils/hotkey';
 import { Store } from '@ngrx/store';
 import { HotkeysService } from 'angular2-hotkeys';
 import { nanoid as id } from 'nanoid';
 import { combineLatest } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { map, switchMap, take } from 'rxjs/operators';
 
 @Component({
   templateUrl: './template.html',
@@ -50,10 +52,14 @@ export class ScreenTaskComponent implements OnDestroy, OnInit {
     hotkey('d t', 'Delete task', () => this.task$.pipe(take(1)).subscribe((task) => this.deleteTask(task))),
   ];
   displayedColumns = ['start', 'end', 'duration', 'action'];
-  task$ = this.store.select(selectors.currentTask);
+  task$ = this.filter.filterParams$.pipe(switchMap((filter) => this.store.pipe(currentTaskWithFilter(filter))));
   sortedSessions$ = this.task$.pipe(map((t) => (t ? sortSessions(t.sessions) : [])));
   taskIsInProgress$ = this.task$.pipe(map(isTaskRunning));
-  constructor(private store: Store<StoreState>, private keys: HotkeysService) {}
+  constructor(
+    private store: Store<StoreState>,
+    private keys: HotkeysService,
+    private filter: FilterFormService<TasksFilterRouteParams>
+  ) {}
   ngOnInit() {
     this.keys.add(this.hotkeys);
   }

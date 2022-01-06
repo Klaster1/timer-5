@@ -5,7 +5,7 @@ import { getSelectors } from '@ngrx/router-store';
 import { createFeatureSelector, createSelector, select } from '@ngrx/store';
 import * as Comlink from 'comlink';
 import { pipe } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 
 export const tasks = createFeatureSelector<StoreState['tasks']>('tasks');
 export const router = createFeatureSelector<StoreState['router']>('router');
@@ -39,6 +39,13 @@ export const currentStateTasksWithFilter = (range: TasksFilterParams) =>
   pipe(
     select(currentStateTasks),
     switchMap((tasks) => filter(range, tasks))
+  );
+
+export const currentTaskWithFilter = (range: TasksFilterParams) =>
+  pipe(
+    select(currentStateTasks, currentTaskId),
+    switchMap((tasks, taskId) => filter({ ...range, taskId: taskId?.toString() }, tasks)),
+    map((tasks) => tasks[0])
   );
 
 const statsWorker = new Worker(new URL('../workers/stats.worker.ts', import.meta.url), { type: 'module' });

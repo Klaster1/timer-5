@@ -6,8 +6,10 @@ export enum TaskState {
 
 export type RouteTaskState = TaskState | 'all';
 
+type TaskId = string;
+
 export type Task = {
-  id: string;
+  id: TaskId;
   name: string;
   state: TaskState;
   sessions: Session[];
@@ -29,7 +31,7 @@ export type TaskIndexes = {
   yearMonthDate: TimeSpanIndex;
 };
 
-export type TasksFilterParams = { from?: Date; to?: Date; search?: string };
+export type TasksFilterParams = { from?: Date; to?: Date; search?: string; taskId?: TaskId };
 
 export type RangeWidth = 'hour' | 'day' | 'month' | 'year';
 
