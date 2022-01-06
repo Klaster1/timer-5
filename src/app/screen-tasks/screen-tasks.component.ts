@@ -8,6 +8,7 @@ import {
   TrackByFunction,
 } from '@angular/core';
 import { Router } from '@angular/router';
+import { getAllChildren } from '@app/domain/router';
 import { FilterFormService } from '@app/filter-form/filter-form.service';
 import * as actions from '@app/ngrx/actions';
 import { currentStateTasksWithFilter, currentTask, currentTasksState } from '@app/ngrx/selectors';
@@ -49,10 +50,10 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
   hotkeys = [
     hotkey('a', 'Add task', () => this.addTask()),
     hotkey(['j', 'k'], 'Next/prev task', async (e) => {
-      const result = await combineLatest(this.taskIds$, this.state$, this.currentTaskId$).pipe(take(1)).toPromise();
+      const result = await combineLatest(this.taskIds$, this.currentTaskId$).pipe(take(1)).toPromise();
       if (!result) return;
-      const [taskIds, state] = result;
-      let [, , taskId] = result;
+      const [taskIds] = result;
+      let [, taskId] = result;
       if (!taskIds.length) {
         return;
       }
@@ -72,7 +73,10 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
       if (index < 0) {
         index = taskIds.length - 1;
       }
-      this.router.navigate(['tasks', state, taskIds[index]]);
+      const stateParams = getAllChildren(this.router.routerState.snapshot.root)[1]?.params;
+      if (!stateParams) return;
+      const { state, ...fitlerParams } = stateParams;
+      this.router.navigate(['tasks', state ?? 'all', fitlerParams, taskIds[index]]);
     }),
     hotkey('ctrl+f', 'Search', (e) => {
       e.preventDefault();
