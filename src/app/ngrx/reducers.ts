@@ -65,6 +65,11 @@ function tasks(state: StoreState['tasks'] | undefined, action: Action) {
       delete state.values[action.taskId];
       return state;
     }),
+    on(startTask, (state, action) => {
+      const task = state.values[action.taskId];
+      if (task) task.state = TaskState.active;
+      return state;
+    }),
     on(startTask, stopTask, updateSession, deleteSession, (state, action) => {
       const task = state.values[action.taskId];
       if (task) task.sessions = sessions(task.sessions, action);
