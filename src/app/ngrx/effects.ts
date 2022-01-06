@@ -7,12 +7,12 @@ import {
 } from '@app/dialog-edit-session/dialog-edit-session.component';
 import { Prompt } from '@app/dialog-prompt/dialog-prompt.service';
 import { getTaskSession } from '@app/domain/no-dom';
-import { currentTasksState, taskById } from '@app/ngrx/selectors';
+import { currentTaskId, currentTasksState, taskById } from '@app/ngrx/selectors';
 import { StoreState } from '@app/types';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { nanoid as id } from 'nanoid';
-import { exhaustMap, filter, switchMap, take, withLatestFrom } from 'rxjs/operators';
+import { exhaustMap, filter, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
 import {
   createTask,
   createTaskIntent,
@@ -55,9 +55,11 @@ export class Effects {
     () =>
       this.actions$.pipe(
         ofType(deleteTask),
-        withLatestFrom(this.store.select(currentTasksState)),
+        withLatestFrom(this.store.select(currentTasksState), this.store.select(currentTaskId)),
         filter(([, state]) => !!state),
-        exhaustMap(async ([action, state]) => this.router.navigate(['tasks', state]))
+        tap(([action, state, taskId]) => {
+          if (action.taskId === taskId) this.router.navigate(['tasks', state]);
+        })
       ),
     { dispatch: false }
   );
