@@ -1,11 +1,12 @@
 import { compareTasks, isValidTaskState } from '@app/domain';
+import { filter as filterSync } from '@app/domain/filter';
 import { Stats, StatsParams, StoreState, Task, TasksFilterParams, TaskState } from '@app/types';
 import { isTruthy } from '@app/utils/assert';
 import { getSelectors } from '@ngrx/router-store';
 import { createFeatureSelector, createSelector, select } from '@ngrx/store';
 import * as Comlink from 'comlink';
 import { pipe } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 
 export const tasks = createFeatureSelector<StoreState['tasks']>('tasks');
 export const router = createFeatureSelector<StoreState['router']>('router');
@@ -42,11 +43,7 @@ export const currentStateTasksWithFilter = (range: TasksFilterParams) =>
   );
 
 export const currentTaskWithFilter = (range: TasksFilterParams) =>
-  pipe(
-    select(currentStateTasks, currentTaskId),
-    switchMap((tasks, taskId) => filter({ ...range, taskId: taskId?.toString() }, tasks)),
-    map((tasks) => tasks[0])
-  );
+  createSelector(currentTask, (task) => (task ? filterSync({ ...range, taskId: task.id }, [task])[0] : undefined));
 
 const statsWorker = new Worker(new URL('../workers/stats.worker.ts', import.meta.url), { type: 'module' });
 const stats = Comlink.wrap<(f: StatsParams, v: Task[]) => Stats>(statsWorker);

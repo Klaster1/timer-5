@@ -52,7 +52,7 @@ export class ScreenTaskComponent implements OnDestroy, OnInit {
     hotkey('d t', 'Delete task', () => this.task$.pipe(take(1)).subscribe((task) => this.deleteTask(task))),
   ];
   displayedColumns = ['start', 'end', 'duration', 'action'];
-  task$ = this.filter.filterParams$.pipe(switchMap((filter) => this.store.pipe(currentTaskWithFilter(filter))));
+  task$ = this.filter.filterParams$.pipe(switchMap((filter) => this.store.select(currentTaskWithFilter(filter))));
   sortedSessions$ = this.task$.pipe(map((t) => (t ? sortSessions(t.sessions) : [])));
   taskIsInProgress$ = this.task$.pipe(map(isTaskRunning));
   constructor(
