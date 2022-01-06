@@ -20,7 +20,7 @@ empty-state {
   .illustration:not(:empty) {
     margin: auto;
     margin-bottom: 10px;
-    mat-icon {
+    [illustration] {
       width: 128px;
       height: 128px;
       font-size: 128px;

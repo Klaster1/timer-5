@@ -4,8 +4,9 @@
   flex-direction: column;
   --native-scrollbar-size: -17px;
 }
-.link-all mat-icon {
-  transform: scale(calc(32 / 24));
+.link-all img {
+  width: 32px;
+  height: 32px;
 }
 mat-icon {
   margin: auto;

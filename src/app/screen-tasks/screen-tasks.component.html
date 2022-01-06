@@ -1,10 +1,10 @@
-<section class="tasks" *ngIf="(tasks$|ngrxPush) as tasks">
+<section class="tasks" *ngIf="tasks$ | ngrxPush as tasks">
   <ng-container *ngrxLet="state$ as state">
     <mat-toolbar>
       <h1>
-        <ng-container *ngIf="state"> {{state|taskState}} </ng-container>
-        <span *ngIf="(tasks|tasksDuration:20000|formatDuration|ngrxPush) as duration" class="state-duration">
-          ({{duration}})
+        <ng-container *ngIf="state"> {{ state | taskState }} </ng-container>
+        <span *ngIf="tasks | tasksDuration: 20000 | formatDuration | ngrxPush as duration" class="state-duration">
+          ({{ duration }})
         </span>
       </h1>
       <ng-container *ngrxLet="searchOpened$ as searchOpened">
@@ -13,7 +13,7 @@
         </button>
       </ng-container>
     </mat-toolbar>
-    <tasks-filter *ngIf="searchOpened$|async" (keyup.esc)="closeFilter()"></tasks-filter>
+    <tasks-filter *ngIf="searchOpened$ | async" (keyup.esc)="closeFilter()"></tasks-filter>
     <ng-container *ngIf="tasks.length; else noTasks">
       <button (click)="addTask()" mat-fab color="accent">
         <mat-icon>add</mat-icon>
@@ -24,11 +24,11 @@
           #scroll
           [itemSize]="48"
           scrollViewport
-          [scrollToIndex]="currentTaskIndex$|ngrxPush"
+          [scrollToIndex]="currentTaskIndex$ | ngrxPush"
           [checkViewportSizeWhenValueChanges]="tasks"
         >
           <mat-nav-list>
-            <mat-list-item *cdkVirtualFor="let task of tasks; trackBy taskId">
+            <mat-list-item *cdkVirtualFor="let task of tasks; trackBy: taskId">
               <a
                 matLine
                 [routerLink]="[task.id]"
@@ -37,9 +37,9 @@
                 class="task-link"
                 #rla="routerLinkActive"
               >
-                <mat-icon>{{task|taskStateIcon}}</mat-icon>
-                <span class="name">{{task.name}}</span>
-                <span class="duration">{{task|taskDuration:5000|formatDuration|ngrxPush}}</span>
+                <mat-icon>{{ task | taskStateIcon }}</mat-icon>
+                <span class="name">{{ task.name }}</span>
+                <span class="duration">{{ task | taskDuration: 5000 | formatDuration | ngrxPush }}</span>
               </a>
               <button-task-actions [task]="task"></button-task-actions>
             </mat-list-item>
@@ -48,17 +48,17 @@
       </ng-scrollbar>
     </ng-container>
     <ng-template #noTasks>
-      <empty-state *ngIf="(searchOpened$|async)===false; else noSearchResults">
-        <mat-icon svgIcon="timer-logo" color="primary"></mat-icon>
+      <empty-state *ngIf="(searchOpened$ | async) === false; else noSearchResults">
+        <img src="/assets/favicon.svg" alt="Timer" illustration />
         <span title>No tasks</span>
-        <span subtitle>Looks like you have no {{state}} tasks</span>
+        <span subtitle>Looks like you have no {{ state }} tasks</span>
         <button color="primary" mat-raised-button (click)="addTask()" type="button" routerLink="/tasks/active">
           Create a task
         </button>
       </empty-state>
       <ng-template #noSearchResults>
         <empty-state>
-          <mat-icon color="accent">search</mat-icon>
+          <mat-icon color="accent" illustration>search</mat-icon>
           <span title>Nothing found</span>
           <span subtitle>Could not find tasks matching the criteria</span>
           <button mat-raised-button (click)="closeFilter()" type="button">Reset filter</button>
@@ -67,6 +67,6 @@
     </ng-template>
   </ng-container>
 </section>
-<section class="task mat-app-background" *ngIf="taskOpened$|ngrxPush">
+<section class="task mat-app-background" *ngIf="taskOpened$ | ngrxPush">
   <router-outlet></router-outlet>
 </section>

@@ -1,22 +1,20 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { MatDialogConfig, MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
-import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TaskStateIconPipeModule } from '@app/pipes/task-state-icon.pipe';
 import { ReactiveComponentModule } from '@ngrx/component';
 import { EffectsModule } from '@ngrx/effects';
 import { MinimalRouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { StoreModule } from '@ngrx/store';
-import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { HotkeyModule } from 'angular2-hotkeys';
-import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DialogEditSessionModule } from './dialog-edit-session/dialog-edit-session.module';
@@ -63,10 +61,6 @@ import { TestComponent } from './test/test.component';
     StoreRouterConnectingModule.forRoot({
       serializer: MinimalRouterStateSerializer,
     }),
-    StoreDevtoolsModule.instrument({
-      maxAge: 25,
-      logOnly: environment.production, // Restrict extension to log-only mode
-    }),
     EffectsModule.forRoot([Effects]),
     FilterFormModule.forChild<TasksFilterRouteParams>({
       urlFragmentIndex: 2,
@@ -112,14 +106,6 @@ import { TestComponent } from './test/test.component';
     }),
   ],
   providers: [
-    {
-      provide: APP_INITIALIZER,
-      multi: true,
-      useFactory: (icons: MatIconRegistry, sanitizer: DomSanitizer) => () => {
-        icons.addSvgIcon('timer-logo', sanitizer.bypassSecurityTrustResourceUrl('../assets/logo.svg'));
-      },
-      deps: [MatIconRegistry, DomSanitizer],
-    },
     {
       provide: MAT_DIALOG_DEFAULT_OPTIONS,
       useFactory(): MatDialogConfig<any> {
