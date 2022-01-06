@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { GameStateGuard } from './guards/game-state.guard';
-import { ScreenTaskComponent } from './screen-task';
-import { ScreenTasksComponent } from './screen-tasks';
+import { ScreenTaskComponent } from './screen-task/screen-task.component';
+import { ScreenTasksComponent } from './screen-tasks/screen-tasks.component';
 
 const routes: Routes = [
   {

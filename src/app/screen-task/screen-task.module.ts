@@ -8,8 +8,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
-import { ButtonSessionActionsModule } from '@app/button-session-actions';
-import { ButtonTaskActionsModule } from '@app/button-task-actions';
+import { ButtonTaskActionsModule } from '@app/button-task-actions/button-task-actions.module';
 import { FormatDurationPipeModule } from '@app/pipes/format-duration.pipe';
 import { SessionDurationPipeModule } from '@app/pipes/session-duration.pipe';
 import { TaskDurationPipeModule } from '@app/pipes/task-duration.pipe';
@@ -17,9 +16,8 @@ import { TaskStateIconPipeModule } from '@app/pipes/task-state-icon.pipe';
 import { ToStringPipeModule } from '@app/pipes/to-string.pipe';
 import { ReactiveComponentModule } from '@ngrx/component';
 import { NgScrollbarModule } from 'ngx-scrollbar';
-import { ScreenTaskComponent } from './component';
-
-export { ScreenTaskComponent };
+import { ButtonSessionActionsModule } from './button-session-actions/button-session-actions.module';
+import { ScreenTaskComponent } from './screen-task.component';
 
 @NgModule({
   declarations: [ScreenTaskComponent],

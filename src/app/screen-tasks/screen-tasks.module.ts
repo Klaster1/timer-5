@@ -10,9 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
-import { ButtonTaskActionsModule } from '@app/button-task-actions';
-import { EmptyStateModule } from '@app/empty-state';
-import { FilterFormModule } from '@app/filter-form/filter-form.module';
+import { ButtonTaskActionsModule } from '@app/button-task-actions/button-task-actions.module';
 import { FormatDurationPipeModule } from '@app/pipes/format-duration.pipe';
 import { TaskDurationPipeModule } from '@app/pipes/task-duration.pipe';
 import { TaskStateIconPipeModule } from '@app/pipes/task-state-icon.pipe';
@@ -22,12 +20,11 @@ import { NgStackFormsModule } from '@ng-stack/forms';
 import { ReactiveComponentModule } from '@ngrx/component';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { CheckViewportSizeWhenValueChangesDirective } from './checkViewportSizeWhenValueChanges.directive';
-import { ScreenTasksComponent } from './component';
+import { EmptyStateModule } from './empty-state/empty-state.module';
 import { FixRouterLinkActiveDirective } from './fixRouterLinkActive.directive';
+import { ScreenTasksComponent } from './screen-tasks.component';
 import { ScrollToIndexDirective } from './scrollToIndex.directive';
-import { TasksFilterModule } from './tasks-filter/module';
-
-export { ScreenTasksComponent };
+import { TasksFilterModule } from './tasks-filter/tasks-filter.module';
 
 export type TasksFilterRouteParams = {
   search?: string;
@@ -67,49 +64,6 @@ export type TasksFilterRouteParams = {
     MatTooltipModule,
     MatSelectModule,
     ButtonTaskActionsModule,
-    FilterFormModule.forChild<TasksFilterRouteParams>({
-      urlFragmentIndex: 2,
-      encodeValue(pair) {
-        switch (pair?.[0]) {
-          case 'search':
-            return pair?.[1] ? ([pair?.[0], pair?.[1]] as const) : null;
-          case 'from':
-          case 'to':
-            return pair?.[1] ? ([pair?.[0], pair?.[1].toISOString()] as const) : null;
-          case 'durationSort':
-            switch (pair?.[1]) {
-              case 'longestFirst':
-              case 'shortestFirst':
-                return [pair?.[0], pair?.[1]] as const;
-              default:
-                return null;
-            }
-          default:
-            return null;
-        }
-      },
-      decodeValue(key, rawValue) {
-        switch (key) {
-          case 'search':
-            return [key, rawValue];
-          case 'from':
-          case 'to':
-            const dateRe = /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/;
-            return dateRe.test(rawValue) ? [key, new Date(rawValue)] : null;
-          case 'durationSort': {
-            switch (rawValue) {
-              case 'longestFirst':
-              case 'shortestFirst':
-                return [key, rawValue];
-              default:
-                return null;
-            }
-          }
-          default:
-            return null;
-        }
-      },
-    }),
   ],
 })
 export class ScreenTasksModule {}

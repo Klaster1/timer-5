@@ -9,8 +9,8 @@ export interface DialogEditSessionData {
 
 @Component({
   selector: 'dialog-edit-session',
-  templateUrl: './component.html',
-  styleUrls: ['./component.scss'],
+  templateUrl: './dialog-edit-session.component.html',
+  styleUrls: ['./dialog-edit-session.component.scss'],
 })
 export class DialogEditSessionComponent {
   constructor(

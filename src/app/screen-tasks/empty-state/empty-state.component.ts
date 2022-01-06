@@ -1,8 +1,8 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 
 @Component({
-  templateUrl: './component.html',
-  styleUrls: ['./component.scss'],
+  templateUrl: './empty-state.component.html',
+  styleUrls: ['./empty-state.component.scss'],
   selector: 'empty-state',
   encapsulation: ViewEncapsulation.None,
 })

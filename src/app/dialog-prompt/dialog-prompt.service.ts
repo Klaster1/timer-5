@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogPromptComponent, DialogPromptData } from '@app/dialog-prompt';
 import { Observable } from 'rxjs';
+import { DialogPromptComponent, DialogPromptData } from './dialog-prompt.component';
 
 @Injectable({ providedIn: 'root' })
 export class Prompt {

@@ -4,8 +4,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { NgStackFormsModule } from '@ng-stack/forms';
-import { DialogPromptComponent, DialogPromptData } from './component';
-export { DialogPromptComponent, DialogPromptData };
+import { DialogPromptComponent } from './dialog-prompt.component';
 
 @NgModule({
   imports: [MatDialogModule, MatButtonModule, MatFormFieldModule, MatInputModule, NgStackFormsModule],

@@ -4,15 +4,6 @@
 
 export const environment = {
   production: false,
-  firebase: {
-    apiKey: 'AIzaSyBN-4BfZNlcEWqEpILSx2BLYZThNJM9fqs',
-    authDomain: 'timer-4aabc.firebaseapp.com',
-    databaseURL: 'https://timer-4aabc.firebaseio.com',
-    projectId: 'timer-4aabc',
-    storageBucket: 'timer-4aabc.appspot.com',
-    messagingSenderId: '89650575827',
-    appId: '1:89650575827:web:4daa1fa92b73dce9a31726',
-  },
 };
 
 /*

@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { DialogEditSessionComponent, DialogEditSessionData } from '@app/dialog-edit-session';
+import {
+  DialogEditSessionComponent,
+  DialogEditSessionData,
+} from '@app/dialog-edit-session/dialog-edit-session.component';
+import { Prompt } from '@app/dialog-prompt/dialog-prompt.service';
 import { getTaskSession } from '@app/domain/no-dom';
 import * as actions from '@app/ngrx/actions';
 import * as selectors from '@app/ngrx/selectors';
-import { Prompt } from '@app/providers/prompt.provider';
 import { StoreState } from '@app/types';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';

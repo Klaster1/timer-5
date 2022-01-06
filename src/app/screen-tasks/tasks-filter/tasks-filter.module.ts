@@ -19,7 +19,7 @@ import { MapPipeModule } from '@app/map-pipe/map.pipe';
 import { NgStackFormsModule } from '@ng-stack/forms';
 import { ReactiveComponentModule } from '@ngrx/component';
 import { ButtonResetInputComponent } from './button-reset-input.component';
-import { TasksFilterComponent } from './component';
+import { TasksFilterComponent } from './tasks-filter.component';
 import { TimelineChartUplotComponent } from './timeline-chart-uplot.component';
 
 @NgModule({

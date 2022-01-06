@@ -19,17 +19,20 @@ import { HotkeyModule } from 'angular2-hotkeys';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { DialogEditSessionModule } from './dialog-edit-session';
+import { DialogEditSessionModule } from './dialog-edit-session/dialog-edit-session.module';
 import { DialogHotkeysCheatsheetModule } from './dialog-hotkeys-cheatsheet/dialog-hotkeys-cheatsheet.module';
-import { DialogPromptModule } from './dialog-prompt';
+import { DialogPromptModule } from './dialog-prompt/dialog-prompt.module';
+import { isValidISO8601String } from './domain/date';
+import { FilterFormModule } from './filter-form/filter-form.module';
 import { Effects } from './ngrx/effects';
 import { metaReducers } from './ngrx/metareducers';
 import * as reducers from './ngrx/reducers';
-import { ScreenTaskModule } from './screen-task';
-import { ScreenTasksModule } from './screen-tasks';
+import { ScreenTaskModule } from './screen-task/screen-task.module';
+import { ScreenTasksModule, TasksFilterRouteParams } from './screen-tasks/screen-tasks.module';
+import { TestComponent } from './test/test.component';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, TestComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -65,6 +68,48 @@ import { ScreenTasksModule } from './screen-tasks';
       logOnly: environment.production, // Restrict extension to log-only mode
     }),
     EffectsModule.forRoot([Effects]),
+    FilterFormModule.forChild<TasksFilterRouteParams>({
+      urlFragmentIndex: 2,
+      encodeValue(pair) {
+        switch (pair?.[0]) {
+          case 'search':
+            return pair?.[1] ? ([pair?.[0], pair?.[1]] as const) : null;
+          case 'from':
+          case 'to':
+            return pair?.[1] ? ([pair?.[0], pair?.[1].toISOString()] as const) : null;
+          case 'durationSort':
+            switch (pair?.[1]) {
+              case 'longestFirst':
+              case 'shortestFirst':
+                return [pair?.[0], pair?.[1]] as const;
+              default:
+                return null;
+            }
+          default:
+            return null;
+        }
+      },
+      decodeValue(key, rawValue) {
+        switch (key) {
+          case 'search':
+            return [key, rawValue];
+          case 'from':
+          case 'to':
+            return isValidISO8601String(rawValue) ? [key, new Date(rawValue)] : null;
+          case 'durationSort': {
+            switch (rawValue) {
+              case 'longestFirst':
+              case 'shortestFirst':
+                return [key, rawValue];
+              default:
+                return null;
+            }
+          }
+          default:
+            return null;
+        }
+      },
+    }),
   ],
   providers: [
     {

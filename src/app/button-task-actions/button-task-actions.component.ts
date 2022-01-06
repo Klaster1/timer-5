@@ -4,8 +4,8 @@ import { StoreState, Task, TaskState } from '@app/types';
 import { Store } from '@ngrx/store';
 
 @Component({
-  templateUrl: './template.html',
-  styleUrls: ['./style.scss'],
+  templateUrl: './button-task-actions.component.html',
+  styleUrls: ['./button-task-actions.component.scss'],
   selector: 'button-task-actions',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

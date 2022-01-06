@@ -6,7 +6,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { TaskStateIconPipeModule } from '@app/pipes/task-state-icon.pipe';
 import { TaskStatePipeModule } from '@app/pipes/task-state.pipe';
-import { ButtonTaskActionsComponent } from './component';
+import { ButtonTaskActionsComponent } from './button-task-actions.component';
 
 @NgModule({
   imports: [

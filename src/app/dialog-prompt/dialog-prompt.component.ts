@@ -10,8 +10,8 @@ export interface DialogPromptData {
 
 @Component({
   selector: 'dialog-prompt',
-  templateUrl: './template.html',
-  styleUrls: ['./style.scss'],
+  templateUrl: './dialog-prompt.component.html',
+  styleUrls: ['./dialog-prompt.component.scss'],
 })
 export class DialogPromptComponent {
   constructor(

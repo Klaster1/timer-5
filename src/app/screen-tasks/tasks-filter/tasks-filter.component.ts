@@ -19,8 +19,8 @@ import { map, pluck, startWith, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'tasks-filter',
-  templateUrl: './component.html',
-  styleUrls: ['./component.scss'],
+  templateUrl: './tasks-filter.component.html',
+  styleUrls: ['./tasks-filter.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('inOutAnimation', [

@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { EmptyStateComponent } from './component';
+import { EmptyStateComponent } from './empty-state.component';
 
 @NgModule({
   declarations: [EmptyStateComponent],

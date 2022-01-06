@@ -6,8 +6,8 @@ import { Store } from '@ngrx/store';
 import { take } from 'rxjs/operators';
 
 @Component({
-  templateUrl: './template.html',
-  styleUrls: ['./style.scss'],
+  templateUrl: './button-session-actions.component.html',
+  styleUrls: ['./button-session-actions.component.scss'],
   selector: 'button-session-actions',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

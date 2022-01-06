@@ -10,8 +10,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { NgStackFormsModule } from '@ng-stack/forms';
-import { DialogEditSessionComponent, DialogEditSessionData } from './component';
-export { DialogEditSessionComponent, DialogEditSessionData };
+import { DialogEditSessionComponent } from './dialog-edit-session.component';
 
 @NgModule({
   imports: [

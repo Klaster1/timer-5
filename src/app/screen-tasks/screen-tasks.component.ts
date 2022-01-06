@@ -17,11 +17,11 @@ import { Store } from '@ngrx/store';
 import { HotkeysService } from 'angular2-hotkeys';
 import { combineLatest, merge, Observable, Subject } from 'rxjs';
 import { map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
-import { TasksFilterRouteParams } from '.';
+import { TasksFilterRouteParams } from './screen-tasks.module';
 
 @Component({
-  templateUrl: './template.html',
-  styleUrls: ['./style.scss'],
+  templateUrl: './screen-tasks.component.html',
+  styleUrls: ['./screen-tasks.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScreenTasksComponent implements OnInit, OnDestroy {

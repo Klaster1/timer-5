@@ -3,7 +3,7 @@ import { isTaskRunning, sortSessions } from '@app/domain/no-dom';
 import { FilterFormService } from '@app/filter-form/filter-form.service';
 import * as actions from '@app/ngrx/actions';
 import { currentTaskWithFilter } from '@app/ngrx/selectors';
-import { TasksFilterRouteParams } from '@app/screen-tasks';
+import { TasksFilterRouteParams } from '@app/screen-tasks/screen-tasks.module';
 import { StoreState, Task, TaskState } from '@app/types';
 import { hotkey } from '@app/utils/hotkey';
 import { Store } from '@ngrx/store';
@@ -13,8 +13,8 @@ import { combineLatest } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
 
 @Component({
-  templateUrl: './template.html',
-  styleUrls: ['./style.scss'],
+  templateUrl: './screen-task.component.html',
+  styleUrls: ['./screen-task.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScreenTaskComponent implements OnDestroy, OnInit {
