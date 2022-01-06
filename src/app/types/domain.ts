@@ -39,7 +39,6 @@ export type StatsParams = {
   timelineStep: RangeWidth;
 };
 export type Stats = {
-  top10: { name: string; id: string; duration: number }[];
   today: {
     duration: number;
     diff: number;

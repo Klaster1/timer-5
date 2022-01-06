@@ -1,4 +1,4 @@
-import { sessionDurationPure, taskDurationPure, tasksDurationPure } from '@app/domain/no-dom';
+import { sessionDurationPure, tasksDurationPure } from '@app/domain/no-dom';
 import { Session, Stats, StatsParams, Task } from '../types/domain';
 import {
   barWidths,
@@ -160,10 +160,6 @@ export const stats = (params: StatsParams, tasks: Task[]): Stats => {
   const bars = tasksToBars(tasks, ...dateFns);
 
   return {
-    top10: tasks
-      .map((t) => ({ name: t.name, id: t.id, duration: taskDurationPure(t, Date.now()) }))
-      .sort((a, b) => b.duration - a.duration)
-      .slice(0, 10),
     today: { duration: todayTasksDuration, diff: todayTasksDuration - yesterdayTaskDuration },
     thisWeek: { duration: 0, diff: 0 },
     thisYear: { duration: 0, diff: 0 },
