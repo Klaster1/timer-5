@@ -25,7 +25,6 @@ import { DialogPromptModule } from './dialog-prompt';
 import { Effects } from './ngrx/effects';
 import { metaReducers } from './ngrx/metareducers';
 import * as reducers from './ngrx/reducers';
-import { ScreenStatsModule } from './screen-stats';
 import { ScreenTaskModule } from './screen-task';
 import { ScreenTasksModule } from './screen-tasks';
 
@@ -39,7 +38,6 @@ import { ScreenTasksModule } from './screen-tasks';
     AppRoutingModule,
     ScreenTasksModule,
     ScreenTaskModule,
-    ScreenStatsModule,
     MatSidenavModule,
     MatMenuModule,
     MatListModule,

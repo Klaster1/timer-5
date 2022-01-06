@@ -35,9 +35,6 @@
           <button mat-menu-item (click)="export()">Export</button>
         </mat-menu>
 
-        <a mat-list-item routerLink="/stats" routerLinkActive="nav-link-active" matTooltip="Stats">
-          <mat-icon>bar_chart</mat-icon>
-        </a>
         <button mat-list-item (click)="toggleTheme()" [matTooltip]="theme !== 'dark' ? 'Dark mode' : 'Day mode'">
           <mat-icon>{{ theme !== 'dark' ? 'nights_stay' : 'wb_sunny' }}</mat-icon>
         </button>

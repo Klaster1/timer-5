@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { GameStateGuard } from './guards/game-state.guard';
-import { ScreenStatsComponent } from './screen-stats/component';
 import { ScreenTaskComponent } from './screen-task';
 import { ScreenTasksComponent } from './screen-tasks';
 
@@ -27,10 +26,6 @@ const routes: Routes = [
         ],
       },
     ],
-  },
-  {
-    path: 'stats',
-    component: ScreenStatsComponent,
   },
 ];
 

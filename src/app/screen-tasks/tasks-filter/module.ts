@@ -20,9 +20,10 @@ import { NgStackFormsModule } from '@ng-stack/forms';
 import { ReactiveComponentModule } from '@ngrx/component';
 import { ButtonResetInputComponent } from './button-reset-input.component';
 import { TasksFilterComponent } from './component';
+import { TimelineChartUplotComponent } from './timeline-chart-uplot.component';
 
 @NgModule({
-  declarations: [TasksFilterComponent, ButtonResetInputComponent],
+  declarations: [TasksFilterComponent, ButtonResetInputComponent, TimelineChartUplotComponent],
   imports: [
     MatButtonModule,
     MatSelectModule,
