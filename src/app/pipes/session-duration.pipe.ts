@@ -1,5 +1,5 @@
 import { NgModule, Pipe, PipeTransform } from '@angular/core';
-import { sessionDuration } from '@app/domain';
+import { sessionDuration } from '@app/domain/with-dom';
 
 @Pipe({ name: 'sessionDuration' })
 export class SessionDurationPipe implements PipeTransform {

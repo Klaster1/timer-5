@@ -1,5 +1,5 @@
-import { compareTasks, isValidTaskState } from '@app/domain';
 import { filter as filterSync } from '@app/domain/filter';
+import { compareTasks, isValidTaskState } from '@app/domain/no-dom';
 import { Stats, StatsParams, StoreState, Task, TasksFilterParams, TaskState } from '@app/types';
 import { isTruthy } from '@app/utils/assert';
 import { getSelectors } from '@ngrx/router-store';

@@ -1,5 +1,5 @@
 import { NgModule, Pipe, PipeTransform } from '@angular/core';
-import { isTask, isTaskRunning } from '@app/domain';
+import { isTask, isTaskRunning } from '@app/domain/no-dom';
 import { Task, TaskState } from '@app/types';
 import { assertNever } from '@app/types/assert-never';
 

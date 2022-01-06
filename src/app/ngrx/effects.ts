@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { DialogEditSessionComponent, DialogEditSessionData } from '@app/dialog-edit-session';
-import { getTaskSession } from '@app/domain';
+import { getTaskSession } from '@app/domain/no-dom';
 import * as actions from '@app/ngrx/actions';
 import * as selectors from '@app/ngrx/selectors';
 import { Prompt } from '@app/providers/prompt.provider';

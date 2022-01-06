@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { isTaskRunning, sortSessions } from '@app/domain';
+import { isTaskRunning, sortSessions } from '@app/domain/no-dom';
 import { FilterFormService } from '@app/filter-form/filter-form.service';
 import * as actions from '@app/ngrx/actions';
 import { currentTaskWithFilter } from '@app/ngrx/selectors';
