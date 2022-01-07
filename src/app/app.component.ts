@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { loadTasks, updateTheme } from '@app/ngrx/actions';
 import { tasks, theme } from '@app/ngrx/selectors';
@@ -14,6 +14,7 @@ import { fromStoredTasks, toStoredTasks } from './types/storage';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
   theme$ = this.store.select(theme);

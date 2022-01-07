@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Control, FormBuilder } from '@ng-stack/forms';
 
@@ -11,6 +11,7 @@ export interface DialogEditSessionData {
   selector: 'dialog-edit-session',
   templateUrl: './dialog-edit-session.component.html',
   styleUrls: ['./dialog-edit-session.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DialogEditSessionComponent {
   constructor(
