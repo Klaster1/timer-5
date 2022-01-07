@@ -111,7 +111,7 @@ const appSessionToStoredSession = (session: Session): StoredSessionV1 => [
 ];
 const storedSessionToAppSession = (storedSession: StoredSessionV1): Session =>
   storedSession[1] === null
-    ? { start: storedSession[0] }
+    ? { start: sToMs(storedSession[0]) }
     : { start: sToMs(storedSession[0]), end: sToMs(storedSession[1]) };
 
 export const toStoredTasks = (appTasks: AppTasks): LatestStoredTasks => ({
