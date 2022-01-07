@@ -1,3 +1,4 @@
+import { isNumber } from '@app/utils/assert';
 import { nanoid } from 'nanoid';
 import { combineLatest, Observable, of, timer } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -63,7 +64,7 @@ export const compareTasks = (a: Task, b: Task): number => {
   }
   return 0;
 };
-export const sessionIsOver = (s?: Session): s is Session & { end: number } => !!s && typeof s.end === 'number';
+export const sessionIsOver = (s?: Session): s is Session & { end: number } => !!s && isNumber(s.end);
 export const sessionDurationPure = (s: Session): number => (s.end ? s.end - s.start : 0);
 export const completeTaskDuration = (task?: Task): number =>
   task ? task.sessions.reduce((t, s) => t + sessionDurationPure(s), 0) : 0;
@@ -155,7 +156,7 @@ const filterByTo: Filter = (filter, t) => {
   if (!t) return t;
   const { to } = filter;
   if (to instanceof Date && !Number.isNaN(to.valueOf())) {
-    const sessions = t.sessions.filter((s) => (typeof s.end === 'number' ? s.end <= to.valueOf() : true));
+    const sessions = t.sessions.filter((s) => (isNumber(s.end) ? s.end <= to.valueOf() : true));
     return sessions.length ? { ...t, sessions } : null;
   } else {
     return t;

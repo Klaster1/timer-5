@@ -1,6 +1,6 @@
 import { msToS, Seconds, sToMs } from '@app/domain/date-time';
 import { makeTaskId, Session, Task, TaskState } from '@app/domain/task';
-import { assertNever, isTruthy } from '@app/utils/assert';
+import { assertNever, isNumber, isTruthy } from '@app/utils/assert';
 import { RouterReducerState } from '@ngrx/router-store';
 
 export interface StoreState {
@@ -52,7 +52,7 @@ const fromLegacyGames = (data: LegacyGames): AppTasks => {
       sessions: game.sessions.map(
         (session): Session => ({
           start: session.start,
-          end: typeof session.stop === 'number' ? session.stop : undefined,
+          end: isNumber(session.stop) ? session.stop : undefined,
         })
       ),
     }));
@@ -107,7 +107,7 @@ const storedTaskStateToAppTaskStateV1 = (state: StoredTaskStateV1): TaskState =>
 
 const appSessionToStoredSession = (session: Session): StoredSessionV1 => [
   msToS(session.start),
-  typeof session.end === 'number' ? msToS(session.end) : null,
+  isNumber(session.end) ? msToS(session.end) : null,
 ];
 const storedSessionToAppSession = (storedSession: StoredSessionV1): Session =>
   storedSession[1] === null
