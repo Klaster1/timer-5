@@ -1,7 +1,6 @@
 import { NgModule, Pipe, PipeTransform } from '@angular/core';
-import { isTask, isTaskRunning } from '@app/domain/no-dom';
-import { Task, TaskState } from '@app/types';
-import { assertNever } from '@app/types/assert-never';
+import { isTask, isTaskRunning, Task, TaskState } from '@app/domain/task';
+import { assertNever } from '@app/utils/assert';
 
 @Pipe({
   name: 'taskStateIcon',

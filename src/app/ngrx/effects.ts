@@ -6,9 +6,9 @@ import {
   DialogEditSessionData,
 } from '@app/dialog-edit-session/dialog-edit-session.component';
 import { Prompt } from '@app/dialog-prompt/dialog-prompt.service';
-import { getTaskSession } from '@app/domain/no-dom';
-import { currentTaskId, currentTasksState, taskById } from '@app/ngrx/selectors';
-import { StoreState } from '@app/types';
+import { StoreState } from '@app/domain/storage';
+import { getTaskSession } from '@app/domain/task';
+import { selectCurrentTaskId, selectCurrentTaskState, selectTaskById } from '@app/ngrx/selectors';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { nanoid as id } from 'nanoid';
@@ -45,7 +45,7 @@ export class Effects {
     () =>
       this.actions$.pipe(
         ofType(createTask),
-        withLatestFrom(this.store.select(currentTasksState)),
+        withLatestFrom(this.store.select(selectCurrentTaskState)),
         exhaustMap(([a, state]) => this.router.navigate(['tasks', state === 'all' ? 'all' : 'active', a.taskId]))
       ),
     { dispatch: false }
@@ -55,7 +55,7 @@ export class Effects {
     () =>
       this.actions$.pipe(
         ofType(deleteTask),
-        withLatestFrom(this.store.select(currentTasksState), this.store.select(currentTaskId)),
+        withLatestFrom(this.store.select(selectCurrentTaskState), this.store.select(selectCurrentTaskId)),
         filter(([, state]) => !!state),
         tap(([action, state, taskId]) => {
           if (action.taskId === taskId) this.router.navigate(['tasks', state]);
@@ -68,7 +68,7 @@ export class Effects {
     this.actions$.pipe(
       ofType(renameTaskIntent),
       switchMap((a) =>
-        this.store.select(taskById(a.taskId)).pipe(
+        this.store.select(selectTaskById(a.taskId)).pipe(
           take(1),
           exhaustMap((task) => this.prompt.prompt('Rename task', task?.name, 'Task name')),
           switchMap((result) => (result ? [renameTask({ taskId: a.taskId, name: result })] : []))
@@ -81,7 +81,7 @@ export class Effects {
     this.actions$.pipe(
       ofType(updateSessionIntent),
       switchMap((a) =>
-        this.store.select(taskById(a.taskId)).pipe(
+        this.store.select(selectTaskById(a.taskId)).pipe(
           take(1),
           exhaustMap((task) => {
             if (!task) return [];

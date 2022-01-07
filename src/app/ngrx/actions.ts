@@ -1,4 +1,5 @@
-import { Session, StoreState, TaskState, Theme } from '@app/types';
+import { StoreState, Theme } from '@app/domain/storage';
+import { Session, TaskState } from '@app/domain/task';
 import { createAction, props } from '@ngrx/store';
 
 export const createTaskIntent = createAction('[Task] Create intent');

@@ -8,15 +8,17 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { closestDayEnd, closestDayStart, closestWeekEnd, closestWeekStart, toYesterday } from '@app/domain/date';
-import { currentStateTasksStats } from '@app/ngrx/selectors';
-import { StoreState, TasksFilterParams } from '@app/types';
-import { WrapControls } from '@app/types/form';
-import { FormControl, FormGroup } from '@ng-stack/forms';
+import { closestDayEnd, closestDayStart, closestWeekEnd, closestWeekStart, toYesterday } from '@app/domain/date-time';
+import { TasksFilterParams } from '@app/domain/router';
+import { StoreState } from '@app/domain/storage';
+import { selectFilterChartData } from '@app/ngrx/selectors';
+import { Control, FormControl, FormGroup } from '@ng-stack/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { map, pluck, startWith, tap } from 'rxjs/operators';
+import { distinctUntilChanged, map, startWith, tap } from 'rxjs/operators';
 import { ScaleRange } from './timeline-chart-uplot.component';
+
+export type WrapControls<T> = { [K in keyof Required<T>]: T[K] extends Record<any, any> ? Control<T[K]> : T[K] };
 
 @Component({
   selector: 'tasks-filter',
@@ -40,13 +42,14 @@ export class TasksFilterComponent implements OnDestroy {
     taskId: new FormControl(),
     durationSort: new FormControl(),
   });
-  timelineUplot$ = this.store.pipe(currentStateTasksStats({ timelineStep: 'day' }), pluck('timeline', 'uPlotData'));
+  timelineUplot$ = this.store.select(selectFilterChartData);
   chartRange$: Observable<ScaleRange> = this.form.valueChanges.pipe(
     startWith({}),
-    map(() => {
+    map((): ScaleRange => {
       const { from, to } = this.form.getRawValue();
       return [from ?? null, to ?? null];
-    })
+    }),
+    distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b))
   );
   onChartRangeChange(e: ScaleRange) {
     this.form.patchValue({
@@ -71,6 +74,7 @@ export class TasksFilterComponent implements OnDestroy {
   }
 
   ngOnDestroy() {
+    this.form.reset();
     this.subscriber.unsubscribe();
   }
   setAnyTime() {
@@ -94,7 +98,7 @@ export class TasksFilterComponent implements OnDestroy {
   setThisWeek() {
     this.form.patchValue({
       from: closestWeekStart(new Date()),
-      to: closestWeekEnd(new Date()),
+      to: closestWeekEnd(),
     });
   }
 }

@@ -1,7 +1,5 @@
-import { sessionDurationPure, tasksDurationPure } from '@app/domain/no-dom';
-import { Session, Stats, StatsParams, Task } from '../types/domain';
-import { barWidths, dateDayStart, DateFn, startEndFns, toDateEnd, toYesterday } from './date';
-import { filter } from './filter';
+import { Session, sessionDurationPure, Task } from '@app/domain/task';
+import { DateFn, startEndFns } from './date-time';
 
 const clampSession = (session: Session, start: number, end: number, now: number): Session => ({
   ...session,
@@ -26,19 +24,15 @@ const getSessionRangeId = (session: Session, getStartFn: DateFn): number =>
   getStartFn(new Date(session.start)).valueOf();
 
 const getEraliestSessionStart = (tasks: Task[]): number | undefined =>
-  tasks
-    .map((t) => t.sessions)
-    .reduce((a, b) => [...a, ...b], [])
-    .sort((a, b) => b.start - a.start)
-    .pop()?.start;
+  tasks.flatMap((t) => t.sessions.map((s) => s.start)).sort((a, b) => a - b)[0];
 
-const tasksToBars = (tasks: Task[], startFn: DateFn, endFn: DateFn): Stats['timeline']['bars'] => {
+const tasksToBars = (tasks: Task[], startFn: DateFn, endFn: DateFn): Bars => {
   const now = new Date();
   const earliestStart = getEraliestSessionStart(tasks);
   if (earliestStart === undefined) {
     return new Map();
   }
-  const result: Stats['timeline']['bars'] = new Map(
+  const result: Bars = new Map(
     generateRanges(new Date(earliestStart), now, startFn, endFn).map(([s, e]) => [
       s.valueOf(),
       {
@@ -49,7 +43,7 @@ const tasksToBars = (tasks: Task[], startFn: DateFn, endFn: DateFn): Stats['time
       },
     ])
   );
-  return tasks.reduce((bars: Stats['timeline']['bars'], task: Task) => {
+  return tasks.reduce((bars: Bars, task: Task) => {
     task.sessions.forEach((s) => {
       let duration = sessionDurationPure(s);
       while (duration >= 10) {
@@ -69,45 +63,11 @@ const tasksToBars = (tasks: Task[], startFn: DateFn, endFn: DateFn): Stats['time
   }, result);
 };
 
-export const barsTouPlotData = (bars: Stats['timeline']['bars']): number[][] => [
+const barsTouPlotData = (bars: Bars): [number[], number[]] => [
   [...bars.values()].flatMap((b) => [b.start.valueOf() / 1000, b.end.valueOf() / 1000]),
   [...bars.values()].flatMap((b) => [b.duration, b.duration]),
 ];
 
-export const stats = (params: StatsParams, tasks: Task[]): Stats => {
-  const todayTasksDuration = tasksDurationPure(
-    filter(
-      {
-        from: dateDayStart(new Date()),
-        to: new Date(),
-      },
-      tasks
-    )
-  );
-  const yesterdayTaskDuration = tasksDurationPure(
-    filter(
-      {
-        from: toYesterday(dateDayStart(new Date())),
-        to: toYesterday(toDateEnd(new Date())),
-      },
-      tasks
-    )
-  );
+type Bars = Map<number, { start: Date; end: Date; tasks: Set<Task['id']>; duration: number }>;
 
-  const dateFns = startEndFns[params.timelineStep];
-  if (!dateFns) {
-    throw new Error('Missing date fns');
-  }
-  const bars = tasksToBars(tasks, ...dateFns);
-
-  return {
-    today: { duration: todayTasksDuration, diff: todayTasksDuration - yesterdayTaskDuration },
-    thisWeek: { duration: 0, diff: 0 },
-    thisYear: { duration: 0, diff: 0 },
-    timeline: {
-      barWidthInMs: barWidths[params.timelineStep],
-      bars,
-      uPlotData: barsTouPlotData(bars),
-    },
-  };
-};
+export const chartSeries = (tasks: Task[]) => barsTouPlotData(tasksToBars(tasks, ...startEndFns.day));

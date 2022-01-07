@@ -1,4 +1,5 @@
-import { StoreState, Task, TaskState } from '@app/types';
+import { StoreState } from '@app/domain/storage';
+import { Task, TaskState } from '@app/domain/task';
 import { routerReducer } from '@ngrx/router-store';
 import { Action, on } from '@ngrx/store';
 import { createImmerReducer } from 'ngrx-immer/store';

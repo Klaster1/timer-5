@@ -1,6 +1,6 @@
 import { NgModule, Pipe, PipeTransform } from '@angular/core';
-import { RouteTaskState, TaskState } from '@app/types';
-import { assertNever } from '@app/types/assert-never';
+import { RouteTaskState, TaskState } from '@app/domain/task';
+import { assertNever } from '@app/utils/assert';
 
 @Pipe({
   name: 'taskState',

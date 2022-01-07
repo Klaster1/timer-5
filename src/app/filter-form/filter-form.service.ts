@@ -1,9 +1,10 @@
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { Entries } from '@app/domain/router';
 import { isTruthy } from '@app/utils/assert';
 import { Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map, shareReplay } from 'rxjs/operators';
-import { Entries, FilterFormsSettings, FILTER_FORM_SETTINGS } from './types';
+import { FilterFormsSettings, FILTER_FORM_SETTINGS } from './types';
 
 @Injectable()
 export class FilterFormService<T> {

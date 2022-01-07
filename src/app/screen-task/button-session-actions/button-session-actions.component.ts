@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { TasksFilterParams } from '@app/domain/router';
+import { StoreState } from '@app/domain/storage';
+import { Session, Task } from '@app/domain/task';
 import { FilterFormService } from '@app/filter-form/filter-form.service';
 import * as actions from '@app/ngrx/actions';
-import { Session, StoreState, Task, TasksFilterParams } from '@app/types';
 import { Store } from '@ngrx/store';
 import { take } from 'rxjs/operators';
 

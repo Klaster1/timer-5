@@ -1,54 +1,69 @@
-import { filter as filterSync } from '@app/domain/filter';
-import { compareTasks, isValidTaskState } from '@app/domain/no-dom';
-import { Stats, StatsParams, StoreState, Task, TasksFilterParams, TaskState } from '@app/types';
+import { chartSeries } from '@app/domain/chart';
+import { decode, decodeFilterMatrixParams, decodeRouteParams, decodeWholeAppRouteParams } from '@app/domain/router';
+import { StoreState } from '@app/domain/storage';
+import { filterTasks, filterTaskSessions, sortTaskSessions } from '@app/domain/task';
+import { ScaleRange } from '@app/screen-tasks/tasks-filter/timeline-chart-uplot.component';
 import { isTruthy } from '@app/utils/assert';
 import { getSelectors } from '@ngrx/router-store';
-import { createFeatureSelector, createSelector, select } from '@ngrx/store';
-import * as Comlink from 'comlink';
-import { pipe } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { createFeatureSelector, createSelector } from '@ngrx/store';
 
-export const tasks = createFeatureSelector<StoreState['tasks']>('tasks');
-export const router = createFeatureSelector<StoreState['router']>('router');
-export const { selectRouteParam } = getSelectors(router);
-export const currentTaskId = selectRouteParam('taskId');
-export const currentTasksState = createSelector(selectRouteParam('state'), (value) => {
-  if (typeof value !== 'string') return 'all' as const;
-  value = value.split(';')[0];
-  if (!value || !isValidTaskState(value)) return 'all' as const;
-  return value as TaskState;
-});
-export const taskById = (taskId: string) => createSelector(tasks, (tasks: StoreState['tasks']) => tasks.values[taskId]);
-export const currentTask = createSelector(currentTaskId, tasks, (id, tasks) => (id ? tasks.values[id] : undefined));
-export const currentStateTasks = createSelector(tasks, currentTasksState, (tasks, state) =>
-  tasks.ids
-    .map((id) => {
-      const task = tasks.values[id];
-      return state === 'all' ? task : task?.state === state ? task : undefined;
-    })
-    .filter(isTruthy)
-    .sort(compareTasks)
+const router = createFeatureSelector<StoreState['router']>('router');
+
+// Params
+export const { selectRouteParams } = getSelectors(router);
+export const selectDecodedFilterParams = createSelector(selectRouteParams, (params) =>
+  decode(params, decodeFilterMatrixParams)
 );
+export const selectDecodedRouteParams = createSelector(selectRouteParams, (params) =>
+  decode(params, decodeRouteParams)
+);
+export const selectAllRouteParams = createSelector(selectRouteParams, (params) =>
+  decode(params, decodeWholeAppRouteParams)
+);
+export const selectFilterFrom = createSelector(selectDecodedFilterParams, (params) => params.from);
+export const selectFilterTo = createSelector(selectDecodedFilterParams, (params) => params.to);
+export const selectCurrentTaskId = createSelector(selectDecodedRouteParams, (params) => params.taskId);
+export const selectCurrentTaskState = createSelector(selectDecodedRouteParams, (params) => params.state);
 
-const filterWorker = new Worker(new URL('../workers/filter.worker.ts', import.meta.url), { type: 'module' });
-const filter = Comlink.wrap<(f: TasksFilterParams, v: Task[]) => Task[]>(filterWorker);
-
-export const currentStateTasksWithFilter = (range: TasksFilterParams) =>
-  pipe(
-    select(currentStateTasks),
-    switchMap((tasks) => filter(range, tasks))
-  );
-
-export const currentTaskWithFilter = (range: TasksFilterParams) =>
-  createSelector(currentTask, (task) => (task ? filterSync({ ...range, taskId: task.id }, [task])[0] : undefined));
-
-const statsWorker = new Worker(new URL('../workers/stats.worker.ts', import.meta.url), { type: 'module' });
-const stats = Comlink.wrap<(f: StatsParams, v: Task[]) => Stats>(statsWorker);
-
-export const currentStateTasksStats = (params: StatsParams) =>
-  pipe(
-    select(tasks),
-    switchMap((tasks) => stats(params, [...Object.values(tasks.values)]))
-  );
-
-export const theme = createFeatureSelector<StoreState['theme']>('theme');
+// Tasks
+export const selectTasks = createFeatureSelector<StoreState['tasks']>('tasks');
+export const selectAllTasks = createSelector(selectTasks, (tasks) => Object.values(tasks.values));
+export const selectCurrentTasks = createSelector(selectAllTasks, selectAllRouteParams, (tasks, params) =>
+  filterTasks(params, tasks)
+);
+export const selectCurrentTask = createSelector(
+  selectTasks,
+  selectCurrentTaskId,
+  selectFilterFrom,
+  selectFilterTo,
+  (tasks, taskId, from, to) => {
+    if (!taskId) return;
+    const maybeTask = tasks.values[taskId];
+    if (!maybeTask) return;
+    return sortTaskSessions(filterTaskSessions(maybeTask, { from, to }));
+  }
+);
+export const selectFilterChartData = createSelector(selectAllTasks, (tasks) => chartSeries(tasks));
+export const selectCurrentTaskIndex = createSelector(
+  selectCurrentTasks,
+  selectCurrentTask,
+  (tasks, task) => tasks.findIndex(({ id }) => id === task?.id) ?? -1
+);
+export const selectNextTaskId = createSelector(selectCurrentTasks, selectCurrentTaskIndex, (tasks, currentIndex) => {
+  if (!tasks.length) return;
+  const nextTaskIndex = currentIndex >= tasks.length - 1 ? 0 : currentIndex + 1;
+  return tasks[nextTaskIndex]?.id;
+});
+export const selectPrevTaskId = createSelector(selectCurrentTasks, selectCurrentTaskIndex, (tasks, currentIndex) => {
+  if (!tasks.length) return;
+  const prevTaskIndex = currentIndex <= 0 ? tasks.length - 1 : currentIndex - 1;
+  return tasks[prevTaskIndex]?.id;
+});
+export const selectIsCurrentTaskOpened = createSelector(selectCurrentTask, isTruthy);
+export const selectTaskById = (taskId: string) => createSelector(selectTasks, (tasks) => tasks.values[taskId]);
+export const selectTheme = createFeatureSelector<StoreState['theme']>('theme');
+export const selectFilterRange = createSelector(
+  selectFilterFrom,
+  selectFilterTo,
+  (from, to): ScaleRange => [from ?? null, to ?? null]
+);

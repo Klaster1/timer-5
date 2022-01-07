@@ -20,13 +20,13 @@ import { AppComponent } from './app.component';
 import { DialogEditSessionModule } from './dialog-edit-session/dialog-edit-session.module';
 import { DialogHotkeysCheatsheetModule } from './dialog-hotkeys-cheatsheet/dialog-hotkeys-cheatsheet.module';
 import { DialogPromptModule } from './dialog-prompt/dialog-prompt.module';
-import { isValidISO8601String } from './domain/date';
+import { decodeFilterMatrixParams, TasksFilterRouteParams } from './domain/router';
 import { FilterFormModule } from './filter-form/filter-form.module';
 import { Effects } from './ngrx/effects';
 import { metaReducers } from './ngrx/metareducers';
 import * as reducers from './ngrx/reducers';
 import { ScreenTaskModule } from './screen-task/screen-task.module';
-import { ScreenTasksModule, TasksFilterRouteParams } from './screen-tasks/screen-tasks.module';
+import { ScreenTasksModule } from './screen-tasks/screen-tasks.module';
 import { TestComponent } from './test/test.component';
 
 @NgModule({
@@ -83,26 +83,7 @@ import { TestComponent } from './test/test.component';
             return null;
         }
       },
-      decodeValue(key, rawValue) {
-        switch (key) {
-          case 'search':
-            return [key, rawValue];
-          case 'from':
-          case 'to':
-            return isValidISO8601String(rawValue) ? [key, new Date(rawValue)] : null;
-          case 'durationSort': {
-            switch (rawValue) {
-              case 'longestFirst':
-              case 'shortestFirst':
-                return [key, rawValue];
-              default:
-                return null;
-            }
-          }
-          default:
-            return null;
-        }
-      },
+      decodeValue: decodeFilterMatrixParams,
     }),
   ],
   providers: [

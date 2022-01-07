@@ -33,7 +33,6 @@
             ],
             "styles": ["src/styles.scss"],
             "scripts": [],
-            "webWorkerTsConfig": "tsconfig.worker.json",
             "vendorChunk": true,
             "extractLicenses": false,
             "buildOptimizer": false,

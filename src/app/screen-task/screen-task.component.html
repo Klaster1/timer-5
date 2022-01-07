@@ -10,7 +10,7 @@
     <button-task-actions [task]="task"></button-task-actions>
   </mat-toolbar>
   <ng-scrollbar>
-    <table mat-table [dataSource]="sortedSessions$">
+    <table mat-table [dataSource]="task.sessions">
       <ng-container matColumnDef="start">
         <th mat-header-cell *matHeaderCellDef>Start</th>
         <td mat-cell *matCellDef="let session">{{ session.start | date: 'yyyy-MM-dd H:mm' }}</td>

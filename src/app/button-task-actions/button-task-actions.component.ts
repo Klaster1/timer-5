@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { StoreState } from '@app/domain/storage';
+import { Task, TaskState } from '@app/domain/task';
 import * as actions from '@app/ngrx/actions';
-import { StoreState, Task, TaskState } from '@app/types';
 import { Store } from '@ngrx/store';
 
 @Component({

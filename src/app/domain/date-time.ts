@@ -1,4 +1,6 @@
-import { assertNever } from '@app/types/assert-never';
+import { assertNever } from '@app/utils/assert';
+
+export type Duration = number;
 
 export const closestHourStart = (value: Date): Date => {
   const date = new Date(value);
@@ -65,7 +67,7 @@ export const dateMonday = (d: Date) => {
   return date;
 };
 export const closestWeekStart = dateMonday;
-export const closestWeekEnd = (d: Date) => {
+export const closestWeekEnd = () => {
   const date = dateMonday(new Date());
   date.setDate(date.getDate() + 6);
   return closestDayEnd(date);
@@ -83,12 +85,12 @@ export const barWidths = {
   year: 1000 * 60 * 60 * 24 * 30 * 12,
 } as const;
 
-export const startEndFns: Record<string, [DateFn, DateFn]> = {
+export const startEndFns = {
   hour: [closestHourStart, closestHourEnd],
   day: [closestDayStart, closestDayEnd],
   month: [closestMonthStart, closestMonthEnd],
   year: [closestYearStart, closestYearEnd],
-};
+} as const;
 
 const pad = (value: number) => ((value || 0).toString().length === 1 ? '0' + value : value);
 

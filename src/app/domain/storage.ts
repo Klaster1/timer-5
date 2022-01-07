@@ -1,9 +1,19 @@
-import { msToS, Seconds, sToMs } from '@app/domain/date';
-import { makeTaskId } from '@app/domain/with-dom';
-import { isTruthy } from '@app/utils/assert';
-import { Session, Task, TaskState } from '.';
-import { assertNever } from './assert-never';
-import { StoreState } from './store';
+import { msToS, Seconds, sToMs } from '@app/domain/date-time';
+import { makeTaskId, Session, Task, TaskState } from '@app/domain/task';
+import { assertNever, isTruthy } from '@app/utils/assert';
+import { RouterReducerState } from '@ngrx/router-store';
+
+export interface StoreState {
+  tasks: NormalizedTasks;
+  router: RouterReducerState;
+  theme: Theme;
+}
+
+export type Theme = 'light' | 'dark';
+export type NormalizedTasks = {
+  ids: string[];
+  values: { [id: string]: Task };
+};
 
 type AppTasks = StoreState['tasks'];
 type StoredTasks = LegacyGames | StoredTasksV1;

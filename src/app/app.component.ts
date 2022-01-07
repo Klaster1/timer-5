@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { loadTasks, updateTheme } from '@app/ngrx/actions';
-import { tasks, theme } from '@app/ngrx/selectors';
-import { StoreState, TaskState } from '@app/types';
+import { selectTasks, selectTheme } from '@app/ngrx/selectors';
 import { hotkey } from '@app/utils/hotkey';
 import { Store } from '@ngrx/store';
 import { HotkeysService } from 'angular2-hotkeys';
 import { of } from 'rxjs';
 import { map, take, tap } from 'rxjs/operators';
-import { fromStoredTasks, toStoredTasks } from './types/storage';
+import { fromStoredTasks, StoreState, toStoredTasks } from './domain/storage';
+import { TaskState } from './domain/task';
 
 @Component({
   selector: 'app-root',
@@ -17,7 +17,7 @@ import { fromStoredTasks, toStoredTasks } from './types/storage';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
-  theme$ = this.store.select(theme);
+  theme$ = this.store.select(selectTheme);
   isLoggedIn$ = of(false);
   user$ = of(null);
   taskState = TaskState;
@@ -54,7 +54,7 @@ export class AppComponent {
   }
   export() {
     this.store
-      .select(tasks)
+      .select(selectTasks)
       .pipe(take(1), map(toStoredTasks))
       .subscribe((data) => {
         const blob = new Blob([JSON.stringify(data, null, '  ')], { type: 'application/json;charset=utf-8;' });

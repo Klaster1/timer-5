@@ -11,10 +11,10 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { barWidths, formatHours } from '@app/domain/date';
-import { theme } from '@app/ngrx/selectors';
-import { StoreState } from '@app/types';
-import { assertNever } from '@app/types/assert-never';
+import { barWidths, formatHours } from '@app/domain/date-time';
+import { StoreState } from '@app/domain/storage';
+import { selectTheme } from '@app/ngrx/selectors';
+import { assertNever } from '@app/utils/assert';
 import { Store } from '@ngrx/store';
 import { NgResizeObserver, ngResizeObserverProviders } from 'ng-resize-observer';
 import uPlot, { AlignedData, Hooks, Options } from 'uplot';
@@ -120,7 +120,10 @@ export type ScaleRange = [Date | null, Date | null];
 export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() chartData?: AlignedData;
   @Input() barWidth?: 'hour' | 'day' | 'month' | 'year';
-  @Input() set range(value: [Date | null, Date | null]) {
+  @Input() range?: ScaleRange;
+  private setRange(values: { currentValue: ScaleRange | undefined; previousValue: ScaleRange | undefined }) {
+    const value = values.currentValue;
+    if (!value) return;
     const oldMin = Math.round(this.uplot?.scales.x?.min ?? -1);
     const oldMax = Math.round(this.uplot?.scales.x?.max ?? -1);
     const dataMin = this.chartData?.[0]?.[0];
@@ -147,7 +150,7 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
   dimensionsSubscriber = this.ro.subscribe((e) => {
     this.uplot?.setSize({ width: e.contentRect.width, height: e.contentRect.height - this.headerHeight });
   });
-  themeSubscriber = this.store.select(theme).subscribe((theme) => {
+  themeSubscriber = this.store.select(selectTheme).subscribe((theme) => {
     setTimeout(() => {
       const stroke = window.getComputedStyle(this.elementRef.nativeElement).color;
       this.uplot?.axes.forEach((a) => (a.stroke = () => stroke));
@@ -254,6 +257,10 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
       if (ySeries) {
         ySeries.label = this.getLegendLabel();
       }
+    }
+    if (changes.range) {
+      const { currentValue, previousValue } = changes.range;
+      this.setRange({ currentValue, previousValue });
     }
   }
   ngOnDestroy() {

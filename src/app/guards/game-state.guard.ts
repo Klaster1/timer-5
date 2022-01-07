@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
-import { isValidTaskState } from '@app/domain/no-dom';
+import { isValidTaskState } from '@app/domain/task';
 
 @Injectable({ providedIn: 'root' })
 export class GameStateGuard implements CanActivate {

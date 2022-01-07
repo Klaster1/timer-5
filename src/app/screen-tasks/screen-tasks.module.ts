@@ -26,13 +26,6 @@ import { ScreenTasksComponent } from './screen-tasks.component';
 import { ScrollToIndexDirective } from './scrollToIndex.directive';
 import { TasksFilterModule } from './tasks-filter/tasks-filter.module';
 
-export type TasksFilterRouteParams = {
-  search?: string;
-  from?: Date;
-  to?: Date;
-  durationSort?: 'longestFirst' | 'shortestFirst';
-};
-
 @NgModule({
   declarations: [
     ScreenTasksComponent,
