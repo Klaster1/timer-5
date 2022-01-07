@@ -1,5 +1,5 @@
 import { chartSeries } from '@app/domain/chart';
-import { decode, decodeFilterMatrixParams, decodeRouteParams, decodeWholeAppRouteParams } from '@app/domain/router';
+import { decodeFilterMatrixParams, decodeRouteParams, decodeWholeAppRouteParams } from '@app/domain/router';
 import { StoreState } from '@app/domain/storage';
 import { filterTasks, filterTaskSessions, sortTaskSessions } from '@app/domain/task';
 import { isTruthy } from '@app/utils/assert';
@@ -11,13 +11,11 @@ const router = createFeatureSelector<StoreState['router']>('router');
 // Params
 export const { selectRouteParams } = getSelectors(router);
 export const selectDecodedFilterParams = createSelector(selectRouteParams, (params) =>
-  decode(params, decodeFilterMatrixParams)
+  decodeFilterMatrixParams(params ?? {})
 );
-export const selectDecodedRouteParams = createSelector(selectRouteParams, (params) =>
-  decode(params, decodeRouteParams)
-);
+export const selectDecodedRouteParams = createSelector(selectRouteParams, (params) => decodeRouteParams(params ?? {}));
 export const selectAllRouteParams = createSelector(selectRouteParams, (params) =>
-  decode(params, decodeWholeAppRouteParams)
+  decodeWholeAppRouteParams(params ?? {})
 );
 export const selectFilterFrom = createSelector(selectDecodedFilterParams, (params) => params.from);
 export const selectFilterTo = createSelector(selectDecodedFilterParams, (params) => params.to);
@@ -61,6 +59,8 @@ export const selectPrevTaskId = createSelector(selectCurrentTasks, selectCurrent
 export const selectIsCurrentTaskOpened = createSelector(selectCurrentTask, isTruthy);
 export const selectTaskById = (taskId: string) => createSelector(selectTasks, (tasks) => tasks.values[taskId]);
 export const selectTheme = createFeatureSelector<StoreState['theme']>('theme');
+
+// Filter
 export const selectFilterRange = createSelector(
   selectFilterFrom,
   selectFilterTo,

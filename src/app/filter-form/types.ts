@@ -1,10 +1,10 @@
 import { InjectionToken } from '@angular/core';
-import { Decoder, Entries } from '@app/domain/router';
+import { Decoder, Encoder } from '@app/domain/router';
 
-export type FilterFormsSettings<T> = {
+export type FilterFormsSettings<Decoded> = {
   urlFragmentIndex: number;
-  encodeValue: (pair: Entries<T>) => readonly [keyof T, string] | null;
-  decodeValue: Decoder<T>;
+  encoder: Encoder<Decoded>;
+  decoder: Decoder<Decoded>;
 };
 
 export const FILTER_FORM_SETTINGS = new InjectionToken<FilterFormsSettings<any>>('filter form settings');

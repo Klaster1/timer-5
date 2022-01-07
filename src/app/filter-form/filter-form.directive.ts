@@ -1,6 +1,5 @@
 import { AfterViewInit, Directive, Input } from '@angular/core';
 import { FormGroup } from '@ng-stack/forms';
-import { map } from 'rxjs/operators';
 import { FilterFormService } from './filter-form.service';
 
 @Directive({
@@ -12,12 +11,7 @@ export class FilterFormDirective<T extends object, V extends object> implements 
   @Input() formGroup?: FormGroup<T, V>;
 
   ngAfterViewInit() {
-    this.formGroup?.valueChanges
-      .pipe(map(() => this.formGroup?.getRawValue() as T))
-      .subscribe((value) => this.filterFormService.next(value));
-
-    this.filterFormService.filterParams$.subscribe((value) => {
-      this.formGroup?.patchValue(value);
-    });
+    this.formGroup?.valueChanges.subscribe(() => this.filterFormService.next(this.formGroup?.getRawValue() as T));
+    this.filterFormService.filterParams$.subscribe((value) => this.formGroup?.patchValue(value));
   }
 }
