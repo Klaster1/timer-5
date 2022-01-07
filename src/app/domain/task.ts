@@ -113,16 +113,6 @@ type Nullable<T> = T | null;
 
 type Filter = (filter: RouteParams, task: Nullable<Task>) => Nullable<Task>;
 
-const filterByTaskId: Filter = (filter, t) => {
-  if (!t) return t;
-  const { taskId } = filter;
-  if (typeof taskId === 'string' && taskId.length) {
-    return t.id === taskId ? t : null;
-  } else {
-    return t;
-  }
-};
-
 const filterByState: Filter = (filter, t) => {
   if (!t) return t;
   const { state } = filter;
