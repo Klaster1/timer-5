@@ -45,7 +45,7 @@ function tasks(state: StoreState['tasks'] | undefined, action: Action) {
 
   const tasks = createImmerReducer<StoreState['tasks']>(
     { ids: [], values: {} },
-    on(loadTasks, (store, action) => action.data),
+    on(loadTasks, (_store, action) => action.data),
     on(createTask, (state, action) => {
       state.ids.push(action.taskId);
       state.values[action.taskId] = { id: action.taskId, name: action.name, sessions: [], state: TaskState.active };
@@ -83,7 +83,7 @@ function tasks(state: StoreState['tasks'] | undefined, action: Action) {
 
 const theme = createImmerReducer<StoreState['theme']>(
   'dark',
-  on(updateTheme, (state, action) => action.theme)
+  on(updateTheme, (_state, action) => action.theme)
 );
 
 export const combinedReducers = {

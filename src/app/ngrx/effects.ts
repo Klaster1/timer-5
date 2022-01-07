@@ -7,11 +7,11 @@ import {
 } from '@app/dialog-edit-session/dialog-edit-session.component';
 import { Prompt } from '@app/dialog-prompt/dialog-prompt.service';
 import { StoreState } from '@app/domain/storage';
-import { getTaskSession } from '@app/domain/task';
+import { getTaskSession, makeTaskId } from '@app/domain/task';
 import { selectCurrentTaskId, selectCurrentTaskState, selectTaskById } from '@app/ngrx/selectors';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { nanoid as id } from 'nanoid';
+import { EMPTY, of } from 'rxjs';
 import { exhaustMap, filter, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
 import {
   createTask,
@@ -37,7 +37,7 @@ export class Effects {
     this.actions$.pipe(
       ofType(createTaskIntent),
       switchMap(() => this.prompt.prompt('Create task', '', 'Task name')),
-      switchMap((result) => (result ? [createTask({ taskId: id(), name: result })] : []))
+      switchMap((result) => (result ? of(createTask({ taskId: makeTaskId(), name: result })) : []))
     )
   );
 
@@ -46,7 +46,7 @@ export class Effects {
       this.actions$.pipe(
         ofType(createTask),
         withLatestFrom(this.store.select(selectCurrentTaskState)),
-        exhaustMap(([a, state]) => this.router.navigate(['tasks', state === 'all' ? 'all' : 'active', a.taskId]))
+        tap(([a, state]) => this.router.navigate(['tasks', state === 'all' ? 'all' : 'active', a.taskId]))
       ),
     { dispatch: false }
   );
@@ -71,7 +71,7 @@ export class Effects {
         this.store.select(selectTaskById(a.taskId)).pipe(
           take(1),
           exhaustMap((task) => this.prompt.prompt('Rename task', task?.name, 'Task name')),
-          switchMap((result) => (result ? [renameTask({ taskId: a.taskId, name: result })] : []))
+          switchMap((result) => (result ? of(renameTask({ taskId: a.taskId, name: result })) : EMPTY))
         )
       )
     )
@@ -84,7 +84,7 @@ export class Effects {
         this.store.select(selectTaskById(a.taskId)).pipe(
           take(1),
           exhaustMap((task) => {
-            if (!task) return [];
+            if (!task) return EMPTY;
             const session = getTaskSession(task, a.sessionIndex);
             return session
               ? this.dialog
@@ -94,20 +94,20 @@ export class Effects {
                   )
                   .afterClosed()
                   .pipe(
-                    switchMap((r) =>
-                      r
-                        ? [
+                    switchMap((result) =>
+                      result
+                        ? of(
                             updateSession({
                               taskId: task.id,
                               sessionIndex: task.sessions.indexOf(session),
-                              start: r.start,
-                              end: r.end,
-                            }),
-                          ]
-                        : []
+                              start: result.start,
+                              end: result.end,
+                            })
+                          )
+                        : EMPTY
                     )
                   )
-              : [];
+              : EMPTY;
           })
         )
       )
