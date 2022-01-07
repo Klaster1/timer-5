@@ -11,9 +11,9 @@ import {
   renameTask,
   startTask,
   stopTask,
+  toggleTheme,
   updateSession,
   updateTaskState,
-  updateTheme,
 } from './actions';
 
 function tasks(state: StoreState['tasks'] | undefined, action: Action) {
@@ -83,7 +83,7 @@ function tasks(state: StoreState['tasks'] | undefined, action: Action) {
 
 const theme = createImmerReducer<StoreState['theme']>(
   'dark',
-  on(updateTheme, (_state, action) => action.theme)
+  on(toggleTheme, (state) => (state === 'dark' ? 'light' : 'dark'))
 );
 
 export const combinedReducers = {

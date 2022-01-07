@@ -3,22 +3,14 @@ import { isTruthy } from '@app/utils/assert';
 import { isValidISO8601String } from './date-time';
 import { RouteTaskState, TaskId, TaskState } from './task';
 
-export type TasksFilterRouteParams = {
+export type FilterMatrixParams = {
   search?: string;
   from?: Date;
   to?: Date;
   durationSort?: 'longestFirst' | 'shortestFirst';
 };
-export type RouteParams = { taskId?: TaskId; state?: RouteTaskState };
-export type WholeAppRouteParams = TasksFilterRouteParams & RouteParams;
-
-export type TasksFilterParams = {
-  from?: Date;
-  to?: Date;
-  search?: string;
-  taskId?: TaskId;
-  durationSort?: 'longestFirst' | 'shortestFirst';
-};
+export type RouteFragmentParams = { taskId?: TaskId; state?: RouteTaskState };
+export type RouteParams = FilterMatrixParams & RouteFragmentParams;
 
 export const getAllChildren = <T extends { children: T[] }>(route: T): T[] =>
   route.children.length ? [...route.children, ...route.children.map(getAllChildren).flat()] : [];
@@ -34,7 +26,7 @@ export type Entries<T> = {
 
 export type Decoder<T> = (key: string, rawValue: string) => Entries<T> | null;
 
-export const decodeFilterMatrixParams: Decoder<TasksFilterRouteParams> = (key, rawValue) => {
+export const decodeFilterMatrixParams: Decoder<FilterMatrixParams> = (key, rawValue) => {
   switch (key) {
     case 'search':
       return [key, rawValue];
@@ -55,7 +47,7 @@ export const decodeFilterMatrixParams: Decoder<TasksFilterRouteParams> = (key, r
   }
 };
 
-export const decodeRouteParams: Decoder<RouteParams> = (key, value) => {
+export const decodeRouteParams: Decoder<RouteFragmentParams> = (key, value) => {
   switch (key) {
     case 'taskId':
       return [key, value];
@@ -76,7 +68,7 @@ export const decodeRouteParams: Decoder<RouteParams> = (key, value) => {
   }
 };
 
-export const decodeWholeAppRouteParams: Decoder<WholeAppRouteParams> = (key, value) => {
+export const decodeWholeAppRouteParams: Decoder<RouteParams> = (key, value) => {
   switch (key) {
     case 'taskId':
     case 'state':

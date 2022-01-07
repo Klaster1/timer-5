@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { TasksFilterRouteParams } from '@app/domain/router';
+import { FilterMatrixParams } from '@app/domain/router';
 import { StoreState } from '@app/domain/storage';
 import { isTaskRunning, sessionDuration, Task, TaskState } from '@app/domain/task';
 import { FilterFormService } from '@app/filter-form/filter-form.service';
@@ -57,7 +57,7 @@ export class ScreenTaskComponent implements OnDestroy, OnInit {
   constructor(
     private store: Store<StoreState>,
     private keys: HotkeysService,
-    private filter: FilterFormService<TasksFilterRouteParams>
+    private filter: FilterFormService<FilterMatrixParams>
   ) {}
   ngOnInit() {
     this.keys.add(this.hotkeys);

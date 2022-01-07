@@ -2,7 +2,6 @@ import { chartSeries } from '@app/domain/chart';
 import { decode, decodeFilterMatrixParams, decodeRouteParams, decodeWholeAppRouteParams } from '@app/domain/router';
 import { StoreState } from '@app/domain/storage';
 import { filterTasks, filterTaskSessions, sortTaskSessions } from '@app/domain/task';
-import { ScaleRange } from '@app/screen-tasks/tasks-filter/timeline-chart-uplot.component';
 import { isTruthy } from '@app/utils/assert';
 import { getSelectors } from '@ngrx/router-store';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
@@ -65,5 +64,5 @@ export const selectTheme = createFeatureSelector<StoreState['theme']>('theme');
 export const selectFilterRange = createSelector(
   selectFilterFrom,
   selectFilterTo,
-  (from, to): ScaleRange => [from ?? null, to ?? null]
+  (from, to) => [from ?? null, to ?? null] as const
 );

@@ -25,7 +25,6 @@ export class DialogPromptComponent {
     value: new FormControl<string>(null, [Validators.required]),
   });
   onSubmit() {
-    if (this.form.invalid) return;
-    this.dialog.close(this.form.value.value);
+    if (this.form.valid) this.dialog.close(this.form.value.value);
   }
 }

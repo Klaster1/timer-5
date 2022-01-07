@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { TasksFilterParams } from '@app/domain/router';
+import { RouteParams } from '@app/domain/router';
 import { StoreState } from '@app/domain/storage';
 import { Session, Task } from '@app/domain/task';
 import { FilterFormService } from '@app/filter-form/filter-form.service';
 import * as actions from '@app/ngrx/actions';
 import { Store } from '@ngrx/store';
-import { take } from 'rxjs/operators';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   templateUrl: './button-session-actions.component.html',
@@ -14,40 +14,35 @@ import { take } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ButtonSessionActionsComponent {
-  constructor(private store: Store<StoreState>, private fitler: FilterFormService<TasksFilterParams>) {}
+  constructor(private store: Store<StoreState>, private fitler: FilterFormService<RouteParams>) {}
   @Input() task?: Task;
   @Input() session?: Session;
   edit() {
-    const { task, session } = this;
-    if (!task || !session) {
-      return;
-    }
-    this.store.dispatch(
-      actions.updateSessionIntent({
-        taskId: task.id,
-        sessionIndex: task.sessions.indexOf(session),
-      })
-    );
+    if (this.task && this.session)
+      this.store.dispatch(
+        actions.updateSessionIntent({
+          taskId: this.task.id,
+          sessionIndex: this.task.sessions.indexOf(this.session),
+        })
+      );
   }
   remove() {
-    const { task, session } = this;
-    if (!task || !session) {
-      return;
+    if (this.task && this.session)
+      this.store.dispatch(
+        actions.deleteSession({ taskId: this.task.id, sessionIndex: this.task.sessions.indexOf(this.session) })
+      );
+  }
+  async skipBefore() {
+    if (this.session) {
+      this.fitler.next({ ...(await firstValueFrom(this.fitler.filterParams$)), from: new Date(this.session.start) });
     }
-    this.store.dispatch(actions.deleteSession({ taskId: task.id, sessionIndex: task.sessions.indexOf(session) }));
   }
-  skipBefore() {
-    const { session } = this;
-    if (!session) return;
-    this.fitler.filterParams$
-      .pipe(take(1))
-      .subscribe((params) => this.fitler.next({ ...params, from: new Date(session.start) }));
-  }
-  skipAfter() {
-    const { session } = this;
-    if (!session) return;
-    this.fitler.filterParams$
-      .pipe(take(1))
-      .subscribe((params) => this.fitler.next({ ...params, to: new Date(session?.end ?? new Date()) }));
+  async skipAfter() {
+    if (this.session) {
+      this.fitler.next({
+        ...(await firstValueFrom(this.fitler.filterParams$)),
+        to: new Date(this.session?.end ?? new Date()),
+      });
+    }
   }
 }

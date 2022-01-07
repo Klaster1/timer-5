@@ -20,7 +20,7 @@ import { AppComponent } from './app.component';
 import { DialogEditSessionModule } from './dialog-edit-session/dialog-edit-session.module';
 import { DialogHotkeysCheatsheetModule } from './dialog-hotkeys-cheatsheet/dialog-hotkeys-cheatsheet.module';
 import { DialogPromptModule } from './dialog-prompt/dialog-prompt.module';
-import { decodeFilterMatrixParams, TasksFilterRouteParams } from './domain/router';
+import { decodeFilterMatrixParams, FilterMatrixParams } from './domain/router';
 import { FilterFormModule } from './filter-form/filter-form.module';
 import { Effects } from './ngrx/effects';
 import { metaReducers } from './ngrx/metareducers';
@@ -62,7 +62,7 @@ import { TestComponent } from './test/test.component';
       serializer: MinimalRouterStateSerializer,
     }),
     EffectsModule.forRoot([Effects]),
-    FilterFormModule.forChild<TasksFilterRouteParams>({
+    FilterFormModule.forChild<FilterMatrixParams>({
       urlFragmentIndex: 2,
       encodeValue(pair) {
         switch (pair?.[0]) {

@@ -2,7 +2,7 @@ import { nanoid } from 'nanoid';
 import { combineLatest, Observable, of, timer } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Milliseconds } from './date-time';
-import { WholeAppRouteParams } from './router';
+import { RouteParams } from './router';
 
 export enum TaskState {
   active = 'active',
@@ -110,7 +110,7 @@ export const tasksDuration = (tasks: Task[], interval = 1000): Observable<number
 
 type Nullable<T> = T | null;
 
-type Filter = (filter: WholeAppRouteParams, task: Nullable<Task>) => Nullable<Task>;
+type Filter = (filter: RouteParams, task: Nullable<Task>) => Nullable<Task>;
 
 const filterByTaskId: Filter = (filter, t) => {
   if (!t) return t;
@@ -162,7 +162,7 @@ const filterByTo: Filter = (filter, t) => {
   }
 };
 
-const sortByDuration = (filter: WholeAppRouteParams, tasks: Task[]): Task[] => {
+const sortByDuration = (filter: RouteParams, tasks: Task[]): Task[] => {
   const now = (filter.to ?? new Date()).valueOf();
   if (filter.durationSort) {
     return [...tasks].sort((a, b) =>
@@ -175,10 +175,10 @@ const sortByDuration = (filter: WholeAppRouteParams, tasks: Task[]): Task[] => {
   }
 };
 
-const composedPredicate = (filter: WholeAppRouteParams, t: Nullable<Task>): Nullable<Task> =>
+const composedPredicate = (filter: RouteParams, t: Nullable<Task>): Nullable<Task> =>
   filterByTo(filter, filterByFrom(filter, filterByName(filter, filterByState(filter, t))));
 
-export const filterTasks = (filter: WholeAppRouteParams, values: Task[]): Task[] =>
+export const filterTasks = (filter: RouteParams, values: Task[]): Task[] =>
   sortByDuration(
     filter,
     values.reduce((acc: Task[], task) => {
@@ -190,7 +190,7 @@ export const filterTasks = (filter: WholeAppRouteParams, values: Task[]): Task[]
     }, [])
   );
 
-export const filterTaskSessions = (task: Task, params: Pick<WholeAppRouteParams, 'from' | 'to'>): Task => {
+export const filterTaskSessions = (task: Task, params: Pick<RouteParams, 'from' | 'to'>): Task => {
   const sessions = filterByTo(params, filterByFrom(params, task))?.sessions;
   return sessions ? { ...task, sessions } : task;
 };

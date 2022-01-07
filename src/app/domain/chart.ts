@@ -1,5 +1,5 @@
 import { Session, sessionDurationPure, Task } from '@app/domain/task';
-import { DateFn, startEndFns } from './date-time';
+import { DateFn, msToS, startEndFns } from './date-time';
 
 const clampSession = (session: Session, start: number, end: number, now: number): Session => ({
   ...session,
@@ -7,7 +7,9 @@ const clampSession = (session: Session, start: number, end: number, now: number)
   end: Math.min(end, session.end ?? now),
 });
 
+export type ScaleRange = readonly [Date | null, Date | null];
 type DateRange = [Date, Date];
+export type ChartData = [number[], number[]];
 
 const generateRanges = (start: Date, end: Date, startFn: DateFn, endFn: DateFn): DateRange[] => {
   let rangeStart: Date = start;
@@ -63,11 +65,13 @@ const tasksToBars = (tasks: Task[], startFn: DateFn, endFn: DateFn): Bars => {
   }, result);
 };
 
-const barsTouPlotData = (bars: Bars): [number[], number[]] => [
-  [...bars.values()].flatMap((b) => [b.start.valueOf() / 1000, b.end.valueOf() / 1000]),
+const barsTouPlotData = (bars: Bars): ChartData => [
+  [...bars.values()].flatMap((b) => [msToS(b.start.valueOf()), msToS(b.end.valueOf())]),
   [...bars.values()].flatMap((b) => [b.duration, b.duration]),
 ];
 
 type Bars = Map<number, { start: Date; end: Date; tasks: Set<Task['id']>; duration: number }>;
 
 export const chartSeries = (tasks: Task[]) => barsTouPlotData(tasksToBars(tasks, ...startEndFns.day));
+
+export const hasChartData = (data: ChartData): boolean => !!data[0]?.length;

@@ -11,15 +11,15 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { barWidths, formatHours } from '@app/domain/date-time';
+import { ScaleRange } from '@app/domain/chart';
+import { formatHours, msToS, sToMs } from '@app/domain/date-time';
 import { StoreState } from '@app/domain/storage';
 import { selectTheme } from '@app/ngrx/selectors';
-import { assertNever } from '@app/utils/assert';
+import { last } from '@app/utils/array';
+import { isNumber } from '@app/utils/assert';
 import { Store } from '@ngrx/store';
 import { NgResizeObserver, ngResizeObserverProviders } from 'ng-resize-observer';
 import uPlot, { AlignedData, Hooks, Options } from 'uplot';
-
-type DrawFn = (i: number, x0: number, y0: number, offs: number, totalWidth: number) => void;
 
 type PluginReturnValue = {
   opts?: (self: uPlot, opts: Options) => void;
@@ -31,9 +31,6 @@ const timerTimelinePlugin = (params: { barColor: string }): PluginReturnValue =>
     u.ctx.save();
 
     const seriesIndex = 1;
-    const indexStart = 0;
-    const indexEnd = u.data[0].length - 1;
-
     const fill = new Path2D();
     const scaleX = 'x';
     const series = u.series[seriesIndex];
@@ -44,28 +41,25 @@ const timerTimelinePlugin = (params: { barColor: string }): PluginReturnValue =>
     const dataY = u.data[1];
     const xMin = u.scales[scaleX]?.min;
     const yMin = u.scales[scaleY]?.min;
-    if (typeof xMin !== 'number') return;
-    if (typeof yMin !== 'number') return;
+    if (!isNumber(xMin) || !isNumber(yMin)) return;
     const minX = u.valToPos(xMin, scaleX, true);
     const minY = u.valToPos(yMin, scaleY, true);
     const drawFromIndex = u.posToIdx(0);
 
     u.ctx.fillStyle = params.barColor;
 
-    for (let i = indexStart; i <= indexEnd; i += 1) {
+    for (const i of u.data[0].keys()) {
       if (i % 2 === 0) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const x0 = Math.max(minX, Math.round(u.valToPos(dataX[i]!, scaleX, true)));
+        const x = dataX[i];
+        if (!isNumber(x)) break;
+        const x0 = Math.max(minX, Math.round(u.valToPos(x, scaleX, true)));
         if (i < drawFromIndex - 1) {
           continue;
         }
         const valueX = dataX[i + 1];
         const valueY = dataY?.[i];
-        if (typeof valueX !== 'number') return;
-        if (typeof valueY !== 'number') return;
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        if (!isNumber(valueX) || !isNumber(valueY)) return;
         const x1 = Math.round(u.valToPos(valueX, scaleX, true));
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const y0 = Math.round(u.valToPos(valueY, scaleY, true));
         const y1 = minY;
         fill.rect(x0, y0, x1 - x0, y1 - y0);
@@ -77,19 +71,18 @@ const timerTimelinePlugin = (params: { barColor: string }): PluginReturnValue =>
     u.ctx.restore();
   };
   return {
-    opts: (u, opts) => {
+    opts: (_, opts) => {
       const series = opts.series[1];
-      if (!series) return;
-      series.paths = (() => null) as any;
-      series.points = { show: false } as any;
+      if (series) {
+        series.paths = () => null;
+        series.points = { show: false };
+      }
     },
     hooks: {
       draw,
     },
   };
 };
-
-export type ScaleRange = [Date | null, Date | null];
 
 @Component({
   selector: 'timeline-chart-uplot',
@@ -119,27 +112,17 @@ export type ScaleRange = [Date | null, Date | null];
 })
 export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() chartData?: AlignedData;
-  @Input() barWidth?: 'hour' | 'day' | 'month' | 'year';
   @Input() range?: ScaleRange;
-  private setRange(values: { currentValue: ScaleRange | undefined; previousValue: ScaleRange | undefined }) {
-    const value = values.currentValue;
+  private setRange(value: ScaleRange | undefined) {
     if (!value) return;
     const oldMin = Math.round(this.uplot?.scales.x?.min ?? -1);
     const oldMax = Math.round(this.uplot?.scales.x?.max ?? -1);
     const dataMin = this.chartData?.[0]?.[0];
-    const dataMax = this.chartData?.[0][this.chartData?.[0].length - 1];
+    const dataMax = last(this.chartData?.[0] ?? []);
     const newMin =
-      value[0] instanceof Date
-        ? Math.round(value[0].valueOf() / 1000)
-        : typeof dataMin === 'number'
-        ? dataMin
-        : Date.now() / 1000;
+      value[0] instanceof Date ? msToS(value[0].valueOf()) : isNumber(dataMin) ? dataMin : msToS(Date.now());
     const newMax =
-      value[1] instanceof Date
-        ? Math.round(value[1].valueOf() / 1000)
-        : typeof dataMax === 'number'
-        ? dataMax
-        : Date.now() / 1000;
+      value[1] instanceof Date ? msToS(value[1].valueOf()) : isNumber(dataMax) ? dataMax : msToS(Date.now());
     if (oldMin === newMin && oldMax === newMax) return;
     this.uplot?.setScale('x', { min: newMin, max: newMax });
   }
@@ -150,7 +133,7 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
   dimensionsSubscriber = this.ro.subscribe((e) => {
     this.uplot?.setSize({ width: e.contentRect.width, height: e.contentRect.height - this.headerHeight });
   });
-  themeSubscriber = this.store.select(selectTheme).subscribe((theme) => {
+  themeSubscriber = this.store.select(selectTheme).subscribe(() => {
     setTimeout(() => {
       const stroke = window.getComputedStyle(this.elementRef.nativeElement).color;
       this.uplot?.axes.forEach((a) => (a.stroke = () => stroke));
@@ -164,13 +147,6 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
     private ro: NgResizeObserver
   ) {}
   getLegendValue(value: number) {
-    const scale = {
-      hour: barWidths.minute,
-      day: barWidths.hour,
-      month: barWidths.hour,
-      year: barWidths.hour,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    }[this.barWidth!];
     return value ? formatHours(value) : '--:--';
   }
 
@@ -190,14 +166,14 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
                   return;
                 }
                 const scale = self.scales[key];
-                if (key !== 'x' || !scale || typeof scale.min !== 'number' || typeof scale.max !== 'number') {
+                if (key !== 'x' || !scale || !isNumber(scale.min) || !isNumber(scale.max)) {
                   return;
                 }
                 const dataMin = self.data[0][0];
-                const dataMax = self.data[0][self.data[0].length - 1];
-                const min = scale.min === dataMin ? null : new Date(scale.min * 1000);
-                const max = scale.max === dataMax ? null : new Date(scale.max * 1000);
-                const event: ScaleRange = [min, max];
+                const dataMax = last(self.data[0]);
+                const min = scale.min === dataMin ? null : new Date(sToMs(scale.min));
+                const max = scale.max === dataMax ? null : new Date(sToMs(scale.max));
+                const event = [min, max] as const;
                 this.ngZone.runTask(() => {
                   this.rangeChange.emit(event);
                 });
@@ -215,7 +191,7 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
               show: true,
               label: this.getLegendLabel(),
               scale: 'm',
-              value: (self, value) => this.getLegendValue(value),
+              value: (_, value) => this.getLegendValue(value),
               fill: barColor,
             },
           ],
@@ -225,7 +201,7 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
               scale: 'm',
               size: 50,
               label: this.getLegendLabel(),
-              values: (self, ticks) => ticks.map((raw) => this.getLegendValue(raw)),
+              values: (_, ticks) => ticks.map((raw) => this.getLegendValue(raw)),
             },
           ],
         },
@@ -235,32 +211,14 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
     });
   }
   getLegendLabel() {
-    switch (this.barWidth) {
-      case 'hour':
-        return 'Minutes';
-      case 'day':
-      case 'month':
-      case 'year':
-        return 'Hours';
-      case undefined:
-        return undefined;
-      default:
-        return assertNever(this.barWidth);
-    }
+    return 'Hours';
   }
   ngOnChanges(changes: SimpleChanges) {
     if (this.chartData && changes.chartData?.currentValue !== changes.chartData?.previousValue) {
       this.uplot?.setData(this.chartData);
     }
-    if (changes.barWidth && changes.barWidth.currentValue) {
-      const ySeries = this.uplot?.axes[1];
-      if (ySeries) {
-        ySeries.label = this.getLegendLabel();
-      }
-    }
     if (changes.range) {
-      const { currentValue, previousValue } = changes.range;
-      this.setRange({ currentValue, previousValue });
+      this.setRange(changes.range.currentValue);
     }
   }
   ngOnDestroy() {

@@ -8,7 +8,7 @@ import {
   TrackByFunction,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { TasksFilterRouteParams } from '@app/domain/router';
+import { FilterMatrixParams } from '@app/domain/router';
 import { StoreState } from '@app/domain/storage';
 import { Task } from '@app/domain/task';
 import { FilterFormService } from '@app/filter-form/filter-form.service';
@@ -73,7 +73,7 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
     private store: Store<StoreState>,
     private keys: HotkeysService,
     private router: Router,
-    private filter: FilterFormService<TasksFilterRouteParams>
+    private filter: FilterFormService<FilterMatrixParams>
   ) {}
 
   ngOnInit() {

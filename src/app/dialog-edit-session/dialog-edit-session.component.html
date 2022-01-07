@@ -1,5 +1,5 @@
 <h1 mat-dialog-title>Edit session</h1>
-<form mat-dialog-content [formGroup]="form" id="promptForm" (submit)="onSubmit()">
+<form mat-dialog-content [formGroup]="form" id="promptForm" (ngSubmit)="onSubmit()">
   <mat-form-field>
     <input matInput [ngxMatDatetimePicker]="start" placeholder="Start" formControlName="start" />
     <mat-datepicker-toggle matSuffix [for]="$any(start)"></mat-datepicker-toggle>

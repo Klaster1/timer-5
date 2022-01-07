@@ -13,7 +13,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { FilterFormModule } from '@app/filter-form/filter-form.module';
 import { MapPipeModule } from '@app/pipes/map.pipe';
 import { NgStackFormsModule } from '@ng-stack/forms';
@@ -28,7 +27,6 @@ import { TimelineChartUplotComponent } from './timeline-chart-uplot.component';
     MatButtonModule,
     MatSelectModule,
     MatIconModule,
-    MatTooltipModule,
     MatMenuModule,
     MatFormFieldModule,
     MatInputModule,

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { StoreState } from '@app/domain/storage';
 import { Task, TaskState } from '@app/domain/task';
-import * as actions from '@app/ngrx/actions';
+import { deleteTask, renameTaskIntent, updateTaskState } from '@app/ngrx/actions';
 import { Store } from '@ngrx/store';
 
 @Component({
@@ -12,28 +12,16 @@ import { Store } from '@ngrx/store';
 })
 export class ButtonTaskActionsComponent {
   constructor(private store: Store<StoreState>) {}
-
   taskState = TaskState;
-
-  @Input()
-  task?: Task;
+  @Input() task?: Task;
 
   renameTask() {
-    if (!this.task) {
-      return;
-    }
-    this.store.dispatch(actions.renameTaskIntent({ taskId: this.task.id }));
+    if (this.task) this.store.dispatch(renameTaskIntent({ taskId: this.task.id }));
   }
   deleteTask() {
-    if (!this.task) {
-      return;
-    }
-    this.store.dispatch(actions.deleteTask({ taskId: this.task.id }));
+    if (this.task) this.store.dispatch(deleteTask({ taskId: this.task.id }));
   }
   changeTaskState(state: TaskState) {
-    if (!this.task) {
-      return;
-    }
-    this.store.dispatch(actions.updateTaskState({ taskId: this.task.id, state }));
+    if (this.task) this.store.dispatch(updateTaskState({ taskId: this.task.id, state }));
   }
 }

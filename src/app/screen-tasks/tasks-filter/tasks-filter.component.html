@@ -1,4 +1,11 @@
-<form class="mat-body" (submit)="$event.preventDefault()" [formGroup]="form" filterForm>
+<form
+  class="mat-body"
+  (submit)="$event.preventDefault()"
+  [formGroup]="form"
+  filterForm
+  cdkTrapFocus
+  [cdkTrapFocusAutoCapture]="true"
+>
   <mat-form-field class="name">
     <mat-label>Name</mat-label>
     <input
@@ -43,8 +50,8 @@
   <button mat-menu-item (click)="setYesterday()">Yesterday</button>
   <button mat-menu-item (click)="setThisWeek()">This week</button>
 </mat-menu>
-<ng-container *ngIf="timelineUplot$ | async as data; else ghost">
-  <ng-container *ngIf="chartRange$ | async as range; else ghost">
+<ng-container *ngIf="timelineUplot$ | ngrxPush as data; else ghost">
+  <ng-container *ngIf="chartRange$ | ngrxPush as range; else ghost">
     <timeline-chart-uplot
       *ngIf="data | map: hasChartData; else ghost"
       [@inOutAnimation]
