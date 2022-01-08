@@ -29,6 +29,8 @@ import { MapPipeModule } from './pipes/map.pipe';
 import { ScreenTaskModule } from './screen-task/screen-task.module';
 import { ScreenTasksModule } from './screen-tasks/screen-tasks.module';
 import { TestComponent } from './test/test.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [AppComponent, TestComponent],
@@ -68,6 +70,12 @@ import { TestComponent } from './test/test.component';
       urlFragmentIndex: 2,
       encoder: encodeFilterParams,
       decoder: decodeFilterMatrixParams,
+    }),
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      // Register the ServiceWorker as soon as the app is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
     }),
   ],
   providers: [
