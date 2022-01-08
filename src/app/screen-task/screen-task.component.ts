@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import {
-    hotkey,
-    KEYS_DELETE_TASK,
-    KEYS_MARK_ACTIVE,
-    KEYS_MARK_FINISHED,
-    KEYS_RENAME,
-    KEYS_START_STOP
+  hotkey,
+  KEYS_DELETE_TASK,
+  KEYS_MARK_ACTIVE,
+  KEYS_MARK_FINISHED,
+  KEYS_RENAME,
+  KEYS_START_STOP,
 } from '@app/domain/hotkeys';
 import { FilterMatrixParams } from '@app/domain/router';
 import { StoreState } from '@app/domain/storage';
