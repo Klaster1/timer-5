@@ -2,7 +2,7 @@
 
 # Timer
 
-Timer is a simple time tracking tool. Create a task, click "Start"/"Stop", see how much the task took, repeat.
+[Timer](https://klaster1.github.io/timer-5) is a simple time tracking tool. Create a task, click "Start"/"Stop", see how much the task took, repeat.
 
 All the data is kept in the `localStorage`, it does not leave your device, ever. To manage the data, use "Export" (to JSON) and "Import" features.
 
