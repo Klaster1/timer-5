@@ -9,7 +9,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "analyze": "ng build --configuration production --stats-json && webpack-bundle-analyzer ./dist/timer/stats.json"
+    "analyze": "ng build --configuration production --stats-json && webpack-bundle-analyzer ./dist/timer/stats.json",
+    "deploy": "ng deploy --base-href=/timer-5/"
   },
   "private": true,
   "dependencies": {
