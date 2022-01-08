@@ -1,34 +1,14 @@
+<div align="center"><img src="src/assets/favicon.svg" with='64' height='64'></div>
+
 # Timer
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.4.
+Timer is a simple time tracking tool. Create a task, click "Start"/"Stop", see how much the task took, repeat.
 
-## Development server
+All the data is kept in the `localStorage`, it does not leave your device, ever. To manage the data, use "Export" (to JSON) and "Import" features.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Originally created back in 2011 to track my time spent on video games, it eventually turned into sorts of Todo MVC, the project gets rewritten from scracth every several years as a learning excercise. This is the fifth iteration. Some of previous Timer iterations:
 
-## Code scaffolding
+- https://github.com/Klaster1/timer
+- https://github.com/Klaster1/timer2
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
-
-## Converting from old format
-
-```
-cd timer-5
-npx ts-node-script .\scripts\convert-from-legacy-games.ts --input=./data/gamesbackup.json --output=./data/games-new.json
-```
+<a href="https://raw.githubusercontent.com/Klaster1/Klaster1/timer-5/master/screenshot.png"><img src="screenshot.png"></a>
