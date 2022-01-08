@@ -12,7 +12,7 @@
       </button>
     </ng-container>
   </mat-toolbar>
-  <tasks-filter *ngIf="searchOpened$ | async" (keyup.esc)="closeFilter()"></tasks-filter>
+  <tasks-filter *ngIf="searchOpened$ | ngrxPush" (keyup.esc)="closeFilter()"></tasks-filter>
   <ng-container *ngIf="tasks.length; else noTasks">
     <button (click)="addTask()" mat-fab color="accent">
       <mat-icon>add</mat-icon>
@@ -46,7 +46,7 @@
     </ng-scrollbar>
   </ng-container>
   <ng-template #noTasks>
-    <empty-state *ngIf="(searchOpened$ | async) === false; else noSearchResults">
+    <empty-state *ngIf="(searchOpened$ | ngrxPush) === false; else noSearchResults">
       <img src="/assets/favicon.svg" alt="Timer" illustration />
       <span title>No tasks</span>
       <span subtitle *ngrxLet="state$ as state">Looks like you have no {{ state }} tasks</span>
