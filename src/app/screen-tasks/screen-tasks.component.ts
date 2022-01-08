@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 import { hotkey, KEYS_ADD, KEYS_NEXT, KEYS_PREV, KEYS_SEARCH } from '@app/domain/hotkeys';
 import { FilterMatrixParams } from '@app/domain/router';
 import { StoreState } from '@app/domain/storage';
-import { Task } from '@app/domain/task';
+import { Task, TaskState } from '@app/domain/task';
 import { FilterFormService } from '@app/filter-form/filter-form.service';
 import * as actions from '@app/ngrx/actions';
 import {
@@ -36,6 +36,7 @@ import { map, shareReplay, take, tap } from 'rxjs/operators';
 export class ScreenTasksComponent implements OnInit, OnDestroy {
   @HostBinding('class.task-opened') private taskOpened = false;
 
+  taskState = TaskState;
   state$ = this.store.select(selectCurrentTaskState);
   filterParams$ = this.filter.filterParams$;
   filterToggles$ = new Subject<boolean>();

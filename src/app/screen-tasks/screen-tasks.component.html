@@ -49,7 +49,14 @@
     <empty-state *ngIf="(searchOpened$ | ngrxPush) === false; else noSearchResults">
       <img src="/assets/favicon.svg" alt="Timer" illustration />
       <span title>No tasks</span>
-      <span subtitle *ngrxLet="state$ as state">Looks like you have no {{ state }} tasks</span>
+      <span subtitle *ngrxLet="state$ as state">
+        <ng-container [ngSwitch]="state">
+          <ng-container *ngSwitchCase="'all'">Create a task and it will show up here</ng-container>
+          <ng-container *ngSwitchCase="taskState.active">Create a task and it will show up here</ng-container>
+          <ng-container *ngSwitchCase="taskState.finished">You didn't finish any tasks yet</ng-container>
+          <ng-container *ngSwitchCase="taskState.dropped">You didn't abandon any tasks yet</ng-container>
+        </ng-container>
+      </span>
       <button color="primary" mat-raised-button (click)="addTask()" type="button" routerLink="/tasks/active">
         Create a task
       </button>
