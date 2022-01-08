@@ -124,7 +124,8 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
     const newMax =
       value[1] instanceof Date ? msToS(value[1].valueOf()) : isNumber(dataMax) ? dataMax : msToS(Date.now());
     if (oldMin === newMin && oldMax === newMax) return;
-    this.uplot?.setScale('x', { min: newMin, max: newMax });
+    // Wait until visible
+    setTimeout(() => this.uplot?.setScale('x', { min: newMin, max: newMax }));
   }
   @Output() rangeChange = new EventEmitter<ScaleRange>();
   private firstRangeChangeSkipped = false;
