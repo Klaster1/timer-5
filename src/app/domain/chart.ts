@@ -1,6 +1,7 @@
 import { Session, sessionDurationPure, Task } from '@app/domain/task';
+import endOfDay from 'date-fns/endOfDay';
 import millisecondsToSeconds from 'date-fns/millisecondsToSeconds';
-import { DateFn, startEndFns } from './date-time';
+import startOfDay from 'date-fns/startOfDay';
 
 const clampSession = (session: Session, start: number, end: number, now: number): Session => ({
   ...session,
@@ -12,31 +13,30 @@ export type ScaleRange = readonly [Date | null, Date | null];
 type DateRange = [Date, Date];
 export type ChartData = [number[], number[]];
 
-const generateRanges = (start: Date, end: Date, startFn: DateFn, endFn: DateFn): DateRange[] => {
+const generateRanges = (start: Date, end: Date): DateRange[] => {
   let rangeStart: Date = start;
   const result: DateRange[] = [];
   while (rangeStart.valueOf() < end.valueOf()) {
-    const range: DateRange = [startFn(rangeStart), endFn(rangeStart)];
+    const range: DateRange = [startOfDay(rangeStart), endOfDay(rangeStart)];
     result.push(range);
     rangeStart = new Date(range[1].valueOf() + 1);
   }
   return result;
 };
 
-const getSessionRangeId = (session: Session, getStartFn: DateFn): number =>
-  getStartFn(new Date(session.start)).valueOf();
+const getSessionRangeId = (session: Session): number => startOfDay(new Date(session.start)).valueOf();
 
 const getEraliestSessionStart = (tasks: Task[]): number | undefined =>
   tasks.flatMap((t) => t.sessions.map((s) => s.start)).sort((a, b) => a - b)[0];
 
-const tasksToBars = (tasks: Task[], startFn: DateFn, endFn: DateFn): Bars => {
+const tasksToBars = (tasks: Task[]): Bars => {
   const now = new Date();
   const earliestStart = getEraliestSessionStart(tasks);
   if (earliestStart === undefined) {
     return new Map();
   }
   const result: Bars = new Map(
-    generateRanges(new Date(earliestStart), now, startFn, endFn).map(([s, e]) => [
+    generateRanges(new Date(earliestStart), now).map(([s, e]) => [
       s.valueOf(),
       {
         start: s,
@@ -50,7 +50,7 @@ const tasksToBars = (tasks: Task[], startFn: DateFn, endFn: DateFn): Bars => {
     task.sessions.forEach((s) => {
       let duration = sessionDurationPure(s);
       while (duration >= 10) {
-        const bar = bars.get(getSessionRangeId(s, startFn));
+        const bar = bars.get(getSessionRangeId(s));
         if (!bar) {
           break;
         }
@@ -73,6 +73,6 @@ const barsTouPlotData = (bars: Bars): ChartData => [
 
 type Bars = Map<number, { start: Date; end: Date; tasks: Set<Task['id']>; duration: number }>;
 
-export const chartSeries = (tasks: Task[]) => barsTouPlotData(tasksToBars(tasks, ...startEndFns.day));
+export const chartSeries = (tasks: Task[]) => barsTouPlotData(tasksToBars(tasks));
 
 export const hasChartData = (data: ChartData): boolean => !!data[0]?.length;
