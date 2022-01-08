@@ -2,10 +2,10 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { toggleTheme } from '@app/ngrx/actions';
 import { selectTheme } from '@app/ngrx/selectors';
-import { hotkey } from '@app/utils/hotkey';
 import { Store } from '@ngrx/store';
 import { HotkeysService } from 'angular2-hotkeys';
 import { firstValueFrom } from 'rxjs';
+import { hotkey, KEYS_GO_ACTIVE, KEYS_GO_ALL, KEYS_GO_FINISHED } from './domain/hotkeys';
 import { StoreState } from './domain/storage';
 import { TaskState } from './domain/task';
 import { ImportExportService } from './services/import-export.service';
@@ -29,13 +29,13 @@ export class AppComponent {
     private navigation: NavigationService
   ) {
     keys.add([
-      hotkey('g t', 'Go to all tasks', async () =>
+      hotkey(KEYS_GO_ALL, 'Go to all tasks', async () =>
         router.navigate(await firstValueFrom(this.navigation.taskStateCommands('all')))
       ),
-      hotkey('g a', 'Go to active tasks', async () =>
+      hotkey(KEYS_GO_ACTIVE, 'Go to active tasks', async () =>
         router.navigate(await firstValueFrom(this.navigation.taskStateCommands(TaskState.active)))
       ),
-      hotkey('g f', 'Go to finished tasks', async () =>
+      hotkey(KEYS_GO_FINISHED, 'Go to finished tasks', async () =>
         router.navigate(await firstValueFrom(this.navigation.taskStateCommands(TaskState.finished)))
       ),
     ]);

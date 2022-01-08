@@ -1,28 +1,28 @@
 import {
-    ChangeDetectionStrategy,
-    ChangeDetectorRef,
-    Component,
-    HostBinding,
-    OnDestroy,
-    OnInit,
-    TrackByFunction
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  HostBinding,
+  OnDestroy,
+  OnInit,
+  TrackByFunction,
 } from '@angular/core';
 import { Router } from '@angular/router';
+import { hotkey, KEYS_ADD, KEYS_NEXT, KEYS_PREV, KEYS_SEARCH } from '@app/domain/hotkeys';
 import { FilterMatrixParams } from '@app/domain/router';
 import { StoreState } from '@app/domain/storage';
 import { Task } from '@app/domain/task';
 import { FilterFormService } from '@app/filter-form/filter-form.service';
 import * as actions from '@app/ngrx/actions';
 import {
-    selectCurrentTaskIndex,
-    selectCurrentTasks,
-    selectCurrentTaskState,
-    selectIsCurrentTaskOpened,
-    selectNextTaskId,
-    selectPrevTaskId
+  selectCurrentTaskIndex,
+  selectCurrentTasks,
+  selectCurrentTaskState,
+  selectIsCurrentTaskOpened,
+  selectNextTaskId,
+  selectPrevTaskId,
 } from '@app/ngrx/selectors';
 import { NavigationService } from '@app/services/navigation.service';
-import { hotkey } from '@app/utils/hotkey';
 import { Store } from '@ngrx/store';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
 import { firstValueFrom, merge, Observable, Subject } from 'rxjs';
@@ -48,18 +48,18 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
   taskOpened$ = this.store.select(selectIsCurrentTaskOpened).pipe(tap((v) => (this.taskOpened = v)));
 
   hotkeys = [
-    hotkey('a', 'Add task', () => this.addTask()),
-    hotkey(['j', 'k'], 'Next/prev task', async (e) => {
+    hotkey(KEYS_ADD, 'Add task', () => this.addTask()),
+    hotkey([...KEYS_NEXT, ...KEYS_PREV], 'Next/prev task', async (e) => {
       const [nextTaskId, prevTaskId] = await Promise.all([
         firstValueFrom(this.store.select(selectNextTaskId)),
         firstValueFrom(this.store.select(selectPrevTaskId)),
       ]);
-      const taskId = e.key === 'j' ? nextTaskId : e.key === 'k' ? prevTaskId : null;
+      const taskId = KEYS_NEXT.includes(e.key) ? nextTaskId : KEYS_PREV.includes(e.key) ? prevTaskId : null;
       if (!taskId) return;
       this.router.navigate(await firstValueFrom(this.navigation.taskIdCommands(taskId)));
     }),
     new Hotkey(
-      'ctrl+f',
+      KEYS_SEARCH,
       (e) => {
         e.preventDefault();
         this.toggleFilter();
