@@ -1,11 +1,11 @@
 import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  HostBinding,
-  OnDestroy,
-  OnInit,
-  TrackByFunction,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    HostBinding,
+    OnDestroy,
+    OnInit,
+    TrackByFunction
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { FilterMatrixParams } from '@app/domain/router';
@@ -14,13 +14,14 @@ import { Task } from '@app/domain/task';
 import { FilterFormService } from '@app/filter-form/filter-form.service';
 import * as actions from '@app/ngrx/actions';
 import {
-  selectAllRouteParams,
-  selectCurrentTaskIndex,
-  selectCurrentTasks,
-  selectCurrentTaskState,
-  selectIsCurrentTaskOpened,
-  selectNextTaskId,
-  selectPrevTaskId,
+    selectCurrentTaskIndex,
+    selectCurrentTasks,
+    selectCurrentTaskState,
+    selectDecodedFilterParams,
+    selectDecodedRouteParams,
+    selectIsCurrentTaskOpened,
+    selectNextTaskId,
+    selectPrevTaskId
 } from '@app/ngrx/selectors';
 import { hotkey } from '@app/utils/hotkey';
 import { Store } from '@ngrx/store';
@@ -50,14 +51,15 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
   hotkeys = [
     hotkey('a', 'Add task', () => this.addTask()),
     hotkey(['j', 'k'], 'Next/prev task', async (e) => {
-      const [nextTaskId, prevTaskId, routeParams] = await Promise.all([
+      const [nextTaskId, prevTaskId, routeParams, filterParams] = await Promise.all([
         firstValueFrom(this.store.select(selectNextTaskId)),
         firstValueFrom(this.store.select(selectPrevTaskId)),
-        firstValueFrom(this.store.select(selectAllRouteParams)),
+        firstValueFrom(this.store.select(selectDecodedRouteParams)),
+        firstValueFrom(this.store.select(selectDecodedFilterParams)),
       ]);
       const taskId = e.key === 'j' ? nextTaskId : e.key === 'k' ? prevTaskId : null;
       if (!taskId) return;
-      this.router.navigate(['tasks', routeParams.state, routeParams, taskId]);
+      this.router.navigate(['tasks', routeParams.state, filterParams, taskId]);
     }),
     hotkey('ctrl+f', 'Search', (e) => {
       e.preventDefault();

@@ -62,32 +62,24 @@ export type Decoder<Decoded> = (value: EncodedParams<Decoded>) => Decoded;
 export type Encoder<Decoded> = (value: Decoded) => EncodedParams<Decoded>;
 
 export const decodeFilterMatrixParams: Decoder<FilterMatrixParams> = (value) => {
-  const search = value.search;
-  const from = value.from && isValidISO8601String(value.from) ? new Date(value.from) : undefined;
-  const to = value.to && isValidISO8601String(value.to) ? new Date(value.to) : undefined;
-  const durationSort =
-    value.durationSort === 'longestFirst' || value.durationSort === 'shortestFirst' ? value.durationSort : undefined;
-  return { search, from, to, durationSort };
+  const result = {} as FilterMatrixParams;
+  if (value.search) result.search = value.search;
+  if (value.from && isValidISO8601String(value.from)) result.from = new Date(value.from);
+  if (value.to && isValidISO8601String(value.to)) result.to = new Date(value.to);
+  if (value.durationSort === 'longestFirst' || value.durationSort === 'shortestFirst')
+    result.durationSort = value.durationSort;
+  return result;
 };
 
 export const decodeRouteParams: Decoder<RouteFragmentParams> = (value) => {
-  const taskId = value.taskId;
-  let state: RouteTaskState;
-  switch (value.state) {
-    case 'finished':
-      state = TaskState.finished;
-      break;
-    case 'active':
-      state = TaskState.active;
-      break;
-    case 'dropped':
-      state = TaskState.dropped;
-      break;
-    case 'all':
-    default:
-      state = 'all';
+  const result = {} as RouteFragmentParams;
+  if (value.taskId) result.taskId = value.taskId;
+  if (value.state) {
+    for (const i of [TaskState.finished, TaskState.active, TaskState.dropped, 'all'] as const) {
+      if (value.state === i) result.state = i;
+    }
   }
-  return { taskId, state };
+  return result;
 };
 
 export const decodeWholeAppRouteParams: Decoder<RouteParams> = (value) => ({
