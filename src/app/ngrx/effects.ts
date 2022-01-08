@@ -9,10 +9,11 @@ import { Prompt } from '@app/dialog-prompt/dialog-prompt.service';
 import { StoreState } from '@app/domain/storage';
 import { getTaskSession, makeTaskId } from '@app/domain/task';
 import { selectCurrentTaskId, selectCurrentTaskState, selectTaskById } from '@app/ngrx/selectors';
+import { NavigationService } from '@app/services/navigation.service';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { EMPTY, of } from 'rxjs';
-import { exhaustMap, filter, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
+import { exhaustMap, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
 import {
   createTask,
   createTaskIntent,
@@ -30,7 +31,8 @@ export class Effects {
     private store: Store<StoreState>,
     private router: Router,
     private prompt: Prompt,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private navigation: NavigationService
   ) {}
 
   createTask$ = createEffect(() =>
@@ -56,10 +58,10 @@ export class Effects {
       this.actions$.pipe(
         ofType(deleteTask),
         withLatestFrom(this.store.select(selectCurrentTaskState), this.store.select(selectCurrentTaskId)),
-        filter(([, state]) => !!state),
-        tap(([action, state, taskId]) => {
-          if (action.taskId === taskId) this.router.navigate(['tasks', state]);
-        })
+        switchMap(([action, state, taskId]) => {
+          return action.taskId === taskId && state ? this.navigation.taskStateCommands(state).pipe(take(1)) : EMPTY;
+        }),
+        tap((commands) => this.router.navigate(commands))
       ),
     { dispatch: false }
   );

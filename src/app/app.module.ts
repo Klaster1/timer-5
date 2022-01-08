@@ -25,6 +25,7 @@ import { FilterFormModule } from './filter-form/filter-form.module';
 import { Effects } from './ngrx/effects';
 import { metaReducers } from './ngrx/metareducers';
 import * as reducers from './ngrx/reducers';
+import { MapPipeModule } from './pipes/map.pipe';
 import { ScreenTaskModule } from './screen-task/screen-task.module';
 import { ScreenTasksModule } from './screen-tasks/screen-tasks.module';
 import { TestComponent } from './test/test.component';
@@ -50,6 +51,7 @@ import { TestComponent } from './test/test.component';
     DialogEditSessionModule,
     HttpClientModule,
     DialogHotkeysCheatsheetModule,
+    MapPipeModule,
     HotkeyModule.forRoot({ cheatSheetCloseEsc: true }),
     StoreModule.forRoot(reducers.combinedReducers, {
       metaReducers,

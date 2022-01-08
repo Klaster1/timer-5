@@ -17,12 +17,11 @@ import {
     selectCurrentTaskIndex,
     selectCurrentTasks,
     selectCurrentTaskState,
-    selectDecodedFilterParams,
-    selectDecodedRouteParams,
     selectIsCurrentTaskOpened,
     selectNextTaskId,
     selectPrevTaskId
 } from '@app/ngrx/selectors';
+import { NavigationService } from '@app/services/navigation.service';
 import { hotkey } from '@app/utils/hotkey';
 import { Store } from '@ngrx/store';
 import { HotkeysService } from 'angular2-hotkeys';
@@ -51,15 +50,13 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
   hotkeys = [
     hotkey('a', 'Add task', () => this.addTask()),
     hotkey(['j', 'k'], 'Next/prev task', async (e) => {
-      const [nextTaskId, prevTaskId, routeParams, filterParams] = await Promise.all([
+      const [nextTaskId, prevTaskId] = await Promise.all([
         firstValueFrom(this.store.select(selectNextTaskId)),
         firstValueFrom(this.store.select(selectPrevTaskId)),
-        firstValueFrom(this.store.select(selectDecodedRouteParams)),
-        firstValueFrom(this.store.select(selectDecodedFilterParams)),
       ]);
       const taskId = e.key === 'j' ? nextTaskId : e.key === 'k' ? prevTaskId : null;
       if (!taskId) return;
-      this.router.navigate(['tasks', routeParams.state, filterParams, taskId]);
+      this.router.navigate(await firstValueFrom(this.navigation.taskIdCommands(taskId)));
     }),
     hotkey('ctrl+f', 'Search', (e) => {
       e.preventDefault();
@@ -68,14 +65,15 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
     }),
   ];
 
-  taskId: TrackByFunction<Task> = (index, task) => task.id;
+  taskId: TrackByFunction<Task> = (_, task) => task.id;
 
   constructor(
     private cdr: ChangeDetectorRef,
     private store: Store<StoreState>,
     private keys: HotkeysService,
     private router: Router,
-    private filter: FilterFormService<FilterMatrixParams>
+    private filter: FilterFormService<FilterMatrixParams>,
+    private navigation: NavigationService
   ) {}
 
   ngOnInit() {
