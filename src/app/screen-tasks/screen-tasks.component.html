@@ -47,7 +47,7 @@
   </ng-container>
   <ng-template #noTasks>
     <empty-state *ngIf="(searchOpened$ | ngrxPush) === false; else noSearchResults">
-      <img src="/assets/favicon.svg" alt="Timer" illustration />
+      <img src="assets/favicon.svg" alt="Timer" illustration />
       <span title>No tasks</span>
       <span subtitle *ngrxLet="state$ as state">
         <ng-container [ngSwitch]="state">
