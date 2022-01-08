@@ -49,6 +49,11 @@
   <button mat-menu-item (click)="setToday()">Today</button>
   <button mat-menu-item (click)="setYesterday()">Yesterday</button>
   <button mat-menu-item (click)="setThisWeek()">This week</button>
+  <button mat-menu-item (click)="setPreviousWeek()">Previous week</button>
+  <button mat-menu-item (click)="setThisMonth()">This month</button>
+  <button mat-menu-item (click)="setPreviousMonth()">Previous month</button>
+  <button mat-menu-item (click)="setThisYear()">This year</button>
+  <button mat-menu-item (click)="setPreviousYear()">Previous year</button>
 </mat-menu>
 <ng-container *ngIf="timelineUplot$ | ngrxPush as data; else ghost">
   <ng-container *ngIf="chartRange$ | ngrxPush as range; else ghost">

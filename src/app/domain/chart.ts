@@ -1,5 +1,6 @@
 import { Session, sessionDurationPure, Task } from '@app/domain/task';
-import { DateFn, msToS, startEndFns } from './date-time';
+import millisecondsToSeconds from 'date-fns/millisecondsToSeconds';
+import { DateFn, startEndFns } from './date-time';
 
 const clampSession = (session: Session, start: number, end: number, now: number): Session => ({
   ...session,
@@ -66,7 +67,7 @@ const tasksToBars = (tasks: Task[], startFn: DateFn, endFn: DateFn): Bars => {
 };
 
 const barsTouPlotData = (bars: Bars): ChartData => [
-  [...bars.values()].flatMap((b) => [msToS(b.start.valueOf()), msToS(b.end.valueOf())]),
+  [...bars.values()].flatMap((b) => [millisecondsToSeconds(b.start.valueOf()), millisecondsToSeconds(b.end.valueOf())]),
   [...bars.values()].flatMap((b) => [b.duration, b.duration]),
 ];
 

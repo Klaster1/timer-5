@@ -12,12 +12,14 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { ScaleRange } from '@app/domain/chart';
-import { formatHours, msToS, sToMs } from '@app/domain/date-time';
+import { formatHours } from '@app/domain/date-time';
 import { StoreState } from '@app/domain/storage';
 import { selectTheme } from '@app/ngrx/selectors';
 import { last } from '@app/utils/array';
 import { isNumber } from '@app/utils/assert';
 import { Store } from '@ngrx/store';
+import millisecondsToSeconds from 'date-fns/millisecondsToSeconds';
+import secondsToMilliseconds from 'date-fns/secondsToMilliseconds';
 import { NgResizeObserver, ngResizeObserverProviders } from 'ng-resize-observer';
 import uPlot, { AlignedData, Hooks, Options } from 'uplot';
 
@@ -120,9 +122,17 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
     const dataMin = this.chartData?.[0]?.[0];
     const dataMax = last(this.chartData?.[0] ?? []);
     const newMin =
-      value[0] instanceof Date ? msToS(value[0].valueOf()) : isNumber(dataMin) ? dataMin : msToS(Date.now());
+      value[0] instanceof Date
+        ? millisecondsToSeconds(value[0].valueOf())
+        : isNumber(dataMin)
+        ? dataMin
+        : millisecondsToSeconds(Date.now());
     const newMax =
-      value[1] instanceof Date ? msToS(value[1].valueOf()) : isNumber(dataMax) ? dataMax : msToS(Date.now());
+      value[1] instanceof Date
+        ? millisecondsToSeconds(value[1].valueOf())
+        : isNumber(dataMax)
+        ? dataMax
+        : millisecondsToSeconds(Date.now());
     if (oldMin === newMin && oldMax === newMax) return;
     // Wait until visible
     setTimeout(() => this.uplot?.setScale('x', { min: newMin, max: newMax }));
@@ -172,8 +182,8 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
                 }
                 const dataMin = self.data[0][0];
                 const dataMax = last(self.data[0]);
-                const min = scale.min === dataMin ? null : new Date(sToMs(scale.min));
-                const max = scale.max === dataMax ? null : new Date(sToMs(scale.max));
+                const min = scale.min === dataMin ? null : new Date(secondsToMilliseconds(scale.min));
+                const max = scale.max === dataMax ? null : new Date(secondsToMilliseconds(scale.max));
                 const event = [min, max] as const;
                 this.ngZone.runTask(() => {
                   this.rangeChange.emit(event);

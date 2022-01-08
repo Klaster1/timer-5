@@ -1,7 +1,9 @@
-import { msToS, Seconds, sToMs } from '@app/domain/date-time';
 import { makeTaskId, Session, Task, TaskState } from '@app/domain/task';
 import { assertNever, isNumber, isTruthy } from '@app/utils/assert';
 import { RouterReducerState } from '@ngrx/router-store';
+import millisecondsToSeconds from 'date-fns/millisecondsToSeconds';
+import secondsToMilliseconds from 'date-fns/secondsToMilliseconds';
+import { Seconds } from './date-time';
 
 export interface StoreState {
   tasks: NormalizedTasks;
@@ -100,13 +102,13 @@ const storedTaskStateToAppTaskStateV1 = (state: StoredTaskStateV1): TaskState =>
 };
 
 const appSessionToStoredSession = (session: Session): StoredSessionV1 => [
-  msToS(session.start),
-  isNumber(session.end) ? msToS(session.end) : null,
+  millisecondsToSeconds(session.start),
+  isNumber(session.end) ? millisecondsToSeconds(session.end) : null,
 ];
 const storedSessionToAppSession = (storedSession: StoredSessionV1): Session =>
   storedSession[1] === null
-    ? { start: sToMs(storedSession[0]) }
-    : { start: sToMs(storedSession[0]), end: sToMs(storedSession[1]) };
+    ? { start: secondsToMilliseconds(storedSession[0]) }
+    : { start: secondsToMilliseconds(storedSession[0]), end: secondsToMilliseconds(storedSession[1]) };
 
 export const toStoredTasks = (appTasks: AppTasks): LatestStoredTasks => ({
   version: 1,

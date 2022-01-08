@@ -1,6 +1,7 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { isTruthy } from '@app/utils/assert';
-import { isValidISO8601String } from './date-time';
+import isValid from 'date-fns/isValid';
+import parseISO from 'date-fns/parseISO';
 import { RouteTaskState, TaskId, TaskState } from './task';
 
 type EncodedParams<T> = Partial<Record<keyof T, string>>;
@@ -65,8 +66,14 @@ export type Encoder<Decoded> = (value: Decoded) => EncodedParams<Decoded>;
 export const decodeFilterMatrixParams: Decoder<FilterMatrixParams> = (value) => {
   const result = {} as FilterMatrixParams;
   if (value.search) result.search = value.search;
-  if (value.from && isValidISO8601String(value.from)) result.from = new Date(value.from);
-  if (value.to && isValidISO8601String(value.to)) result.to = new Date(value.to);
+  if (value.from) {
+    const parsedFrom = parseISO(value.from);
+    if (isValid(parsedFrom)) result.from = parsedFrom;
+  }
+  if (value.to) {
+    const parsedTo = parseISO(value.to);
+    if (isValid(parsedTo)) result.to = parsedTo;
+  }
   if (value.durationSort === 'longestFirst' || value.durationSort === 'shortestFirst')
     result.durationSort = value.durationSort;
   return result;

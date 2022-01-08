@@ -1,12 +1,23 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { hasChartData, ScaleRange } from '@app/domain/chart';
-import { closestDayEnd, closestDayStart, closestWeekEnd, closestWeekStart, toYesterday } from '@app/domain/date-time';
 import { FilterMatrixParams } from '@app/domain/router';
 import { StoreState } from '@app/domain/storage';
 import { selectFilterChartData, selectFilterRange } from '@app/ngrx/selectors';
 import { FormControl, FormGroup } from '@ng-stack/forms';
 import { Store } from '@ngrx/store';
+import endOfDay from 'date-fns/endOfDay';
+import endOfMonth from 'date-fns/endOfMonth';
+import endOfWeek from 'date-fns/endOfWeek';
+import endOfYear from 'date-fns/endOfYear';
+import startOfDay from 'date-fns/startOfDay';
+import startOfMonth from 'date-fns/startOfMonth';
+import startOfWeek from 'date-fns/startOfWeek';
+import startOfYear from 'date-fns/startOfYear';
+import subDays from 'date-fns/subDays';
+import subMonths from 'date-fns/subMonths';
+import subWeeks from 'date-fns/subWeeks';
+import subYears from 'date-fns/subYears';
 
 @Component({
   selector: 'tasks-filter',
@@ -48,20 +59,50 @@ export class TasksFilterComponent implements OnDestroy {
   }
   setToday() {
     this.form.patchValue({
-      from: closestDayStart(new Date()),
-      to: closestDayEnd(new Date()),
+      from: startOfDay(new Date()),
+      to: endOfDay(new Date()),
     });
   }
   setYesterday() {
     this.form.patchValue({
-      from: closestDayStart(toYesterday(new Date())),
-      to: closestDayEnd(toYesterday(new Date())),
+      from: startOfDay(subDays(new Date(), 1)),
+      to: endOfDay(subDays(new Date(), 1)),
     });
   }
   setThisWeek() {
     this.form.patchValue({
-      from: closestWeekStart(new Date()),
-      to: closestWeekEnd(),
+      from: startOfWeek(new Date()),
+      to: endOfWeek(new Date()),
+    });
+  }
+  setPreviousWeek() {
+    this.form.patchValue({
+      from: startOfWeek(subWeeks(new Date(), 1)),
+      to: endOfWeek(subWeeks(new Date(), 1)),
+    });
+  }
+  setThisMonth() {
+    this.form.patchValue({
+      from: startOfMonth(new Date()),
+      to: endOfMonth(new Date()),
+    });
+  }
+  setPreviousMonth() {
+    this.form.patchValue({
+      from: startOfMonth(subMonths(new Date(), 1)),
+      to: endOfMonth(subMonths(new Date(), 1)),
+    });
+  }
+  setThisYear() {
+    this.form.patchValue({
+      from: startOfYear(new Date()),
+      to: endOfYear(new Date()),
+    });
+  }
+  setPreviousYear() {
+    this.form.patchValue({
+      from: startOfYear(subYears(new Date(), 1)),
+      to: endOfYear(subYears(new Date(), 1)),
     });
   }
 }
