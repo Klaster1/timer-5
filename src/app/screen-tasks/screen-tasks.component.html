@@ -7,7 +7,7 @@
       </span>
     </h1>
     <ng-container *ngrxLet="searchOpened$ as searchOpened">
-      <button mat-icon-button (click)="searchOpened ? closeFilter() : openFilter()">
+      <button mat-icon-button (click)="toggleFilter()">
         <mat-icon>filter_list</mat-icon>
       </button>
     </ng-container>

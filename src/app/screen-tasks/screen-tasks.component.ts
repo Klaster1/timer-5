@@ -24,7 +24,7 @@ import {
 import { NavigationService } from '@app/services/navigation.service';
 import { hotkey } from '@app/utils/hotkey';
 import { Store } from '@ngrx/store';
-import { HotkeysService } from 'angular2-hotkeys';
+import { Hotkey, HotkeysService } from 'angular2-hotkeys';
 import { firstValueFrom, merge, Observable, Subject } from 'rxjs';
 import { map, shareReplay, take, tap } from 'rxjs/operators';
 
@@ -58,11 +58,17 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
       if (!taskId) return;
       this.router.navigate(await firstValueFrom(this.navigation.taskIdCommands(taskId)));
     }),
-    hotkey('ctrl+f', 'Search', (e) => {
-      e.preventDefault();
-      this.openFilter();
-      this.cdr.detectChanges();
-    }),
+    new Hotkey(
+      'ctrl+f',
+      (e) => {
+        e.preventDefault();
+        this.toggleFilter();
+        this.cdr.detectChanges();
+        return true;
+      },
+      ['INPUT'],
+      'Toggle search'
+    ),
   ];
 
   taskId: TrackByFunction<Task> = (_, task) => task.id;
@@ -91,5 +97,11 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
   }
   closeFilter() {
     this.filterToggles$.next(false);
+  }
+  toggleFilter() {
+    this.searchOpened$.pipe(take(1)).subscribe((searchOpened) => {
+      if (searchOpened) this.closeFilter();
+      else this.openFilter();
+    });
   }
 }
