@@ -78,21 +78,12 @@ export class ScreenTaskComponent implements OnDestroy, OnInit {
     this.keys.remove(this.hotkeys);
   }
   start(taskId?: string) {
-    if (!taskId) {
-      return;
-    }
-    this.store.dispatch(startTask({ taskId, timestamp: Date.now() }));
+    if (taskId) this.store.dispatch(startTask({ taskId, timestamp: Date.now() }));
   }
   stop(taskId?: string) {
-    if (!taskId) {
-      return;
-    }
-    this.store.dispatch(stopTask({ taskId, timestamp: Date.now() }));
+    if (taskId) this.store.dispatch(stopTask({ taskId, timestamp: Date.now() }));
   }
   deleteTask(task?: Task) {
-    if (!task) {
-      return;
-    }
-    this.store.dispatch(deleteTask({ taskId: task.id }));
+    if (task) this.store.dispatch(deleteTask({ taskId: task.id }));
   }
 }

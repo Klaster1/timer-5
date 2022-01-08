@@ -20,6 +20,7 @@ export const urlFragments = (url: URL): URLFragment[] => url.split('/');
 export const joinUrlFragments = (fragments: URLFragment[]): URL => fragments.join('/');
 export const matrixParamFragments = (fragment: URLFragment) => fragment.split(';');
 export const joinMatrixParamFragments = (values: string[]): URLFragment => values.join(';');
+export const extractRouteParam = (fragment: URLFragment) => matrixParamFragments(fragment)?.[0];
 export const urlFragmentMatrixParams = <Decoded>(fragment: URLFragment): EncodedParams<Decoded> =>
   Object.fromEntries(
     matrixParamFragments(fragment)
@@ -37,9 +38,9 @@ export const toMatrixParamsString = <Decoded>(params: EncodedParams<Decoded>): U
 export const updateMatrixParamsAtIndex = <Decoded>(url: URL, params: EncodedParams<Decoded>, index: number) => {
   return joinUrlFragments(
     urlFragments(url).map((fragment, i) => {
-      const notAMatrixParam = matrixParamFragments(fragment)[0];
-      return i === index && notAMatrixParam
-        ? joinMatrixParamFragments([notAMatrixParam, toMatrixParamsString(params)])
+      const routeParam = extractRouteParam(fragment);
+      return i === index && routeParam
+        ? joinMatrixParamFragments([routeParam, toMatrixParamsString(params)])
         : fragment;
     })
   );

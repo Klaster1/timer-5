@@ -1,3 +1,4 @@
+import { last } from '@app/utils/array';
 import { isNumber } from '@app/utils/assert';
 import { nanoid } from 'nanoid';
 import { combineLatest, Observable, of, timer } from 'rxjs';
@@ -33,12 +34,12 @@ export const isTask = (v: any) => {
 export const isTaskRunning = (t?: Task): boolean => !!t && !!t.sessions && t.sessions.some((s) => !s.end);
 export const isValidTaskState = (state: string): boolean =>
   (new Set([TaskState.active, TaskState.finished, TaskState.dropped]) as Set<string>).has(state);
-export const getTaskRunningSession = (t?: Task) => (t ? t.sessions[t.sessions.length - 1] : undefined);
+export const getTaskRunningSession = (t?: Task) => (t ? last(t.sessions) : undefined);
 const compareSessions = (a: Session, b: Session) => b.start - a.start;
 export const sortTaskSessions = (task: Task): Task => ({ ...task, sessions: [...task.sessions].sort(compareSessions) });
 export const compareTasks = (a: Task, b: Task): number => {
-  const as = a.sessions && a.sessions[a.sessions.length - 1];
-  const bs = b.sessions && b.sessions[b.sessions.length - 1];
+  const as = last(a.sessions);
+  const bs = last(b.sessions);
   if (!as && bs) {
     return -1;
   }

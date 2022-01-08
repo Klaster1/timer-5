@@ -24,7 +24,7 @@ export const selectCurrentTaskState = createSelector(selectDecodedRouteParams, (
 
 // Tasks
 export const selectTasks = createFeatureSelector<StoreState['tasks']>('tasks');
-export const selectAllTasks = createSelector(selectTasks, (tasks) => Object.values(tasks.values));
+export const selectAllTasks = createSelector(selectTasks, (tasks) => Object.values(tasks));
 export const selectCurrentTasks = createSelector(selectAllTasks, selectAllRouteParams, (tasks, params) =>
   filterTasks(params, tasks)
 );
@@ -35,7 +35,7 @@ export const selectCurrentTask = createSelector(
   selectFilterTo,
   (tasks, taskId, from, to) => {
     if (!taskId) return;
-    const maybeTask = tasks.values[taskId];
+    const maybeTask = tasks[taskId];
     if (!maybeTask) return;
     return sortTaskSessions(filterTaskSessions(maybeTask, { from, to }));
   }
@@ -57,7 +57,7 @@ export const selectPrevTaskId = createSelector(selectCurrentTasks, selectCurrent
   return tasks[prevTaskIndex]?.id;
 });
 export const selectIsCurrentTaskOpened = createSelector(selectCurrentTask, isTruthy);
-export const selectTaskById = (taskId: string) => createSelector(selectTasks, (tasks) => tasks.values[taskId]);
+export const selectTaskById = (taskId: string) => createSelector(selectTasks, (tasks) => tasks[taskId]);
 export const selectTheme = createFeatureSelector<StoreState['theme']>('theme');
 
 // Filter

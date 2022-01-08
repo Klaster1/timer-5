@@ -44,35 +44,33 @@ function tasks(state: StoreState['tasks'] | undefined, action: Action) {
   );
 
   const tasks = createImmerReducer<StoreState['tasks']>(
-    { ids: [], values: {} },
+    {},
     on(loadTasks, (_store, action) => action.data),
     on(createTask, (state, action) => {
-      state.ids.push(action.taskId);
-      state.values[action.taskId] = { id: action.taskId, name: action.name, sessions: [], state: TaskState.active };
+      state[action.taskId] = { id: action.taskId, name: action.name, sessions: [], state: TaskState.active };
       return state;
     }),
     on(renameTask, (state, action) => {
-      const task = state.values[action.taskId];
+      const task = state[action.taskId];
       if (task) task.name = action.name;
       return state;
     }),
     on(updateTaskState, (state, action) => {
-      const task = state.values[action.taskId];
+      const task = state[action.taskId];
       if (task) task.state = action.state;
       return state;
     }),
     on(deleteTask, (state, action) => {
-      state.ids = state.ids.filter((id) => id !== action.taskId);
-      delete state.values[action.taskId];
+      delete state[action.taskId];
       return state;
     }),
     on(startTask, (state, action) => {
-      const task = state.values[action.taskId];
+      const task = state[action.taskId];
       if (task) task.state = TaskState.active;
       return state;
     }),
     on(startTask, stopTask, updateSession, deleteSession, (state, action) => {
-      const task = state.values[action.taskId];
+      const task = state[action.taskId];
       if (task) task.sessions = sessions(task.sessions, action);
       return state;
     })

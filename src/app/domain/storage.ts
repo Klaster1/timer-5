@@ -10,10 +10,7 @@ export interface StoreState {
 }
 
 export type Theme = 'light' | 'dark';
-export type NormalizedTasks = {
-  ids: string[];
-  values: { [id: string]: Task };
-};
+export type NormalizedTasks = { [id: string]: Task };
 
 type AppTasks = StoreState['tasks'];
 type StoredTasks = LegacyGames | StoredTasksV1;
@@ -56,10 +53,7 @@ const fromLegacyGames = (data: LegacyGames): AppTasks => {
         })
       ),
     }));
-    return {
-      ids: tasks.map(({ id }) => id),
-      values: Object.fromEntries(tasks.map((task) => [task.id, task] as const)),
-    };
+    return Object.fromEntries(tasks.map((task) => [task.id, task] as const));
   }
 };
 
@@ -116,9 +110,9 @@ const storedSessionToAppSession = (storedSession: StoredSessionV1): Session =>
 
 export const toStoredTasks = (appTasks: AppTasks): LatestStoredTasks => ({
   version: 1,
-  value: appTasks.ids
+  value: Object.keys(appTasks)
     .map((id) => {
-      const task = appTasks.values[id];
+      const task = appTasks[id];
       if (!task) return null;
       return {
         id,
@@ -137,10 +131,7 @@ const fromStoredTasksV1 = (storedTasks: StoredTasksV1): AppTasks => {
     state: storedTaskStateToAppTaskStateV1(task.state),
     sessions: task.sessions.map(storedSessionToAppSession),
   }));
-  return {
-    ids: tasks.map(({ id }) => id),
-    values: Object.fromEntries(tasks.map((task) => [task.id, task] as const)),
-  };
+  return Object.fromEntries(tasks.map((task) => [task.id, task] as const));
 };
 
 // Public
