@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { hasChartData, ScaleRange } from '@app/domain/chart';
 import { encodeFilterParams, FilterMatrixParams } from '@app/domain/router';
 import { StoreState } from '@app/domain/storage';
-import { selectFilterChartData, selectFilterRange } from '@app/ngrx/selectors';
+import { selectDecodedFilterParams, selectFilterChartData, selectFilterRange } from '@app/ngrx/selectors';
 import { deepEquals } from '@app/utils/assert';
 import { FormControl, FormGroup } from '@ng-stack/forms';
 import { Store } from '@ngrx/store';
@@ -20,7 +20,8 @@ import subDays from 'date-fns/subDays';
 import subMonths from 'date-fns/subMonths';
 import subWeeks from 'date-fns/subWeeks';
 import subYears from 'date-fns/subYears';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { merge } from 'rxjs';
+import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'tasks-filter',
@@ -42,9 +43,18 @@ export class TasksFilterComponent implements OnDestroy {
     to: new FormControl(),
     durationSort: new FormControl(),
   });
-  subscriber = this.form.valueChanges
-    .pipe(debounceTime(10), distinctUntilChanged(deepEquals))
-    .subscribe((value) => this.router.navigate([], { relativeTo: this.route, queryParams: encodeFilterParams(value) }));
+  subscriber = merge(
+    this.form.valueChanges.pipe(
+      debounceTime(10),
+      distinctUntilChanged(deepEquals),
+      tap((value) => this.router.navigate([], { relativeTo: this.route, queryParams: encodeFilterParams(value) }))
+    ),
+    this.store.select(selectDecodedFilterParams).pipe(
+      tap((value) => {
+        this.form.patchValue(value);
+      })
+    )
+  ).subscribe();
   timelineUplot$ = this.store.select(selectFilterChartData);
   chartRange$ = this.store.select(selectFilterRange);
   onChartRangeChange(e: ScaleRange) {
