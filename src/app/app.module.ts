@@ -9,12 +9,14 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ServiceWorkerModule } from '@angular/service-worker';
 import { TaskStateIconPipeModule } from '@app/pipes/task-state-icon.pipe';
 import { ReactiveComponentModule } from '@ngrx/component';
 import { EffectsModule } from '@ngrx/effects';
 import { MinimalRouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { StoreModule } from '@ngrx/store';
 import { HotkeyModule } from 'angular2-hotkeys';
+import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DialogEditSessionModule } from './dialog-edit-session/dialog-edit-session.module';
@@ -29,8 +31,6 @@ import { MapPipeModule } from './pipes/map.pipe';
 import { ScreenTaskModule } from './screen-task/screen-task.module';
 import { ScreenTasksModule } from './screen-tasks/screen-tasks.module';
 import { TestComponent } from './test/test.component';
-import { ServiceWorkerModule } from '@angular/service-worker';
-import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [AppComponent, TestComponent],
@@ -67,7 +67,7 @@ import { environment } from '../environments/environment';
     }),
     EffectsModule.forRoot([Effects]),
     FilterFormModule.forChild<FilterMatrixParams>({
-      urlFragmentIndex: 2,
+      urlFragmentIndex: 1,
       encoder: encodeFilterParams,
       decoder: decodeFilterMatrixParams,
     }),
@@ -75,7 +75,7 @@ import { environment } from '../environments/environment';
       enabled: environment.production,
       // Register the ServiceWorker as soon as the app is stable
       // or after 30 seconds (whichever comes first).
-      registrationStrategy: 'registerWhenStable:30000'
+      registrationStrategy: 'registerWhenStable:30000',
     }),
   ],
   providers: [

@@ -5,25 +5,15 @@ import { ScreenTaskComponent } from './screen-task/screen-task.component';
 import { ScreenTasksComponent } from './screen-tasks/screen-tasks.component';
 
 const routes: Routes = [
+  { path: '', redirectTo: 'active', pathMatch: 'full' },
   {
-    path: '',
-    redirectTo: 'tasks',
-    pathMatch: 'full',
-  },
-  {
-    path: 'tasks',
+    path: ':state',
+    component: ScreenTasksComponent,
+    canActivate: [GameStateGuard],
     children: [
-      { path: '', redirectTo: 'tasks/active', pathMatch: 'full' },
       {
-        path: ':state',
-        component: ScreenTasksComponent,
-        canActivate: [GameStateGuard],
-        children: [
-          {
-            path: ':taskId',
-            component: ScreenTaskComponent,
-          },
-        ],
+        path: ':taskId',
+        component: ScreenTaskComponent,
       },
     ],
   },

@@ -17,7 +17,7 @@ export class NavigationService {
       this.store.select(selectDecodedFilterParams),
     ]).pipe(
       map(([routeParams, filterParams]) => {
-        return ['tasks', state, filterParams, routeParams.taskId].filter(isTruthy);
+        return [state, filterParams, routeParams.taskId].filter(isTruthy);
       })
     );
   };
@@ -28,7 +28,7 @@ export class NavigationService {
       this.store.select(selectDecodedFilterParams),
     ]).pipe(
       map(([routeParams, filterParams]) => {
-        return ['tasks', routeParams.state, filterParams, taskId].filter(isTruthy);
+        return [routeParams.state, filterParams, taskId].filter(isTruthy);
       })
     );
   };

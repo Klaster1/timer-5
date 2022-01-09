@@ -10,6 +10,6 @@ export class GameStateGuard implements CanActivate {
     const tasksState = extractRouteParam(next.params.state);
     return (tasksState && isValidTaskState(tasksState)) || tasksState === 'all'
       ? true
-      : this.router.navigate(['/tasks/active']);
+      : this.router.navigate(['/active']);
   }
 }

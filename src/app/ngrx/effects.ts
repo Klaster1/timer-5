@@ -48,7 +48,7 @@ export class Effects {
       this.actions$.pipe(
         ofType(createTask),
         withLatestFrom(this.store.select(selectCurrentTaskState)),
-        tap(([a, state]) => this.router.navigate(['tasks', state === 'all' ? 'all' : 'active', a.taskId]))
+        tap(([a, state]) => this.router.navigate([state === 'all' ? 'all' : 'active', a.taskId]))
       ),
     { dispatch: false }
   );
