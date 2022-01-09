@@ -22,8 +22,6 @@ import { AppComponent } from './app.component';
 import { DialogEditSessionModule } from './dialog-edit-session/dialog-edit-session.module';
 import { DialogHotkeysCheatsheetModule } from './dialog-hotkeys-cheatsheet/dialog-hotkeys-cheatsheet.module';
 import { DialogPromptModule } from './dialog-prompt/dialog-prompt.module';
-import { decodeFilterMatrixParams, encodeFilterParams, FilterMatrixParams } from './domain/router';
-import { FilterFormModule } from './filter-form/filter-form.module';
 import { Effects } from './ngrx/effects';
 import { metaReducers } from './ngrx/metareducers';
 import * as reducers from './ngrx/reducers';
@@ -66,11 +64,6 @@ import { TestComponent } from './test/test.component';
       serializer: MinimalRouterStateSerializer,
     }),
     EffectsModule.forRoot([Effects]),
-    FilterFormModule.forChild<FilterMatrixParams>({
-      urlFragmentIndex: 1,
-      encoder: encodeFilterParams,
-      decoder: decodeFilterMatrixParams,
-    }),
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production,
       // Register the ServiceWorker as soon as the app is stable

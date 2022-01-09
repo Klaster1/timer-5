@@ -13,7 +13,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
-import { FilterFormModule } from '@app/filter-form/filter-form.module';
 import { MapPipeModule } from '@app/pipes/map.pipe';
 import { NgStackFormsModule } from '@ng-stack/forms';
 import { ReactiveComponentModule } from '@ngrx/component';
@@ -38,7 +37,6 @@ import { TimelineChartUplotComponent } from './timeline-chart-uplot.component';
     NgxMatTimepickerModule,
     A11yModule,
     CommonModule,
-    FilterFormModule,
     MapPipeModule,
   ],
   exports: [TasksFilterComponent],

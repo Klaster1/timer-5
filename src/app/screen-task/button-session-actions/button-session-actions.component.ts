@@ -1,11 +1,9 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { FilterMatrixParams } from '@app/domain/router';
+import { encodeFilterParams } from '@app/domain/router';
 import { StoreState } from '@app/domain/storage';
 import { Session, Task } from '@app/domain/task';
-import { FilterFormService } from '@app/filter-form/filter-form.service';
 import * as actions from '@app/ngrx/actions';
 import { Store } from '@ngrx/store';
-import { firstValueFrom } from 'rxjs';
 
 @Component({
   templateUrl: './button-session-actions.component.html',
@@ -14,7 +12,7 @@ import { firstValueFrom } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ButtonSessionActionsComponent {
-  constructor(private store: Store<StoreState>, private fitler: FilterFormService<FilterMatrixParams>) {}
+  constructor(private store: Store<StoreState>) {}
   @Input() task?: Task;
   @Input() session?: Session;
   edit() {
@@ -32,17 +30,10 @@ export class ButtonSessionActionsComponent {
         actions.deleteSession({ taskId: this.task.id, sessionIndex: this.task.sessions.indexOf(this.session) })
       );
   }
-  async skipBefore() {
-    if (this.session) {
-      this.fitler.next({ ...(await firstValueFrom(this.fitler.filterParams$)), from: new Date(this.session.start) });
-    }
+  get skipBeforeParams() {
+    return this.session ? encodeFilterParams({ from: new Date(this.session.start) }) : {};
   }
-  async skipAfter() {
-    if (this.session) {
-      this.fitler.next({
-        ...(await firstValueFrom(this.fitler.filterParams$)),
-        to: new Date(this.session?.end ?? new Date()),
-      });
-    }
+  get skipAfterParams() {
+    return encodeFilterParams({ to: new Date(this.session?.end ?? new Date()) });
   }
 }

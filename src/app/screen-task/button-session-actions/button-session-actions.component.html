@@ -5,7 +5,11 @@
   <ng-template matMenuContent>
     <button mat-menu-item type="button" (click)="edit()">Edit</button>
     <button mat-menu-item type="button" (click)="remove()">Delete</button>
-    <button mat-menu-item type="button" (click)="skipAfter()">Skip everything after</button>
-    <button mat-menu-item type="button" (click)="skipBefore()">Skip everything before</button>
+    <a mat-menu-item type="button" routerLink="." [queryParams]="skipAfterParams" queryParamsHandling="merge"
+      >Skip everything after</a
+    >
+    <a mat-menu-item type="button" routerLink="." [queryParams]="skipBeforeParams" queryParamsHandling="merge"
+      >Skip everything before</a
+    >
   </ng-template>
 </mat-menu>

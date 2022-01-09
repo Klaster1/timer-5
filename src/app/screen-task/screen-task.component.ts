@@ -7,10 +7,8 @@ import {
   KEYS_RENAME,
   KEYS_START_STOP,
 } from '@app/domain/hotkeys';
-import { FilterMatrixParams } from '@app/domain/router';
 import { StoreState } from '@app/domain/storage';
 import { isTaskRunning, sessionDuration, Task, TaskState } from '@app/domain/task';
-import { FilterFormService } from '@app/filter-form/filter-form.service';
 import { deleteTask, renameTaskIntent, startTask, stopTask, updateTaskState } from '@app/ngrx/actions';
 import { selectCurrentTask } from '@app/ngrx/selectors';
 import { Store } from '@ngrx/store';
@@ -66,11 +64,7 @@ export class ScreenTaskComponent implements OnDestroy, OnInit {
   displayedColumns = ['start', 'end', 'duration', 'action'];
   task$ = this.store.select(selectCurrentTask);
   taskIsInProgress$ = this.task$.pipe(map(isTaskRunning));
-  constructor(
-    private store: Store<StoreState>,
-    private keys: HotkeysService,
-    private filter: FilterFormService<FilterMatrixParams>
-  ) {}
+  constructor(private store: Store<StoreState>, private keys: HotkeysService) {}
   ngOnInit() {
     this.keys.add(this.hotkeys);
   }

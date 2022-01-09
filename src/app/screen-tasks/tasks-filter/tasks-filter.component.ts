@@ -1,9 +1,11 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { hasChartData, ScaleRange } from '@app/domain/chart';
-import { FilterMatrixParams } from '@app/domain/router';
+import { encodeFilterParams, FilterMatrixParams } from '@app/domain/router';
 import { StoreState } from '@app/domain/storage';
 import { selectFilterChartData, selectFilterRange } from '@app/ngrx/selectors';
+import { deepEquals } from '@app/utils/assert';
 import { FormControl, FormGroup } from '@ng-stack/forms';
 import { Store } from '@ngrx/store';
 import endOfDay from 'date-fns/endOfDay';
@@ -18,6 +20,7 @@ import subDays from 'date-fns/subDays';
 import subMonths from 'date-fns/subMonths';
 import subWeeks from 'date-fns/subWeeks';
 import subYears from 'date-fns/subYears';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'tasks-filter',
@@ -31,7 +34,7 @@ import subYears from 'date-fns/subYears';
   ],
 })
 export class TasksFilterComponent implements OnDestroy {
-  constructor(private store: Store<StoreState>) {}
+  constructor(private store: Store<StoreState>, private router: Router, private route: ActivatedRoute) {}
   hasChartData = hasChartData;
   form = new FormGroup<FilterMatrixParams>({
     search: new FormControl(),
@@ -39,6 +42,9 @@ export class TasksFilterComponent implements OnDestroy {
     to: new FormControl(),
     durationSort: new FormControl(),
   });
+  subscriber = this.form.valueChanges
+    .pipe(debounceTime(10), distinctUntilChanged(deepEquals))
+    .subscribe((value) => this.router.navigate([], { relativeTo: this.route, queryParams: encodeFilterParams(value) }));
   timelineUplot$ = this.store.select(selectFilterChartData);
   chartRange$ = this.store.select(selectFilterRange);
   onChartRangeChange(e: ScaleRange) {
@@ -50,6 +56,7 @@ export class TasksFilterComponent implements OnDestroy {
 
   ngOnDestroy() {
     this.form.reset();
+    this.subscriber.unsubscribe();
   }
   setAnyTime() {
     this.form.patchValue({
