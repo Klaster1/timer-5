@@ -81,10 +81,6 @@ export const taskDurationPure = (task: Task, now: number): number => {
       : completeDuration + now - lastSession.start
     : completeDuration;
 };
-export const tasksDurationPure = (tasks: Task[]): number => {
-  const now = Date.now();
-  return tasks.reduce((a, t) => a + taskDurationPure(t, now), 0);
-};
 
 export const makeTaskId = (): TaskId => nanoid(4);
 
