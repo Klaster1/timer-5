@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  HostBinding,
   OnDestroy,
   OnInit,
   TrackByFunction,
@@ -26,7 +25,7 @@ import { NavigationService } from '@app/services/navigation.service';
 import { Store } from '@ngrx/store';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
 import { firstValueFrom, merge, Observable, Subject } from 'rxjs';
-import { map, shareReplay, take, tap } from 'rxjs/operators';
+import { map, shareReplay, take } from 'rxjs/operators';
 
 @Component({
   templateUrl: './screen-tasks.component.html',
@@ -34,8 +33,6 @@ import { map, shareReplay, take, tap } from 'rxjs/operators';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScreenTasksComponent implements OnInit, OnDestroy {
-  @HostBinding('class.task-opened') private taskOpened = false;
-
   taskState = TaskState;
   state$ = this.store.select(selectCurrentTaskState);
   filterParams$ = this.filter.filterParams$;
@@ -46,7 +43,7 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
   );
   tasks$ = this.store.select(selectCurrentTasks);
   currentTaskIndex$ = this.store.select(selectCurrentTaskIndex);
-  taskOpened$ = this.store.select(selectIsCurrentTaskOpened).pipe(tap((v) => (this.taskOpened = v)));
+  taskOpened$ = this.store.select(selectIsCurrentTaskOpened);
 
   hotkeys = [
     hotkey(KEYS_ADD, 'Add task', () => this.addTask()),
