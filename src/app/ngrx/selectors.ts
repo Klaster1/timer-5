@@ -1,5 +1,5 @@
 import { chartSeries } from '@app/domain/chart';
-import { decodeFilterMatrixParams, decodeRouteParams, decodeWholeAppRouteParams } from '@app/domain/router';
+import { decodeFilterMatrixParams, decodeRouteParams } from '@app/domain/router';
 import { StoreState } from '@app/domain/storage';
 import { filterTasks, filterTaskSessions, sortTaskSessions } from '@app/domain/task';
 import { isTruthy } from '@app/utils/assert';
@@ -9,14 +9,11 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 const router = createFeatureSelector<StoreState['router']>('router');
 
 // Params
-export const { selectRouteParams } = getSelectors(router);
-export const selectDecodedFilterParams = createSelector(selectRouteParams, (params) =>
+export const { selectRouteParams, selectQueryParams } = getSelectors(router);
+export const selectDecodedFilterParams = createSelector(selectQueryParams, (params) =>
   decodeFilterMatrixParams(params ?? {})
 );
 export const selectDecodedRouteParams = createSelector(selectRouteParams, (params) => decodeRouteParams(params ?? {}));
-export const selectAllRouteParams = createSelector(selectRouteParams, (params) =>
-  decodeWholeAppRouteParams(params ?? {})
-);
 export const selectFilterFrom = createSelector(selectDecodedFilterParams, (params) => params.from);
 export const selectFilterTo = createSelector(selectDecodedFilterParams, (params) => params.to);
 export const selectCurrentTaskId = createSelector(selectDecodedRouteParams, (params) => params.taskId);
@@ -25,8 +22,11 @@ export const selectCurrentTaskState = createSelector(selectDecodedRouteParams, (
 // Tasks
 export const selectTasks = createFeatureSelector<StoreState['tasks']>('tasks');
 export const selectAllTasks = createSelector(selectTasks, (tasks) => Object.values(tasks));
-export const selectCurrentTasks = createSelector(selectAllTasks, selectAllRouteParams, (tasks, params) =>
-  filterTasks(params, tasks)
+export const selectCurrentTasks = createSelector(
+  selectAllTasks,
+  selectDecodedFilterParams,
+  selectCurrentTaskState,
+  (tasks, filterParams, state) => filterTasks({ ...filterParams, state }, tasks)
 );
 export const selectCurrentTask = createSelector(
   selectTasks,

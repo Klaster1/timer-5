@@ -21,7 +21,6 @@ import {
   selectNextTaskId,
   selectPrevTaskId,
 } from '@app/ngrx/selectors';
-import { NavigationService } from '@app/services/navigation.service';
 import { Store } from '@ngrx/store';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
 import { firstValueFrom, merge, Observable, Subject } from 'rxjs';
@@ -48,13 +47,13 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
   hotkeys = [
     hotkey(KEYS_ADD, 'Add task', () => this.addTask()),
     hotkey([...KEYS_NEXT, ...KEYS_PREV], 'Next/prev task', async (e) => {
-      const [nextTaskId, prevTaskId] = await Promise.all([
+      const [nextTaskId, prevTaskId, state] = await Promise.all([
         firstValueFrom(this.store.select(selectNextTaskId)),
         firstValueFrom(this.store.select(selectPrevTaskId)),
+        firstValueFrom(this.state$),
       ]);
       const taskId = KEYS_NEXT.includes(e.key) ? nextTaskId : KEYS_PREV.includes(e.key) ? prevTaskId : null;
-      if (!taskId) return;
-      this.router.navigate(await firstValueFrom(this.navigation.taskIdCommands(taskId)));
+      if (state && taskId) this.router.navigate([state, taskId], { queryParamsHandling: 'merge' });
     }),
     new Hotkey(
       KEYS_SEARCH,
@@ -76,8 +75,7 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
     private store: Store<StoreState>,
     private keys: HotkeysService,
     private router: Router,
-    private filter: FilterFormService<FilterMatrixParams>,
-    private navigation: NavigationService
+    private filter: FilterFormService<FilterMatrixParams>
   ) {}
 
   ngOnInit() {

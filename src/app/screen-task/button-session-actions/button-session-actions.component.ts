@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { RouteParams } from '@app/domain/router';
+import { FilterMatrixParams } from '@app/domain/router';
 import { StoreState } from '@app/domain/storage';
 import { Session, Task } from '@app/domain/task';
 import { FilterFormService } from '@app/filter-form/filter-form.service';
@@ -14,7 +14,7 @@ import { firstValueFrom } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ButtonSessionActionsComponent {
-  constructor(private store: Store<StoreState>, private fitler: FilterFormService<RouteParams>) {}
+  constructor(private store: Store<StoreState>, private fitler: FilterFormService<FilterMatrixParams>) {}
   @Input() task?: Task;
   @Input() session?: Session;
   edit() {

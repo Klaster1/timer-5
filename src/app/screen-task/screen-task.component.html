@@ -1,6 +1,6 @@
 <ng-container *ngIf="task$ | ngrxPush as task">
   <mat-toolbar>
-    <a routerLink="./.." mat-icon-button>
+    <a routerLink="./.." queryParamsHandling="merge" mat-icon-button>
       <mat-icon>arrow_back</mat-icon>
     </a>
     <h2>

@@ -4,7 +4,8 @@
       <mat-nav-list>
         <a
           mat-list-item
-          [routerLink]="'all' | map: makeRouterLink | ngrxPush"
+          routerLink="all"
+          queryParamsHandling="merge"
           routerLinkActive="nav-link-active"
           class="link-all"
           matTooltip="All tasks"
@@ -15,7 +16,8 @@
       <mat-nav-list class="states">
         <a
           mat-list-item
-          [routerLink]="taskState.active | map: makeRouterLink | ngrxPush"
+          [routerLink]="taskState.active"
+          queryParamsHandling="merge"
           routerLinkActive="nav-link-active"
           matTooltip="Active tasks"
         >
@@ -23,14 +25,16 @@
         </a>
         <a
           mat-list-item
-          [routerLink]="taskState.finished | map: makeRouterLink | ngrxPush"
+          [routerLink]="taskState.finished"
+          queryParamsHandling="merge"
           routerLinkActive="nav-link-active"
           matTooltip="Finished tasks"
           ><mat-icon>{{ taskState.finished | taskStateIcon }}</mat-icon></a
         >
         <a
           mat-list-item
-          [routerLink]="taskState.dropped | map: makeRouterLink | ngrxPush"
+          [routerLink]="taskState.dropped"
+          queryParamsHandling="merge"
           routerLinkActive="nav-link-active"
           matTooltip="Dropped tasks"
           ><mat-icon>{{ taskState.dropped | taskStateIcon }}</mat-icon></a
