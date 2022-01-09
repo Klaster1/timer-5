@@ -1,6 +1,6 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { hasChartData, ScaleRange } from '@app/domain/chart';
 import { encodeFilterParams, FilterMatrixParams } from '@app/domain/router';
 import { StoreState } from '@app/domain/storage';
@@ -35,7 +35,7 @@ import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
   ],
 })
 export class TasksFilterComponent implements OnDestroy {
-  constructor(private store: Store<StoreState>, private router: Router, private route: ActivatedRoute) {}
+  constructor(private store: Store<StoreState>, private router: Router) {}
   hasChartData = hasChartData;
   form = new FormGroup<FilterMatrixParams>({
     search: new FormControl(),
@@ -47,7 +47,7 @@ export class TasksFilterComponent implements OnDestroy {
     this.form.valueChanges.pipe(
       debounceTime(10),
       distinctUntilChanged(deepEquals),
-      tap((value) => this.router.navigate([], { relativeTo: this.route, queryParams: encodeFilterParams(value) }))
+      tap((value) => this.router.navigate([], { queryParams: encodeFilterParams(value) }))
     ),
     this.store.select(selectDecodedFilterParams).pipe(
       tap((value) => {
@@ -65,7 +65,7 @@ export class TasksFilterComponent implements OnDestroy {
   }
 
   ngOnDestroy() {
-    this.form.reset();
+    this.router.navigate([], { queryParams: {} });
     this.subscriber.unsubscribe();
   }
   setAnyTime() {
