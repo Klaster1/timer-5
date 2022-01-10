@@ -33,6 +33,10 @@
 
   mat-icon {
     margin-right: 0.25em;
+
+    &.running {
+      color: var(--primary-darker-color) !important
+    }
   }
 }
 .duration {

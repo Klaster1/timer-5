@@ -9,7 +9,7 @@ import {
 import { Router } from '@angular/router';
 import { hotkey, KEYS_ADD, KEYS_NEXT, KEYS_PREV, KEYS_SEARCH } from '@app/domain/hotkeys';
 import { StoreState } from '@app/domain/storage';
-import { Task, TaskState } from '@app/domain/task';
+import { isTaskRunning, Task, TaskState } from '@app/domain/task';
 import * as actions from '@app/ngrx/actions';
 import {
   selectCurrentTaskIndex,
@@ -32,6 +32,7 @@ import { map, shareReplay, take } from 'rxjs/operators';
 })
 export class ScreenTasksComponent implements OnInit, OnDestroy {
   taskState = TaskState;
+  isTaskRunning = isTaskRunning;
   state$ = this.store.select(selectCurrentTaskState);
   filterParams$ = this.store.select(selectDecodedFilterParams);
   filterToggles$ = new Subject<boolean>();

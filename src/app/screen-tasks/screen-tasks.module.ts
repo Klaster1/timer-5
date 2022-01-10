@@ -12,6 +12,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { ButtonTaskActionsModule } from '@app/button-task-actions/button-task-actions.module';
 import { FormatDurationPipeModule } from '@app/pipes/format-duration.pipe';
+import { MapPipeModule } from '@app/pipes/map.pipe';
 import { TaskDurationPipeModule } from '@app/pipes/task-duration.pipe';
 import { TaskStateIconPipeModule } from '@app/pipes/task-state-icon.pipe';
 import { TaskStatePipeModule } from '@app/pipes/task-state.pipe';
@@ -57,6 +58,7 @@ import { TasksFilterModule } from './tasks-filter/tasks-filter.module';
     MatTooltipModule,
     MatSelectModule,
     ButtonTaskActionsModule,
+    MapPipeModule,
   ],
 })
 export class ScreenTasksModule {}

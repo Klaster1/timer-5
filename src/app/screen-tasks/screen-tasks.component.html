@@ -37,7 +37,7 @@
                 class="task-link"
                 #rla="routerLinkActive"
               >
-                <mat-icon>{{ task | taskStateIcon }}</mat-icon>
+                <mat-icon [ngClass]='{running: task | map: isTaskRunning }'>{{ task | taskStateIcon }}</mat-icon>
                 <span class="name">{{ task.name }}</span>
                 <span class="duration">{{ task | taskDuration: 5000 | formatDuration | ngrxPush }}</span>
               </a>
