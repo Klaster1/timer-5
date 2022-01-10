@@ -84,7 +84,7 @@ export class Effects {
           take(1),
           exhaustMap((task) => {
             if (!task) return EMPTY;
-            const session = getTaskSession(task, a.sessionIndex);
+            const session = getTaskSession(task, a.sessionId);
             return session
               ? this.dialog
                   .open<DialogEditSessionComponent, DialogEditSessionData, DialogEditSessionData>(
@@ -98,7 +98,7 @@ export class Effects {
                         ? of(
                             updateSession({
                               taskId: task.id,
-                              sessionIndex: task.sessions.indexOf(session),
+                              sessionId: a.sessionId,
                               start: result.start,
                               end: result.end,
                             })

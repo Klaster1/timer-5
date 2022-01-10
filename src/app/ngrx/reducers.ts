@@ -1,5 +1,5 @@
 import { StoreState } from '@app/domain/storage';
-import { Task, TaskState } from '@app/domain/task';
+import { isSessionWithId, Task, TaskState } from '@app/domain/task';
 import { routerReducer } from '@ngrx/router-store';
 import { Action, on } from '@ngrx/store';
 import { createImmerReducer } from 'ngrx-immer/store';
@@ -30,7 +30,7 @@ function tasks(state: StoreState['tasks'] | undefined, action: Action) {
       return state;
     }),
     on(updateSession, (state, action) => {
-      const session = state[action.sessionIndex];
+      const session = state.find(isSessionWithId(action.sessionId));
       if (session) {
         session.start = action.start;
         session.end = action.end;
@@ -38,7 +38,8 @@ function tasks(state: StoreState['tasks'] | undefined, action: Action) {
       return state;
     }),
     on(deleteSession, (state, action) => {
-      state.splice(action.sessionIndex, 1);
+      const index = state.findIndex(isSessionWithId(action.sessionId));
+      if (index !== -1) state.splice(index, 1);
       return state;
     })
   );

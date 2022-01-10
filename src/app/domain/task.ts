@@ -1,5 +1,5 @@
 import { last } from '@app/utils/array';
-import { isNumber } from '@app/utils/assert';
+import { deepEquals, isNumber } from '@app/utils/assert';
 import { nanoid } from 'nanoid';
 import { combineLatest, Observable, of, timer } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -70,7 +70,10 @@ export const sessionDurationPure = (s: Session): number => (s.end ? s.end - s.st
 export const completeTaskDuration = (task?: Task): number =>
   task ? task.sessions.reduce((t, s) => t + sessionDurationPure(s), 0) : 0;
 
-export const getTaskSession = (task: Task, sessionIndex: number) => task.sessions[sessionIndex];
+export type SessionId = [Session['start'], Session['end']];
+export const getSessionId = (session: Session): SessionId => [session.start, session.end];
+export const isSessionWithId = (id: SessionId) => (session: Session) => deepEquals(getSessionId(session), id);
+export const getTaskSession = (task: Task, id: SessionId) => task.sessions.find(isSessionWithId(id));
 
 export const taskDurationPure = (task: Task, now: number): number => {
   const completeDuration = completeTaskDuration(task);

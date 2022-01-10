@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { encodeFilterParams } from '@app/domain/router';
 import { StoreState } from '@app/domain/storage';
-import { Session, Task } from '@app/domain/task';
+import { getSessionId, Session, Task } from '@app/domain/task';
 import * as actions from '@app/ngrx/actions';
 import { Store } from '@ngrx/store';
 
@@ -20,15 +20,13 @@ export class ButtonSessionActionsComponent {
       this.store.dispatch(
         actions.updateSessionIntent({
           taskId: this.task.id,
-          sessionIndex: this.task.sessions.indexOf(this.session),
+          sessionId: getSessionId(this.session),
         })
       );
   }
   remove() {
     if (this.task && this.session)
-      this.store.dispatch(
-        actions.deleteSession({ taskId: this.task.id, sessionIndex: this.task.sessions.indexOf(this.session) })
-      );
+      this.store.dispatch(actions.deleteSession({ taskId: this.task.id, sessionId: getSessionId(this.session) }));
   }
   get skipBeforeParams() {
     return this.session ? encodeFilterParams({ from: new Date(this.session.start) }) : {};
