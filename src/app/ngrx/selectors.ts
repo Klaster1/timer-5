@@ -9,7 +9,19 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 const router = createFeatureSelector<StoreState['router']>('router');
 
 // Params
-export const { selectRouteParams, selectQueryParams } = getSelectors(router);
+export const { selectRouteParams, selectUrl } = getSelectors(router);
+const selectQueryParamsString = createSelector(selectUrl, (url) =>
+  new URL(url, location.origin).searchParams.toString()
+);
+
+// Unlike selectQueryParams from @ngrx/store, this one does not emit on any URL change,
+// but only when the search params string changes.
+// This means subsequent selectors do not re-emit because of search params change,
+// which was causing unpleasant content blinks, for example of total tasks duration.
+const selectQueryParams = createSelector(selectQueryParamsString, (queryParamsString) =>
+  Object.fromEntries(new URLSearchParams(queryParamsString).entries())
+);
+
 export const selectDecodedFilterParams = createSelector(selectQueryParams, (params) =>
   decodeFilterMatrixParams(params ?? {})
 );

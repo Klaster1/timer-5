@@ -16,7 +16,7 @@
     "strictNullChecks": true,
     "strict": true,
     "typeRoots": ["node_modules/@types"],
-    "lib": ["ES2021", "dom"],
+    "lib": ["ES2021", "dom", "dom.iterable"],
     "paths": {
       "@app/*": ["src/app/*"]
     }
