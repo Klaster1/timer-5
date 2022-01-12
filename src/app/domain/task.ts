@@ -2,7 +2,7 @@ import { last } from '@app/utils/array';
 import { deepEquals, isNumber } from '@app/utils/assert';
 import { nanoid } from 'nanoid';
 import { combineLatest, Observable, of, timer } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
 import { Milliseconds } from './date-time';
 import { FilterMatrixParams, RouteFragmentParams } from './router';
 
@@ -101,7 +101,10 @@ export const taskDuration = (task?: Task, interval = 1000): Observable<number> =
   return lastSession
     ? sessionIsOver(lastSession)
       ? of(completeDuration)
-      : timer(0, interval).pipe(map(() => completeDuration + Date.now() - lastSession.start))
+      : timer(0, interval).pipe(
+          startWith(0),
+          map(() => completeDuration + Date.now() - lastSession.start)
+        )
     : of(completeDuration);
 };
 export const tasksDuration = (tasks: Task[], interval = 1000): Observable<number> =>
