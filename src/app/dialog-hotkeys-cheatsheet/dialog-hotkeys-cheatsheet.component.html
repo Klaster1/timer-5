@@ -3,7 +3,7 @@
   <dl>
     <ng-container *ngFor="let key of keys">
       <dt>
-        <kbd *ngFor="let formatted of key.formatted">{{ formatted }}</kbd>
+        <kbd *ngFor="let formatted of key.formatted|map:withoutCyrillics">{{ formatted }}</kbd>
       </dt>
       <dd>{{ key.description }}</dd>
     </ng-container>

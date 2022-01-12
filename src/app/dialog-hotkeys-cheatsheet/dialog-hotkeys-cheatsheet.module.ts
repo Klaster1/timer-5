@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MapPipeModule } from '@app/pipes/map.pipe';
 import { HotkeysService } from 'angular2-hotkeys';
 import { DialogHotkeysCheatsheetComponent } from './dialog-hotkeys-cheatsheet.component';
 
@@ -9,7 +10,7 @@ const ID = 'DIALOG_HOTKEYS_CHEATSHEET';
 
 @NgModule({
   declarations: [DialogHotkeysCheatsheetComponent],
-  imports: [MatDialogModule, MatButtonModule, CommonModule],
+  imports: [MatDialogModule, MatButtonModule, CommonModule, MapPipeModule],
   exports: [DialogHotkeysCheatsheetComponent],
   providers: [
     {
