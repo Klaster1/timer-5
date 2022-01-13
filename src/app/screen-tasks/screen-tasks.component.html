@@ -27,7 +27,11 @@
           [checkViewportSizeWhenValueChanges]="tasks"
         >
           <mat-nav-list>
-            <mat-list-item *cdkVirtualFor="let task of tasks; trackBy: taskId">
+            <mat-list-item
+              *cdkVirtualFor="let task of tasks; trackBy: taskId"
+              cdkDropList
+              (cdkDropListDropped)="onDrop($event, task)"
+            >
               <a
                 matLine
                 [routerLink]="[task.id]"
@@ -37,7 +41,7 @@
                 class="task-link"
                 #rla="routerLinkActive"
               >
-                <mat-icon [ngClass]='{running: task | map: isTaskRunning }'>{{ task | taskStateIcon }}</mat-icon>
+                <mat-icon [ngClass]="{ running: task | map: isTaskRunning }">{{ task | taskStateIcon }}</mat-icon>
                 <span class="name">{{ task.name }}</span>
                 <span class="duration">{{ task | taskDuration: 5000 | formatDuration | ngrxPush }}</span>
               </a>

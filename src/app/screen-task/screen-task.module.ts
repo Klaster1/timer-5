@@ -1,3 +1,4 @@
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -39,6 +40,7 @@ import { ScreenTaskComponent } from './screen-task.component';
     ButtonTaskActionsModule,
     ButtonSessionActionsModule,
     MapPipeModule,
+    DragDropModule,
   ],
 })
 export class ScreenTaskModule {}

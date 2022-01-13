@@ -1,3 +1,4 @@
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { last } from '@app/utils/array';
 import { deepEquals, isNumber } from '@app/utils/assert';
 import { nanoid } from 'nanoid';
@@ -190,3 +191,5 @@ export const filterTaskSessions = (task: Task, params: Pick<FilterParams, 'from'
   const sessions = filterByTo(params, filterByFrom(params, task))?.sessions;
   return sessions ? { ...task, sessions } : task;
 };
+
+export type SessionDragEvent = CdkDragDrop<undefined, undefined, [Session, TaskId]>;

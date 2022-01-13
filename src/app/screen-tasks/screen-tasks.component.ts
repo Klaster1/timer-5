@@ -9,8 +9,9 @@ import {
 import { Router } from '@angular/router';
 import { hotkey, KEYS_ADD, KEYS_NEXT, KEYS_PREV, KEYS_SEARCH } from '@app/domain/hotkeys';
 import { StoreState } from '@app/domain/storage';
-import { isTaskRunning, Task, TaskState } from '@app/domain/task';
+import { isTaskRunning, SessionDragEvent, Task, TaskState } from '@app/domain/task';
 import * as actions from '@app/ngrx/actions';
+import { moveSessionToTask } from '@app/ngrx/actions';
 import {
   selectCurrentTaskIndex,
   selectCurrentTasks,
@@ -98,5 +99,14 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
       if (searchOpened) this.closeFilter();
       else this.openFilter();
     });
+  }
+  onDrop(event: SessionDragEvent, item: Task) {
+    this.store.dispatch(
+      moveSessionToTask({
+        taskIdFrom: event.item.data[1],
+        taskIdTo: item.id,
+        session: { ...event.item.data[0] },
+      })
+    );
   }
 }

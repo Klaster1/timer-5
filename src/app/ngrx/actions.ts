@@ -1,5 +1,5 @@
 import { StoreState } from '@app/domain/storage';
-import { Session, SessionId, TaskState } from '@app/domain/task';
+import { Session, SessionId, TaskId, TaskState } from '@app/domain/task';
 import { createAction, props } from '@ngrx/store';
 
 // Task
@@ -28,6 +28,10 @@ export const updateSession = createAction(
   }>()
 );
 export const deleteSession = createAction('[Session] Delete', props<{ taskId: string; sessionId: SessionId }>());
+export const moveSessionToTask = createAction(
+  '[Session] Move session to task',
+  props<{ taskIdFrom: TaskId; taskIdTo: TaskId; session: Session }>()
+);
 
 // App
 export const toggleTheme = createAction('[Theme] Update');

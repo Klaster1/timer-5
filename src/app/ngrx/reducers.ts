@@ -1,5 +1,6 @@
 import { StoreState } from '@app/domain/storage';
-import { isSessionWithId, Task, TaskState } from '@app/domain/task';
+import { isSessionWithId, isTaskRunning, Task, TaskState } from '@app/domain/task';
+import { deepEquals } from '@app/utils/assert';
 import { routerReducer } from '@ngrx/router-store';
 import { Action, on } from '@ngrx/store';
 import { createImmerReducer } from 'ngrx-immer/store';
@@ -8,6 +9,7 @@ import {
   deleteSession,
   deleteTask,
   loadTasks,
+  moveSessionToTask,
   renameTask,
   startTask,
   stopTask,
@@ -68,6 +70,16 @@ function tasks(state: StoreState['tasks'] | undefined, action: Action) {
     on(startTask, (state, action) => {
       const task = state[action.taskId];
       if (task) task.state = TaskState.active;
+      return state;
+    }),
+    on(moveSessionToTask, (state, action) => {
+      const fromTask = state[action.taskIdFrom];
+      const toTask = state[action.taskIdTo];
+      if (fromTask && toTask) {
+        fromTask.sessions = fromTask.sessions.filter((session) => !deepEquals(session, action.session));
+        toTask.sessions.push(action.session);
+        if (isTaskRunning(toTask)) toTask.state = TaskState.active;
+      }
       return state;
     }),
     on(startTask, stopTask, updateSession, deleteSession, (state, action) => {

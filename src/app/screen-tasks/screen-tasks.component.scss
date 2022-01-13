@@ -35,7 +35,7 @@
     margin-right: 0.25em;
 
     &.running {
-      color: var(--primary-darker-color) !important
+      color: var(--primary-darker-color) !important;
     }
   }
 }
@@ -97,9 +97,20 @@ h1 {
 ng-scrollbar {
   flex: 1;
 }
-tasks-filter {
-  // flex: 1;
-}
 empty-state {
   margin: auto;
+}
+.cdk-drop-list-dragging {
+  position: relative;
+
+  &:after {
+    display: block;
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border: dotted 2px grey;
+  }
 }
