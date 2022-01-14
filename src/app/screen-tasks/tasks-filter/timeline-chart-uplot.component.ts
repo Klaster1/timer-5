@@ -18,6 +18,7 @@ import { selectTheme } from '@app/ngrx/selectors';
 import { last } from '@app/utils/array';
 import { isNumber } from '@app/utils/assert';
 import { Store } from '@ngrx/store';
+import format from 'date-fns/format';
 import millisecondsToSeconds from 'date-fns/millisecondsToSeconds';
 import secondsToMilliseconds from 'date-fns/secondsToMilliseconds';
 import { NgResizeObserver, ngResizeObserverProviders } from 'ng-resize-observer';
@@ -197,7 +198,10 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
             },
           },
           series: [
-            {},
+            {
+              value: (_, value) => format(new Date(secondsToMilliseconds(value)), 'yyyy-MM-dd'),
+              label: 'Day',
+            },
             {
               show: true,
               label: this.getLegendLabel(),
