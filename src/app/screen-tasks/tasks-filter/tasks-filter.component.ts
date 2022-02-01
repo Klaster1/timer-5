@@ -88,14 +88,14 @@ export class TasksFilterComponent implements OnDestroy {
   }
   setThisWeek() {
     this.form.patchValue({
-      from: startOfWeek(new Date()),
-      to: endOfWeek(new Date()),
+      from: startOfWeek(new Date(), { weekStartsOn: 1 }),
+      to: endOfWeek(new Date(), { weekStartsOn: 1 }),
     });
   }
   setPreviousWeek() {
     this.form.patchValue({
-      from: startOfWeek(subWeeks(new Date(), 1)),
-      to: endOfWeek(subWeeks(new Date(), 1)),
+      from: startOfWeek(subWeeks(new Date(), 1), { weekStartsOn: 1 }),
+      to: endOfWeek(subWeeks(new Date(), 1), { weekStartsOn: 1 }),
     });
   }
   setThisMonth() {
