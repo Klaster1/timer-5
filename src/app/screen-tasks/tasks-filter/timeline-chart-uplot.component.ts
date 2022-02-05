@@ -21,7 +21,6 @@ import { Store } from '@ngrx/store';
 import format from 'date-fns/format';
 import millisecondsToSeconds from 'date-fns/millisecondsToSeconds';
 import secondsToMilliseconds from 'date-fns/secondsToMilliseconds';
-import { NgResizeObserver, ngResizeObserverProviders } from 'ng-resize-observer';
 import uPlot, { AlignedData, Hooks, Options } from 'uplot';
 
 type PluginReturnValue = {
@@ -91,7 +90,6 @@ const timerTimelinePlugin = (params: { barColor: string }): PluginReturnValue =>
   selector: 'timeline-chart-uplot',
   template: `<canvas #canvas></canvas>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [ngResizeObserverProviders],
   styles: [
     `
       :host {
@@ -142,9 +140,7 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
   private firstRangeChangeSkipped = false;
   private uplot?: uPlot;
   private readonly headerHeight = 31;
-  dimensionsSubscriber = this.ro.subscribe((e) => {
-    this.uplot?.setSize({ width: e.contentRect.width, height: e.contentRect.height - this.headerHeight });
-  });
+  private resizeObserver?: ResizeObserver;
   themeSubscriber = this.store.select(selectTheme).subscribe(() => {
     setTimeout(() => {
       const stroke = window.getComputedStyle(this.elementRef.nativeElement).color;
@@ -152,17 +148,20 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
       this.uplot?.redraw(false);
     });
   });
-  constructor(
-    private store: Store<StoreState>,
-    private elementRef: ElementRef<HTMLElement>,
-    private ngZone: NgZone,
-    private ro: NgResizeObserver
-  ) {}
+  constructor(private store: Store<StoreState>, private elementRef: ElementRef<HTMLElement>, private ngZone: NgZone) {}
   getLegendValue(value: number) {
     return value ? formatHours(value) : '--:--';
   }
 
   ngAfterViewInit() {
+    this.resizeObserver = new ResizeObserver(([entry]) => {
+      if (entry)
+        this.uplot?.setSize({
+          width: Math.floor(entry.contentRect.width),
+          height: Math.floor(entry.contentRect.height - this.headerHeight),
+        });
+    });
+    this.resizeObserver.observe(this.elementRef.nativeElement);
     this.ngZone.runOutsideAngular(() => {
       const barColor = 'rgb(126, 203, 32)';
       this.uplot = new uPlot(
@@ -237,7 +236,7 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
     }
   }
   ngOnDestroy() {
-    this.dimensionsSubscriber.unsubscribe();
+    this.resizeObserver?.unobserve(this.elementRef.nativeElement);
     this.themeSubscriber.unsubscribe();
     this.uplot?.destroy();
   }
