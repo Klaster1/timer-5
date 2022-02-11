@@ -1,7 +1,7 @@
 import { chartSeries } from '@app/domain/chart';
 import { decodeFilterMatrixParams, decodeRouteParams } from '@app/domain/router';
 import { StoreState } from '@app/domain/storage';
-import { filterTasks, filterTaskSessions, sortTaskSessions } from '@app/domain/task';
+import { filterTasks, filterTaskSessions, isTaskRunning, sortTaskSessions } from '@app/domain/task';
 import { isTruthy } from '@app/utils/assert';
 import { getSelectors } from '@ngrx/router-store';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
@@ -59,6 +59,7 @@ export const selectPrevTaskId = createSelector(selectCurrentTasks, selectCurrent
 export const selectIsCurrentTaskOpened = createSelector(selectCurrentTask, isTruthy);
 export const selectTaskById = (taskId: string) => createSelector(selectTasks, (tasks) => tasks[taskId]);
 export const selectTheme = createFeatureSelector<StoreState['theme']>('theme');
+export const isAnyTaskActive = createSelector(selectAllTasks, (tasks) => tasks.some(isTaskRunning));
 
 // Filter
 export const selectFilterRange = createSelector(
