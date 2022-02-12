@@ -1,7 +1,10 @@
 import { fixture, test } from 'testcafe';
+import { app } from '../page-objects/app';
 import { dialogPrompt } from '../page-objects/dialog-prompt';
+import { menuTaskActions } from '../page-objects/menu-task-actions';
 import { screenTask } from '../page-objects/screen-task';
 import { screenTasks } from '../page-objects/screen-tasks';
+import { tooltip } from '../page-objects/tooltip';
 import { reload, urlTo } from '../utils';
 
 fixture('Tasks');
@@ -21,11 +24,8 @@ test('Adding a task', async (t) => {
   await t.expect(screenTasks.taskName.count).eql(1);
   await t.expect(screenTasks.taskName.textContent).contains('Test');
   await t.expect(screenTasks.taskStateIcon.textContent).contains('play_circle_outline');
-  await t.expect(screenTask.name.textContent).contains('Test');
-  await t.expect(screenTask.stateIcon.textContent).contains('play_circle_outline');
   // Send the "a t" and "ф е" hotkeys, assert the "Add a task" dialog opens for both
-  const combos = ['a t', 'ф е'];
-  for (const combo of combos) {
+  for (const combo of ['a t', 'ф е']) {
     await t.pressKey(combo);
     await t.expect(dialogPrompt.title.exists).ok();
     await t.click(dialogPrompt.buttonDismiss);
@@ -41,4 +41,66 @@ test('Adding a task', async (t) => {
   await reload();
   await t.expect(screenTasks.taskName.nth(0).textContent).contains('Test');
   await t.expect(screenTasks.taskName.nth(1).textContent).contains('Test 2');
+});
+
+test('Starting/stopping the task', async (t) => {
+  // Create a task
+  await t.navigateTo(urlTo('/'));
+  await t
+    .click(screenTasks.emptyStateAddTaskButton)
+    .typeText(dialogPrompt.input, 'Task')
+    .click(dialogPrompt.buttonSubmit);
+  // Assert the app has a regular favicon
+  await t.expect(app.favicon.getAttribute('href')).contains('/favicon.svg');
+  // Assert the task is marked as active/not-running in the task list item, task list item context action, task view title and task view context action
+  await t.expect(screenTasks.taskStateIcon.textContent).contains('play_circle_outline');
+  await t.click(screenTasks.buttonTaskAction.nth(1));
+  await t.expect(menuTaskActions.selectorState.textContent).contains('Active');
+  await t.pressKey('esc');
+  await t.expect(screenTask.stateIcon.textContent).contains('play_circle_outline');
+  await t.click(screenTask.buttonTaskAction);
+  await t.expect(menuTaskActions.selectorState.textContent).contains('Active');
+  await t.pressKey('esc');
+  // Assert the "Start" button is visible and has the "Start" tooltip
+  await t.expect(screenTask.buttonStart.exists).ok();
+  await t.expect(screenTask.buttonStop.exists).notOk();
+  await t.hover(screenTask.buttonStart);
+  await t.expect(tooltip.textContent).eql('Start');
+  // Start a task with the "Start" button
+  await t.click(screenTask.buttonStart);
+  // Assert the task is marked as active/running in the task list item and task view title
+  await t.expect(screenTasks.taskStateIcon.textContent).contains('pause_circle_filled');
+  await t.expect(screenTask.stateIcon.textContent).contains('pause_circle_filled');
+  // Stop and start the session several times
+  for (const i of [1, 2, 3]) {
+    await t.click(screenTask.buttonStop);
+    await t.click(screenTask.buttonStart);
+  }
+  // Assert a session with start time and no end time appears at the top of the session list, with 00:00 duration
+  await t.expect(screenTask.sessionRow.count).eql(4);
+  await t.expect(screenTask.sessionStart.nth(0).textContent).match(/\d/);
+  await t.expect(screenTask.sessionEnd.nth(0).textContent).notMatch(/\d/);
+  await t.expect(screenTask.sessionDuration.nth(0).textContent).contains('00:00');
+  // Assert the "Start" button is replaced with the "Stop" button and its tooltip reads "Stop"
+  await t.expect(screenTask.buttonStop.exists).ok();
+  await t.hover(screenTask.name);
+  await t.hover(screenTask.buttonStop);
+  await t.expect(tooltip.textContent).eql('Stop');
+  // Assert the app favicon changed to the "Running" one
+  await t.expect(app.favicon.getAttribute('href')).contains('/favicon-active.svg');
+  // Stop the task by clicking the "Stop" button
+  await t.click(screenTask.buttonStop);
+  // Assert the "Stop" button is replaced by the "Start" button
+  await t.expect(screenTask.buttonStart.exists).ok();
+  await t.expect(screenTask.buttonStop.exists).notOk();
+  // Assert all the status indicators reverted back to active/not-running
+  await t.expect(screenTasks.taskStateIcon.textContent).contains('play_circle_outline');
+  await t.expect(screenTask.stateIcon.textContent).contains('play_circle_outline');
+  // Start and stop the task with the "s" and "ы" hotkeys, assert it starts and stops
+  for (const combo of ['s', 'ы']) {
+    await t.pressKey(combo);
+    await t.expect(screenTasks.taskStateIcon.textContent).contains('pause_circle_filled');
+    await t.pressKey(combo);
+    await t.expect(screenTasks.taskStateIcon.textContent).contains('play_circle_outline');
+  }
 });

@@ -17,6 +17,7 @@ import { combineLatest } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 
 @Component({
+  selector: 'screen-task',
   templateUrl: './screen-task.component.html',
   styleUrls: ['./screen-task.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
