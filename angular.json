@@ -115,13 +115,7 @@
         "e2e": {
           "builder": "angular-testcafe:testcafe",
           "options": {
-            "browsers": ["chrome --no-sandbox"],
-            "src": ["e2e/fixtures/*.ts"],
-            "reporters": [
-              {
-                "name": "spec"
-              }
-            ]
+            "src": []
           }
         },
         "deploy": {

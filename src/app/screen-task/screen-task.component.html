@@ -4,8 +4,8 @@
       <mat-icon>arrow_back</mat-icon>
     </a>
     <h2>
-      <mat-icon class="fix-icon-color">{{ task | taskStateIcon }}</mat-icon
-      >{{ task.name }}
+      <mat-icon class="fix-icon-color" data-e2e="screen-task__state-icon">{{ task | taskStateIcon }}</mat-icon
+      ><span data-e2e="screen-task__name">{{ task.name }}</span>
     </h2>
     <button-task-actions [task]="task"></button-task-actions>
   </mat-toolbar>
