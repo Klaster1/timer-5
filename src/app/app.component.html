@@ -20,6 +20,7 @@
           queryParamsHandling="merge"
           routerLinkActive="nav-link-active"
           matTooltip="Active tasks"
+          data-e2e="navigation__button-tasks-active"
         >
           <mat-icon>{{ taskState.active | taskStateIcon }}</mat-icon>
         </a>
@@ -29,6 +30,7 @@
           queryParamsHandling="merge"
           routerLinkActive="nav-link-active"
           matTooltip="Finished tasks"
+          data-e2e="navigation__button-tasks-finished"
           ><mat-icon>{{ taskState.finished | taskStateIcon }}</mat-icon></a
         >
         <a
@@ -37,6 +39,7 @@
           queryParamsHandling="merge"
           routerLinkActive="nav-link-active"
           matTooltip="Dropped tasks"
+          data-e2e="navigation__button-tasks-dropped"
           ><mat-icon>{{ taskState.dropped | taskStateIcon }}</mat-icon></a
         >
       </mat-nav-list>

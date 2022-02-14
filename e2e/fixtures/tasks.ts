@@ -104,3 +104,92 @@ test('Starting/stopping the task', async (t) => {
     await t.expect(screenTasks.taskStateIcon.textContent).contains('play_circle_outline');
   }
 });
+
+test('Changing task status', async (t) => {
+  // Open an active/non-running task
+  await t.navigateTo(urlTo('/'));
+  await t
+    .click(screenTasks.emptyStateAddTaskButton)
+    .typeText(dialogPrompt.input, 'Task')
+    .click(dialogPrompt.buttonSubmit);
+  // Cycle task statuses Active->Finished->Dropped->Active using task list context action, assert the status changes
+  await t
+    .click(screenTasks.buttonTaskAction)
+    .click(menuTaskActions.selectorState)
+    .click(menuTaskActions.optionFinished)
+    .pressKey('esc');
+  await t.expect(screenTask.stateIcon.textContent).eql('check_circle_outline');
+  await t.click(app.buttonFinishedTasks);
+  await t.expect(screenTasks.taskStateIcon.textContent).eql('check_circle_outline');
+  await t.click(screenTasks.taskItem);
+
+  await t
+    .click(screenTasks.buttonTaskAction)
+    .click(menuTaskActions.selectorState)
+    .click(menuTaskActions.optionDropped)
+    .pressKey('esc');
+  await t.expect(screenTask.stateIcon.textContent).eql('delete_outline');
+  await t.click(app.buttonDroppedTasks);
+  await t.expect(screenTasks.taskStateIcon.textContent).eql('delete_outline');
+  await t.click(screenTasks.taskItem);
+
+  await t
+    .click(screenTasks.buttonTaskAction)
+    .click(menuTaskActions.selectorState)
+    .click(menuTaskActions.optionActive)
+    .pressKey('esc');
+  await t.expect(screenTask.stateIcon.textContent).eql('play_circle_outline');
+  await t.click(app.buttonActiveTasks);
+  await t.expect(screenTasks.taskStateIcon.textContent).eql('play_circle_outline');
+  await t.click(screenTasks.taskItem);
+
+  // Cycle task statuses Active->Finished->Dropped->Active using task screen context action, assert the status changes
+  await t
+    .click(screenTask.buttonTaskAction)
+    .click(menuTaskActions.selectorState)
+    .click(menuTaskActions.optionFinished)
+    .pressKey('esc');
+  await t.expect(screenTask.stateIcon.textContent).eql('check_circle_outline');
+  await t.click(app.buttonFinishedTasks);
+  await t.click(screenTasks.taskItem);
+
+  await t
+    .click(screenTask.buttonTaskAction)
+    .click(menuTaskActions.selectorState)
+    .click(menuTaskActions.optionDropped)
+    .pressKey('esc');
+  await t.expect(screenTask.stateIcon.textContent).eql('delete_outline');
+  await t.click(app.buttonDroppedTasks);
+  await t.click(screenTasks.taskItem);
+
+  await t
+    .click(screenTask.buttonTaskAction)
+    .click(menuTaskActions.selectorState)
+    .click(menuTaskActions.optionActive)
+    .pressKey('esc');
+  await t.expect(screenTask.stateIcon.textContent).eql('play_circle_outline');
+  await t.click(app.buttonActiveTasks);
+  await t.click(screenTasks.taskItem);
+
+  // Cycle task statuses Active->Finished->Active using hot keys, assert the status changes
+  // ENG
+  await t.pressKey('m f').pressKey('esc');
+  await t.expect(screenTask.stateIcon.textContent).eql('check_circle_outline');
+  await t.click(app.buttonFinishedTasks);
+  await t.click(screenTasks.taskItem);
+
+  await t.pressKey('m a').pressKey('esc');
+  await t.expect(screenTask.stateIcon.textContent).eql('play_circle_outline');
+  await t.click(app.buttonActiveTasks);
+  await t.click(screenTasks.taskItem);
+  // RU
+  await t.pressKey('ь а').pressKey('esc');
+  await t.expect(screenTask.stateIcon.textContent).eql('check_circle_outline');
+  await t.click(app.buttonFinishedTasks);
+  await t.click(screenTasks.taskItem);
+
+  await t.pressKey('ь ф').pressKey('esc');
+  await t.expect(screenTask.stateIcon.textContent).eql('play_circle_outline');
+  await t.click(app.buttonActiveTasks);
+  await t.click(screenTasks.taskItem);
+});

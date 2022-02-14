@@ -31,6 +31,7 @@
               *cdkVirtualFor="let task of tasks; trackBy: taskId"
               cdkDropList
               (cdkDropListDropped)="onDrop($event, task)"
+              data-e2e="screen-tasks__task-item"
             >
               <a
                 matLine
