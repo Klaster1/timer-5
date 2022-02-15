@@ -5,4 +5,5 @@ export const menuTaskActions = {
   optionActive: e2e('button-task-actions__state-option-active'),
   optionFinished: e2e('button-task-actions__state-option-finished'),
   optionDropped: e2e('button-task-actions__state-option-dropped'),
+  buttonRename: e2e('button-task-actions__button-rename'),
 };

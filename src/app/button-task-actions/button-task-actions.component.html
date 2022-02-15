@@ -25,7 +25,9 @@
           >
         </mat-select>
       </div>
-      <button mat-menu-item type="button" (click)="renameTask()">Rename</button>
+      <button mat-menu-item type="button" (click)="renameTask()" data-e2e="button-task-actions__button-rename">
+        Rename
+      </button>
       <button mat-menu-item type="button" (click)="deleteTask()">Delete</button>
     </ng-template>
   </mat-menu>

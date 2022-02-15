@@ -72,7 +72,7 @@ test('Starting/stopping the task', async (t) => {
   await t.expect(screenTasks.taskStateIcon.textContent).contains('pause_circle_filled');
   await t.expect(screenTask.stateIcon.textContent).contains('pause_circle_filled');
   // Stop and start the session several times
-  for (const i of [1, 2, 3]) {
+  for (const _ of [1, 2, 3]) {
     await t.click(screenTask.buttonStop);
     await t.click(screenTask.buttonStart);
   }
@@ -192,4 +192,34 @@ test('Changing task status', async (t) => {
   await t.expect(screenTask.stateIcon.textContent).eql('play_circle_outline');
   await t.click(app.buttonActiveTasks);
   await t.click(screenTasks.taskItem);
+});
+
+test('Renaming the task', async (t) => {
+  // Open the "Rename" task dialog the task list "Rename" action
+  await t.navigateTo(urlTo('/'));
+  await t
+    .click(screenTasks.emptyStateAddTaskButton)
+    .typeText(dialogPrompt.input, 'Task')
+    .click(dialogPrompt.buttonSubmit)
+    .click(screenTasks.buttonTaskAction)
+    .click(menuTaskActions.buttonRename);
+  // Erase the value, assert a validation message is shown
+  await t.click(dialogPrompt.input).pressKey('ctrl+a').pressKey('delete').pressKey('tab');
+  await t.expect(dialogPrompt.validationError.textContent).eql('Value is required');
+  // Submit the dialog with "Enter", assert the task got renamed
+  await t.typeText(dialogPrompt.input, 'Task 1').pressKey('enter');
+  await t.expect(screenTasks.taskName.textContent).eql('Task 1');
+  await t.expect(screenTask.name.textContent).eql('Task 1');
+  // Rename the task again, but submit with "OK", assert the task got renamed
+  await t.click(screenTask.buttonTaskAction).click(menuTaskActions.buttonRename);
+  await t.typeText(dialogPrompt.input, 'Task 2', { replace: true });
+  await t.click(dialogPrompt.buttonSubmit);
+  await t.expect(screenTask.name.textContent).eql('Task 2');
+  // Assert hotkeys open the "Rename task" dialog too
+  for (const combo of ['r t', 'к е']) {
+    await t.pressKey(combo);
+    await t.expect(dialogPrompt.title.textContent).eql('Rename task');
+    await t.expect(dialogPrompt.input.value).eql('Task 2');
+    await t.click(dialogPrompt.buttonDismiss);
+  }
 });
