@@ -11,4 +11,5 @@ export const screenTask = {
   sessionStart: e2e('screen-task__session-start'),
   sessionEnd: e2e('screen-task__session-end'),
   sessionDuration: e2e('screen-task__session-duration'),
+  screen: Selector('screen-task'),
 };

@@ -5,7 +5,7 @@ import { menuTaskActions } from '../page-objects/menu-task-actions';
 import { screenTask } from '../page-objects/screen-task';
 import { screenTasks } from '../page-objects/screen-tasks';
 import { tooltip } from '../page-objects/tooltip';
-import { reload, urlTo } from '../utils';
+import { getLocationPathname, reload, urlTo } from '../utils';
 
 fixture('Tasks');
 
@@ -221,5 +221,37 @@ test('Renaming the task', async (t) => {
     await t.expect(dialogPrompt.title.textContent).eql('Rename task');
     await t.expect(dialogPrompt.input.value).eql('Task 2');
     await t.click(dialogPrompt.buttonDismiss);
+  }
+});
+
+test('Deleting the task', async (t) => {
+  const addTask = async () => {
+    await t
+      .click(screenTasks.emptyStateAddTaskButton)
+      .typeText(dialogPrompt.input, 'Task')
+      .click(dialogPrompt.buttonSubmit);
+  };
+  // Open a task
+  await t.navigateTo(urlTo('/'));
+  await addTask();
+  await t.expect(screenTask.screen.exists).ok();
+  // Remove it with the task list "Remove" context action
+  await t.click(screenTasks.buttonTaskAction).click(menuTaskActions.buttonDelete);
+  // Assert the task disappears from the task list
+  await t.expect(screenTasks.taskItem.count).eql(0);
+  // Assert the task details are closed
+  await t.expect(screenTask.screen.exists).notOk();
+  // Assert the URL does not contain task ID anymore
+  await t.expect(getLocationPathname()).match(/\/active$/);
+  // Assert the task can also be remove using task details context action and hotkeys
+  await addTask();
+  await t.expect(screenTasks.taskItem.count).eql(1);
+  await t.click(screenTask.buttonTaskAction).click(menuTaskActions.buttonDelete);
+  await t.expect(screenTasks.taskItem.count).eql(0);
+  for (const combo of ['d t', 'в е']) {
+    await addTask();
+    await t.expect(screenTasks.taskItem.count).eql(1);
+    await t.pressKey(combo);
+    await t.expect(screenTasks.taskItem.count).eql(0);
   }
 });
