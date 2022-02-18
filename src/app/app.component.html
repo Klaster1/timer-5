@@ -44,15 +44,30 @@
         >
       </mat-nav-list>
       <mat-action-list>
-        <button mat-list-item matTooltip="Import/Export" [matMenuTriggerFor]="importExportMenu">
+        <button
+          mat-list-item
+          matTooltip="Import/Export"
+          [matMenuTriggerFor]="importExportMenu"
+          data-e2e="navigation__button-import-export"
+        >
           <mat-icon>import_export</mat-icon>
         </button>
         <mat-menu #importExportMenu="matMenu">
-          <label mat-menu-item class="import-label">
-            <input type="file" (input)="import($event)" />
-            Import
-          </label>
-          <button mat-menu-item (click)="export()">Export</button>
+          <ng-template matMenuContent>
+            <label mat-menu-item class="import-label">
+              <input type="file" (change)="import($event)" data-e2e="navigation__input-import" />
+              Import
+            </label>
+            <a
+              mat-menu-item
+              data-e2e="navigation__button-export"
+              *ngrxLet="exportUrl$ as exportUrl"
+              [href]="exportUrl | safeResourceUrl"
+              download="timer-data.json"
+              target="_blank"
+              >Export</a
+            >
+          </ng-template>
         </mat-menu>
 
         <button

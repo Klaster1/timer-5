@@ -1,3 +1,4 @@
+import { writeFile } from 'fs/promises';
 import { fixture, test } from 'testcafe';
 import { app } from '../page-objects/app';
 import { dialogPrompt } from '../page-objects/dialog-prompt';
@@ -254,4 +255,49 @@ test('Deleting the task', async (t) => {
     await t.pressKey(combo);
     await t.expect(screenTasks.taskItem.count).eql(0);
   }
+});
+
+test('Export/import', async (t) => {
+  const referenceData = {
+    version: 1,
+    value: [
+      { id: 'Bain', name: 'Task 1', state: 0, sessions: [] },
+      { id: '1ph6', name: 'Task 2', state: 0, sessions: [] },
+      { id: 'EnBz', name: 'Task 3', state: 0, sessions: [] },
+    ],
+  };
+  const normalizeData = (data: typeof referenceData) => ({
+    ...data,
+    value: data.value.map((v, i) => ({ ...v, id: `${i}` })),
+  });
+  await t.navigateTo(urlTo('/'));
+  // Have some tasks
+  for (const name of ['Task 1', 'Task 2', 'Task 3']) {
+    await screenTasks.addTask(name);
+  }
+  // Assert the export about works.
+  // Checking the real downloaded files would have been much better, but there's no
+  // acceptable way to reliably get the "Downloads" dir path without having to install Python
+  // or Visual Studio on Windows.
+  await t.click(app.buttonImportExport);
+  await t.expect(app.buttonExport.getAttribute('href')).contains('blob');
+  await t.expect(app.buttonExport.getAttribute('download')).eql('timer-data.json');
+  await t.expect(app.buttonExport.getAttribute('target')).eql('_blank');
+  const href = await app.buttonExport.getAttribute('href');
+  if (!href) throw new Error('Missing href');
+  const data = await t.eval(() => fetch(href as any).then((r) => r.json()), { dependencies: { href } });
+  await t.expect(normalizeData(data)).eql(normalizeData(referenceData));
+  // Remove all tasks
+  await t.pressKey('d t').pressKey('j').pressKey('d t').pressKey('j').pressKey('d t');
+  await t.expect(screenTasks.taskItem.count).eql(0);
+  // Import the tasks, assert all tasks are imported
+  const { file } = await import('tmp-promise');
+  const { path, cleanup } = await file();
+  await writeFile(path, JSON.stringify(data));
+  await t.setFilesToUpload(app.inputImport, [path]);
+  await t.expect(screenTasks.taskItem.count).eql(3);
+  await t.expect(screenTasks.taskName.nth(0).textContent).eql('Task 1');
+  await t.expect(screenTasks.taskName.nth(1).textContent).eql('Task 2');
+  await t.expect(screenTasks.taskName.nth(2).textContent).eql('Task 3');
+  await cleanup();
 });

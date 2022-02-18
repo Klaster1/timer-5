@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
-import { fromStoredTasks, StoreState, toStoredTasks } from '@app/domain/storage';
+import { fromStoredTasks, StoreState } from '@app/domain/storage';
 import { loadTasks } from '@app/ngrx/actions';
-import { selectTasks } from '@app/ngrx/selectors';
 import { Store } from '@ngrx/store';
-import { map, take } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class ImportExportService {
@@ -23,22 +21,5 @@ export class ImportExportService {
       { once: true }
     );
     fileReader.readAsText(file);
-  }
-  export() {
-    this.store
-      .select(selectTasks)
-      .pipe(take(1), map(toStoredTasks))
-      .subscribe((data) => {
-        const blob = new Blob([JSON.stringify(data, null, '  ')], { type: 'application/json;charset=utf-8;' });
-        const downloadUrl = URL.createObjectURL(blob);
-
-        const a = document.createElement('a');
-        a.href = downloadUrl;
-        a.download = 'timer-data.json';
-
-        a.click();
-
-        setTimeout(() => URL.revokeObjectURL(downloadUrl), 100);
-      });
   }
 }
