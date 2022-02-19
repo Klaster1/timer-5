@@ -3,7 +3,11 @@
     <mat-toolbar>
       <h1 *ngrxLet="state$ as state">
         <ng-container> {{ state | taskState }} </ng-container>
-        <span *ngIf="tasks | tasksDuration: 20000 | formatDuration | ngrxPush as duration" class="state-duration">
+        <span
+          *ngIf="tasks | tasksDuration: 20000 | formatDuration | ngrxPush as duration"
+          class="state-duration"
+          data-e2e="screen-tasks__total"
+        >
           ({{ duration }})
         </span>
       </h1>

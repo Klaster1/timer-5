@@ -12,4 +12,12 @@ export const screenTask = {
   sessionEnd: e2e('screen-task__session-end'),
   sessionDuration: e2e('screen-task__session-duration'),
   screen: Selector('screen-task'),
+  buttonSessionAction: e2e('screen-task__button-session-action'),
+  taskDuration: e2e('screen-task__task-duration'),
+  menuSession: {
+    buttonEdit: e2e('menu-session__button-edit'),
+    buttonDelete: e2e('menu-session__button-delete'),
+    buttonSkipAfter: e2e('menu-session__button-skip-after'),
+    buttonSkipBefore: e2e('menu-session__button-skip-before'),
+  },
 };

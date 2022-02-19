@@ -1,6 +1,8 @@
 import { writeFile } from 'fs/promises';
 import { fixture, test } from 'testcafe';
 import { app } from '../page-objects/app';
+import { dateTimePicker } from '../page-objects/date-time-picker';
+import { dialogEditSession } from '../page-objects/dialog-edit-session';
 import { dialogPrompt } from '../page-objects/dialog-prompt';
 import { menuTaskActions } from '../page-objects/menu-task-actions';
 import { screenTask } from '../page-objects/screen-task';
@@ -300,4 +302,60 @@ test('Export/import', async (t) => {
   await t.expect(screenTasks.taskName.nth(1).textContent).eql('Task 2');
   await t.expect(screenTasks.taskName.nth(2).textContent).eql('Task 3');
   await cleanup();
+});
+
+test('Editing a session', async (t) => {
+  // Have a running task
+  await t.navigateTo(urlTo('/'));
+  await screenTasks.addTask('Test');
+  await t.pressKey('s');
+  // Change a running task session start time, assert the total changes
+  await t.expect(screenTask.sessionDuration.nth(0).textContent).eql(' 00:00 ');
+  await t.expect(screenTask.taskDuration.textContent).eql(' 00:00 ');
+  await t.expect(screenTasks.total.textContent).eql(' (00:00) ');
+  await t
+    .click(screenTask.buttonSessionAction)
+    .click(screenTask.menuSession.buttonEdit)
+    .click(dialogEditSession.buttonStartDatepickerToggle)
+    .click(dateTimePicker.buttonHoursDecrement)
+    .click(dateTimePicker.buttonHoursDecrement)
+    .click(dateTimePicker.buttonHoursDecrement)
+    .click(dateTimePicker.buttonSubmit)
+    .click(dialogEditSession.buttonSubmit);
+  await t.expect(screenTask.sessionDuration.nth(0).textContent).eql(' 03:00 ');
+  await t.expect(screenTask.taskDuration.textContent).eql(' 03:00 ');
+  await t.expect(screenTasks.total.textContent).eql(' (03:00) ');
+  // For a running task session, set the end time, assert the task becomes active/non-running
+  await t
+    .click(screenTask.buttonSessionAction)
+    .click(screenTask.menuSession.buttonEdit)
+    .click(dialogEditSession.buttonEndDatepickerToggle)
+    .click(dateTimePicker.buttonHoursDecrement)
+    .click(dateTimePicker.buttonSubmit)
+    .click(dialogEditSession.buttonSubmit);
+  await t.expect(screenTask.sessionDuration.nth(0).textContent).eql(' 02:00 ');
+  await t.expect(screenTask.taskDuration.textContent).eql(' 02:00 ');
+  await t.expect(screenTasks.total.textContent).eql(' (02:00) ');
+  await t.expect(screenTask.stateIcon.textContent).contains('play_circle_outline');
+  // For a complete task session, remove the end time, assert the task becomes active/running and the total updates
+  await t
+    .click(screenTask.buttonSessionAction)
+    .click(screenTask.menuSession.buttonEdit)
+    .expect(dialogEditSession.inputEnd.exists)
+    .ok()
+    .click(dialogEditSession.inputEnd)
+    .pressKey('ctrl+a delete')
+    .click(dialogEditSession.buttonSubmit);
+  await t.expect(screenTask.sessionDuration.nth(0).textContent).eql(' 03:00 ');
+  await t.expect(screenTask.taskDuration.textContent).eql(' 03:00 ');
+  await t.expect(screenTasks.total.textContent).eql(' (03:00) ');
+  await t.expect(screenTask.stateIcon.textContent).contains('pause_circle_filled');
+  // Edit a session, assert the form can't be submitted without start time
+  await t
+    .click(screenTask.buttonSessionAction)
+    .click(screenTask.menuSession.buttonEdit)
+    .click(dialogEditSession.inputStart)
+    .pressKey('ctrl+a delete')
+    .click(dialogEditSession.buttonSubmit);
+  await t.expect(dialogEditSession.validationErrorStart.textContent).contains('Start is required');
 });
