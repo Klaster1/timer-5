@@ -1,3 +1,5 @@
+[![Support Ukraine Badge](https://bit.ly/support-ukraine-now)](https://github.com/support-ukraine/support-ukraine)
+
 <div align="center"><img src="src/assets/favicon.svg" with='64' height='64'></div>
 
 # Timer
