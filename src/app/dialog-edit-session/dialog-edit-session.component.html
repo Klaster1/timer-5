@@ -1,17 +1,40 @@
 <h1 mat-dialog-title>Edit session</h1>
 <form mat-dialog-content [formGroup]="form" id="promptForm" (ngSubmit)="onSubmit()">
   <mat-form-field>
-    <input matInput [ngxMatDatetimePicker]="start" placeholder="Start" formControlName="start" />
-    <mat-datepicker-toggle matSuffix [for]="$any(start)"></mat-datepicker-toggle>
+    <input
+      matInput
+      [ngxMatDatetimePicker]="start"
+      placeholder="Start"
+      formControlName="start"
+      data-e2e="dialog-edit-session__input-start"
+    />
+    <mat-error data-e2e="dialog-edit-session__start-validation-error" *ngIf="form.controls.start.errors?.required"
+      >Start is required</mat-error
+    >
+    <mat-datepicker-toggle
+      matSuffix
+      [for]="$any(start)"
+      data-e2e="dialog-edit-session__button-start-datepicker-toggle"
+    ></mat-datepicker-toggle>
     <ngx-mat-datetime-picker #start [showSeconds]="true"> </ngx-mat-datetime-picker>
   </mat-form-field>
   <mat-form-field>
-    <input matInput [ngxMatDatetimePicker]="end" placeholder="End" formControlName="end" />
-    <mat-datepicker-toggle matSuffix [for]="$any(end)"></mat-datepicker-toggle>
+    <input
+      matInput
+      [ngxMatDatetimePicker]="end"
+      placeholder="End"
+      formControlName="end"
+      data-e2e="dialog-edit-session__input-end"
+    />
+    <mat-datepicker-toggle
+      matSuffix
+      [for]="$any(end)"
+      data-e2e="dialog-edit-session__button-end-datepicker-toggle"
+    ></mat-datepicker-toggle>
     <ngx-mat-datetime-picker #end [showSeconds]="true"> </ngx-mat-datetime-picker>
   </mat-form-field>
 </form>
 <div mat-dialog-actions>
   <button type="button" mat-button mat-dialog-close>Cancel</button>
-  <button type="submit" form="promptForm" mat-button>Save</button>
+  <button type="submit" form="promptForm" mat-button data-e2e="dialog-edit-session__button-submit">Save</button>
 </div>

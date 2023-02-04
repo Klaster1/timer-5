@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { toggleTheme } from '@app/ngrx/actions';
-import { isAnyTaskActive, selectTheme } from '@app/ngrx/selectors';
+import { isAnyTaskActive, selectTasks, selectTheme } from '@app/ngrx/selectors';
 import { Store } from '@ngrx/store';
 import { HotkeysService } from 'angular2-hotkeys';
 import { distinctUntilChanged } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import { hotkey, KEYS_GO_ACTIVE, KEYS_GO_ALL, KEYS_GO_FINISHED } from './domain/hotkeys';
-import { StoreState } from './domain/storage';
+import { StoreState, toStoredTasks } from './domain/storage';
 import { TaskState } from './domain/task';
 import { FaviconService } from './services/favicon.service';
 import { ImportExportService } from './services/import-export.service';
@@ -55,7 +56,17 @@ export class AppComponent {
   import(event: Event) {
     this.importExport.import(event);
   }
-  export() {
-    this.importExport.export();
-  }
+  private lastExportUrl?: string;
+  exportUrl$ = this.store.select(selectTasks).pipe(
+    map(toStoredTasks),
+    map((tasks) =>
+      URL.createObjectURL(new Blob([JSON.stringify(tasks, null, '  ')], { type: 'application/json;charset=utf-8;' }))
+    ),
+    tap({
+      next: (url) => (this.lastExportUrl = url),
+      complete: () => {
+        if (this.lastExportUrl) URL.revokeObjectURL(this.lastExportUrl);
+      },
+    })
+  );
 }

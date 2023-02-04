@@ -3,12 +3,24 @@
 </button>
 <mat-menu #menu="matMenu">
   <ng-template matMenuContent>
-    <button mat-menu-item type="button" (click)="edit()">Edit</button>
-    <button mat-menu-item type="button" (click)="remove()">Delete</button>
-    <a mat-menu-item type="button" routerLink="." [queryParams]="skipAfterParams" queryParamsHandling="merge"
+    <button mat-menu-item type="button" (click)="edit()" data-e2e="menu-session__button-edit">Edit</button>
+    <button mat-menu-item type="button" (click)="remove()" data-e2e="menu-session__button-delete">Delete</button>
+    <a
+      mat-menu-item
+      type="button"
+      routerLink="."
+      [queryParams]="skipAfterParams"
+      queryParamsHandling="merge"
+      data-e2e="menu-session__button-skip-after"
       >Skip everything after</a
     >
-    <a mat-menu-item type="button" routerLink="." [queryParams]="skipBeforeParams" queryParamsHandling="merge"
+    <a
+      mat-menu-item
+      type="button"
+      routerLink="."
+      [queryParams]="skipBeforeParams"
+      queryParamsHandling="merge"
+      data-e2e="menu-session__button-skip-before"
       >Skip everything before</a
     >
   </ng-template>

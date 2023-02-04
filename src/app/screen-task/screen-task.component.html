@@ -4,8 +4,8 @@
       <mat-icon>arrow_back</mat-icon>
     </a>
     <h2>
-      <mat-icon class="fix-icon-color">{{ task | taskStateIcon }}</mat-icon
-      >{{ task.name }}
+      <mat-icon class="fix-icon-color" data-e2e="screen-task__state-icon">{{ task | taskStateIcon }}</mat-icon
+      ><span data-e2e="screen-task__name">{{ task.name }}</span>
     </h2>
     <button-task-actions [task]="task"></button-task-actions>
   </mat-toolbar>
@@ -13,32 +13,46 @@
     <table mat-table [dataSource]="task.sessions" cdkDropList [cdkDropListSortingDisabled]="true">
       <ng-container matColumnDef="start">
         <th mat-header-cell *matHeaderCellDef class="header-start">Start</th>
-        <td mat-cell *matCellDef="let session">{{ session.start | date: 'yyyy-MM-dd H:mm' }}</td>
+        <td mat-cell *matCellDef="let session" data-e2e="screen-task__session-start">
+          {{ session.start | date: 'yyyy-MM-dd H:mm' }}
+        </td>
         <td mat-footer-cell *matFooterCellDef>Total</td>
       </ng-container>
       <ng-container matColumnDef="end">
         <th mat-header-cell *matHeaderCellDef class="header-end">End</th>
-        <td mat-cell *matCellDef="let session">{{ session.end | date: 'yyyy-MM-dd H:mm' }}</td>
+        <td mat-cell *matCellDef="let session" data-e2e="screen-task__session-end">
+          {{ session.end | date: 'yyyy-MM-dd H:mm' }}
+        </td>
         <td mat-footer-cell *matFooterCellDef></td>
       </ng-container>
       <ng-container matColumnDef="duration">
         <th mat-header-cell *matHeaderCellDef class="header-duration">Duration</th>
-        <td mat-cell *matCellDef="let session">
+        <td mat-cell *matCellDef="let session" data-e2e="screen-task__session-duration">
           {{ session | map: sessionDuration | formatDuration | ngrxPush }}
         </td>
-        <td mat-footer-cell *matFooterCellDef>
+        <td mat-footer-cell *matFooterCellDef data-e2e="screen-task__task-duration">
           {{ task | taskDuration | formatDuration | ngrxPush }}
         </td>
       </ng-container>
       <ng-container matColumnDef="action">
         <th mat-header-cell *matHeaderCellDef class="header-action"></th>
         <td mat-cell *matCellDef="let session" class="cell-action">
-          <button-session-actions [session]="session" [task]="task"></button-session-actions>
+          <button-session-actions
+            [session]="session"
+            [task]="task"
+            data-e2e="screen-task__button-session-action"
+          ></button-session-actions>
         </td>
         <td mat-footer-cell *matFooterCellDef></td>
       </ng-container>
       <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns" cdkDrag [cdkDragData]="[row, task.id]">
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        cdkDrag
+        [cdkDragData]="[row, task.id]"
+        data-e2e="screen-task__session-row"
+      >
         <div *cdkDragPlaceholder></div>
       </tr>
       <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>
@@ -50,6 +64,7 @@
     mat-fab
     color="accent"
     matTooltip="Start"
+    data-e2e="screen-task__button-start"
   >
     <mat-icon>play_arrow</mat-icon>
   </button>
@@ -59,6 +74,7 @@
     mat-fab
     color="primary"
     matTooltip="Stop"
+    data-e2e="screen-task__button-stop"
   >
     <mat-icon>pause</mat-icon>
   </button>

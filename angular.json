@@ -113,19 +113,10 @@
           }
         },
         "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
+          "builder": "angular-testcafe:testcafe",
           "options": {
-            "protractorConfig": "e2e/protractor.conf.js"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "timer:serve:production"
-            },
-            "development": {
-              "devServerTarget": "timer:serve:development"
-            }
-          },
-          "defaultConfiguration": "development"
+            "src": []
+          }
         },
         "deploy": {
           "builder": "angular-cli-ghpages:deploy"

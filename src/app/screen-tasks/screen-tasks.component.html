@@ -3,7 +3,11 @@
     <mat-toolbar>
       <h1 *ngrxLet="state$ as state">
         <ng-container> {{ state | taskState }} </ng-container>
-        <span *ngIf="tasks | tasksDuration: 20000 | formatDuration | ngrxPush as duration" class="state-duration">
+        <span
+          *ngIf="tasks | tasksDuration: 20000 | formatDuration | ngrxPush as duration"
+          class="state-duration"
+          data-e2e="screen-tasks__total"
+        >
           ({{ duration }})
         </span>
       </h1>
@@ -15,7 +19,7 @@
     </mat-toolbar>
     <tasks-filter *ngIf="searchOpened$ | ngrxPush" (keyup.esc)="closeFilter()"></tasks-filter>
     <ng-container *ngIf="tasks.length; else noTasks">
-      <button (click)="addTask()" mat-fab color="accent">
+      <button (click)="addTask()" mat-fab color="accent" data-e2e="button-add-task">
         <mat-icon>add</mat-icon>
       </button>
       <ng-scrollbar>
@@ -31,6 +35,7 @@
               *cdkVirtualFor="let task of tasks; trackBy: taskId"
               cdkDropList
               (cdkDropListDropped)="onDrop($event, task)"
+              data-e2e="screen-tasks__task-item"
             >
               <a
                 matLine
@@ -41,8 +46,10 @@
                 class="task-link"
                 #rla="routerLinkActive"
               >
-                <mat-icon [ngClass]="{ running: task | map: isTaskRunning }">{{ task | taskStateIcon }}</mat-icon>
-                <span class="name">{{ task.name }}</span>
+                <mat-icon [ngClass]="{ running: task | map: isTaskRunning }" data-e2e="screen-tasks__task-state-icon">{{
+                  task | taskStateIcon
+                }}</mat-icon>
+                <span class="name" data-e2e="screen-tasks__task-name">{{ task.name }}</span>
                 <span class="duration">{{ task | taskDuration: 5000 | formatDuration | ngrxPush }}</span>
               </a>
               <button-task-actions [task]="task"></button-task-actions>
@@ -63,7 +70,14 @@
             <ng-container *ngSwitchCase="taskState.dropped">You didn't abandon any tasks yet</ng-container>
           </ng-container>
         </span>
-        <button color="primary" mat-raised-button (click)="addTask()" type="button" routerLink="/tasks/active">
+        <button
+          color="primary"
+          mat-raised-button
+          (click)="addTask()"
+          type="button"
+          routerLink="/tasks/active"
+          data-e2e="screen-tasks__button-add-task-empty-state"
+        >
           CREATE A TASK
         </button>
       </empty-state>

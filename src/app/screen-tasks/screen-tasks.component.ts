@@ -27,6 +27,7 @@ import { firstValueFrom, merge, Observable, Subject } from 'rxjs';
 import { map, shareReplay, take } from 'rxjs/operators';
 
 @Component({
+  selector: 'screen-tasks',
   templateUrl: './screen-tasks.component.html',
   styleUrls: ['./screen-tasks.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
