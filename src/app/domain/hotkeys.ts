@@ -49,4 +49,4 @@ const KEY_DELETE_TASK_RU = 'в е';
 export const KEYS_DELETE_TASK = [KEY_DELETE_TASK_EN, KEY_DELETE_TASK_RU];
 
 export const hotkey = (keys: string | string[], description: string, cb: (e: ExtendedKeyboardEvent) => any) =>
-  new Hotkey(keys, (e) => (cb(e), e), [], description);
+  new Hotkey(keys, (e) => (setTimeout(() => cb(e), 0), e), [], description);
