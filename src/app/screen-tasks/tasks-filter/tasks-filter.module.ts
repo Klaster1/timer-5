@@ -6,16 +6,16 @@ import {
 import { A11yModule } from '@angular/cdk/a11y';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
+import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatSelectModule } from '@angular/material/select';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MapPipeModule } from '@app/pipes/map.pipe';
-import { NgStackFormsModule } from '@ng-stack/forms';
-import { ReactiveComponentModule } from '@ngrx/component';
+import { NgsFormsModule } from '@ng-stack/forms';
+import { LetModule, PushModule } from '@ngrx/component';
 import { ButtonResetInputComponent } from './button-reset-input.component';
 import { TasksFilterComponent } from './tasks-filter.component';
 import { TimelineChartUplotComponent } from './timeline-chart-uplot.component';
@@ -29,8 +29,8 @@ import { TimelineChartUplotComponent } from './timeline-chart-uplot.component';
     MatMenuModule,
     MatFormFieldModule,
     MatInputModule,
-    NgStackFormsModule,
-    ReactiveComponentModule,
+    NgsFormsModule,
+    LetModule, PushModule,
     MatDatepickerModule,
     NgxMatDatetimePickerModule,
     NgxMatNativeDateModule,

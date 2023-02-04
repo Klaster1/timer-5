@@ -93,3 +93,8 @@ a:not([class*='mat-']) {
     text-transform: uppercase;
   }
 }
+
+// Preserve Angular Material 13 behavior, hide tooltip when pointer leaves the trigger
+.mat-tooltip-panel {
+  pointer-events: none !important;
+}

@@ -53,21 +53,19 @@
           <mat-icon>import_export</mat-icon>
         </button>
         <mat-menu #importExportMenu="matMenu">
-          <ng-template matMenuContent>
-            <label mat-menu-item class="import-label">
-              <input type="file" (change)="import($event)" data-e2e="navigation__input-import" />
-              Import
-            </label>
-            <a
-              mat-menu-item
-              data-e2e="navigation__button-export"
-              *ngrxLet="exportUrl$ as exportUrl"
-              [href]="exportUrl | safeResourceUrl"
-              download="timer-data.json"
-              target="_blank"
-              >Export</a
-            >
-          </ng-template>
+          <label mat-menu-item class="import-label">
+            <input type="file" (change)="import($event)" data-e2e="navigation__input-import" />
+            Import
+          </label>
+          <a
+            mat-menu-item
+            data-e2e="navigation__button-export"
+            *ngrxLet="exportUrl$ as exportUrl"
+            [href]="exportUrl | safeResourceUrl"
+            download="timer-data.json"
+            target="_blank"
+            >Export</a
+          >
         </mat-menu>
 
         <button

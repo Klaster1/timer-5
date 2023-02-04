@@ -10,16 +10,25 @@
     "module": "es2022",
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es2021",
+    "target": "ES2022",
     "allowSyntheticDefaultImports": true,
     "noUncheckedIndexedAccess": true,
     "strictNullChecks": true,
     "strict": true,
-    "typeRoots": ["node_modules/@types"],
-    "lib": ["ES2021", "dom", "dom.iterable"],
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "ES2021",
+      "dom",
+      "dom.iterable"
+    ],
     "paths": {
-      "@app/*": ["src/app/*"]
-    }
+      "@app/*": [
+        "src/app/*"
+      ]
+    },
+    "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
