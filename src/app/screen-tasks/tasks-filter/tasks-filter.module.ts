@@ -15,7 +15,7 @@ import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-m
 import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { MapPipeModule } from '@app/pipes/map.pipe';
 import { NgsFormsModule } from '@ng-stack/forms';
-import { ReactiveComponentModule } from '@ngrx/component';
+import { LetModule, PushModule } from '@ngrx/component';
 import { ButtonResetInputComponent } from './button-reset-input.component';
 import { TasksFilterComponent } from './tasks-filter.component';
 import { TimelineChartUplotComponent } from './timeline-chart-uplot.component';
@@ -30,7 +30,7 @@ import { TimelineChartUplotComponent } from './timeline-chart-uplot.component';
     MatFormFieldModule,
     MatInputModule,
     NgsFormsModule,
-    ReactiveComponentModule,
+    LetModule, PushModule,
     MatDatepickerModule,
     NgxMatDatetimePickerModule,
     NgxMatNativeDateModule,

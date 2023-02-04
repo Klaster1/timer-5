@@ -12,7 +12,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { TaskStateIconPipeModule } from '@app/pipes/task-state-icon.pipe';
-import { ReactiveComponentModule } from '@ngrx/component';
+import { LetModule, PushModule } from '@ngrx/component';
 import { EffectsModule } from '@ngrx/effects';
 import { MinimalRouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { StoreModule } from '@ngrx/store';
@@ -38,7 +38,7 @@ import { TestComponent } from './test/test.component';
     BrowserModule,
     BrowserAnimationsModule,
     CommonModule,
-    ReactiveComponentModule,
+    LetModule, PushModule,
     AppRoutingModule,
     ScreenTasksModule,
     ScreenTaskModule,

@@ -3,13 +3,13 @@ import { decodeFilterMatrixParams, decodeRouteParams } from '@app/domain/router'
 import { StoreState } from '@app/domain/storage';
 import { filterTasks, filterTaskSessions, isTaskRunning, sortTaskSessions } from '@app/domain/task';
 import { isTruthy } from '@app/utils/assert';
-import { getSelectors } from '@ngrx/router-store';
+import { getRouterSelectors } from '@ngrx/router-store';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 
 const router = createFeatureSelector<StoreState['router']>('router');
 
 // Params
-export const { selectRouteParams, selectQueryParams } = getSelectors(router);
+export const { selectRouteParams, selectQueryParams } = getRouterSelectors(router);
 export const selectDecodedFilterParams = createSelector(selectQueryParams, (params) =>
   decodeFilterMatrixParams(params ?? {})
 );
