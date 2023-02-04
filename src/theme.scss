@@ -145,7 +145,16 @@ mat.$dark-theme-background-palette: (
 );
 
 // Compute font config
-@include mat.core($fontConfig);
+// TODO(v15): As of v15 mat.legacy-core no longer includes default typography styles.
+//  The following line adds:
+//    1. Default typography styles for all components
+//    2. Styles for typography hierarchy classes (e.g. .mat-headline-1)
+//  If you specify typography styles for the components you use elsewhere, you should delete this line.
+//  If you don't need the default component typographies but still want the hierarchy styles,
+//  you can delete this line and instead use:
+//    `@include mat.legacy-typography-hierarchy($fontConfig);`
+@include mat.all-legacy-component-typographies($fontConfig);
+@include mat.legacy-core();
 
 // Theme Config
 
@@ -225,10 +234,10 @@ $theme: mat.define-dark-theme($theme-primary, $theme-accent, $theme-warn);
 $altTheme: mat.define-light-theme($theme-primary, $theme-accent, $theme-warn);
 
 // Theme Init
-@include mat.all-component-themes($theme);
+@include mat.all-legacy-component-themes($theme);
 
 .theme-alternate {
-  @include mat.all-component-themes($altTheme);
+  @include mat.all-legacy-component-themes($altTheme);
 }
 
 // Specific component overrides, pieces that are not in line with the general theming
