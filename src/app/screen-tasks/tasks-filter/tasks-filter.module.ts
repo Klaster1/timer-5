@@ -14,7 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MapPipeModule } from '@app/pipes/map.pipe';
-import { NgStackFormsModule } from '@ng-stack/forms';
+import { NgsFormsModule } from '@ng-stack/forms';
 import { ReactiveComponentModule } from '@ngrx/component';
 import { ButtonResetInputComponent } from './button-reset-input.component';
 import { TasksFilterComponent } from './tasks-filter.component';
@@ -29,7 +29,7 @@ import { TimelineChartUplotComponent } from './timeline-chart-uplot.component';
     MatMenuModule,
     MatFormFieldModule,
     MatInputModule,
-    NgStackFormsModule,
+    NgsFormsModule,
     ReactiveComponentModule,
     MatDatepickerModule,
     NgxMatDatetimePickerModule,

@@ -10,7 +10,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { NgStackFormsModule } from '@ng-stack/forms';
+import { NgsFormsModule } from '@ng-stack/forms';
 import { DialogEditSessionComponent } from './dialog-edit-session.component';
 
 @NgModule({
@@ -19,7 +19,7 @@ import { DialogEditSessionComponent } from './dialog-edit-session.component';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    NgStackFormsModule,
+    NgsFormsModule,
     MatDatepickerModule,
     NgxMatDatetimePickerModule,
     NgxMatNativeDateModule,

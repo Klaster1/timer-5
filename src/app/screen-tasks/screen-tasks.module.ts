@@ -18,7 +18,7 @@ import { TaskDurationPipeModule } from '@app/pipes/task-duration.pipe';
 import { TaskStateIconPipeModule } from '@app/pipes/task-state-icon.pipe';
 import { TaskStatePipeModule } from '@app/pipes/task-state.pipe';
 import { TasksDurationPipeModule } from '@app/pipes/tasks-duration.pipe';
-import { NgStackFormsModule } from '@ng-stack/forms';
+import { NgsFormsModule } from '@ng-stack/forms';
 import { ReactiveComponentModule } from '@ngrx/component';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { CheckViewportSizeWhenValueChangesDirective } from './checkViewportSizeWhenValueChanges.directive';
@@ -40,7 +40,7 @@ import { TasksFilterModule } from './tasks-filter/tasks-filter.module';
     EmptyStateModule,
     TasksFilterModule,
     CommonModule,
-    NgStackFormsModule,
+    NgsFormsModule,
     ReactiveComponentModule,
     TaskStatePipeModule,
     FormatDurationPipeModule,
