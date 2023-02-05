@@ -149,8 +149,8 @@ mat.$dark-theme-background-palette: (
 //  If you don't need the default component typographies but still want the hierarchy styles,
 //  you can delete this line and instead use:
 //    `@include mat.legacy-typography-hierarchy($fontConfig);`
-@include mat.all-legacy-component-typographies($fontConfig);
-@include mat.legacy-core();
+@include mat.all-component-typographies($fontConfig);
+@include mat.core();
 
 // Theme Config
 
@@ -230,25 +230,25 @@ $theme: mat.define-dark-theme($theme-primary, $theme-accent, $theme-warn);
 $altTheme: mat.define-light-theme($theme-primary, $theme-accent, $theme-warn);
 
 // Theme Init
-@include mat.all-legacy-component-themes($theme);
+@include mat.all-component-themes($theme);
 
 .theme-alternate {
-  @include mat.all-legacy-component-themes($altTheme);
+  @include mat.all-component-themes($altTheme);
 }
 
 // Specific component overrides, pieces that are not in line with the general theming
 
 // Handle buttons appropriately, with respect to line-height
-.mat-raised-button,
-.mat-stroked-button,
-.mat-flat-button {
+.mat-mdc-raised-button,
+.mat-mdc-outlined-button,
+.mat-mdc-unelevated-button {
   padding: 0 1.15em;
   margin: 0 0.65em;
   min-width: 3em;
   line-height: 36.4px;
 }
 
-.mat-standard-chip {
+.mat-mdc-standard-chip {
   padding: 0.5em 0.85em;
   min-height: 2.5em;
 }

@@ -11,7 +11,7 @@ body {
 }
 
 @mixin nav-link-active($color) {
-  .mat-list-base .mat-list-item.nav-link-active .mat-icon-no-color,
+  .mat-mdc-list-base .mat-mdc-list-item.nav-link-active .mat-icon-no-color,
   .nav-link-active,
   .nav-link-active .mat-icon {
     color: $color !important;
@@ -29,25 +29,28 @@ body {
   .mat-icon-no-color.fix-icon-color {
     color: $active-focused;
   }
-
+  /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
   mat-select,
-  .mat-list-base .mat-list-item,
-  .mat-option,
-  .mat-icon-button {
+  .mat-mdc-list-base .mat-mdc-list-item,
+  .mat-mdc-option,
+  .mat-mdc-icon-button {
+    /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
     .mat-icon-no-color,
     .mat-select-arrow {
       color: $active-focused;
     }
   }
+  /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
   .mat-select-arrow-wrapper .mat-select-arrow {
     color: $active-focused;
   }
 
   mat-select:hover,
-  .mat-list-item:hover,
-  .mat-option.mat-active,
+  .mat-mdc-list-item:hover,
+  .mat-mdc-option.mat-active,
   .mat-option:hover,
-  .mat-icon-button:hover {
+  .mat-mdc-icon-button:hover {
+    /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
     .mat-select-arrow,
     .mat-icon-no-color {
       color: $active-unfocused;
@@ -61,10 +64,12 @@ body {
 );
 
 @mixin fix-focused-label-color($color) {
-  .mat-form-field.mat-focused .mat-form-field-label {
+  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+  .mat-mdc-form-field.mat-focused .mat-form-field-label {
     color: $color;
   }
-  .mat-form-field.mat-focused .mat-form-field-ripple {
+  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
+  .mat-mdc-form-field.mat-focused .mat-form-field-ripple {
     background-color: $color;
   }
 }
@@ -86,7 +91,7 @@ a:not([class*='mat-']) {
   }
 }
 
-.mat-dialog-actions {
+.mat-mdc-dialog-actions {
   justify-content: flex-end;
 
   button {
@@ -95,6 +100,6 @@ a:not([class*='mat-']) {
 }
 
 // Preserve Angular Material 13 behavior, hide tooltip when pointer leaves the trigger
-.mat-tooltip-panel {
+.mat-mdc-tooltip-panel {
   pointer-events: none !important;
 }
