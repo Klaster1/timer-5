@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @use '@angular/material' as mat;
-@import './theme.scss';
+// @import './theme.scss';
+@import './theme-15.scss';
 @import '~uplot/dist/uPlot.min.css';
 
 body {
@@ -26,21 +27,21 @@ body {
 
 // https://github.com/angular/components/issues/9664
 @mixin fix-icon-color($active-focused, $active-unfocused) {
+  mat-icon {
+    color: $active-unfocused;
+  }
   .mat-icon-no-color.fix-icon-color {
     color: $active-focused;
   }
-  /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
   mat-select,
   .mat-mdc-list-base .mat-mdc-list-item,
   .mat-mdc-option,
   .mat-mdc-icon-button {
-    /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
     .mat-icon-no-color,
     .mat-select-arrow {
       color: $active-focused;
     }
   }
-  /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
   .mat-select-arrow-wrapper .mat-select-arrow {
     color: $active-focused;
   }
@@ -50,7 +51,6 @@ body {
   .mat-mdc-option.mat-active,
   .mat-option:hover,
   .mat-mdc-icon-button:hover {
-    /* TODO(mdc-migration): The following rule targets internal classes of select that may no longer apply for the MDC version. */
     .mat-select-arrow,
     .mat-icon-no-color {
       color: $active-unfocused;
@@ -59,44 +59,20 @@ body {
 }
 
 @include fix-icon-color(
-  map-get(mat.$dark-theme-foreground-palette, 'secondary-text'),
-  map-get(mat.$dark-theme-foreground-palette, 'icon')
+  map-get(mat.$light-theme-foreground-palette, 'secondary-text'),
+  map-get(mat.$light-theme-foreground-palette, 'icon')
 );
-
-@mixin fix-focused-label-color($color) {
-  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
-  .mat-mdc-form-field.mat-focused .mat-form-field-label {
-    color: $color;
-  }
-  /* TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version. */
-  .mat-mdc-form-field.mat-focused .mat-form-field-ripple {
-    background-color: $color;
-  }
-}
 
 .theme-alternate {
   @include fix-icon-color(
-    map-get(mat.$light-theme-foreground-palette, 'icon'),
-    map-get(mat.$light-theme-foreground-palette, 'text')
+    map-get(mat.$dark-theme-foreground-palette, 'secondary-text'),
+    map-get(mat.$dark-theme-foreground-palette, 'icon')
   );
-  @include fix-focused-label-color(#{var(--primary-darker-color)});
 }
 
-a:not([class*='mat-']) {
+a {
   color: var(--primary-darker-color);
   text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
-}
-
-.mat-mdc-dialog-actions {
-  justify-content: flex-end;
-
-  button {
-    text-transform: uppercase;
-  }
 }
 
 // Preserve Angular Material 13 behavior, hide tooltip when pointer leaves the trigger
