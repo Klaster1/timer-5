@@ -22,7 +22,7 @@ import { NgsFormsModule } from '@ng-stack/forms';
 import { LetModule, PushModule } from '@ngrx/component';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { CheckViewportSizeWhenValueChangesDirective } from './checkViewportSizeWhenValueChanges.directive';
-import { EmptyStateModule } from './empty-state/empty-state.module';
+import { EmptyStateComponent } from './empty-state/empty-state.component';
 import { FixRouterLinkActiveDirective } from './fixRouterLinkActive.directive';
 import { ScreenTasksComponent } from './screen-tasks.component';
 import { ScrollToIndexDirective } from './scrollToIndex.directive';
@@ -37,7 +37,7 @@ import { TasksFilterModule } from './tasks-filter/tasks-filter.module';
   ],
   exports: [ScreenTasksComponent],
   imports: [
-    EmptyStateModule,
+    EmptyStateComponent,
     TasksFilterModule,
     CommonModule,
     NgsFormsModule,
