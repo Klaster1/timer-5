@@ -26,7 +26,7 @@ import { EmptyStateComponent } from './empty-state/empty-state.component';
 import { FixRouterLinkActiveDirective } from './fixRouterLinkActive.directive';
 import { ScreenTasksComponent } from './screen-tasks.component';
 import { ScrollToIndexDirective } from './scrollToIndex.directive';
-import { TasksFilterModule } from './tasks-filter/tasks-filter.module';
+import { TasksFilterComponent } from './tasks-filter/tasks-filter.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +38,7 @@ import { TasksFilterModule } from './tasks-filter/tasks-filter.module';
   exports: [ScreenTasksComponent],
   imports: [
     EmptyStateComponent,
-    TasksFilterModule,
+    TasksFilterComponent,
     CommonModule,
     NgsFormsModule,
     LetModule,
