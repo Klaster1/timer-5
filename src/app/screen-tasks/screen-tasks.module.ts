@@ -29,12 +29,7 @@ import { ScrollToIndexDirective } from './scrollToIndex.directive';
 import { TasksFilterComponent } from './tasks-filter/tasks-filter.component';
 
 @NgModule({
-  declarations: [
-    ScreenTasksComponent,
-    ScrollToIndexDirective,
-    FixRouterLinkActiveDirective,
-    CheckViewportSizeWhenValueChangesDirective,
-  ],
+  declarations: [ScreenTasksComponent, ScrollToIndexDirective, FixRouterLinkActiveDirective],
   exports: [ScreenTasksComponent],
   imports: [
     EmptyStateComponent,
@@ -62,6 +57,7 @@ import { TasksFilterComponent } from './tasks-filter/tasks-filter.component';
     ButtonTaskActionsComponent,
     MapPipe,
     DragDropModule,
+    CheckViewportSizeWhenValueChangesDirective,
   ],
 })
 export class ScreenTasksModule {}
