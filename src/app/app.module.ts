@@ -29,10 +29,9 @@ import { SafeUrlPipe } from './pipes/safe-resource-url.pipe';
 import { TaskStateIconPipe } from './pipes/task-state-icon.pipe';
 import { ScreenTaskComponent } from './screen-task/screen-task.component';
 import { ScreenTasksComponent } from './screen-tasks/screen-tasks.component';
-import { TestComponent } from './test/test.component';
 
 @NgModule({
-  declarations: [AppComponent, TestComponent],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
