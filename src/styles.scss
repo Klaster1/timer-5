@@ -27,9 +27,6 @@ body {
 
 // https://github.com/angular/components/issues/9664
 @mixin fix-icon-color($active-focused, $active-unfocused) {
-  mat-icon {
-    color: $active-unfocused;
-  }
   .mat-icon-no-color.fix-icon-color {
     color: $active-focused;
   }
