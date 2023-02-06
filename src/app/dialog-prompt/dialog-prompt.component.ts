@@ -1,6 +1,10 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, FormGroup, Validators } from '@ng-stack/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { FormControl, FormGroup, NgsFormsModule, Validators } from '@ng-stack/forms';
 
 export interface DialogPromptData {
   title: string;
@@ -13,6 +17,8 @@ export interface DialogPromptData {
   templateUrl: './dialog-prompt.component.html',
   styleUrls: ['./dialog-prompt.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [MatDialogModule, MatButtonModule, MatFormFieldModule, MatInputModule, NgsFormsModule, CommonModule],
 })
 export class DialogPromptComponent {
   constructor(

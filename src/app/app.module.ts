@@ -22,7 +22,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DialogEditSessionComponent } from './dialog-edit-session/dialog-edit-session.component';
 import { DialogHotkeysCheatsheetComponent } from './dialog-hotkeys-cheatsheet/dialog-hotkeys-cheatsheet.component';
-import { DialogPromptModule } from './dialog-prompt/dialog-prompt.module';
 import { Effects } from './ngrx/effects';
 import { metaReducers } from './ngrx/metareducers';
 import * as reducers from './ngrx/reducers';
@@ -50,7 +49,6 @@ import { TestComponent } from './test/test.component';
     MatTooltipModule,
     MatDialogModule,
     TaskStateIconPipeModule,
-    DialogPromptModule,
     DialogEditSessionComponent,
     HttpClientModule,
     DialogHotkeysCheatsheetComponent,
