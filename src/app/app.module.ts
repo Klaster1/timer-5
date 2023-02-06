@@ -20,7 +20,7 @@ import { HotkeyModule } from 'angular2-hotkeys';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { DialogEditSessionModule } from './dialog-edit-session/dialog-edit-session.module';
+import { DialogEditSessionComponent } from './dialog-edit-session/dialog-edit-session.component';
 import { DialogHotkeysCheatsheetModule } from './dialog-hotkeys-cheatsheet/dialog-hotkeys-cheatsheet.module';
 import { DialogPromptModule } from './dialog-prompt/dialog-prompt.module';
 import { Effects } from './ngrx/effects';
@@ -38,7 +38,8 @@ import { TestComponent } from './test/test.component';
     BrowserModule,
     BrowserAnimationsModule,
     CommonModule,
-    LetModule, PushModule,
+    LetModule,
+    PushModule,
     AppRoutingModule,
     ScreenTasksModule,
     ScreenTaskModule,
@@ -50,7 +51,7 @@ import { TestComponent } from './test/test.component';
     MatDialogModule,
     TaskStateIconPipeModule,
     DialogPromptModule,
-    DialogEditSessionModule,
+    DialogEditSessionComponent,
     HttpClientModule,
     DialogHotkeysCheatsheetModule,
     MapPipeModule,
