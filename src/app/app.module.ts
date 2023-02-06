@@ -27,7 +27,7 @@ import * as reducers from './ngrx/reducers';
 import { MapPipe } from './pipes/map.pipe';
 import { SafeUrlPipe } from './pipes/safe-resource-url.pipe';
 import { TaskStateIconPipe } from './pipes/task-state-icon.pipe';
-import { ScreenTaskModule } from './screen-task/screen-task.module';
+import { ScreenTaskComponent } from './screen-task/screen-task.component';
 import { ScreenTasksModule } from './screen-tasks/screen-tasks.module';
 import { TestComponent } from './test/test.component';
 
@@ -41,7 +41,7 @@ import { TestComponent } from './test/test.component';
     PushModule,
     AppRoutingModule,
     ScreenTasksModule,
-    ScreenTaskModule,
+    ScreenTaskComponent,
     MatSidenavModule,
     MatMenuModule,
     MatListModule,

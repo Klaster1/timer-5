@@ -1,4 +1,15 @@
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatTableModule } from '@angular/material/table';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { RouterModule } from '@angular/router';
+import { ButtonTaskActionsComponent } from '@app/button-task-actions/button-task-actions.component';
 import {
   hotkey,
   KEYS_DELETE_TASK,
@@ -11,16 +22,45 @@ import { StoreState } from '@app/domain/storage';
 import { isTaskRunning, sessionDuration, Task, TaskState } from '@app/domain/task';
 import { deleteTask, renameTaskIntent, startTask, stopTask, updateTaskState } from '@app/ngrx/actions';
 import { selectCurrentTask } from '@app/ngrx/selectors';
+import { FormatDurationPipe } from '@app/pipes/format-duration.pipe';
+import { MapPipe } from '@app/pipes/map.pipe';
+import { TaskDurationPipe } from '@app/pipes/task-duration.pipe';
+import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
+import { LetModule, PushModule } from '@ngrx/component';
 import { Store } from '@ngrx/store';
 import { HotkeysService } from 'angular2-hotkeys';
+import { NgScrollbarModule } from 'ngx-scrollbar';
 import { combineLatest } from 'rxjs';
 import { map, take } from 'rxjs/operators';
+import { ButtonSessionActionsModule } from './button-session-actions/button-session-actions.module';
 
 @Component({
   selector: 'screen-task',
   templateUrl: './screen-task.component.html',
   styleUrls: ['./screen-task.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    CommonModule,
+    LetModule,
+    PushModule,
+    RouterModule,
+    TaskStateIconPipe,
+    MatCardModule,
+    MatButtonModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatListModule,
+    MatTableModule,
+    MatTooltipModule,
+    NgScrollbarModule,
+    FormatDurationPipe,
+    TaskDurationPipe,
+    ButtonTaskActionsComponent,
+    ButtonSessionActionsModule,
+    MapPipe,
+    DragDropModule,
+  ],
 })
 export class ScreenTaskComponent implements OnDestroy, OnInit {
   sessionDuration = sessionDuration;
