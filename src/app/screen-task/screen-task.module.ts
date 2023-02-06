@@ -9,7 +9,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
-import { ButtonTaskActionsModule } from '@app/button-task-actions/button-task-actions.module';
+import { ButtonTaskActionsComponent } from '@app/button-task-actions/button-task-actions.component';
 import { FormatDurationPipeModule } from '@app/pipes/format-duration.pipe';
 import { MapPipeModule } from '@app/pipes/map.pipe';
 import { TaskDurationPipeModule } from '@app/pipes/task-duration.pipe';
@@ -24,7 +24,8 @@ import { ScreenTaskComponent } from './screen-task.component';
   exports: [ScreenTaskComponent],
   imports: [
     CommonModule,
-    LetModule, PushModule,
+    LetModule,
+    PushModule,
     RouterModule,
     TaskStateIconPipeModule,
     MatCardModule,
@@ -37,7 +38,7 @@ import { ScreenTaskComponent } from './screen-task.component';
     NgScrollbarModule,
     FormatDurationPipeModule,
     TaskDurationPipeModule,
-    ButtonTaskActionsModule,
+    ButtonTaskActionsComponent,
     ButtonSessionActionsModule,
     MapPipeModule,
     DragDropModule,

@@ -11,7 +11,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
-import { ButtonTaskActionsModule } from '@app/button-task-actions/button-task-actions.module';
+import { ButtonTaskActionsComponent } from '@app/button-task-actions/button-task-actions.component';
 import { FormatDurationPipeModule } from '@app/pipes/format-duration.pipe';
 import { MapPipeModule } from '@app/pipes/map.pipe';
 import { TaskDurationPipeModule } from '@app/pipes/task-duration.pipe';
@@ -41,7 +41,8 @@ import { TasksFilterModule } from './tasks-filter/tasks-filter.module';
     TasksFilterModule,
     CommonModule,
     NgsFormsModule,
-    LetModule, PushModule,
+    LetModule,
+    PushModule,
     TaskStatePipeModule,
     FormatDurationPipeModule,
     TaskDurationPipeModule,
@@ -58,7 +59,7 @@ import { TasksFilterModule } from './tasks-filter/tasks-filter.module';
     MatInputModule,
     MatTooltipModule,
     MatSelectModule,
-    ButtonTaskActionsModule,
+    ButtonTaskActionsComponent,
     MapPipeModule,
     DragDropModule,
   ],
