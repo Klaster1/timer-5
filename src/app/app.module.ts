@@ -11,7 +11,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ServiceWorkerModule } from '@angular/service-worker';
-import { TaskStateIconPipeModule } from '@app/pipes/task-state-icon.pipe';
 import { LetModule, PushModule } from '@ngrx/component';
 import { EffectsModule } from '@ngrx/effects';
 import { MinimalRouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
@@ -27,6 +26,7 @@ import { metaReducers } from './ngrx/metareducers';
 import * as reducers from './ngrx/reducers';
 import { MapPipe } from './pipes/map.pipe';
 import { SafeUrlPipe } from './pipes/safe-resource-url.pipe';
+import { TaskStateIconPipe } from './pipes/task-state-icon.pipe';
 import { ScreenTaskModule } from './screen-task/screen-task.module';
 import { ScreenTasksModule } from './screen-tasks/screen-tasks.module';
 import { TestComponent } from './test/test.component';
@@ -48,7 +48,7 @@ import { TestComponent } from './test/test.component';
     MatIconModule,
     MatTooltipModule,
     MatDialogModule,
-    TaskStateIconPipeModule,
+    TaskStateIconPipe,
     DialogEditSessionComponent,
     HttpClientModule,
     DialogHotkeysCheatsheetComponent,

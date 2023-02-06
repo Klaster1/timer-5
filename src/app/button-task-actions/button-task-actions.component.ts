@@ -7,7 +7,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { StoreState } from '@app/domain/storage';
 import { Task, TaskState } from '@app/domain/task';
 import { deleteTask, renameTaskIntent, updateTaskState } from '@app/ngrx/actions';
-import { TaskStateIconPipeModule } from '@app/pipes/task-state-icon.pipe';
+import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
 import { TaskStatePipeModule } from '@app/pipes/task-state.pipe';
 import { Store } from '@ngrx/store';
 
@@ -22,7 +22,7 @@ import { Store } from '@ngrx/store';
     MatButtonModule,
     MatSelectModule,
     MatIconModule,
-    TaskStateIconPipeModule,
+    TaskStateIconPipe,
     TaskStatePipeModule,
     CommonModule,
   ],

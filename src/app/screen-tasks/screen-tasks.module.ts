@@ -15,7 +15,7 @@ import { ButtonTaskActionsComponent } from '@app/button-task-actions/button-task
 import { FormatDurationPipe } from '@app/pipes/format-duration.pipe';
 import { MapPipe } from '@app/pipes/map.pipe';
 import { TaskDurationPipe } from '@app/pipes/task-duration.pipe';
-import { TaskStateIconPipeModule } from '@app/pipes/task-state-icon.pipe';
+import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
 import { TaskStatePipeModule } from '@app/pipes/task-state.pipe';
 import { TasksDurationPipeModule } from '@app/pipes/tasks-duration.pipe';
 import { NgsFormsModule } from '@ng-stack/forms';
@@ -47,7 +47,7 @@ import { TasksFilterModule } from './tasks-filter/tasks-filter.module';
     FormatDurationPipe,
     TaskDurationPipe,
     TasksDurationPipeModule,
-    TaskStateIconPipeModule,
+    TaskStateIconPipe,
     RouterModule,
     ScrollingModule,
     NgScrollbarModule,

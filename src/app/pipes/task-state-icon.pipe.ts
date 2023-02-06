@@ -1,9 +1,10 @@
-import { NgModule, Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 import { isTask, isTaskRunning, Task, TaskState } from '@app/domain/task';
 import { assertNever } from '@app/utils/assert';
 
 @Pipe({
   name: 'taskStateIcon',
+  standalone: true,
 })
 export class TaskStateIconPipe implements PipeTransform {
   transform(stateOrTask?: Task | TaskState) {
@@ -29,6 +30,3 @@ export class TaskStateIconPipe implements PipeTransform {
     }
   }
 }
-
-@NgModule({ declarations: [TaskStateIconPipe], exports: [TaskStateIconPipe] })
-export class TaskStateIconPipeModule {}

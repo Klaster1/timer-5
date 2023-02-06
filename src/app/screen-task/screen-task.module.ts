@@ -13,7 +13,7 @@ import { ButtonTaskActionsComponent } from '@app/button-task-actions/button-task
 import { FormatDurationPipe } from '@app/pipes/format-duration.pipe';
 import { MapPipe } from '@app/pipes/map.pipe';
 import { TaskDurationPipe } from '@app/pipes/task-duration.pipe';
-import { TaskStateIconPipeModule } from '@app/pipes/task-state-icon.pipe';
+import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
 import { LetModule, PushModule } from '@ngrx/component';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { ButtonSessionActionsModule } from './button-session-actions/button-session-actions.module';
@@ -27,7 +27,7 @@ import { ScreenTaskComponent } from './screen-task.component';
     LetModule,
     PushModule,
     RouterModule,
-    TaskStateIconPipeModule,
+    TaskStateIconPipe,
     MatCardModule,
     MatButtonModule,
     MatToolbarModule,
