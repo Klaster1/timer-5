@@ -92,24 +92,25 @@ const timerTimelinePlugin = (params: { barColor: string }): PluginReturnValue =>
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [
     `
-           :host {
-             display: block;
-             width: 100%;
-             height: 100%;
-             position: relative;
-             overflow: hidden;
-           }
-           canvas {
-             width: 100% !important;
-             height: 100% !important;
-             position: absolute;
-             top: 0;
-             right: 0;
-             bottom: 0;
-             left: 0;
-           }
-         `,
+      :host {
+        display: block;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+      }
+      canvas {
+        width: 100% !important;
+        height: 100% !important;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+    `,
   ],
+  standalone: true,
 })
 export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() chartData?: AlignedData;

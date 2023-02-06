@@ -21,7 +21,7 @@ import { TasksFilterComponent } from './tasks-filter.component';
 import { TimelineChartUplotComponent } from './timeline-chart-uplot.component';
 
 @NgModule({
-  declarations: [TasksFilterComponent, ButtonResetInputComponent, TimelineChartUplotComponent],
+  declarations: [TasksFilterComponent, ButtonResetInputComponent],
   imports: [
     MatButtonModule,
     MatSelectModule,
@@ -39,6 +39,7 @@ import { TimelineChartUplotComponent } from './timeline-chart-uplot.component';
     A11yModule,
     CommonModule,
     MapPipe,
+    TimelineChartUplotComponent,
   ],
   exports: [TasksFilterComponent],
 })
