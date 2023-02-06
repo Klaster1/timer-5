@@ -1,3 +1,6 @@
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
@@ -6,7 +9,16 @@ import {
   OnInit,
   TrackByFunction,
 } from '@angular/core';
-import { Router } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatSelectModule } from '@angular/material/select';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { Router, RouterModule } from '@angular/router';
+import { ButtonTaskActionsComponent } from '@app/button-task-actions/button-task-actions.component';
 import { hotkey, KEYS_ADD, KEYS_NEXT, KEYS_PREV, KEYS_SEARCH } from '@app/domain/hotkeys';
 import { StoreState } from '@app/domain/storage';
 import { isTaskRunning, SessionDragEvent, Task, TaskState } from '@app/domain/task';
@@ -21,16 +33,61 @@ import {
   selectNextTaskId,
   selectPrevTaskId,
 } from '@app/ngrx/selectors';
+import { FormatDurationPipe } from '@app/pipes/format-duration.pipe';
+import { MapPipe } from '@app/pipes/map.pipe';
+import { TaskDurationPipe } from '@app/pipes/task-duration.pipe';
+import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
+import { TaskStatePipe } from '@app/pipes/task-state.pipe';
+import { TasksDurationPipe } from '@app/pipes/tasks-duration.pipe';
+import { NgsFormsModule } from '@ng-stack/forms';
+import { LetModule, PushModule } from '@ngrx/component';
 import { Store } from '@ngrx/store';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
+import { NgScrollbarModule } from 'ngx-scrollbar';
 import { firstValueFrom, merge, Observable, Subject } from 'rxjs';
 import { map, shareReplay, take } from 'rxjs/operators';
+import { CheckViewportSizeWhenValueChangesDirective } from './checkViewportSizeWhenValueChanges.directive';
+import { EmptyStateComponent } from './empty-state/empty-state.component';
+import { FixRouterLinkActiveDirective } from './fixRouterLinkActive.directive';
+import { ScrollToIndexDirective } from './scrollToIndex.directive';
+import { TasksFilterComponent } from './tasks-filter/tasks-filter.component';
 
 @Component({
   selector: 'screen-tasks',
   templateUrl: './screen-tasks.component.html',
   styleUrls: ['./screen-tasks.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    EmptyStateComponent,
+    TasksFilterComponent,
+    CommonModule,
+    NgsFormsModule,
+    LetModule,
+    PushModule,
+    TaskStatePipe,
+    FormatDurationPipe,
+    TaskDurationPipe,
+    TasksDurationPipe,
+    TaskStateIconPipe,
+    RouterModule,
+    ScrollingModule,
+    NgScrollbarModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
+    MatListModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatTooltipModule,
+    MatSelectModule,
+    ButtonTaskActionsComponent,
+    MapPipe,
+    DragDropModule,
+    CheckViewportSizeWhenValueChangesDirective,
+    FixRouterLinkActiveDirective,
+    ScrollToIndexDirective,
+  ],
 })
 export class ScreenTasksComponent implements OnInit, OnDestroy {
   taskState = TaskState;
