@@ -10,13 +10,13 @@ import { FormControl } from '@ng-stack/forms';
   `,
   styles: [
     `
-      :host {
-        display: contents;
-      }
-      button {
-        width: 36px;
-      }
-    `,
+           :host {
+             display: contents;
+           }
+           button {
+             width: 36px;
+           }
+         `,
   ],
 })
 export class ButtonResetInputComponent<T> {

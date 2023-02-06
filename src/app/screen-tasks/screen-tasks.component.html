@@ -37,22 +37,26 @@
               (cdkDropListDropped)="onDrop($event, task)"
               data-e2e="screen-tasks__task-item"
             >
-              <a
-                matLine
-                [routerLink]="[task.id]"
-                queryParamsHandling="merge"
-                fixRouterLinkActive
-                routerLinkActive="nav-link-active"
-                class="task-link"
-                #rla="routerLinkActive"
-              >
-                <mat-icon [ngClass]="{ running: task | map: isTaskRunning }" data-e2e="screen-tasks__task-state-icon">{{
-                  task | taskStateIcon
-                }}</mat-icon>
-                <span class="name" data-e2e="screen-tasks__task-name">{{ task.name }}</span>
-                <span class="duration">{{ task | taskDuration: 5000 | formatDuration | ngrxPush }}</span>
-              </a>
-              <button-task-actions [task]="task"></button-task-actions>
+              <div class="item-content">
+                <a
+                  matLine
+                  [routerLink]="[task.id]"
+                  queryParamsHandling="merge"
+                  fixRouterLinkActive
+                  routerLinkActive="nav-link-active"
+                  class="task-link"
+                  #rla="routerLinkActive"
+                >
+                  <mat-icon
+                    [ngClass]="{ running: task | map: isTaskRunning }"
+                    data-e2e="screen-tasks__task-state-icon"
+                    >{{ task | taskStateIcon }}</mat-icon
+                  >
+                  <span class="name" data-e2e="screen-tasks__task-name">{{ task.name }}</span>
+                  <span class="duration">{{ task | taskDuration: 5000 | formatDuration | ngrxPush }}</span>
+                </a>
+                <button-task-actions [task]="task"></button-task-actions>
+              </div>
             </mat-list-item>
           </mat-nav-list>
         </cdk-virtual-scroll-viewport>

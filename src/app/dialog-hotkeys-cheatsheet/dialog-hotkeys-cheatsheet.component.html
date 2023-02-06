@@ -3,12 +3,12 @@
   <dl>
     <ng-container *ngFor="let key of keys">
       <dt>
-        <kbd *ngFor="let formatted of key.formatted|map:withoutCyrillics">{{ formatted }}</kbd>
+        <kbd *ngFor="let formatted of key.formatted | map: withoutCyrillics">{{ formatted }}</kbd>
       </dt>
       <dd>{{ key.description }}</dd>
     </ng-container>
   </dl>
 </div>
-<div mat-dialog-actions>
+<div mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Close</button>
 </div>

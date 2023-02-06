@@ -27,9 +27,12 @@
   }
 }
 .task-link {
+  flex: 1;
   padding: calc((48px - 1.25em) / 2) 0 !important;
   display: flex !important;
   align-items: center;
+  color: inherit;
+  font-weight: normal;
 
   mat-icon {
     margin-right: 0.25em;
@@ -113,4 +116,9 @@ empty-state {
     left: 0;
     border: dotted 2px grey;
   }
+}
+.item-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }

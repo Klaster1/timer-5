@@ -45,3 +45,7 @@ form {
 timeline-chart-uplot {
   height: 300px;
 }
+
+input[type='search']::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
