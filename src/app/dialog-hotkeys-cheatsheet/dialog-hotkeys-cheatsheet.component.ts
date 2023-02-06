@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MapPipeModule } from '@app/pipes/map.pipe';
+import { MapPipe } from '@app/pipes/map.pipe';
 import { hasCyrillics } from '@app/utils/string';
 import { HotkeysService } from 'angular2-hotkeys';
 
@@ -12,7 +12,7 @@ import { HotkeysService } from 'angular2-hotkeys';
   styleUrls: ['./dialog-hotkeys-cheatsheet.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [MatDialogModule, MatButtonModule, CommonModule, MapPipeModule],
+  imports: [MatDialogModule, MatButtonModule, CommonModule, MapPipe],
 })
 export class DialogHotkeysCheatsheetComponent {
   static ID = 'DIALOG_HOTKEYS_CHEATSHEET';

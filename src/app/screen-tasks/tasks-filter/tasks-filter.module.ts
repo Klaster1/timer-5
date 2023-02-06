@@ -13,7 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
-import { MapPipeModule } from '@app/pipes/map.pipe';
+import { MapPipe } from '@app/pipes/map.pipe';
 import { NgsFormsModule } from '@ng-stack/forms';
 import { LetModule, PushModule } from '@ngrx/component';
 import { ButtonResetInputComponent } from './button-reset-input.component';
@@ -30,14 +30,15 @@ import { TimelineChartUplotComponent } from './timeline-chart-uplot.component';
     MatFormFieldModule,
     MatInputModule,
     NgsFormsModule,
-    LetModule, PushModule,
+    LetModule,
+    PushModule,
     MatDatepickerModule,
     NgxMatDatetimePickerModule,
     NgxMatNativeDateModule,
     NgxMatTimepickerModule,
     A11yModule,
     CommonModule,
-    MapPipeModule,
+    MapPipe,
   ],
   exports: [TasksFilterComponent],
 })

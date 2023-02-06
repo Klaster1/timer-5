@@ -11,7 +11,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { ButtonTaskActionsComponent } from '@app/button-task-actions/button-task-actions.component';
 import { FormatDurationPipe } from '@app/pipes/format-duration.pipe';
-import { MapPipeModule } from '@app/pipes/map.pipe';
+import { MapPipe } from '@app/pipes/map.pipe';
 import { TaskDurationPipeModule } from '@app/pipes/task-duration.pipe';
 import { TaskStateIconPipeModule } from '@app/pipes/task-state-icon.pipe';
 import { LetModule, PushModule } from '@ngrx/component';
@@ -40,7 +40,7 @@ import { ScreenTaskComponent } from './screen-task.component';
     TaskDurationPipeModule,
     ButtonTaskActionsComponent,
     ButtonSessionActionsModule,
-    MapPipeModule,
+    MapPipe,
     DragDropModule,
   ],
 })
