@@ -26,7 +26,7 @@ import { Effects } from './ngrx/effects';
 import { metaReducers } from './ngrx/metareducers';
 import * as reducers from './ngrx/reducers';
 import { MapPipe } from './pipes/map.pipe';
-import { SafeUrlPipeModule } from './pipes/safe-resource-url.pipe';
+import { SafeUrlPipe } from './pipes/safe-resource-url.pipe';
 import { ScreenTaskModule } from './screen-task/screen-task.module';
 import { ScreenTasksModule } from './screen-tasks/screen-tasks.module';
 import { TestComponent } from './test/test.component';
@@ -54,7 +54,7 @@ import { TestComponent } from './test/test.component';
     DialogHotkeysCheatsheetComponent,
     MapPipe,
     DragDropModule,
-    SafeUrlPipeModule,
+    SafeUrlPipe,
     HotkeyModule.forRoot({ cheatSheetCloseEsc: true }),
     StoreModule.forRoot(reducers.combinedReducers, {
       metaReducers,
