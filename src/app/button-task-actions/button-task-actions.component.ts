@@ -8,7 +8,7 @@ import { StoreState } from '@app/domain/storage';
 import { Task, TaskState } from '@app/domain/task';
 import { deleteTask, renameTaskIntent, updateTaskState } from '@app/ngrx/actions';
 import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
-import { TaskStatePipeModule } from '@app/pipes/task-state.pipe';
+import { TaskStatePipe } from '@app/pipes/task-state.pipe';
 import { Store } from '@ngrx/store';
 
 @Component({
@@ -23,7 +23,7 @@ import { Store } from '@ngrx/store';
     MatSelectModule,
     MatIconModule,
     TaskStateIconPipe,
-    TaskStatePipeModule,
+    TaskStatePipe,
     CommonModule,
   ],
 })
