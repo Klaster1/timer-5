@@ -7,9 +7,13 @@
 .link-all img {
   width: 32px;
   height: 32px;
+  vertical-align: middle;
+}
+.mat-mdc-list-item {
+  text-align: center;
 }
 mat-icon {
-  margin: auto;
+  vertical-align: middle;
 }
 mat-drawer-container {
   flex: 1;
