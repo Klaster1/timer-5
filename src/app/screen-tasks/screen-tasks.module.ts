@@ -17,7 +17,7 @@ import { MapPipe } from '@app/pipes/map.pipe';
 import { TaskDurationPipe } from '@app/pipes/task-duration.pipe';
 import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
 import { TaskStatePipe } from '@app/pipes/task-state.pipe';
-import { TasksDurationPipeModule } from '@app/pipes/tasks-duration.pipe';
+import { TasksDurationPipe } from '@app/pipes/tasks-duration.pipe';
 import { NgsFormsModule } from '@ng-stack/forms';
 import { LetModule, PushModule } from '@ngrx/component';
 import { NgScrollbarModule } from 'ngx-scrollbar';
@@ -46,7 +46,7 @@ import { TasksFilterModule } from './tasks-filter/tasks-filter.module';
     TaskStatePipe,
     FormatDurationPipe,
     TaskDurationPipe,
-    TasksDurationPipeModule,
+    TasksDurationPipe,
     TaskStateIconPipe,
     RouterModule,
     ScrollingModule,
