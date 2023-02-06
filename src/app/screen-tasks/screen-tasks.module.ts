@@ -14,7 +14,7 @@ import { RouterModule } from '@angular/router';
 import { ButtonTaskActionsComponent } from '@app/button-task-actions/button-task-actions.component';
 import { FormatDurationPipe } from '@app/pipes/format-duration.pipe';
 import { MapPipe } from '@app/pipes/map.pipe';
-import { TaskDurationPipeModule } from '@app/pipes/task-duration.pipe';
+import { TaskDurationPipe } from '@app/pipes/task-duration.pipe';
 import { TaskStateIconPipeModule } from '@app/pipes/task-state-icon.pipe';
 import { TaskStatePipeModule } from '@app/pipes/task-state.pipe';
 import { TasksDurationPipeModule } from '@app/pipes/tasks-duration.pipe';
@@ -45,7 +45,7 @@ import { TasksFilterModule } from './tasks-filter/tasks-filter.module';
     PushModule,
     TaskStatePipeModule,
     FormatDurationPipe,
-    TaskDurationPipeModule,
+    TaskDurationPipe,
     TasksDurationPipeModule,
     TaskStateIconPipeModule,
     RouterModule,
