@@ -32,7 +32,7 @@ import { HotkeysService } from 'angular2-hotkeys';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { combineLatest } from 'rxjs';
 import { map, take } from 'rxjs/operators';
-import { ButtonSessionActionsModule } from './button-session-actions/button-session-actions.module';
+import { ButtonSessionActionsComponent } from './button-session-actions/button-session-actions.component';
 
 @Component({
   selector: 'screen-task',
@@ -57,7 +57,7 @@ import { ButtonSessionActionsModule } from './button-session-actions/button-sess
     FormatDurationPipe,
     TaskDurationPipe,
     ButtonTaskActionsComponent,
-    ButtonSessionActionsModule,
+    ButtonSessionActionsComponent,
     MapPipe,
     DragDropModule,
   ],
