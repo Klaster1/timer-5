@@ -9,6 +9,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterModule } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { LetModule, PushModule } from '@ngrx/component';
 import { EffectsModule } from '@ngrx/effects';
@@ -16,15 +17,17 @@ import { MinimalRouterStateSerializer, StoreRouterConnectingModule } from '@ngrx
 import { StoreModule } from '@ngrx/store';
 import { HotkeyModule, HotkeysService } from 'angular2-hotkeys';
 import { environment } from '../environments/environment';
-import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DialogHotkeysCheatsheetComponent } from './dialog-hotkeys-cheatsheet/dialog-hotkeys-cheatsheet.component';
+import { GameStateGuard } from './guards/game-state.guard';
 import { Effects } from './ngrx/effects';
 import { metaReducers } from './ngrx/metareducers';
 import * as reducers from './ngrx/reducers';
 import { MapPipe } from './pipes/map.pipe';
 import { SafeUrlPipe } from './pipes/safe-resource-url.pipe';
 import { TaskStateIconPipe } from './pipes/task-state-icon.pipe';
+import { ScreenTaskComponent } from './screen-task/screen-task.component';
+import { ScreenTasksComponent } from './screen-tasks/screen-tasks.component';
 
 @NgModule({
   declarations: [AppComponent],
@@ -34,7 +37,6 @@ import { TaskStateIconPipe } from './pipes/task-state-icon.pipe';
     CommonModule,
     LetModule,
     PushModule,
-    AppRoutingModule,
     MatSidenavModule,
     MatMenuModule,
     MatListModule,
@@ -45,6 +47,23 @@ import { TaskStateIconPipe } from './pipes/task-state-icon.pipe';
     MapPipe,
     DragDropModule,
     SafeUrlPipe,
+    RouterModule.forRoot(
+      [
+        { path: '', redirectTo: 'active', pathMatch: 'full' },
+        {
+          path: ':state',
+          component: ScreenTasksComponent,
+          canActivate: [GameStateGuard],
+          children: [
+            {
+              path: ':taskId',
+              component: ScreenTaskComponent,
+            },
+          ],
+        },
+      ],
+      { paramsInheritanceStrategy: 'always' }
+    ),
     HotkeyModule.forRoot({ cheatSheetCloseEsc: true }),
     StoreModule.forRoot(reducers.combinedReducers, {
       metaReducers,
