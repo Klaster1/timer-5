@@ -1,7 +1,7 @@
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import { APP_INITIALIZER, NgModule } from '@angular/core';
-import { MatDialog, MatDialogConfig, MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
+import { NgModule } from '@angular/core';
+import { MatDialogConfig, MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
@@ -15,10 +15,9 @@ import { LetModule, PushModule } from '@ngrx/component';
 import { EffectsModule } from '@ngrx/effects';
 import { MinimalRouterStateSerializer, StoreRouterConnectingModule } from '@ngrx/router-store';
 import { StoreModule } from '@ngrx/store';
-import { HotkeyModule, HotkeysService } from 'angular2-hotkeys';
+import { HotkeyModule } from 'angular2-hotkeys';
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
-import { DialogHotkeysCheatsheetComponent } from './dialog-hotkeys-cheatsheet/dialog-hotkeys-cheatsheet.component';
 import { GameStateGuard } from './guards/game-state.guard';
 import { Effects } from './ngrx/effects';
 import { metaReducers } from './ngrx/metareducers';
@@ -89,36 +88,6 @@ import { ScreenTasksComponent } from './screen-tasks/screen-tasks.component';
       useFactory(): MatDialogConfig<any> {
         return { width: '520px', autoFocus: true };
       },
-    },
-    {
-      provide: APP_INITIALIZER,
-      useFactory(hotkeysService: HotkeysService, dialogs: MatDialog) {
-        return () => {
-          let isDialogOpen = false;
-          hotkeysService.cheatSheetToggle.subscribe((isOpen) => {
-            if (isOpen === false) {
-              isDialogOpen = false;
-              dialogs.getDialogById(DialogHotkeysCheatsheetComponent.ID)?.close();
-            } else {
-              if (isDialogOpen) {
-                isDialogOpen = false;
-                dialogs.getDialogById(DialogHotkeysCheatsheetComponent.ID)?.close();
-              } else {
-                isDialogOpen = true;
-                dialogs
-                  .open(DialogHotkeysCheatsheetComponent, { width: undefined, id: DialogHotkeysCheatsheetComponent.ID })
-                  .afterClosed()
-                  .subscribe(() => {
-                    isDialogOpen = false;
-                    hotkeysService.cheatSheetToggle.next(false);
-                  });
-              }
-            }
-          });
-        };
-      },
-      deps: [HotkeysService, MatDialog],
-      multi: true,
     },
   ],
   bootstrap: [AppComponent],

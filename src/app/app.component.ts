@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { toggleTheme } from '@app/ngrx/actions';
 import { isAnyTaskActive, selectTasks, selectTheme } from '@app/ngrx/selectors';
@@ -6,6 +7,7 @@ import { Store } from '@ngrx/store';
 import { HotkeysService } from 'angular2-hotkeys';
 import { distinctUntilChanged } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
+import { DialogHotkeysCheatsheetComponent } from './dialog-hotkeys-cheatsheet/dialog-hotkeys-cheatsheet.component';
 import { hotkey, KEYS_GO_ACTIVE, KEYS_GO_ALL, KEYS_GO_FINISHED } from './domain/hotkeys';
 import { StoreState, toStoredTasks } from './domain/storage';
 import { TaskState } from './domain/task';
@@ -27,8 +29,11 @@ export class AppComponent {
     keys: HotkeysService,
     router: Router,
     private importExport: ImportExportService,
-    private favicon: FaviconService
+    private favicon: FaviconService,
+    private hotkeysService: HotkeysService,
+    private dialogs: MatDialog
   ) {
+    this.handleHotkeyCheatsheet();
     keys.add([
       hotkey(KEYS_GO_ALL, 'Go to all tasks', () => router.navigate(['all'], { queryParamsHandling: 'merge' })),
       hotkey(KEYS_GO_ACTIVE, 'Go to active tasks', () =>
@@ -69,4 +74,27 @@ export class AppComponent {
       },
     })
   );
+  private handleHotkeyCheatsheet() {
+    let isDialogOpen = false;
+    this.hotkeysService.cheatSheetToggle.subscribe((isOpen) => {
+      if (isOpen === false) {
+        isDialogOpen = false;
+        this.dialogs.getDialogById(DialogHotkeysCheatsheetComponent.ID)?.close();
+      } else {
+        if (isDialogOpen) {
+          isDialogOpen = false;
+          this.dialogs.getDialogById(DialogHotkeysCheatsheetComponent.ID)?.close();
+        } else {
+          isDialogOpen = true;
+          this.dialogs
+            .open(DialogHotkeysCheatsheetComponent, { width: undefined, id: DialogHotkeysCheatsheetComponent.ID })
+            .afterClosed()
+            .subscribe(() => {
+              isDialogOpen = false;
+              this.hotkeysService.cheatSheetToggle.next(false);
+            });
+        }
+      }
+    });
+  }
 }
