@@ -1,12 +1,28 @@
+import {
+  NgxMatDatetimePickerModule,
+  NgxMatNativeDateModule,
+  NgxMatTimepickerModule,
+} from '@angular-material-components/datetime-picker';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { A11yModule } from '@angular/cdk/a11y';
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSelectModule } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { hasChartData, ScaleRange } from '@app/domain/chart';
 import { encodeFilterParams, FilterMatrixParams } from '@app/domain/router';
 import { StoreState } from '@app/domain/storage';
 import { selectDecodedFilterParams, selectFilterChartData, selectFilterRange } from '@app/ngrx/selectors';
+import { MapPipe } from '@app/pipes/map.pipe';
 import { deepEquals } from '@app/utils/assert';
-import { FormControl, FormGroup } from '@ng-stack/forms';
+import { FormControl, FormGroup, NgsFormsModule } from '@ng-stack/forms';
+import { LetModule, PushModule } from '@ngrx/component';
 import { Store } from '@ngrx/store';
 import endOfDay from 'date-fns/endOfDay';
 import endOfMonth from 'date-fns/endOfMonth';
@@ -22,6 +38,8 @@ import subWeeks from 'date-fns/subWeeks';
 import subYears from 'date-fns/subYears';
 import { merge } from 'rxjs';
 import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
+import { ButtonResetInputComponent } from './button-reset-input.component';
+import { TimelineChartUplotComponent } from './timeline-chart-uplot.component';
 
 @Component({
   selector: 'tasks-filter',
@@ -32,6 +50,27 @@ import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
     trigger('inOutAnimation', [
       transition(':enter', [style({ opacity: 0 }), animate('300ms ease-out', style({ opacity: 1 }))]),
     ]),
+  ],
+  standalone: true,
+  imports: [
+    MatButtonModule,
+    MatSelectModule,
+    MatIconModule,
+    MatMenuModule,
+    MatFormFieldModule,
+    MatInputModule,
+    NgsFormsModule,
+    LetModule,
+    PushModule,
+    MatDatepickerModule,
+    NgxMatDatetimePickerModule,
+    NgxMatNativeDateModule,
+    NgxMatTimepickerModule,
+    A11yModule,
+    CommonModule,
+    MapPipe,
+    TimelineChartUplotComponent,
+    ButtonResetInputComponent,
   ],
 })
 export class TasksFilterComponent implements OnDestroy {

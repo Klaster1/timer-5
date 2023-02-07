@@ -1,7 +1,7 @@
-import { NgModule, Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
-@Pipe({ name: 'safeResourceUrl' })
+@Pipe({ name: 'safeResourceUrl', standalone: true })
 export class SafeUrlPipe implements PipeTransform {
   constructor(private readonly sanitizer: DomSanitizer) {}
 
@@ -9,9 +9,3 @@ export class SafeUrlPipe implements PipeTransform {
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 }
-
-@NgModule({
-  declarations: [SafeUrlPipe],
-  exports: [SafeUrlPipe],
-})
-export class SafeUrlPipeModule {}

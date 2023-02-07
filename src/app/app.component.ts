@@ -1,14 +1,27 @@
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { Router, RouterModule } from '@angular/router';
 import { toggleTheme } from '@app/ngrx/actions';
 import { isAnyTaskActive, selectTasks, selectTheme } from '@app/ngrx/selectors';
+import { LetModule, PushModule } from '@ngrx/component';
 import { Store } from '@ngrx/store';
 import { HotkeysService } from 'angular2-hotkeys';
 import { distinctUntilChanged } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
+import { DialogHotkeysCheatsheetComponent } from './dialog-hotkeys-cheatsheet/dialog-hotkeys-cheatsheet.component';
 import { hotkey, KEYS_GO_ACTIVE, KEYS_GO_ALL, KEYS_GO_FINISHED } from './domain/hotkeys';
 import { StoreState, toStoredTasks } from './domain/storage';
 import { TaskState } from './domain/task';
+import { MapPipe } from './pipes/map.pipe';
+import { SafeUrlPipe } from './pipes/safe-resource-url.pipe';
+import { TaskStateIconPipe } from './pipes/task-state-icon.pipe';
 import { FaviconService } from './services/favicon.service';
 import { ImportExportService } from './services/import-export.service';
 
@@ -17,6 +30,23 @@ import { ImportExportService } from './services/import-export.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    CommonModule,
+    LetModule,
+    PushModule,
+    MatSidenavModule,
+    MatMenuModule,
+    MatListModule,
+    MatIconModule,
+    MatTooltipModule,
+    MatDialogModule,
+    TaskStateIconPipe,
+    MapPipe,
+    DragDropModule,
+    SafeUrlPipe,
+    RouterModule,
+  ],
 })
 export class AppComponent {
   theme$ = this.store.select(selectTheme);
@@ -27,8 +57,11 @@ export class AppComponent {
     keys: HotkeysService,
     router: Router,
     private importExport: ImportExportService,
-    private favicon: FaviconService
+    private favicon: FaviconService,
+    private hotkeysService: HotkeysService,
+    private dialogs: MatDialog
   ) {
+    this.handleHotkeyCheatsheet();
     keys.add([
       hotkey(KEYS_GO_ALL, 'Go to all tasks', () => router.navigate(['all'], { queryParamsHandling: 'merge' })),
       hotkey(KEYS_GO_ACTIVE, 'Go to active tasks', () =>
@@ -69,4 +102,27 @@ export class AppComponent {
       },
     })
   );
+  private handleHotkeyCheatsheet() {
+    let isDialogOpen = false;
+    this.hotkeysService.cheatSheetToggle.subscribe((isOpen) => {
+      if (isOpen === false) {
+        isDialogOpen = false;
+        this.dialogs.getDialogById(DialogHotkeysCheatsheetComponent.ID)?.close();
+      } else {
+        if (isDialogOpen) {
+          isDialogOpen = false;
+          this.dialogs.getDialogById(DialogHotkeysCheatsheetComponent.ID)?.close();
+        } else {
+          isDialogOpen = true;
+          this.dialogs
+            .open(DialogHotkeysCheatsheetComponent, { width: undefined, id: DialogHotkeysCheatsheetComponent.ID })
+            .afterClosed()
+            .subscribe(() => {
+              isDialogOpen = false;
+              this.hotkeysService.cheatSheetToggle.next(false);
+            });
+        }
+      }
+    });
+  }
 }

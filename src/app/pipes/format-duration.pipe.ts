@@ -1,4 +1,4 @@
-import { NgModule, Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 import { formatHours } from '@app/domain/date-time';
 import { isNumber } from '@app/utils/assert';
 import { Observable } from 'rxjs';
@@ -6,6 +6,7 @@ import { distinctUntilChanged, map } from 'rxjs/operators';
 
 @Pipe({
   name: 'formatDuration',
+  standalone: true,
 })
 export class FormatDurationPipe implements PipeTransform {
   transform(value: number): string;
@@ -19,6 +20,3 @@ export class FormatDurationPipe implements PipeTransform {
         );
   }
 }
-
-@NgModule({ declarations: [FormatDurationPipe], exports: [FormatDurationPipe] })
-export class FormatDurationPipeModule {}

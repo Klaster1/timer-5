@@ -1,9 +1,10 @@
-import { NgModule, Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform } from '@angular/core';
 import { RouteTaskState, TaskState } from '@app/domain/task';
 import { assertNever } from '@app/utils/assert';
 
 @Pipe({
   name: 'taskState',
+  standalone: true,
 })
 export class TaskStatePipe implements PipeTransform {
   transform(value?: RouteTaskState) {
@@ -23,6 +24,3 @@ export class TaskStatePipe implements PipeTransform {
     }
   }
 }
-
-@NgModule({ declarations: [TaskStatePipe], exports: [TaskStatePipe] })
-export class TaskStatePipeModule {}

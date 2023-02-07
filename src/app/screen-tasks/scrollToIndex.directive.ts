@@ -4,6 +4,7 @@ import { isNumber } from '@app/utils/assert';
 
 @Directive({
   selector: '[scrollToIndex]',
+  standalone: true,
 })
 export class ScrollToIndexDirective {
   @Input() itemSize?: number;

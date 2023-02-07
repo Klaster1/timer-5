@@ -1,6 +1,12 @@
+import { NgxMatDatetimePickerModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Control, FormControl, FormGroup, Validators } from '@ng-stack/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { Control, FormControl, FormGroup, NgsFormsModule, Validators } from '@ng-stack/forms';
 
 export interface DialogEditSessionData {
   start: number;
@@ -12,6 +18,18 @@ export interface DialogEditSessionData {
   templateUrl: './dialog-edit-session.component.html',
   styleUrls: ['./dialog-edit-session.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    MatDialogModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    NgsFormsModule,
+    MatDatepickerModule,
+    NgxMatDatetimePickerModule,
+    NgxMatTimepickerModule,
+    CommonModule,
+  ],
 })
 export class DialogEditSessionComponent {
   constructor(
