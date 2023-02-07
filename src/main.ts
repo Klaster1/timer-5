@@ -6,7 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter, withRouterConfig } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { AppComponent } from '@app/app.component';
-import { GameStateGuard } from '@app/guards/game-state.guard';
+import { gameStateGuard } from '@app/guards/game-state.guard';
 import { Effects } from '@app/ngrx/effects';
 import { ScreenTaskComponent } from '@app/screen-task/screen-task.component';
 import { ScreenTasksComponent } from '@app/screen-tasks/screen-tasks.component';
@@ -41,7 +41,7 @@ bootstrapApplication(AppComponent, {
         {
           path: ':state',
           component: ScreenTasksComponent,
-          canActivate: [GameStateGuard],
+          canActivate: [gameStateGuard],
           children: [
             {
               path: ':taskId',
