@@ -1,8 +1,4 @@
-import {
-  NgxMatDatetimePickerModule,
-  NgxMatNativeDateModule,
-  NgxMatTimepickerModule,
-} from '@angular-material-components/datetime-picker';
+import { NgxMatDatetimePickerModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -31,7 +27,6 @@ export interface DialogEditSessionData {
     NgsFormsModule,
     MatDatepickerModule,
     NgxMatDatetimePickerModule,
-    NgxMatNativeDateModule,
     NgxMatTimepickerModule,
     CommonModule,
   ],
