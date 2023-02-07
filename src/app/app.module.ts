@@ -1,6 +1,5 @@
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { MatDialog, MatDialogConfig, MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,7 +18,6 @@ import { HotkeyModule, HotkeysService } from 'angular2-hotkeys';
 import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { DialogEditSessionComponent } from './dialog-edit-session/dialog-edit-session.component';
 import { DialogHotkeysCheatsheetComponent } from './dialog-hotkeys-cheatsheet/dialog-hotkeys-cheatsheet.component';
 import { Effects } from './ngrx/effects';
 import { metaReducers } from './ngrx/metareducers';
@@ -27,8 +25,6 @@ import * as reducers from './ngrx/reducers';
 import { MapPipe } from './pipes/map.pipe';
 import { SafeUrlPipe } from './pipes/safe-resource-url.pipe';
 import { TaskStateIconPipe } from './pipes/task-state-icon.pipe';
-import { ScreenTaskComponent } from './screen-task/screen-task.component';
-import { ScreenTasksComponent } from './screen-tasks/screen-tasks.component';
 
 @NgModule({
   declarations: [AppComponent],
@@ -39,8 +35,6 @@ import { ScreenTasksComponent } from './screen-tasks/screen-tasks.component';
     LetModule,
     PushModule,
     AppRoutingModule,
-    ScreenTasksComponent,
-    ScreenTaskComponent,
     MatSidenavModule,
     MatMenuModule,
     MatListModule,
@@ -48,9 +42,6 @@ import { ScreenTasksComponent } from './screen-tasks/screen-tasks.component';
     MatTooltipModule,
     MatDialogModule,
     TaskStateIconPipe,
-    DialogEditSessionComponent,
-    HttpClientModule,
-    DialogHotkeysCheatsheetComponent,
     MapPipe,
     DragDropModule,
     SafeUrlPipe,
