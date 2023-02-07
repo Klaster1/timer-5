@@ -1,12 +1,12 @@
 import { NgxMatDatetimePickerModule, NgxMatTimepickerModule } from '@angular-material-components/datetime-picker';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { Control, FormControl, FormGroup, NgsFormsModule, Validators } from '@ng-stack/forms';
 
 export interface DialogEditSessionData {
   start: number;
@@ -24,7 +24,7 @@ export interface DialogEditSessionData {
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    NgsFormsModule,
+    ReactiveFormsModule,
     MatDatepickerModule,
     NgxMatDatetimePickerModule,
     NgxMatTimepickerModule,
@@ -36,15 +36,16 @@ export class DialogEditSessionComponent {
     @Inject(MAT_DIALOG_DATA) public data: DialogEditSessionData,
     private dialog: MatDialogRef<DialogEditSessionComponent, DialogEditSessionData>
   ) {}
-  form = new FormGroup<{ start: Control<Date>; end: Control<Date> }>({
-    start: new FormControl(new Date(this.data.start), [Validators.required]),
-    end: new FormControl(this.data.end ? new Date(this.data.end) : undefined),
+  form = new FormGroup<{ start: FormControl<Date>; end: FormControl<Date | null> }>({
+    start: new FormControl(new Date(this.data.start), { validators: [Validators.required], nonNullable: true }),
+    end: new FormControl(this.data.end ? new Date(this.data.end) : null),
   });
   onSubmit() {
-    if (this.form.valid)
+    const { start, end } = this.form.value;
+    if (this.form.valid && start)
       this.dialog.close({
-        start: this.form.value.start.valueOf(),
-        end: this.form.value.end?.valueOf(),
+        start: start.valueOf(),
+        end: end?.valueOf(),
       });
   }
 }
