@@ -39,7 +39,6 @@ import { TaskDurationPipe } from '@app/pipes/task-duration.pipe';
 import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
 import { TaskStatePipe } from '@app/pipes/task-state.pipe';
 import { TasksDurationPipe } from '@app/pipes/tasks-duration.pipe';
-import { NgsFormsModule } from '@ng-stack/forms';
 import { LetModule, PushModule } from '@ngrx/component';
 import { Store } from '@ngrx/store';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
@@ -62,7 +61,6 @@ import { TasksFilterComponent } from './tasks-filter/tasks-filter.component';
     EmptyStateComponent,
     TasksFilterComponent,
     CommonModule,
-    NgsFormsModule,
     LetModule,
     PushModule,
     TaskStatePipe,
