@@ -16,10 +16,12 @@ test('Adding a task', async (t) => {
   await t.navigateTo(urlTo('/'));
   // Click the empty state "Add task" button
   await t.click(screenTasks.emptyStateAddTaskButton);
-  // Submit the dialog with "Enter", assert a validation message is shown
+  // Unfocus the input, asset validation is show
+  await t.pressKey('tab').expect(dialogPrompt.validationError.textContent).contains('Value is required');
+  // Submit the dialog with "Enter", assert form is not submitted
+  await t.click(dialogPrompt.input).pressKey('enter');
   await t.expect(dialogPrompt.title.textContent).contains('Create task');
   await t.expect(dialogPrompt.input.focused).ok();
-  await t.pressKey('enter').expect(dialogPrompt.validationError.textContent).contains('Value is required');
   // Enter the task name, submit with "Enter", assert the dialog is closed
   await t.typeText(dialogPrompt.input, 'Test').pressKey('enter');
   await t.expect(dialogPrompt.title.exists).notOk();

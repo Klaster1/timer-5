@@ -7,6 +7,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import { A11yModule } from '@angular/cdk/a11y';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -21,7 +22,6 @@ import { StoreState } from '@app/domain/storage';
 import { selectDecodedFilterParams, selectFilterChartData, selectFilterRange } from '@app/ngrx/selectors';
 import { MapPipe } from '@app/pipes/map.pipe';
 import { deepEquals } from '@app/utils/assert';
-import { FormControl, FormGroup, NgsFormsModule } from '@ng-stack/forms';
 import { LetModule, PushModule } from '@ngrx/component';
 import { Store } from '@ngrx/store';
 import endOfDay from 'date-fns/endOfDay';
@@ -41,6 +41,8 @@ import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 import { ButtonResetInputComponent } from './button-reset-input.component';
 import { TimelineChartUplotComponent } from './timeline-chart-uplot.component';
 
+type Wrap<T> = Required<{ [Key in keyof T]: FormControl<T[Key]> }>;
+
 @Component({
   selector: 'tasks-filter',
   templateUrl: './tasks-filter.component.html',
@@ -59,7 +61,7 @@ import { TimelineChartUplotComponent } from './timeline-chart-uplot.component';
     MatMenuModule,
     MatFormFieldModule,
     MatInputModule,
-    NgsFormsModule,
+    ReactiveFormsModule,
     LetModule,
     PushModule,
     MatDatepickerModule,
@@ -76,7 +78,7 @@ import { TimelineChartUplotComponent } from './timeline-chart-uplot.component';
 export class TasksFilterComponent implements OnDestroy {
   constructor(private store: Store<StoreState>, private router: Router) {}
   hasChartData = hasChartData;
-  form = new FormGroup<FilterMatrixParams>({
+  form = new FormGroup<Wrap<FilterMatrixParams>>({
     search: new FormControl(),
     from: new FormControl(),
     to: new FormControl(),
