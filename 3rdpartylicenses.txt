@@ -93,9 +93,6 @@ MIT
 @angular/service-worker
 MIT
 
-@ng-stack/forms
-MIT
-
 @ngrx/component
 MIT
 
