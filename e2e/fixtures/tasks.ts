@@ -361,3 +361,31 @@ test('Editing a session', async (t) => {
     .click(dialogEditSession.buttonSubmit);
   await t.expect(dialogEditSession.validationErrorStart.textContent).contains('Start is required');
 });
+
+test('Moving a session', async (t) => {
+  // Have two tasks with sessions
+  await t.navigateTo(urlTo('/'));
+  await screenTasks.addTask('To');
+  await screenTasks.addTask('From');
+  await t.pressKey('s').wait(500).pressKey('s');
+  // Open task 1, drag a session to the task 2
+  await t.expect(screenTask.sessionStart.count).eql(1);
+  await t.dispatchEvent(screenTask.sessionRow, 'mousedown');
+  await t.hover(screenTasks.taskItem.withText('To'));
+  // Assert the task task list task is marked as drop target
+  await t.expect(screenTasks.taskItem.withText('To').hasClass('cdk-drop-list-dragging')).ok();
+  await t.expect(screenTask.sessionStart.count).eql(2);
+  // Drop the session
+  await t.dispatchEvent(screenTasks.taskItem.withText('To'), 'mouseup');
+  // Assert the target task is no longer marked as the drop target
+  await t.expect(screenTasks.taskItem.withText('To').hasClass('cdk-drop-list-dragging')).notOk();
+  // Assert the total for both tasks were updated
+  await t.expect(screenTasks.taskItem.withText('To').find(screenTasks.durationSelector).textContent).contains('00:00');
+  await t.expect(screenTasks.taskItem.withText('From').find(screenTasks.durationSelector).textContent).eql('');
+  // Assert the session was moved from task 1 to task 2
+  await t.expect(screenTask.name.textContent).contains('From');
+  await t.expect(screenTask.sessionStart.count).eql(0);
+  await t.pressKey('j');
+  await t.expect(screenTask.name.textContent).contains('To');
+  await t.expect(screenTask.sessionStart.count).eql(1);
+});

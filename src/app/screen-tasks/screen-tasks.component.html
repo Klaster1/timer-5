@@ -53,7 +53,9 @@
                     >{{ task | taskStateIcon }}</mat-icon
                   >
                   <span class="name" data-e2e="screen-tasks__task-name">{{ task.name }}</span>
-                  <span class="duration">{{ task | taskDuration: 5000 | formatDuration | ngrxPush }}</span>
+                  <span class="duration" data-e2e="screen-tasks__task-duration">{{
+                    task | taskDuration: 5000 | formatDuration | ngrxPush
+                  }}</span>
                 </a>
                 <button-task-actions [task]="task"></button-task-actions>
               </div>
