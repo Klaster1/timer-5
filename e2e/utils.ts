@@ -13,3 +13,4 @@ export const urlTo = (targetUrl: string): string => {
   return resolvedUrl.toString();
 };
 export const getLocationPathname = ClientFunction(() => window.location.pathname);
+export const getLocationSearch = ClientFunction(() => window.location.search);

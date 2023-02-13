@@ -15,4 +15,10 @@ export const screenTasks = {
     await t.pressKey('a').typeText(dialogPrompt.input, name).click(dialogPrompt.buttonSubmit);
     await t.expect(screenTasks.taskName.withExactText(name).exists).ok();
   },
+  filter: {
+    name: {
+      input: Selector('tasks-filter .name input'),
+      buttonClear: Selector('tasks-filter .name button-reset-input-control button'),
+    },
+  },
 };
