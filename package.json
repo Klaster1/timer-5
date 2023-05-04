@@ -30,7 +30,7 @@
     "@ngrx/effects": "^15.2.1",
     "@ngrx/router-store": "^15.2.1",
     "@ngrx/store": "^15.2.1",
-    "angular2-hotkeys": "^13.1.0",
+    "angular2-hotkeys": "^13.4.0",
     "date-fns": "^2.28.0",
     "immer": "^9.0.7",
     "nanoid": "^3.1.30",
