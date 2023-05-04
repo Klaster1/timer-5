@@ -78,7 +78,9 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
-          "options": {},
+          "options": {
+            "host": "127.0.0.1"
+          },
           "configurations": {
             "production": {
               "browserTarget": "timer:build:production"
