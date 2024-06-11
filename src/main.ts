@@ -1,7 +1,6 @@
-import { NgxMatNativeDateModule } from '@angular-material-components/datetime-picker';
 import { enableProdMode, importProvidersFrom } from '@angular/core';
-import { MatDialogConfig, MatDialogModule, MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
-import { bootstrapApplication, BrowserModule } from '@angular/platform-browser';
+import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogConfig, MatDialogModule } from '@angular/material/dialog';
+import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter, withRouterConfig } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
@@ -67,9 +66,8 @@ bootstrapApplication(AppComponent, {
     {
       provide: MAT_DIALOG_DEFAULT_OPTIONS,
       useFactory(): MatDialogConfig<any> {
-        return { width: '520px', autoFocus: true };
+        return { width: '600px', autoFocus: true };
       },
     },
-    importProvidersFrom(NgxMatNativeDateModule),
   ],
 });

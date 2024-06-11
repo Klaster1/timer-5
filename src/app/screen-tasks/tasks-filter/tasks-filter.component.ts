@@ -1,23 +1,18 @@
-import {
-  NgxMatDatetimePickerModule,
-  NgxMatNativeDateModule,
-  NgxMatTimepickerModule,
-} from '@angular-material-components/datetime-picker';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { A11yModule } from '@angular/cdk/a11y';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { Router } from '@angular/router';
-import { hasChartData, ScaleRange } from '@app/domain/chart';
-import { encodeFilterParams, FilterMatrixParams } from '@app/domain/router';
+import { DatetimeLocalDirective } from '@app/directives/datetime-local.directive';
+import { ScaleRange, hasChartData } from '@app/domain/chart';
+import { FilterMatrixParams, encodeFilterParams } from '@app/domain/router';
 import { StoreState } from '@app/domain/storage';
 import { selectDecodedFilterParams, selectFilterChartData, selectFilterRange } from '@app/ngrx/selectors';
 import { MapPipe } from '@app/pipes/map.pipe';
@@ -64,15 +59,12 @@ type Wrap<T> = Required<{ [Key in keyof T]: FormControl<T[Key]> }>;
     ReactiveFormsModule,
     LetModule,
     PushModule,
-    MatDatepickerModule,
-    NgxMatDatetimePickerModule,
-    NgxMatNativeDateModule,
-    NgxMatTimepickerModule,
     A11yModule,
     CommonModule,
     MapPipe,
     TimelineChartUplotComponent,
     ButtonResetInputComponent,
+    DatetimeLocalDirective,
   ],
 })
 export class TasksFilterComponent implements OnDestroy {

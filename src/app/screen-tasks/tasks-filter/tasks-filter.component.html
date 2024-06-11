@@ -28,16 +28,12 @@
     </mat-select>
   </mat-form-field>
   <mat-form-field class="from">
-    <input matInput [ngxMatDatetimePicker]="from" placeholder="From" formControlName="from" />
+    <input matInput placeholder="From" formControlName="from" type="datetime-local" />
     <button-reset-input-control matSuffix [control]="form.controls.from"></button-reset-input-control>
-    <mat-datepicker-toggle matSuffix [for]="$any(from)"></mat-datepicker-toggle>
-    <ngx-mat-datetime-picker #from [showSeconds]="true"> </ngx-mat-datetime-picker>
   </mat-form-field>
   <mat-form-field class="to">
-    <input matInput [ngxMatDatetimePicker]="to" placeholder="To" formControlName="to" cdkFocusRegionEnd />
+    <input matInput placeholder="To" formControlName="to" cdkFocusRegionEnd type="datetime-local" />
     <button-reset-input-control matSuffix [control]="form.controls.to"></button-reset-input-control>
-    <mat-datepicker-toggle matSuffix [for]="$any(to)"></mat-datepicker-toggle>
-    <ngx-mat-datetime-picker #to [showSeconds]="true"> </ngx-mat-datetime-picker>
   </mat-form-field>
   <button class="dates-menu" mat-icon-button matSuffix [matMenuTriggerFor]="fromMenu">
     <mat-icon>expand_more</mat-icon>
@@ -57,7 +53,7 @@
 <ng-container *ngIf="timelineUplot$ | ngrxPush as data; else ghost">
   <ng-container *ngIf="chartRange$ | ngrxPush as range; else ghost">
     <timeline-chart-uplot
-      *ngIf="data | map: hasChartData; else ghost"
+      *ngIf="data | map : hasChartData; else ghost"
       [@inOutAnimation]
       [chartData]="$any(data)"
       barWidth="day"
