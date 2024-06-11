@@ -28,10 +28,12 @@
     </mat-select>
   </mat-form-field>
   <mat-form-field class="from">
+    <mat-label>From</mat-label>
     <input matInput placeholder="From" formControlName="from" type="datetime-local" />
     <button-reset-input-control matSuffix [control]="form.controls.from"></button-reset-input-control>
   </mat-form-field>
   <mat-form-field class="to">
+    <mat-label>To</mat-label>
     <input matInput placeholder="To" formControlName="to" cdkFocusRegionEnd type="datetime-local" />
     <button-reset-input-control matSuffix [control]="form.controls.to"></button-reset-input-control>
   </mat-form-field>
