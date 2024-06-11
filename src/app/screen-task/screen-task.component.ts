@@ -11,22 +11,22 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { ButtonTaskActionsComponent } from '@app/button-task-actions/button-task-actions.component';
 import {
-  hotkey,
   KEYS_DELETE_TASK,
   KEYS_MARK_ACTIVE,
   KEYS_MARK_FINISHED,
   KEYS_RENAME,
   KEYS_START_STOP,
+  hotkey,
 } from '@app/domain/hotkeys';
 import { StoreState } from '@app/domain/storage';
-import { isTaskRunning, sessionDuration, Task, TaskState } from '@app/domain/task';
+import { Task, TaskState, isTaskRunning, sessionDuration } from '@app/domain/task';
 import { deleteTask, renameTaskIntent, startTask, stopTask, updateTaskState } from '@app/ngrx/actions';
 import { selectCurrentTask } from '@app/ngrx/selectors';
 import { FormatDurationPipe } from '@app/pipes/format-duration.pipe';
 import { MapPipe } from '@app/pipes/map.pipe';
 import { TaskDurationPipe } from '@app/pipes/task-duration.pipe';
 import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
-import { LetModule, PushModule } from '@ngrx/component';
+import { LetDirective, PushPipe } from '@ngrx/component';
 import { Store } from '@ngrx/store';
 import { HotkeysService } from 'angular2-hotkeys';
 import { NgScrollbarModule } from 'ngx-scrollbar';
@@ -42,8 +42,8 @@ import { ButtonSessionActionsComponent } from './button-session-actions/button-s
   standalone: true,
   imports: [
     CommonModule,
-    LetModule,
-    PushModule,
+    LetDirective,
+    PushPipe,
     RouterModule,
     TaskStateIconPipe,
     MatCardModule,

@@ -17,7 +17,7 @@ import { StoreState } from '@app/domain/storage';
 import { selectDecodedFilterParams, selectFilterChartData, selectFilterRange } from '@app/ngrx/selectors';
 import { MapPipe } from '@app/pipes/map.pipe';
 import { deepEquals } from '@app/utils/assert';
-import { LetModule, PushModule } from '@ngrx/component';
+import { LetDirective, PushPipe } from '@ngrx/component';
 import { Store } from '@ngrx/store';
 import endOfDay from 'date-fns/endOfDay';
 import endOfMonth from 'date-fns/endOfMonth';
@@ -57,8 +57,8 @@ type Wrap<T> = Required<{ [Key in keyof T]: FormControl<T[Key]> }>;
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,
-    LetModule,
-    PushModule,
+    LetDirective,
+    PushPipe,
     A11yModule,
     CommonModule,
     MapPipe,

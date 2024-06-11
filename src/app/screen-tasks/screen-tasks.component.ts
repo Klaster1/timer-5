@@ -19,15 +19,15 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterModule } from '@angular/router';
 import { ButtonTaskActionsComponent } from '@app/button-task-actions/button-task-actions.component';
-import { hotkey, KEYS_ADD, KEYS_NEXT, KEYS_PREV, KEYS_SEARCH } from '@app/domain/hotkeys';
+import { KEYS_ADD, KEYS_NEXT, KEYS_PREV, KEYS_SEARCH, hotkey } from '@app/domain/hotkeys';
 import { StoreState } from '@app/domain/storage';
-import { isTaskRunning, SessionDragEvent, Task, TaskState } from '@app/domain/task';
+import { SessionDragEvent, Task, TaskState, isTaskRunning } from '@app/domain/task';
 import * as actions from '@app/ngrx/actions';
 import { moveSessionToTask } from '@app/ngrx/actions';
 import {
   selectCurrentTaskIndex,
-  selectCurrentTasks,
   selectCurrentTaskState,
+  selectCurrentTasks,
   selectDecodedFilterParams,
   selectIsCurrentTaskOpened,
   selectNextTaskId,
@@ -39,11 +39,11 @@ import { TaskDurationPipe } from '@app/pipes/task-duration.pipe';
 import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
 import { TaskStatePipe } from '@app/pipes/task-state.pipe';
 import { TasksDurationPipe } from '@app/pipes/tasks-duration.pipe';
-import { LetModule, PushModule } from '@ngrx/component';
+import { LetDirective, PushPipe } from '@ngrx/component';
 import { Store } from '@ngrx/store';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
 import { NgScrollbarModule } from 'ngx-scrollbar';
-import { firstValueFrom, merge, Observable, Subject } from 'rxjs';
+import { Observable, Subject, firstValueFrom, merge } from 'rxjs';
 import { map, shareReplay, take } from 'rxjs/operators';
 import { CheckViewportSizeWhenValueChangesDirective } from './checkViewportSizeWhenValueChanges.directive';
 import { EmptyStateComponent } from './empty-state/empty-state.component';
@@ -61,8 +61,8 @@ import { TasksFilterComponent } from './tasks-filter/tasks-filter.component';
     EmptyStateComponent,
     TasksFilterComponent,
     CommonModule,
-    LetModule,
-    PushModule,
+    LetDirective,
+    PushPipe,
     TaskStatePipe,
     FormatDurationPipe,
     TaskDurationPipe,

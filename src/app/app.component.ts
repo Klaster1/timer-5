@@ -10,13 +10,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterModule } from '@angular/router';
 import { toggleTheme } from '@app/ngrx/actions';
 import { isAnyTaskActive, selectTasks, selectTheme } from '@app/ngrx/selectors';
-import { LetModule, PushModule } from '@ngrx/component';
+import { LetDirective, PushPipe } from '@ngrx/component';
 import { Store } from '@ngrx/store';
 import { HotkeysService } from 'angular2-hotkeys';
 import { distinctUntilChanged } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { DialogHotkeysCheatsheetComponent } from './dialog-hotkeys-cheatsheet/dialog-hotkeys-cheatsheet.component';
-import { hotkey, KEYS_GO_ACTIVE, KEYS_GO_ALL, KEYS_GO_FINISHED } from './domain/hotkeys';
+import { KEYS_GO_ACTIVE, KEYS_GO_ALL, KEYS_GO_FINISHED, hotkey } from './domain/hotkeys';
 import { StoreState, toStoredTasks } from './domain/storage';
 import { TaskState } from './domain/task';
 import { MapPipe } from './pipes/map.pipe';
@@ -33,8 +33,8 @@ import { ImportExportService } from './services/import-export.service';
   standalone: true,
   imports: [
     CommonModule,
-    LetModule,
-    PushModule,
+    LetDirective,
+    PushPipe,
     MatSidenavModule,
     MatMenuModule,
     MatListModule,
