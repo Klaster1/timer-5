@@ -57,14 +57,14 @@ body {
 }
 
 @include fix-icon-color(
-  map-get(mat.$light-theme-foreground-palette, 'secondary-text'),
-  map-get(mat.$light-theme-foreground-palette, 'icon')
+  map-get(mat.$m2-light-theme-foreground-palette, 'secondary-text'),
+  map-get(mat.$m2-light-theme-foreground-palette, 'icon')
 );
 
 .theme-alternate {
   @include fix-icon-color(
-    map-get(mat.$dark-theme-foreground-palette, 'secondary-text'),
-    map-get(mat.$dark-theme-foreground-palette, 'icon')
+    map-get(mat.$m2-dark-theme-foreground-palette, 'secondary-text'),
+    map-get(mat.$m2-dark-theme-foreground-palette, 'icon')
   );
 }
 
