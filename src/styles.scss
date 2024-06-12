@@ -1,79 +1,109 @@
-/* You can add global styles to this file, and also import other style files */
-@use '@angular/material' as mat;
-// @import './theme.scss';
-@import './theme-15.scss';
-@import 'uplot/dist/uPlot.min.css';
+// /* You can add global styles to this file, and also import other style files */
+// @use '@angular/material' as mat;
+// // @import './theme.scss';
+// @import './theme-15.scss';
+// @import 'uplot/dist/uPlot.min.css';
 
+// @mixin nav-link-active($color) {
+//   .mat-mdc-list-base .mat-mdc-list-item.nav-link-active .mat-icon-no-color,
+//   .nav-link-active,
+//   .nav-link-active .mat-icon {
+//     color: $color !important;
+//   }
+// }
+
+// @include nav-link-active(var(--primary-darker-color));
+
+// // https://github.com/angular/components/issues/9664
+// @mixin fix-icon-color($active-focused, $active-unfocused) {
+//   .mat-icon-no-color.fix-icon-color {
+//     color: $active-focused;
+//   }
+//   mat-select,
+//   .mat-mdc-list-base .mat-mdc-list-item,
+//   .mat-mdc-option,
+//   .mat-mdc-icon-button {
+//     .mat-icon-no-color,
+//     .mat-select-arrow {
+//       color: $active-focused;
+//     }
+//   }
+//   .mat-select-arrow-wrapper .mat-select-arrow {
+//     color: $active-focused;
+//   }
+
+//   mat-select:hover,
+//   .mat-mdc-list-item:hover,
+//   .mat-mdc-option.mat-active,
+//   .mat-option:hover,
+//   .mat-mdc-icon-button:hover {
+//     .mat-select-arrow,
+//     .mat-icon-no-color {
+//       color: $active-unfocused;
+//     }
+//   }
+// }
+
+// @include fix-icon-color(
+//   map-get(mat.$m2-light-theme-foreground-palette, 'secondary-text'),
+//   map-get(mat.$m2-light-theme-foreground-palette, 'icon')
+// );
+
+// .theme-alternate {
+//   @include fix-icon-color(
+//     map-get(mat.$m2-dark-theme-foreground-palette, 'secondary-text'),
+//     map-get(mat.$m2-dark-theme-foreground-palette, 'icon')
+//   );
+// }
+
+// a {
+//   color: var(--primary-darker-color);
+//   text-decoration: none;
+// }
+
+// // Preserve Angular Material 13 behavior, hide tooltip when pointer leaves the trigger
+// .mat-mdc-tooltip-panel {
+//   pointer-events: none !important;
+// }
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+@use './m3-theme' as theme;
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+:root {
+  @include mat.all-component-themes(theme.$light-theme);
+}
+
+// Comment out the line below if you want to use the pre-defined typography utility classes.
+// For more information: https://material.angular.io/guide/typography#using-typography-styles-in-your-application.
+// @include mat.typography-hierarchy($light-theme);
+
+// Comment out the line below if you want to use the deprecated `color` inputs.
+// @include mat.color-variants-backwards-compatibility($light-theme);
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  height: 100%;
+}
 body {
   padding: 0;
   margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
   min-height: 100vh;
   display: flex;
-  font-family: Roboto, sans-serif;
 }
-
-@mixin nav-link-active($color) {
-  .mat-mdc-list-base .mat-mdc-list-item.nav-link-active .mat-icon-no-color,
-  .nav-link-active,
-  .nav-link-active .mat-icon {
-    color: $color !important;
-  }
-}
-
-@include nav-link-active(var(--primary-darker-color));
 
 .ng-scroll-content {
   max-width: 100%;
-}
-
-// https://github.com/angular/components/issues/9664
-@mixin fix-icon-color($active-focused, $active-unfocused) {
-  .mat-icon-no-color.fix-icon-color {
-    color: $active-focused;
-  }
-  mat-select,
-  .mat-mdc-list-base .mat-mdc-list-item,
-  .mat-mdc-option,
-  .mat-mdc-icon-button {
-    .mat-icon-no-color,
-    .mat-select-arrow {
-      color: $active-focused;
-    }
-  }
-  .mat-select-arrow-wrapper .mat-select-arrow {
-    color: $active-focused;
-  }
-
-  mat-select:hover,
-  .mat-mdc-list-item:hover,
-  .mat-mdc-option.mat-active,
-  .mat-option:hover,
-  .mat-mdc-icon-button:hover {
-    .mat-select-arrow,
-    .mat-icon-no-color {
-      color: $active-unfocused;
-    }
-  }
-}
-
-@include fix-icon-color(
-  map-get(mat.$m2-light-theme-foreground-palette, 'secondary-text'),
-  map-get(mat.$m2-light-theme-foreground-palette, 'icon')
-);
-
-.theme-alternate {
-  @include fix-icon-color(
-    map-get(mat.$m2-dark-theme-foreground-palette, 'secondary-text'),
-    map-get(mat.$m2-dark-theme-foreground-palette, 'icon')
-  );
-}
-
-a {
-  color: var(--primary-darker-color);
-  text-decoration: none;
-}
-
-// Preserve Angular Material 13 behavior, hide tooltip when pointer leaves the trigger
-.mat-mdc-tooltip-panel {
-  pointer-events: none !important;
 }
