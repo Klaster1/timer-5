@@ -88,6 +88,7 @@ $tmp-theme-dark: mat.define-theme(
 
 :root {
   @include mat.all-component-themes($tmp-theme-light);
+  --mat-sidenav-container-width: 65px;
 }
 :root:has(.theme-alternate) {
   @include mat.all-component-colors($tmp-theme-dark);
