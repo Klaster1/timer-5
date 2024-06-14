@@ -11,7 +11,8 @@ h2 {
   text-overflow: ellipsis;
 
   mat-icon {
-    vertical-align: text-bottom;
+    position: relative;
+    top: 3px;
     margin-right: 0.25em;
   }
 }
