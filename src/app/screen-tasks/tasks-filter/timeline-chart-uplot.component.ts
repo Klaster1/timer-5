@@ -15,7 +15,6 @@ import { ScaleRange } from '@app/domain/chart';
 import { formatHours } from '@app/domain/date-time';
 import { StoreState } from '@app/domain/storage';
 import { selectTheme } from '@app/ngrx/selectors';
-import { last } from '@app/utils/array';
 import { isNumber } from '@app/utils/assert';
 import { Store } from '@ngrx/store';
 import format from 'date-fns/format';
@@ -120,19 +119,19 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
     const oldMin = Math.round(this.uplot?.scales.x?.min ?? -1);
     const oldMax = Math.round(this.uplot?.scales.x?.max ?? -1);
     const dataMin = this.chartData?.[0]?.[0];
-    const dataMax = last(this.chartData?.[0] ?? []);
+    const dataMax = this.chartData?.[0][this.chartData?.[0].length - 1] ?? [];
     const newMin =
       value[0] instanceof Date
         ? millisecondsToSeconds(value[0].valueOf())
         : isNumber(dataMin)
-        ? dataMin
-        : millisecondsToSeconds(Date.now());
+          ? dataMin
+          : millisecondsToSeconds(Date.now());
     const newMax =
       value[1] instanceof Date
         ? millisecondsToSeconds(value[1].valueOf())
         : isNumber(dataMax)
-        ? dataMax
-        : millisecondsToSeconds(Date.now());
+          ? dataMax
+          : millisecondsToSeconds(Date.now());
     if (oldMin === newMin && oldMax === newMax) return;
     // Wait until visible
     setTimeout(() => this.uplot?.setScale('x', { min: newMin, max: newMax }));
@@ -149,7 +148,11 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
       this.uplot?.redraw(false);
     });
   });
-  constructor(private store: Store<StoreState>, private elementRef: ElementRef<HTMLElement>, private ngZone: NgZone) {}
+  constructor(
+    private store: Store<StoreState>,
+    private elementRef: ElementRef<HTMLElement>,
+    private ngZone: NgZone,
+  ) {}
   getLegendValue(value: number) {
     return value ? formatHours(value) : '--:--';
   }
@@ -182,7 +185,7 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
                   return;
                 }
                 const dataMin = self.data[0][0];
-                const dataMax = last(self.data[0]);
+                const dataMax = self.data[0][self.data[0].length - 1];
                 const min = scale.min === dataMin ? null : new Date(secondsToMilliseconds(scale.min));
                 const max = scale.max === dataMax ? null : new Date(secondsToMilliseconds(scale.max));
                 const event = [min, max] as const;
@@ -221,7 +224,7 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
           ],
         },
         this.chartData,
-        this.elementRef.nativeElement
+        this.elementRef.nativeElement,
       );
     });
   }

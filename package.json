@@ -34,7 +34,7 @@
     "ngrx-store-localstorage": "^18.0.0",
     "rxjs": "^7.8.1",
     "tslib": "^2.0.0",
-    "uplot": "^1.6.18",
+    "uplot": "^1.6.30",
     "zone.js": "~0.14.7"
   },
   "devDependencies": {
