@@ -29,7 +29,6 @@ import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
 import { LetDirective, PushPipe } from '@ngrx/component';
 import { Store } from '@ngrx/store';
 import { HotkeysService } from 'angular2-hotkeys';
-import { NgScrollbarModule } from 'ngx-scrollbar';
 import { combineLatest } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { ButtonSessionActionsComponent } from './button-session-actions/button-session-actions.component';
@@ -53,7 +52,6 @@ import { ButtonSessionActionsComponent } from './button-session-actions/button-s
     MatListModule,
     MatTableModule,
     MatTooltipModule,
-    NgScrollbarModule,
     FormatDurationPipe,
     TaskDurationPipe,
     ButtonTaskActionsComponent,

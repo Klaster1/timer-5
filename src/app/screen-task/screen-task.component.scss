@@ -21,6 +21,7 @@ h2 {
   bottom: var(--fab-offset);
   right: var(--fab-offset);
   left: 50%;
+  z-index: 10;
 }
 .session-tabular-data {
   display: grid;
@@ -44,6 +45,7 @@ table {
   max-width: 40px;
   min-width: 40px;
 }
-ng-scrollbar {
+.scroll-container {
   flex: 1;
+  overflow: auto;
 }

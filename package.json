@@ -35,7 +35,6 @@
     "nanoid": "^3.1.30",
     "ngrx-immer": "^2.0.1",
     "ngrx-store-localstorage": "^15.0.0",
-    "ngx-scrollbar": "^11.0.0",
     "rxjs": "^7.8.0",
     "tslib": "^2.0.0",
     "uplot": "^1.6.18",

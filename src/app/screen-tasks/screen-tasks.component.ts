@@ -42,7 +42,6 @@ import { TasksDurationPipe } from '@app/pipes/tasks-duration.pipe';
 import { LetDirective, PushPipe } from '@ngrx/component';
 import { Store } from '@ngrx/store';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
-import { NgScrollbarModule } from 'ngx-scrollbar';
 import { Observable, Subject, firstValueFrom, merge } from 'rxjs';
 import { map, shareReplay, take } from 'rxjs/operators';
 import { CheckViewportSizeWhenValueChangesDirective } from './checkViewportSizeWhenValueChanges.directive';
@@ -70,7 +69,6 @@ import { TasksFilterComponent } from './tasks-filter/tasks-filter.component';
     TaskStateIconPipe,
     RouterModule,
     ScrollingModule,
-    NgScrollbarModule,
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,

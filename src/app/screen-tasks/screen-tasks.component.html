@@ -4,7 +4,7 @@
       <h1 *ngrxLet="state$ as state">
         <ng-container> {{ state | taskState }} </ng-container>
         <span
-          *ngIf="tasks | tasksDuration: 20000 | formatDuration | ngrxPush as duration"
+          *ngIf="tasks | tasksDuration : 20000 | formatDuration | ngrxPush as duration"
           class="state-duration"
           data-e2e="screen-tasks__total"
         >
@@ -22,47 +22,44 @@
       <button (click)="addTask()" mat-fab color="accent" data-e2e="button-add-task">
         <mat-icon>add</mat-icon>
       </button>
-      <ng-scrollbar>
-        <cdk-virtual-scroll-viewport
-          #scroll
-          [itemSize]="48"
-          scrollViewport
-          [scrollToIndex]="currentTaskIndex$ | ngrxPush"
-          [checkViewportSizeWhenValueChanges]="tasks"
-        >
-          <mat-nav-list>
-            <mat-list-item
-              *cdkVirtualFor="let task of tasks; trackBy: taskId"
-              cdkDropList
-              (cdkDropListDropped)="onDrop($event, task)"
-              data-e2e="screen-tasks__task-item"
-            >
-              <div class="item-content">
-                <a
-                  matLine
-                  [routerLink]="[task.id]"
-                  queryParamsHandling="merge"
-                  fixRouterLinkActive
-                  routerLinkActive="nav-link-active"
-                  class="task-link"
-                  #rla="routerLinkActive"
+      <cdk-virtual-scroll-viewport
+        #scroll
+        [itemSize]="48"
+        [scrollToIndex]="currentTaskIndex$ | ngrxPush"
+        [checkViewportSizeWhenValueChanges]="tasks"
+      >
+        <mat-nav-list>
+          <mat-list-item
+            *cdkVirtualFor="let task of tasks; trackBy: taskId"
+            cdkDropList
+            (cdkDropListDropped)="onDrop($event, task)"
+            data-e2e="screen-tasks__task-item"
+          >
+            <div class="item-content">
+              <a
+                matLine
+                [routerLink]="[task.id]"
+                queryParamsHandling="merge"
+                fixRouterLinkActive
+                routerLinkActive="nav-link-active"
+                class="task-link"
+                #rla="routerLinkActive"
+              >
+                <mat-icon
+                  [ngClass]="{ running: task | map : isTaskRunning }"
+                  data-e2e="screen-tasks__task-state-icon"
+                  >{{ task | taskStateIcon }}</mat-icon
                 >
-                  <mat-icon
-                    [ngClass]="{ running: task | map: isTaskRunning }"
-                    data-e2e="screen-tasks__task-state-icon"
-                    >{{ task | taskStateIcon }}</mat-icon
-                  >
-                  <span class="name" data-e2e="screen-tasks__task-name">{{ task.name }}</span>
-                  <span class="duration" data-e2e="screen-tasks__task-duration">{{
-                    task | taskDuration: 5000 | formatDuration | ngrxPush
-                  }}</span>
-                </a>
-                <button-task-actions [task]="task"></button-task-actions>
-              </div>
-            </mat-list-item>
-          </mat-nav-list>
-        </cdk-virtual-scroll-viewport>
-      </ng-scrollbar>
+                <span class="name" data-e2e="screen-tasks__task-name">{{ task.name }}</span>
+                <span class="duration" data-e2e="screen-tasks__task-duration">{{
+                  task | taskDuration : 5000 | formatDuration | ngrxPush
+                }}</span>
+              </a>
+              <button-task-actions [task]="task"></button-task-actions>
+            </div>
+          </mat-list-item>
+        </mat-nav-list>
+      </cdk-virtual-scroll-viewport>
     </ng-container>
     <ng-template #noTasks>
       <empty-state *ngIf="(searchOpened$ | ngrxPush) === false; else noSearchResults">
