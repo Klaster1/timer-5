@@ -90,6 +90,7 @@ $tmp-theme-dark: mat.define-theme(
   @include mat.all-component-themes($tmp-theme-light);
   --mat-sidenav-container-width: 65px;
   --mat-icon-color: var(--mat-form-field-leading-icon-color);
+  --mat-sidenav-container-shape: 0;
 }
 :root:has(.theme-alternate) {
   @include mat.all-component-colors($tmp-theme-dark);
