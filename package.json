@@ -45,10 +45,10 @@
     "@types/node": "^18.16.3",
     "@types/shortid": "0.0.29",
     "angular-cli-ghpages": "^1.0.0",
-    "angular-testcafe": "^3.0.0",
+    "angular-testcafe": "^4.0.0",
     "prettier": "^3.3.2",
     "prettier-plugin-organize-imports": "^3.2.4",
-    "testcafe": "^2.5.1-rc.1",
+    "testcafe": "^3.6.1",
     "tmp-promise": "^3.0.3",
     "typescript": "~5.4.5"
   }
