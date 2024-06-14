@@ -59,16 +59,16 @@ export class AppComponent {
     private importExport: ImportExportService,
     private favicon: FaviconService,
     private hotkeysService: HotkeysService,
-    private dialogs: MatDialog
+    private dialogs: MatDialog,
   ) {
     this.handleHotkeyCheatsheet();
     keys.add([
       hotkey(KEYS_GO_ALL, 'Go to all tasks', () => router.navigate(['all'], { queryParamsHandling: 'merge' })),
       hotkey(KEYS_GO_ACTIVE, 'Go to active tasks', () =>
-        router.navigate([TaskState.active], { queryParamsHandling: 'merge' })
+        router.navigate([TaskState.active], { queryParamsHandling: 'merge' }),
       ),
       hotkey(KEYS_GO_FINISHED, 'Go to finished tasks', () =>
-        router.navigate([TaskState.finished], { queryParamsHandling: 'merge' })
+        router.navigate([TaskState.finished], { queryParamsHandling: 'merge' }),
       ),
     ]);
     this.theme$.subscribe((t) => document.body.classList.toggle('theme-alternate', t === 'dark'));
@@ -93,14 +93,14 @@ export class AppComponent {
   exportUrl$ = this.store.select(selectTasks).pipe(
     map(toStoredTasks),
     map((tasks) =>
-      URL.createObjectURL(new Blob([JSON.stringify(tasks, null, '  ')], { type: 'application/json;charset=utf-8;' }))
+      URL.createObjectURL(new Blob([JSON.stringify(tasks, null, '  ')], { type: 'application/json;charset=utf-8;' })),
     ),
     tap({
       next: (url) => (this.lastExportUrl = url),
       complete: () => {
         if (this.lastExportUrl) URL.revokeObjectURL(this.lastExportUrl);
       },
-    })
+    }),
   );
   private handleHotkeyCheatsheet() {
     let isDialogOpen = false;
