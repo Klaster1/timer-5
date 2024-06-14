@@ -4,7 +4,7 @@
       <h1 *ngrxLet="state$ as state">
         <ng-container> {{ state | taskState }} </ng-container>
         <span
-          *ngIf="tasks | tasksDuration : 20000 | formatDuration | ngrxPush as duration"
+          *ngIf="tasks | tasksDuration: 20000 | formatDuration | ngrxPush as duration"
           class="state-duration"
           data-e2e="screen-tasks__total"
         >
@@ -45,14 +45,12 @@
                 class="task-link"
                 #rla="routerLinkActive"
               >
-                <mat-icon
-                  [ngClass]="{ running: task | map : isTaskRunning }"
-                  data-e2e="screen-tasks__task-state-icon"
-                  >{{ task | taskStateIcon }}</mat-icon
-                >
+                <mat-icon [ngClass]="{ running: task | map: isTaskRunning }" data-e2e="screen-tasks__task-state-icon">{{
+                  task | taskStateIcon
+                }}</mat-icon>
                 <span class="name" data-e2e="screen-tasks__task-name">{{ task.name }}</span>
                 <span class="duration" data-e2e="screen-tasks__task-duration">{{
-                  task | taskDuration : 5000 | formatDuration | ngrxPush
+                  task | taskDuration: 5000 | formatDuration | ngrxPush
                 }}</span>
               </a>
               <button-task-actions [task]="task"></button-task-actions>

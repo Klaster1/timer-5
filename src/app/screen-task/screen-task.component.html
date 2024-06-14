@@ -14,21 +14,21 @@
       <ng-container matColumnDef="start">
         <th mat-header-cell *matHeaderCellDef class="header-start">Start</th>
         <td mat-cell *matCellDef="let session" data-e2e="screen-task__session-start">
-          {{ session.start | date : 'yyyy-MM-dd H:mm' }}
+          {{ session.start | date: 'yyyy-MM-dd H:mm' }}
         </td>
         <td mat-footer-cell *matFooterCellDef>Total</td>
       </ng-container>
       <ng-container matColumnDef="end">
         <th mat-header-cell *matHeaderCellDef class="header-end">End</th>
         <td mat-cell *matCellDef="let session" data-e2e="screen-task__session-end">
-          {{ session.end | date : 'yyyy-MM-dd H:mm' }}
+          {{ session.end | date: 'yyyy-MM-dd H:mm' }}
         </td>
         <td mat-footer-cell *matFooterCellDef></td>
       </ng-container>
       <ng-container matColumnDef="duration">
         <th mat-header-cell *matHeaderCellDef class="header-duration">Duration</th>
         <td mat-cell *matCellDef="let session" data-e2e="screen-task__session-duration">
-          {{ session | map : sessionDuration | formatDuration | ngrxPush }}
+          {{ session | map: sessionDuration | formatDuration | ngrxPush }}
         </td>
         <td mat-footer-cell *matFooterCellDef data-e2e="screen-task__task-duration">
           {{ task | taskDuration | formatDuration | ngrxPush }}
