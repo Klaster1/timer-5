@@ -47,8 +47,6 @@
     "@types/minimist": "^1.2.0",
     "@types/node": "^18.16.3",
     "@types/shortid": "0.0.29",
-    "@types/yargs": "^15.0.11",
-    "ajv": "^8.12.0",
     "angular-cli-ghpages": "^1.0.0",
     "angular-testcafe": "^3.0.0",
     "jasmine-core": "~3.6.0",
@@ -63,7 +61,6 @@
     "testcafe": "^2.5.1-rc.1",
     "tmp-promise": "^3.0.3",
     "ts-node": "^8.10.1",
-    "typescript": "~5.4.5",
-    "yargs": "^16.1.1"
+    "typescript": "~5.4.5"
   }
 }
