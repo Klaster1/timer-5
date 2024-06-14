@@ -9,7 +9,6 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "analyze": "ng build --configuration production --stats-json && webpack-bundle-analyzer ./dist/timer/stats.json",
     "deploy": "ng deploy --base-href=/timer-5/"
   },
   "private": true,
@@ -79,7 +78,6 @@
     "tmp-promise": "^3.0.3",
     "ts-node": "^8.10.1",
     "typescript": "~5.4.5",
-    "webpack-bundle-analyzer": "^4.5.0",
     "yargs": "^16.1.1"
   }
 }
