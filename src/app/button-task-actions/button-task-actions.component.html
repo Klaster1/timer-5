@@ -4,27 +4,10 @@
   </button>
   <mat-menu #menu="matMenu">
     <ng-template matMenuContent>
-      <div mat-menu-item (click)="$event.stopPropagation()">
-        <mat-select
-          [value]="task.state"
-          (selectionChange)="changeTaskState($event.value)"
-          data-e2e="button-task-actions__selector-state"
-        >
-          <mat-select-trigger>{{ task.state | taskState }}</mat-select-trigger>
-          <mat-option [value]="taskState.active" data-e2e="button-task-actions__state-option-active"
-            ><mat-icon>{{ taskState.active | taskStateIcon }}</mat-icon
-            >Active</mat-option
-          >
-          <mat-option [value]="taskState.finished" data-e2e="button-task-actions__state-option-finished"
-            ><mat-icon>{{ taskState.finished | taskStateIcon }}</mat-icon
-            >Finished</mat-option
-          >
-          <mat-option [value]="taskState.dropped" data-e2e="button-task-actions__state-option-dropped"
-            ><mat-icon>{{ taskState.dropped | taskStateIcon }}</mat-icon
-            >Dropped</mat-option
-          >
-        </mat-select>
-      </div>
+      <button mat-menu-item [mat-menu-trigger-for]="statuses" data-e2e="button-task-actions__trigger-state">
+        <mat-icon>{{ task.state | taskStateIcon }}</mat-icon>
+        State: {{ task.state | taskState }}
+      </button>
       <button mat-menu-item type="button" (click)="renameTask()" data-e2e="button-task-actions__button-rename">
         Rename
       </button>
@@ -32,5 +15,34 @@
         Delete
       </button>
     </ng-template>
+  </mat-menu>
+  <mat-menu #statuses="matMenu">
+    <button
+      mat-menu-item
+      type="button"
+      (click)="changeTaskState(taskState.active)"
+      data-e2e="button-task-actions__state-option-active"
+    >
+      <mat-icon>{{ taskState.active | taskStateIcon }}</mat-icon
+      >Change to active
+    </button>
+    <button
+      mat-menu-item
+      type="button"
+      (click)="changeTaskState(taskState.finished)"
+      data-e2e="button-task-actions__state-option-finished"
+    >
+      <mat-icon>{{ taskState.finished | taskStateIcon }}</mat-icon
+      >Change to finished
+    </button>
+    <button
+      mat-menu-item
+      type="button"
+      (click)="changeTaskState(taskState.dropped)"
+      data-e2e="button-task-actions__state-option-dropped"
+    >
+      <mat-icon>{{ taskState.dropped | taskStateIcon }}</mat-icon
+      >Change to dropped
+    </button>
   </mat-menu>
 </ng-container>

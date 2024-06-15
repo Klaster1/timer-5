@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatSelectModule } from '@angular/material/select';
 import { StoreState } from '@app/domain/storage';
 import { Task, TaskState } from '@app/domain/task';
 import { deleteTask, renameTaskIntent, updateTaskState } from '@app/ngrx/actions';
@@ -17,15 +16,7 @@ import { Store } from '@ngrx/store';
   selector: 'button-task-actions',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [
-    MatMenuModule,
-    MatButtonModule,
-    MatSelectModule,
-    MatIconModule,
-    TaskStateIconPipe,
-    TaskStatePipe,
-    CommonModule,
-  ],
+  imports: [MatMenuModule, MatButtonModule, MatIconModule, TaskStateIconPipe, TaskStatePipe, CommonModule],
 })
 export class ButtonTaskActionsComponent {
   constructor(private store: Store<StoreState>) {}
