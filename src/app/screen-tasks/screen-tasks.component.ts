@@ -46,7 +46,6 @@ import { Observable, Subject, firstValueFrom, merge } from 'rxjs';
 import { map, shareReplay, take } from 'rxjs/operators';
 import { CheckViewportSizeWhenValueChangesDirective } from './checkViewportSizeWhenValueChanges.directive';
 import { EmptyStateComponent } from './empty-state/empty-state.component';
-import { FixRouterLinkActiveDirective } from './fixRouterLinkActive.directive';
 import { ScrollToIndexDirective } from './scrollToIndex.directive';
 import { TasksFilterComponent } from './tasks-filter/tasks-filter.component';
 
@@ -81,7 +80,6 @@ import { TasksFilterComponent } from './tasks-filter/tasks-filter.component';
     MapPipe,
     DragDropModule,
     CheckViewportSizeWhenValueChangesDirective,
-    FixRouterLinkActiveDirective,
     ScrollToIndexDirective,
   ],
 })
@@ -93,7 +91,7 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
   filterToggles$ = new Subject<boolean>();
   filterPresent$: Observable<boolean> = this.filterParams$.pipe(map((params) => !!Object.keys(params).length));
   searchOpened$ = merge(this.filterPresent$.pipe(take(1)), this.filterToggles$).pipe(
-    shareReplay({ refCount: true, bufferSize: 1 })
+    shareReplay({ refCount: true, bufferSize: 1 }),
   );
   tasks$ = this.store.select(selectCurrentTasks);
   currentTaskIndex$ = this.store.select(selectCurrentTaskIndex);
@@ -119,7 +117,7 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
         return true;
       },
       ['INPUT'],
-      'Toggle search'
+      'Toggle search',
     ),
   ];
 
@@ -129,7 +127,7 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     private store: Store<StoreState>,
     private keys: HotkeysService,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit() {
@@ -160,7 +158,7 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
         taskIdFrom: event.item.data[1],
         taskIdTo: item.id,
         session: { ...event.item.data[0] },
-      })
+      }),
     );
   }
 }

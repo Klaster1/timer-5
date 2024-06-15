@@ -34,6 +34,7 @@
             cdkDropList
             (cdkDropListDropped)="onDrop($event, task)"
             data-e2e="screen-tasks__task-item"
+            [activated]="rla.isActive"
           >
             <div class="item-content">
               <a
@@ -41,7 +42,7 @@
                 [routerLink]="[task.id]"
                 queryParamsHandling="merge"
                 fixRouterLinkActive
-                routerLinkActive="nav-link-active"
+                routerLinkActive
                 class="task-link"
                 #rla="routerLinkActive"
               >

@@ -2,58 +2,6 @@
 @use 'm3-theme' as theme;
 @import 'uplot/dist/uPlot.min.css';
 
-// @mixin nav-link-active($color) {
-//   .mat-mdc-list-base .mat-mdc-list-item.nav-link-active .mat-icon-no-color,
-//   .nav-link-active,
-//   .nav-link-active .mat-icon {
-//     color: $color !important;
-//   }
-// }
-
-// @include nav-link-active(var(--primary-darker-color));
-
-// // https://github.com/angular/components/issues/9664
-// @mixin fix-icon-color($active-focused, $active-unfocused) {
-//   .mat-icon-no-color.fix-icon-color {
-//     color: $active-focused;
-//   }
-//   mat-select,
-//   .mat-mdc-list-base .mat-mdc-list-item,
-//   .mat-mdc-option,
-//   .mat-mdc-icon-button {
-//     .mat-icon-no-color,
-//     .mat-select-arrow {
-//       color: $active-focused;
-//     }
-//   }
-//   .mat-select-arrow-wrapper .mat-select-arrow {
-//     color: $active-focused;
-//   }
-
-//   mat-select:hover,
-//   .mat-mdc-list-item:hover,
-//   .mat-mdc-option.mat-active,
-//   .mat-option:hover,
-//   .mat-mdc-icon-button:hover {
-//     .mat-select-arrow,
-//     .mat-icon-no-color {
-//       color: $active-unfocused;
-//     }
-//   }
-// }
-
-// @include fix-icon-color(
-//   map-get(mat.$m2-light-theme-foreground-palette, 'secondary-text'),
-//   map-get(mat.$m2-light-theme-foreground-palette, 'icon')
-// );
-
-// .theme-alternate {
-//   @include fix-icon-color(
-//     map-get(mat.$m2-dark-theme-foreground-palette, 'secondary-text'),
-//     map-get(mat.$m2-dark-theme-foreground-palette, 'icon')
-//   );
-// }
-
 a {
   color: var(--primary-darker-color);
   text-decoration: none;
