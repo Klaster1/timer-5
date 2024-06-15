@@ -1,15 +1,15 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   ElementRef,
-  EventEmitter,
-  Input,
   NgZone,
   OnChanges,
-  OnDestroy,
-  Output,
   SimpleChanges,
+  afterNextRender,
+  inject,
+  input,
+  output,
 } from '@angular/core';
 import { ScaleRange } from '@app/domain/chart';
 import { formatHours } from '@app/domain/date-time';
@@ -111,15 +111,24 @@ const timerTimelinePlugin = (params: { barColor: string }): PluginReturnValue =>
   ],
   standalone: true,
 })
-export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, OnDestroy {
-  @Input() chartData?: AlignedData;
-  @Input() range?: ScaleRange;
+export class TimelineChartUplotComponent implements OnChanges {
+  private store = inject<Store<StoreState>>(Store);
+  private elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
+  private ngZone = inject<NgZone>(NgZone);
+  private destroyRef = inject(DestroyRef);
+
+  public chartData = input<AlignedData>();
+  public range = input<ScaleRange>();
+  public rangeChange = output<ScaleRange>();
+
   private setRange(value: ScaleRange | undefined) {
     if (!value) return;
+    const chartData = this.chartData();
+    const range = this.range();
     const oldMin = Math.round(this.uplot?.scales.x?.min ?? -1);
     const oldMax = Math.round(this.uplot?.scales.x?.max ?? -1);
-    const dataMin = this.chartData?.[0]?.[0];
-    const dataMax = this.chartData?.[0][this.chartData?.[0].length - 1] ?? [];
+    const dataMin = chartData?.[0]?.[0];
+    const dataMax = chartData?.[0][chartData?.[0].length - 1] ?? [];
     const newMin =
       value[0] instanceof Date
         ? millisecondsToSeconds(value[0].valueOf())
@@ -136,11 +145,88 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
     // Wait until visible
     setTimeout(() => this.uplot?.setScale('x', { min: newMin, max: newMax }));
   }
-  @Output() rangeChange = new EventEmitter<ScaleRange>();
   private firstRangeChangeSkipped = false;
   private uplot?: uPlot;
   private readonly headerHeight = 31;
   private resizeObserver?: ResizeObserver;
+  constructor() {
+    this.destroyRef.onDestroy(() => {
+      this.resizeObserver?.unobserve(this.elementRef.nativeElement);
+      this.themeSubscriber.unsubscribe();
+      this.uplot?.destroy();
+    });
+    afterNextRender(() => {
+      this.resizeObserver = new ResizeObserver(([entry]) => {
+        if (entry)
+          this.uplot?.setSize({
+            width: Math.floor(entry.contentRect.width),
+            height: Math.floor(entry.contentRect.height - this.headerHeight),
+          });
+      });
+      this.resizeObserver.observe(this.elementRef.nativeElement);
+      this.ngZone.runOutsideAngular(() => {
+        const barColor = 'rgb(126, 203, 32)';
+        this.uplot = new uPlot(
+          {
+            width: this.elementRef.nativeElement.offsetWidth,
+            height: this.elementRef.nativeElement.offsetHeight - this.headerHeight,
+            plugins: [timerTimelinePlugin({ barColor })],
+            hooks: {
+              setScale: [
+                (self: uPlot, key: string) => {
+                  if (!this.firstRangeChangeSkipped) {
+                    this.firstRangeChangeSkipped = true;
+                    return;
+                  }
+                  const scale = self.scales[key];
+                  if (key !== 'x' || !scale || !isNumber(scale.min) || !isNumber(scale.max)) {
+                    return;
+                  }
+                  const dataMin = self.data[0][0];
+                  const dataMax = self.data[0][self.data[0].length - 1];
+                  const min = scale.min === dataMin ? null : new Date(secondsToMilliseconds(scale.min));
+                  const max = scale.max === dataMax ? null : new Date(secondsToMilliseconds(scale.max));
+                  const event = [min, max] as const;
+                  this.ngZone.runTask(() => {
+                    this.rangeChange.emit(event);
+                  });
+                },
+              ],
+            },
+            scales: {
+              m: {
+                auto: true,
+              },
+            },
+            series: [
+              {
+                value: (_, value) => format(new Date(secondsToMilliseconds(value)), 'yyyy-MM-dd'),
+                label: 'Day',
+              },
+              {
+                show: true,
+                label: this.getLegendLabel(),
+                scale: 'm',
+                value: (_, value) => this.getLegendValue(value),
+                fill: barColor,
+              },
+            ],
+            axes: [
+              {},
+              {
+                scale: 'm',
+                size: 50,
+                label: this.getLegendLabel(),
+                values: (_, ticks) => ticks.map((raw) => this.getLegendValue(raw)),
+              },
+            ],
+          },
+          this.chartData(),
+          this.elementRef.nativeElement,
+        );
+      });
+    });
+  }
   themeSubscriber = this.store.select(selectTheme).subscribe(() => {
     setTimeout(() => {
       const stroke = window.getComputedStyle(this.elementRef.nativeElement).color;
@@ -148,100 +234,20 @@ export class TimelineChartUplotComponent implements AfterViewInit, OnChanges, On
       this.uplot?.redraw(false);
     });
   });
-  constructor(
-    private store: Store<StoreState>,
-    private elementRef: ElementRef<HTMLElement>,
-    private ngZone: NgZone,
-  ) {}
   getLegendValue(value: number) {
     return value ? formatHours(value) : '--:--';
   }
 
-  ngAfterViewInit() {
-    this.resizeObserver = new ResizeObserver(([entry]) => {
-      if (entry)
-        this.uplot?.setSize({
-          width: Math.floor(entry.contentRect.width),
-          height: Math.floor(entry.contentRect.height - this.headerHeight),
-        });
-    });
-    this.resizeObserver.observe(this.elementRef.nativeElement);
-    this.ngZone.runOutsideAngular(() => {
-      const barColor = 'rgb(126, 203, 32)';
-      this.uplot = new uPlot(
-        {
-          width: this.elementRef.nativeElement.offsetWidth,
-          height: this.elementRef.nativeElement.offsetHeight - this.headerHeight,
-          plugins: [timerTimelinePlugin({ barColor })],
-          hooks: {
-            setScale: [
-              (self: uPlot, key: string) => {
-                if (!this.firstRangeChangeSkipped) {
-                  this.firstRangeChangeSkipped = true;
-                  return;
-                }
-                const scale = self.scales[key];
-                if (key !== 'x' || !scale || !isNumber(scale.min) || !isNumber(scale.max)) {
-                  return;
-                }
-                const dataMin = self.data[0][0];
-                const dataMax = self.data[0][self.data[0].length - 1];
-                const min = scale.min === dataMin ? null : new Date(secondsToMilliseconds(scale.min));
-                const max = scale.max === dataMax ? null : new Date(secondsToMilliseconds(scale.max));
-                const event = [min, max] as const;
-                this.ngZone.runTask(() => {
-                  this.rangeChange.emit(event);
-                });
-              },
-            ],
-          },
-          scales: {
-            m: {
-              auto: true,
-            },
-          },
-          series: [
-            {
-              value: (_, value) => format(new Date(secondsToMilliseconds(value)), 'yyyy-MM-dd'),
-              label: 'Day',
-            },
-            {
-              show: true,
-              label: this.getLegendLabel(),
-              scale: 'm',
-              value: (_, value) => this.getLegendValue(value),
-              fill: barColor,
-            },
-          ],
-          axes: [
-            {},
-            {
-              scale: 'm',
-              size: 50,
-              label: this.getLegendLabel(),
-              values: (_, ticks) => ticks.map((raw) => this.getLegendValue(raw)),
-            },
-          ],
-        },
-        this.chartData,
-        this.elementRef.nativeElement,
-      );
-    });
-  }
   getLegendLabel() {
     return 'Hours';
   }
   ngOnChanges(changes: SimpleChanges) {
-    if (this.chartData && changes.chartData?.currentValue !== changes.chartData?.previousValue) {
-      this.uplot?.setData(this.chartData);
+    const chartData = this.chartData();
+    if (chartData && changes.chartData?.currentValue !== changes.chartData?.previousValue) {
+      this.uplot?.setData(chartData);
     }
     if (changes.range) {
       this.setRange(changes.range.currentValue);
     }
-  }
-  ngOnDestroy() {
-    this.resizeObserver?.unobserve(this.elementRef.nativeElement);
-    this.themeSubscriber.unsubscribe();
-    this.uplot?.destroy();
   }
 }
