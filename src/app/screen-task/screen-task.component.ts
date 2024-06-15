@@ -1,6 +1,6 @@
 import { CdkDrag, CdkDragPlaceholder, CdkDropList } from '@angular/cdk/drag-drop';
 import { AsyncPipe, DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, afterNextRender, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, afterNextRender, computed, inject } from '@angular/core';
 import { MatFabButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import {
@@ -41,8 +41,6 @@ import { TaskDurationPipe } from '@app/pipes/task-duration.pipe';
 import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
 import { Store } from '@ngrx/store';
 import { HotkeysService } from 'angular2-hotkeys';
-import { combineLatest } from 'rxjs';
-import { map, take } from 'rxjs/operators';
 import { ButtonSessionActionsComponent } from './button-session-actions/button-session-actions.component';
 
 @Component({
@@ -89,48 +87,51 @@ export class ScreenTaskComponent {
   private store = inject<Store<StoreState>>(Store);
   private keys = inject<HotkeysService>(HotkeysService);
   private destroyRef = inject(DestroyRef);
+
+  task = this.store.selectSignal(selectCurrentTask);
+  taskIsInProgress = computed(() => isTaskRunning(this.task()));
+
   sessionDuration = sessionDuration;
   hotkeys = [
-    hotkey(KEYS_START_STOP, 'Start/stop task', async (e) => {
-      combineLatest([this.task$, this.taskIsInProgress$])
-        .pipe(take(1))
-        .subscribe(([task, inProgress]) => {
-          if (!task) {
-            return;
-          }
-          if (inProgress) {
-            this.stop(task.id);
-          } else {
-            this.start(task.id);
-          }
-        });
+    hotkey(KEYS_START_STOP, 'Start/stop task', (e) => {
+      const task = this.task();
+      const inProgress = this.taskIsInProgress();
+      if (!task) {
+        return;
+      }
+      if (inProgress) {
+        this.stop(task.id);
+      } else {
+        this.start(task.id);
+      }
     }),
     hotkey(KEYS_MARK_FINISHED, `Mark as finished`, (e) => {
-      this.task$.pipe(take(1)).subscribe((task) => {
-        if (task) {
-          this.store.dispatch(updateTaskState({ taskId: task.id, state: TaskState.finished }));
-        }
-      });
+      const task = this.task();
+      if (task) {
+        this.store.dispatch(updateTaskState({ taskId: task.id, state: TaskState.finished }));
+      }
     }),
     hotkey(KEYS_MARK_ACTIVE, `Mark as active`, (e) => {
-      this.task$.pipe(take(1)).subscribe((task) => {
-        if (task) {
-          this.store.dispatch(updateTaskState({ taskId: task.id, state: TaskState.active }));
-        }
-      });
+      const task = this.task();
+      if (task) {
+        this.store.dispatch(updateTaskState({ taskId: task.id, state: TaskState.active }));
+      }
     }),
-    hotkey(KEYS_RENAME, 'Rename task', () =>
-      this.task$.pipe(take(1)).subscribe((task) => {
-        if (task) {
-          this.store.dispatch(renameTaskIntent({ taskId: task.id }));
-        }
-      }),
-    ),
-    hotkey(KEYS_DELETE_TASK, 'Delete task', () => this.task$.pipe(take(1)).subscribe((task) => this.deleteTask(task))),
+    hotkey(KEYS_RENAME, 'Rename task', () => {
+      const task = this.task();
+      if (task) {
+        this.store.dispatch(renameTaskIntent({ taskId: task.id }));
+      }
+    }),
+    hotkey(KEYS_DELETE_TASK, 'Delete task', () => {
+      const task = this.task();
+      if (task) {
+        this.store.dispatch(deleteTask({ taskId: task.id }));
+      }
+    }),
   ];
   displayedColumns = ['start', 'end', 'duration', 'action'];
-  task$ = this.store.select(selectCurrentTask);
-  taskIsInProgress$ = this.task$.pipe(map(isTaskRunning));
+
   constructor() {
     this.destroyRef.onDestroy(() => {
       this.keys.remove(this.hotkeys);

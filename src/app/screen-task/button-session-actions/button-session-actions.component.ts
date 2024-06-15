@@ -19,8 +19,10 @@ import { Store } from '@ngrx/store';
 })
 export class ButtonSessionActionsComponent {
   private store = inject<Store<StoreState>>(Store);
+
   public task = input<Task>();
   public session = input<Session>();
+
   edit() {
     const task = this.task();
     const session = this.session();

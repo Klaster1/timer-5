@@ -1,4 +1,4 @@
-@if (task$ | async; as task) {
+@if (task(); as task) {
   <mat-toolbar>
     <a routerLink="./.." queryParamsHandling="merge" mat-icon-button>
       <mat-icon>arrow_back</mat-icon>
@@ -58,12 +58,12 @@
       <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>
     </table>
   </div>
-  @if ((taskIsInProgress$ | async) === false) {
+  @if (taskIsInProgress() === false) {
     <button (click)="start(task.id)" mat-fab color="accent" matTooltip="Start" data-e2e="screen-task__button-start">
       <mat-icon>play_arrow</mat-icon>
     </button>
   }
-  @if ((taskIsInProgress$ | async) === true) {
+  @if (taskIsInProgress() === true) {
     <button (click)="stop(task.id)" mat-fab color="primary" matTooltip="Stop" data-e2e="screen-task__button-stop">
       <mat-icon>pause</mat-icon>
     </button>
