@@ -38,7 +38,7 @@ export interface DialogEditSessionData {
     DatetimeLocalDirective,
   ],
 })
-export class DialogEditSessionComponent {
+export default class DialogEditSessionComponent {
   public data = inject<DialogEditSessionData>(MAT_DIALOG_DATA);
   private dialog = inject<MatDialogRef<DialogEditSessionComponent, DialogEditSessionData>>(MatDialogRef);
 

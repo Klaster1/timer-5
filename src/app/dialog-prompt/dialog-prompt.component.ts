@@ -37,7 +37,7 @@ export interface DialogPromptData {
     ReactiveFormsModule,
   ],
 })
-export class DialogPromptComponent {
+export default class DialogPromptComponent {
   public data: DialogPromptData = inject(MAT_DIALOG_DATA);
   private dialog = inject<MatDialogRef<DialogPromptComponent, string>>(MatDialogRef);
   constructor() {

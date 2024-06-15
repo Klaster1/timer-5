@@ -12,9 +12,8 @@ import { toggleTheme } from '@app/ngrx/actions';
 import { isAnyTaskActive, selectTasks, selectTheme } from '@app/ngrx/selectors';
 import { Store } from '@ngrx/store';
 import { HotkeysService } from 'angular2-hotkeys';
-import { distinctUntilChanged } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { DialogHotkeysCheatsheetComponent } from './dialog-hotkeys-cheatsheet/dialog-hotkeys-cheatsheet.component';
+import { distinctUntilChanged, map, tap } from 'rxjs';
+import { DIALOG_HOTKEYS_CHEATSHEET_ID } from './dialog-hotkeys-cheatsheet/id';
 import { KEYS_GO_ACTIVE, KEYS_GO_ALL, KEYS_GO_FINISHED, hotkey } from './domain/hotkeys';
 import { StoreState, toStoredTasks } from './domain/storage';
 import { TaskState } from './domain/task';
@@ -107,18 +106,21 @@ export class AppComponent {
   );
   private handleHotkeyCheatsheet() {
     let isDialogOpen = false;
-    this.hotkeysService.cheatSheetToggle.subscribe((isOpen) => {
+    this.hotkeysService.cheatSheetToggle.subscribe(async (isOpen) => {
+      const component = await import('./dialog-hotkeys-cheatsheet/dialog-hotkeys-cheatsheet.component').then(
+        (m) => m.default,
+      );
       if (isOpen === false) {
         isDialogOpen = false;
-        this.dialogs.getDialogById(DialogHotkeysCheatsheetComponent.ID)?.close();
+        this.dialogs.getDialogById(DIALOG_HOTKEYS_CHEATSHEET_ID)?.close();
       } else {
         if (isDialogOpen) {
           isDialogOpen = false;
-          this.dialogs.getDialogById(DialogHotkeysCheatsheetComponent.ID)?.close();
+          this.dialogs.getDialogById(DIALOG_HOTKEYS_CHEATSHEET_ID)?.close();
         } else {
           isDialogOpen = true;
           this.dialogs
-            .open(DialogHotkeysCheatsheetComponent, { width: undefined, id: DialogHotkeysCheatsheetComponent.ID })
+            .open(component, { width: undefined, id: DIALOG_HOTKEYS_CHEATSHEET_ID })
             .afterClosed()
             .subscribe(() => {
               isDialogOpen = false;

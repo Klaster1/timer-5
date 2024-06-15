@@ -13,8 +13,7 @@ import { HotkeysService } from 'angular2-hotkeys';
   standalone: true,
   imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MapPipe],
 })
-export class DialogHotkeysCheatsheetComponent {
-  static ID = 'DIALOG_HOTKEYS_CHEATSHEET';
+export default class DialogHotkeysCheatsheetComponent {
   private hotkeysService = inject(HotkeysService);
   keys = this.hotkeysService.hotkeys.filter((key) => key.description);
   withoutCyrillics = (values: string[]): string[] => [...values].filter((value) => !hasCyrillics(value));

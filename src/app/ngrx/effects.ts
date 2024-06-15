@@ -1,10 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import {
-  DialogEditSessionComponent,
-  DialogEditSessionData,
-} from '@app/dialog-edit-session/dialog-edit-session.component';
 import { Prompt } from '@app/dialog-prompt/dialog-prompt.service';
 import { StoreState } from '@app/domain/storage';
 import { getTaskSession, makeTaskId } from '@app/domain/task';
@@ -13,6 +9,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { EMPTY, of } from 'rxjs';
 import { exhaustMap, switchMap, take, tap, withLatestFrom } from 'rxjs/operators';
+import type { DialogEditSessionData } from '../dialog-edit-session/dialog-edit-session.component';
 import {
   createTask,
   createTaskIntent,
@@ -74,40 +71,42 @@ export class Effects {
     ),
   );
 
-  editSession$ = createEffect(() =>
-    this.actions$.pipe(
-      ofType(updateSessionIntent),
-      switchMap((a) =>
-        this.store.select(selectTaskById(a.taskId)).pipe(
-          take(1),
-          exhaustMap((task) => {
-            if (!task) return EMPTY;
-            const session = getTaskSession(task, a.sessionId);
-            return session
-              ? this.dialog
-                  .open<DialogEditSessionComponent, DialogEditSessionData, DialogEditSessionData>(
-                    DialogEditSessionComponent,
-                    { data: { start: session.start, end: session.end } },
-                  )
-                  .afterClosed()
-                  .pipe(
-                    switchMap((result) =>
-                      result
-                        ? of(
-                            updateSession({
-                              taskId: task.id,
-                              sessionId: a.sessionId,
-                              start: result.start,
-                              end: result.end,
-                            }),
-                          )
-                        : EMPTY,
-                    ),
-                  )
-              : EMPTY;
-          }),
+  editSession$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(updateSessionIntent),
+        switchMap((a) =>
+          this.store.select(selectTaskById(a.taskId)).pipe(
+            take(1),
+            exhaustMap(async (task) => {
+              if (!task) return EMPTY;
+              const session = getTaskSession(task, a.sessionId);
+              const component = await import('../dialog-edit-session/dialog-edit-session.component').then(
+                (m) => m.default,
+              );
+              return session
+                ? this.dialog
+                    .open(component, { data: { start: session.start, end: session.end } as DialogEditSessionData })
+                    .afterClosed()
+                    .pipe(
+                      switchMap((result: DialogEditSessionData | undefined) =>
+                        result
+                          ? of(
+                              updateSession({
+                                taskId: task.id,
+                                sessionId: a.sessionId,
+                                start: result.start,
+                                end: result.end,
+                              }),
+                            )
+                          : EMPTY,
+                      ),
+                    )
+                : EMPTY;
+            }),
+          ),
         ),
       ),
-    ),
+    { dispatch: false },
   );
 }

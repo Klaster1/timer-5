@@ -13,7 +13,9 @@
         </button>
       </mat-toolbar>
       @if (searchOpened$ | async) {
-        <tasks-filter (keyup.esc)="closeFilter()"></tasks-filter>
+        @defer {
+          <tasks-filter (keyup.esc)="closeFilter()"></tasks-filter>
+        }
       }
       @if (tasks.length) {
         <button (click)="addTask()" mat-fab color="accent" data-e2e="button-add-task" matTooltip="Create a task">
@@ -60,43 +62,47 @@
         </cdk-virtual-scroll-viewport>
       } @else {
         @if ((searchOpened$ | async) === false) {
-          <empty-state>
-            <img src="assets/favicon.svg" alt="Timer" illustration />
-            <span title>No tasks</span>
-            <span subtitle>
-              @switch (state$ | async) {
-                @case ('all') {
-                  Create a task and it will show up here
+          @defer {
+            <empty-state>
+              <img src="assets/favicon.svg" alt="Timer" illustration />
+              <span title>No tasks</span>
+              <span subtitle>
+                @switch (state$ | async) {
+                  @case ('all') {
+                    Create a task and it will show up here
+                  }
+                  @case (taskState.active) {
+                    Create a task and it will show up here
+                  }
+                  @case (taskState.finished) {
+                    You didn't finish any tasks yet
+                  }
+                  @case (taskState.dropped) {
+                    You didn't abandon any tasks yet
+                  }
                 }
-                @case (taskState.active) {
-                  Create a task and it will show up here
-                }
-                @case (taskState.finished) {
-                  You didn't finish any tasks yet
-                }
-                @case (taskState.dropped) {
-                  You didn't abandon any tasks yet
-                }
-              }
-            </span>
-            <button
-              color="primary"
-              mat-raised-button
-              (click)="addTask()"
-              type="button"
-              routerLink="/tasks/active"
-              data-e2e="screen-tasks__button-add-task-empty-state"
-            >
-              Create a task
-            </button>
-          </empty-state>
+              </span>
+              <button
+                color="primary"
+                mat-raised-button
+                (click)="addTask()"
+                type="button"
+                routerLink="/tasks/active"
+                data-e2e="screen-tasks__button-add-task-empty-state"
+              >
+                Create a task
+              </button>
+            </empty-state>
+          }
         } @else {
-          <empty-state>
-            <mat-icon color="accent" illustration>search</mat-icon>
-            <span title>Nothing found</span>
-            <span subtitle>Could not find tasks matching the criteria</span>
-            <button mat-raised-button (click)="closeFilter()" type="button">Reset filter</button>
-          </empty-state>
+          @defer {
+            <empty-state>
+              <mat-icon color="accent" illustration>search</mat-icon>
+              <span title>Nothing found</span>
+              <span subtitle>Could not find tasks matching the criteria</span>
+              <button mat-raised-button (click)="closeFilter()" type="button">Reset filter</button>
+            </empty-state>
+          }
         }
       }
     </section>
