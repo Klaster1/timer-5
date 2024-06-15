@@ -9,55 +9,44 @@
     </h2>
     <button-task-actions [task]="task"></button-task-actions>
   </mat-toolbar>
-  <div class="scroll-container">
-    <table mat-table [dataSource]="task.sessions" cdkDropList [cdkDropListSortingDisabled]="true">
-      <ng-container matColumnDef="start">
-        <th mat-header-cell *matHeaderCellDef class="header-start">Start</th>
-        <td mat-cell *matCellDef="let session" data-e2e="screen-task__session-start">
-          {{ session.start | date: 'yyyy-MM-dd H:mm' }}
-        </td>
-        <td mat-footer-cell *matFooterCellDef>Total</td>
-      </ng-container>
-      <ng-container matColumnDef="end">
-        <th mat-header-cell *matHeaderCellDef class="header-end">End</th>
-        <td mat-cell *matCellDef="let session" data-e2e="screen-task__session-end">
-          {{ session.end | date: 'yyyy-MM-dd H:mm' }}
-        </td>
-        <td mat-footer-cell *matFooterCellDef></td>
-      </ng-container>
-      <ng-container matColumnDef="duration">
-        <th mat-header-cell *matHeaderCellDef class="header-duration">Duration</th>
-        <td mat-cell *matCellDef="let session" data-e2e="screen-task__session-duration">
-          {{ session | map: sessionDuration | formatDuration | async }}
-        </td>
-        <td mat-footer-cell *matFooterCellDef data-e2e="screen-task__task-duration">
-          {{ task | taskDuration | formatDuration | async }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="action">
-        <th mat-header-cell *matHeaderCellDef class="header-action"></th>
-        <td mat-cell *matCellDef="let session" class="cell-action">
-          <button-session-actions
-            [session]="session"
-            [task]="task"
-            data-e2e="screen-task__button-session-action"
-          ></button-session-actions>
-        </td>
-        <td mat-footer-cell *matFooterCellDef></td>
-      </ng-container>
-      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-      <tr
-        mat-row
-        *matRowDef="let row; columns: displayedColumns"
-        cdkDrag
-        [cdkDragData]="[row, task.id]"
-        data-e2e="screen-task__session-row"
-      >
-        <div *cdkDragPlaceholder></div>
-      </tr>
-      <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>
+  <cdk-virtual-scroll-viewport [itemSize]="42" #viewport>
+    <table class="mat-mdc-table">
+      <thead [ngStyle]="{ top: '-' + viewport.getOffsetToRenderedContentStart() + 'px' }">
+        <tr class="mat-mdc-header-row mdc-data-table__header-row">
+          <th class="header-start mat-mdc-header-cell mdc-data-table__header-cell">Start</th>
+          <th class="header-end mat-mdc-header-cell mdc-data-table__header-cell">End</th>
+          <th class="header-duration mat-mdc-header-cell mdc-data-table__header-cell">Duration</th>
+          <th class="header-action mat-mdc-header-cell mdc-data-table__header-cell"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *cdkVirtualFor="let item of task.sessions" class="mat-mdc-row mdc-data-table__row">
+          <td class="mat-mdc-cell mdc-data-table__cell">
+            {{ item.start | date: 'yyyy-MM-dd H:mm' }}
+          </td>
+          <td class="mat-mdc-cell mdc-data-table__cell">
+            {{ item.end | date: 'yyyy-MM-dd H:mm' }}
+          </td>
+          <td class="mat-mdc-cell mdc-data-table__cell">
+            {{ item | map: sessionDuration | formatDuration | async }}
+          </td>
+          <td class="mat-mdc-cell mdc-data-table__cell">
+            <button-session-actions [session]="item" [task]="task"></button-session-actions>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot [ngStyle]="{ bottom: viewport.getOffsetToRenderedContentStart() + 'px' }" class="">
+        <tr class="mat-mdc-footer-row mdc-data-table__row">
+          <td class="mat-mdc-footer-cell mdc-data-table__cell">Total</td>
+          <td class="mat-mdc-footer-cell mdc-data-table__cell"></td>
+          <td class="mat-mdc-footer-cell mdc-data-table__cell">
+            {{ task | taskDuration | formatDuration | async }}
+          </td>
+          <td class="mat-mdc-footer-cell mdc-data-table__cell"></td>
+        </tr>
+      </tfoot>
     </table>
-  </div>
+  </cdk-virtual-scroll-viewport>
   @if (taskIsInProgress() === false) {
     <button (click)="start(task.id)" mat-fab color="accent" matTooltip="Start" data-e2e="screen-task__button-start">
       <mat-icon>play_arrow</mat-icon>

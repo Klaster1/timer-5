@@ -1,24 +1,9 @@
 import { CdkDrag, CdkDragPlaceholder, CdkDropList } from '@angular/cdk/drag-drop';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { AsyncPipe, DatePipe, NgStyle } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, afterNextRender, computed, inject } from '@angular/core';
 import { MatFabButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import {
-  MatCell,
-  MatCellDef,
-  MatColumnDef,
-  MatFooterCell,
-  MatFooterCellDef,
-  MatFooterRow,
-  MatFooterRowDef,
-  MatHeaderCell,
-  MatHeaderCellDef,
-  MatHeaderRow,
-  MatHeaderRowDef,
-  MatRow,
-  MatRowDef,
-  MatTable,
-} from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltip } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
@@ -46,27 +31,13 @@ import { ButtonSessionActionsComponent } from './button-session-actions/button-s
 @Component({
   selector: 'screen-task',
   templateUrl: './screen-task.component.html',
-  styleUrls: ['./screen-task.component.scss'],
+  styleUrls: ['./screen-task.component.scss', './mat-table.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     TaskStateIconPipe,
     MatToolbarModule,
     MatIcon,
-    MatTable,
-    MatHeaderCell,
-    MatHeaderCellDef,
-    MatHeaderRow,
-    MatHeaderRowDef,
-    MatRow,
-    MatRowDef,
-    MatCell,
-    MatCellDef,
-    MatFooterRow,
-    MatFooterRowDef,
-    MatFooterCell,
-    MatFooterCellDef,
-    MatColumnDef,
     MatTooltip,
     FormatDurationPipe,
     TaskDurationPipe,
@@ -81,6 +52,8 @@ import { ButtonSessionActionsComponent } from './button-session-actions/button-s
     RouterLink,
     MatIconButton,
     MatFabButton,
+    ScrollingModule,
+    NgStyle,
   ],
 })
 export class ScreenTaskComponent {
