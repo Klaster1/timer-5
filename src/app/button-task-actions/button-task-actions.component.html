@@ -1,4 +1,4 @@
-<ng-container *ngIf="task">
+@if (task(); as task) {
   <button mat-icon-button [matMenuTriggerFor]="menu" data-e2e="button-task-actions__trigger">
     <mat-icon>more_vert</mat-icon>
   </button>
@@ -45,4 +45,4 @@
       >Change to dropped
     </button>
   </mat-menu>
-</ng-container>
+}

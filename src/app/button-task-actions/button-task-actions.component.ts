@@ -1,8 +1,7 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { StoreState } from '@app/domain/storage';
 import { Task, TaskState } from '@app/domain/task';
 import { deleteTask, renameTaskIntent, updateTaskState } from '@app/ngrx/actions';
@@ -16,20 +15,32 @@ import { Store } from '@ngrx/store';
   selector: 'button-task-actions',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [MatMenuModule, MatButtonModule, MatIconModule, TaskStateIconPipe, TaskStatePipe, CommonModule],
+  imports: [
+    MatMenu,
+    MatMenuTrigger,
+    MatMenuContent,
+    MatMenuItem,
+    MatIconButton,
+    MatIcon,
+    TaskStateIconPipe,
+    TaskStatePipe,
+  ],
 })
 export class ButtonTaskActionsComponent {
-  constructor(private store: Store<StoreState>) {}
+  private store = inject(Store<StoreState>);
+  task = input<Task>();
   taskState = TaskState;
-  @Input() task?: Task;
 
   renameTask() {
-    if (this.task) this.store.dispatch(renameTaskIntent({ taskId: this.task.id }));
+    const task = this.task();
+    if (task) this.store.dispatch(renameTaskIntent({ taskId: task.id }));
   }
   deleteTask() {
-    if (this.task) this.store.dispatch(deleteTask({ taskId: this.task.id }));
+    const task = this.task();
+    if (task) this.store.dispatch(deleteTask({ taskId: task.id }));
   }
   changeTaskState(state: TaskState) {
-    if (this.task) this.store.dispatch(updateTaskState({ taskId: this.task.id, state }));
+    const task = this.task();
+    if (task) this.store.dispatch(updateTaskState({ taskId: task.id, state }));
   }
 }
