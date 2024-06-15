@@ -7,6 +7,7 @@ import {
   SimpleChanges,
   ViewEncapsulation,
   afterNextRender,
+  effect,
   inject,
   input,
   output,
@@ -152,9 +153,14 @@ export class TimelineChartUplotComponent implements OnChanges {
   private readonly headerHeight = 31;
   private resizeObserver?: ResizeObserver;
   constructor() {
+    effect(() => {
+      const theme = this.store.selectSignal(selectTheme)();
+      const stroke = window.getComputedStyle(this.elementRef.nativeElement).color;
+      this.uplot?.axes.forEach((a) => (a.stroke = () => stroke));
+      this.uplot?.redraw(false);
+    });
     this.destroyRef.onDestroy(() => {
       this.resizeObserver?.unobserve(this.elementRef.nativeElement);
-      this.themeSubscriber.unsubscribe();
       this.uplot?.destroy();
     });
     afterNextRender(() => {
@@ -225,13 +231,6 @@ export class TimelineChartUplotComponent implements OnChanges {
       );
     });
   }
-  themeSubscriber = this.store.select(selectTheme).subscribe(() => {
-    setTimeout(() => {
-      const stroke = window.getComputedStyle(this.elementRef.nativeElement).color;
-      this.uplot?.axes.forEach((a) => (a.stroke = () => stroke));
-      this.uplot?.redraw(false);
-    });
-  });
   getLegendValue(value: number) {
     return value ? formatHours(value) : '--:--';
   }
