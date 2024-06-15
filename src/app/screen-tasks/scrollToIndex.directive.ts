@@ -1,5 +1,5 @@
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { Directive, Input } from '@angular/core';
+import { Directive, effect, inject, input } from '@angular/core';
 import { isNumber } from '@app/utils/assert';
 
 @Directive({
@@ -7,20 +7,26 @@ import { isNumber } from '@app/utils/assert';
   standalone: true,
 })
 export class ScrollToIndexDirective {
-  @Input() itemSize?: number;
+  private viewport = inject(CdkVirtualScrollViewport);
+
+  public itemSize = input<number>();
+  public scrollToIndex = input<number | undefined>();
+
   private previousIndex?: number;
-  constructor(private viewport: CdkVirtualScrollViewport) {}
-  @Input()
-  set scrollToIndex(index: number | undefined) {
-    if (!isNumber(index) || index === -1 || !this.itemSize) {
-      this.previousIndex = index;
-      return;
-    }
-    const offsetTop = index * this.itemSize;
-    const behavior: ScrollBehavior | undefined = !isNumber(this.previousIndex) ? 'smooth' : undefined;
-    setTimeout(() => {
-      this.viewport.scrollToOffset(offsetTop - this.viewport.getViewportSize() / 2, behavior);
-      this.previousIndex = index;
+  constructor() {
+    effect(() => {
+      const index = this.scrollToIndex();
+      const itemSize = this.itemSize();
+      if (!isNumber(index) || index === -1 || !itemSize) {
+        this.previousIndex = index;
+        return;
+      }
+      const offsetTop = index * itemSize;
+      const behavior: ScrollBehavior | undefined = !isNumber(this.previousIndex) ? 'smooth' : undefined;
+      setTimeout(() => {
+        this.viewport.scrollToOffset(offsetTop - this.viewport.getViewportSize() / 2, behavior);
+        this.previousIndex = index;
+      });
     });
   }
 }
