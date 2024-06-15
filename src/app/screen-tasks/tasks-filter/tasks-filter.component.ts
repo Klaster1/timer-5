@@ -1,7 +1,8 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { A11yModule } from '@angular/cdk/a11y';
-import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
@@ -30,8 +31,7 @@ import subDays from 'date-fns/subDays';
 import subMonths from 'date-fns/subMonths';
 import subWeeks from 'date-fns/subWeeks';
 import subYears from 'date-fns/subYears';
-import { merge } from 'rxjs';
-import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { ButtonResetInputComponent } from './button-reset-input.component';
 import { TimelineChartUplotComponent } from './timeline-chart-uplot.component';
 
@@ -66,7 +66,6 @@ type Wrap<T> = Required<{ [Key in keyof T]: FormControl<T[Key]> }>;
     ButtonResetInputComponent,
     DatetimeLocalDirective,
     NgTemplateOutlet,
-    AsyncPipe,
   ],
 })
 export class TasksFilterComponent {
@@ -74,11 +73,24 @@ export class TasksFilterComponent {
   private router = inject<Router>(Router);
   private destroyRef = inject(DestroyRef);
 
+  public dataRange = computed(() => {
+    const data = this.store.selectSignal(selectFilterChartData)();
+    const range = this.store.selectSignal(selectFilterRange)();
+    if (!hasChartData(data) || !range) return undefined;
+    return { data, range } as const;
+  });
+
   constructor() {
     this.destroyRef.onDestroy(() => {
       this.router.navigate([], { queryParams: {} });
-      this.subscriber.unsubscribe();
     });
+    effect(() => {
+      const decodedFilterParams = this.store.selectSignal(selectDecodedFilterParams)();
+      this.form.patchValue(decodedFilterParams);
+    });
+    this.form.valueChanges
+      .pipe(debounceTime(10), distinctUntilChanged(deepEquals), takeUntilDestroyed())
+      .subscribe((value) => this.router.navigate([], { queryParams: encodeFilterParams(value) }));
   }
 
   hasChartData = hasChartData;
@@ -88,20 +100,7 @@ export class TasksFilterComponent {
     to: new FormControl(),
     durationSort: new FormControl(),
   });
-  subscriber = merge(
-    this.form.valueChanges.pipe(
-      debounceTime(10),
-      distinctUntilChanged(deepEquals),
-      tap((value) => this.router.navigate([], { queryParams: encodeFilterParams(value) })),
-    ),
-    this.store.select(selectDecodedFilterParams).pipe(
-      tap((value) => {
-        this.form.patchValue(value);
-      }),
-    ),
-  ).subscribe();
-  timelineUplot$ = this.store.select(selectFilterChartData);
-  chartRange$ = this.store.select(selectFilterRange);
+
   onChartRangeChange(e: ScaleRange) {
     this.form.patchValue({
       from: e[0] ?? undefined,
