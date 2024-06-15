@@ -3,17 +3,13 @@
   <mat-form-field>
     <mat-label>Start</mat-label>
     <input matInput type="datetime-local" formControlName="start" data-e2e="dialog-edit-session__input-start" />
-    <mat-error data-e2e="dialog-edit-session__start-validation-error" *ngIf="form.controls.start.errors?.required"
-      >Start is required</mat-error
-    >
+    @if (form.controls.start.errors?.required) {
+      <mat-error data-e2e="dialog-edit-session__start-validation-error">Start is required</mat-error>
+    }
   </mat-form-field>
   <mat-form-field>
     <mat-label>End</mat-label>
     <input matInput type="datetime-local" formControlName="end" data-e2e="dialog-edit-session__input-end" />
-    <mat-datepicker-toggle
-      matSuffix
-      data-e2e="dialog-edit-session__button-end-datepicker-toggle"
-    ></mat-datepicker-toggle>
   </mat-form-field>
 </form>
 <div mat-dialog-actions align="end">
