@@ -1,14 +1,27 @@
-import { DragDropModule } from '@angular/cdk/drag-drop';
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatTableModule } from '@angular/material/table';
+import { CdkDrag, CdkDragPlaceholder, CdkDropList } from '@angular/cdk/drag-drop';
+import { AsyncPipe, DatePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, DestroyRef, afterNextRender, inject } from '@angular/core';
+import { MatFabButton, MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import {
+  MatCell,
+  MatCellDef,
+  MatColumnDef,
+  MatFooterCell,
+  MatFooterCellDef,
+  MatFooterRow,
+  MatFooterRowDef,
+  MatHeaderCell,
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable,
+} from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { RouterModule } from '@angular/router';
+import { MatTooltip } from '@angular/material/tooltip';
+import { RouterLink } from '@angular/router';
 import { ButtonTaskActionsComponent } from '@app/button-task-actions/button-task-actions.component';
 import {
   KEYS_DELETE_TASK,
@@ -26,7 +39,6 @@ import { FormatDurationPipe } from '@app/pipes/format-duration.pipe';
 import { MapPipe } from '@app/pipes/map.pipe';
 import { TaskDurationPipe } from '@app/pipes/task-duration.pipe';
 import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
-import { LetDirective, PushPipe } from '@ngrx/component';
 import { Store } from '@ngrx/store';
 import { HotkeysService } from 'angular2-hotkeys';
 import { combineLatest } from 'rxjs';
@@ -40,31 +52,47 @@ import { ButtonSessionActionsComponent } from './button-session-actions/button-s
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    CommonModule,
-    LetDirective,
-    PushPipe,
-    RouterModule,
     TaskStateIconPipe,
-    MatCardModule,
-    MatButtonModule,
     MatToolbarModule,
-    MatIconModule,
-    MatListModule,
-    MatTableModule,
-    MatTooltipModule,
+    MatIcon,
+    MatTable,
+    MatHeaderCell,
+    MatHeaderCellDef,
+    MatHeaderRow,
+    MatHeaderRowDef,
+    MatRow,
+    MatRowDef,
+    MatCell,
+    MatCellDef,
+    MatFooterRow,
+    MatFooterRowDef,
+    MatFooterCell,
+    MatFooterCellDef,
+    MatColumnDef,
+    MatTooltip,
     FormatDurationPipe,
     TaskDurationPipe,
     ButtonTaskActionsComponent,
     ButtonSessionActionsComponent,
     MapPipe,
-    DragDropModule,
+    CdkDrag,
+    CdkDragPlaceholder,
+    CdkDropList,
+    AsyncPipe,
+    DatePipe,
+    RouterLink,
+    MatIconButton,
+    MatFabButton,
   ],
 })
-export class ScreenTaskComponent implements OnDestroy, OnInit {
+export class ScreenTaskComponent {
+  private store = inject<Store<StoreState>>(Store);
+  private keys = inject<HotkeysService>(HotkeysService);
+  private destroyRef = inject(DestroyRef);
   sessionDuration = sessionDuration;
   hotkeys = [
     hotkey(KEYS_START_STOP, 'Start/stop task', async (e) => {
-      combineLatest(this.task$, this.taskIsInProgress$)
+      combineLatest([this.task$, this.taskIsInProgress$])
         .pipe(take(1))
         .subscribe(([task, inProgress]) => {
           if (!task) {
@@ -96,19 +124,20 @@ export class ScreenTaskComponent implements OnDestroy, OnInit {
         if (task) {
           this.store.dispatch(renameTaskIntent({ taskId: task.id }));
         }
-      })
+      }),
     ),
     hotkey(KEYS_DELETE_TASK, 'Delete task', () => this.task$.pipe(take(1)).subscribe((task) => this.deleteTask(task))),
   ];
   displayedColumns = ['start', 'end', 'duration', 'action'];
   task$ = this.store.select(selectCurrentTask);
   taskIsInProgress$ = this.task$.pipe(map(isTaskRunning));
-  constructor(private store: Store<StoreState>, private keys: HotkeysService) {}
-  ngOnInit() {
-    this.keys.add(this.hotkeys);
-  }
-  ngOnDestroy() {
-    this.keys.remove(this.hotkeys);
+  constructor() {
+    this.destroyRef.onDestroy(() => {
+      this.keys.remove(this.hotkeys);
+    });
+    afterNextRender(() => {
+      this.keys.add(this.hotkeys);
+    });
   }
   start(taskId?: string) {
     if (taskId) this.store.dispatch(startTask({ taskId, timestamp: Date.now() }));
