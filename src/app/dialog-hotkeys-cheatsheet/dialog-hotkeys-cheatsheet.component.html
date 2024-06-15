@@ -1,12 +1,14 @@
 <h1 mat-dialog-title>Keyboard shortcuts</h1>
 <div mat-dialog-content>
   <dl>
-    <ng-container *ngFor="let key of keys">
+    @for (key of keys; track key.action) {
       <dt>
-        <kbd *ngFor="let formatted of key.formatted | map: withoutCyrillics">{{ formatted }}</kbd>
+        @for (formatted of key.formatted | map: withoutCyrillics; track formatted) {
+          <kbd>{{ formatted }}</kbd>
+        }
       </dt>
       <dd>{{ key.description }}</dd>
-    </ng-container>
+    }
   </dl>
 </div>
 <div mat-dialog-actions align="end">
