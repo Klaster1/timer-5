@@ -1,23 +1,21 @@
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ScrollingModule } from '@angular/cdk/scrolling';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  OnDestroy,
-  OnInit,
+  DestroyRef,
   TrackByFunction,
+  afterNextRender,
+  inject,
 } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
-import { MatSelectModule } from '@angular/material/select';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { Router, RouterModule } from '@angular/router';
+import { MatButton, MatFabButton, MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatListItem, MatNavList } from '@angular/material/list';
+import { MatToolbar } from '@angular/material/toolbar';
+import { MatTooltip } from '@angular/material/tooltip';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ButtonTaskActionsComponent } from '@app/button-task-actions/button-task-actions.component';
 import { KEYS_ADD, KEYS_NEXT, KEYS_PREV, KEYS_SEARCH, hotkey } from '@app/domain/hotkeys';
 import { StoreState } from '@app/domain/storage';
@@ -39,11 +37,9 @@ import { TaskDurationPipe } from '@app/pipes/task-duration.pipe';
 import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
 import { TaskStatePipe } from '@app/pipes/task-state.pipe';
 import { TasksDurationPipe } from '@app/pipes/tasks-duration.pipe';
-import { LetDirective, PushPipe } from '@ngrx/component';
 import { Store } from '@ngrx/store';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
-import { Observable, Subject, firstValueFrom, merge } from 'rxjs';
-import { map, shareReplay, take } from 'rxjs/operators';
+import { Observable, Subject, firstValueFrom, map, merge, shareReplay, take } from 'rxjs';
 import { CheckViewportSizeWhenValueChangesDirective } from './checkViewportSizeWhenValueChanges.directive';
 import { EmptyStateComponent } from './empty-state/empty-state.component';
 import { ScrollToIndexDirective } from './scrollToIndex.directive';
@@ -58,32 +54,49 @@ import { TasksFilterComponent } from './tasks-filter/tasks-filter.component';
   imports: [
     EmptyStateComponent,
     TasksFilterComponent,
-    CommonModule,
-    LetDirective,
-    PushPipe,
     TaskStatePipe,
     FormatDurationPipe,
     TaskDurationPipe,
     TasksDurationPipe,
     TaskStateIconPipe,
-    RouterModule,
+    RouterLink,
+    RouterOutlet,
+    RouterLinkActive,
     ScrollingModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatButtonModule,
-    MatListModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatTooltipModule,
-    MatSelectModule,
+    MatToolbar,
+    MatIcon,
+    MatButton,
+    MatIconButton,
+    MatFabButton,
+    MatNavList,
+    MatListItem,
+    MatTooltip,
     ButtonTaskActionsComponent,
     MapPipe,
     DragDropModule,
     CheckViewportSizeWhenValueChangesDirective,
     ScrollToIndexDirective,
+    AsyncPipe,
+    NgClass,
   ],
 })
-export class ScreenTasksComponent implements OnInit, OnDestroy {
+export class ScreenTasksComponent {
+  private cdr = inject(ChangeDetectorRef);
+  private store = inject<Store<StoreState>>(Store);
+  private keys = inject(HotkeysService);
+  private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
+
+  constructor() {
+    this.destroyRef.onDestroy(() => {
+      this.keys.remove(this.hotkeys);
+      this.filterToggles$.complete();
+    });
+    afterNextRender(() => {
+      this.keys.add(this.hotkeys);
+    });
+  }
+
   taskState = TaskState;
   isTaskRunning = isTaskRunning;
   state$ = this.store.select(selectCurrentTaskState);
@@ -123,20 +136,6 @@ export class ScreenTasksComponent implements OnInit, OnDestroy {
 
   taskId: TrackByFunction<Task> = (_, task) => task.id;
 
-  constructor(
-    private cdr: ChangeDetectorRef,
-    private store: Store<StoreState>,
-    private keys: HotkeysService,
-    private router: Router,
-  ) {}
-
-  ngOnInit() {
-    this.keys.add(this.hotkeys);
-  }
-  ngOnDestroy() {
-    this.keys.remove(this.hotkeys);
-    this.filterToggles$.complete();
-  }
   addTask() {
     this.store.dispatch(actions.createTaskIntent());
   }

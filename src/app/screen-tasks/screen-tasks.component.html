@@ -1,99 +1,110 @@
-<div class="container" [ngClass]="{ 'task-opened': taskOpened$ | ngrxPush }">
-  <section class="tasks" *ngIf="tasks$ | ngrxPush as tasks">
-    <mat-toolbar>
-      <h1 *ngrxLet="state$ as state">
-        <ng-container> {{ state | taskState }} </ng-container>
-        <span
-          *ngIf="tasks | tasksDuration: 20000 | formatDuration | ngrxPush as duration"
-          class="state-duration"
-          data-e2e="screen-tasks__total"
-        >
-          ({{ duration }})
-        </span>
-      </h1>
-      <ng-container *ngrxLet="searchOpened$ as searchOpened">
+<div class="container" [ngClass]="{ 'task-opened': taskOpened$ | async }">
+  @if (tasks$ | async; as tasks) {
+    <section class="tasks">
+      <mat-toolbar>
+        <h1>
+          <ng-container> {{ (state$ | async) || undefined | taskState }} </ng-container>
+          @if (tasks | tasksDuration: 20000 | formatDuration | async; as duration) {
+            <span class="state-duration" data-e2e="screen-tasks__total"> ({{ duration }}) </span>
+          }
+        </h1>
         <button mat-icon-button (click)="toggleFilter()">
           <mat-icon>filter_list</mat-icon>
         </button>
-      </ng-container>
-    </mat-toolbar>
-    <tasks-filter *ngIf="searchOpened$ | ngrxPush" (keyup.esc)="closeFilter()"></tasks-filter>
-    <ng-container *ngIf="tasks.length; else noTasks">
-      <button (click)="addTask()" mat-fab color="accent" data-e2e="button-add-task">
-        <mat-icon>add</mat-icon>
-      </button>
-      <cdk-virtual-scroll-viewport
-        #scroll
-        [itemSize]="48"
-        [scrollToIndex]="currentTaskIndex$ | ngrxPush"
-        [checkViewportSizeWhenValueChanges]="tasks"
-      >
-        <mat-nav-list>
-          <mat-list-item
-            *cdkVirtualFor="let task of tasks; trackBy: taskId"
-            cdkDropList
-            (cdkDropListDropped)="onDrop($event, task)"
-            data-e2e="screen-tasks__task-item"
-            [activated]="rla.isActive"
-          >
-            <div class="item-content">
-              <a
-                matLine
-                [routerLink]="[task.id]"
-                queryParamsHandling="merge"
-                fixRouterLinkActive
-                routerLinkActive
-                class="task-link"
-                #rla="routerLinkActive"
-              >
-                <mat-icon [ngClass]="{ running: task | map: isTaskRunning }" data-e2e="screen-tasks__task-state-icon">{{
-                  task | taskStateIcon
-                }}</mat-icon>
-                <span class="name" data-e2e="screen-tasks__task-name">{{ task.name }}</span>
-                <span class="duration" data-e2e="screen-tasks__task-duration">{{
-                  task | taskDuration: 5000 | formatDuration | ngrxPush
-                }}</span>
-              </a>
-              <button-task-actions [task]="task"></button-task-actions>
-            </div>
-          </mat-list-item>
-        </mat-nav-list>
-      </cdk-virtual-scroll-viewport>
-    </ng-container>
-    <ng-template #noTasks>
-      <empty-state *ngIf="(searchOpened$ | ngrxPush) === false; else noSearchResults">
-        <img src="assets/favicon.svg" alt="Timer" illustration />
-        <span title>No tasks</span>
-        <span subtitle *ngrxLet="state$ as state">
-          <ng-container [ngSwitch]="state">
-            <ng-container *ngSwitchCase="'all'">Create a task and it will show up here</ng-container>
-            <ng-container *ngSwitchCase="taskState.active">Create a task and it will show up here</ng-container>
-            <ng-container *ngSwitchCase="taskState.finished">You didn't finish any tasks yet</ng-container>
-            <ng-container *ngSwitchCase="taskState.dropped">You didn't abandon any tasks yet</ng-container>
-          </ng-container>
-        </span>
-        <button
-          color="primary"
-          mat-raised-button
-          (click)="addTask()"
-          type="button"
-          routerLink="/tasks/active"
-          data-e2e="screen-tasks__button-add-task-empty-state"
-        >
-          Create a task
+      </mat-toolbar>
+      @if (searchOpened$ | async) {
+        <tasks-filter (keyup.esc)="closeFilter()"></tasks-filter>
+      }
+      @if (tasks.length) {
+        <button (click)="addTask()" mat-fab color="accent" data-e2e="button-add-task" matTooltip="Create a task">
+          <mat-icon>add</mat-icon>
         </button>
-      </empty-state>
-      <ng-template #noSearchResults>
-        <empty-state>
-          <mat-icon color="accent" illustration>search</mat-icon>
-          <span title>Nothing found</span>
-          <span subtitle>Could not find tasks matching the criteria</span>
-          <button mat-raised-button (click)="closeFilter()" type="button">Reset filter</button>
-        </empty-state>
-      </ng-template>
-    </ng-template>
-  </section>
-  <section class="task mat-app-background" *ngIf="taskOpened$ | ngrxPush">
-    <router-outlet></router-outlet>
-  </section>
+        <cdk-virtual-scroll-viewport
+          #scroll
+          [itemSize]="48"
+          [scrollToIndex]="(currentTaskIndex$ | async) || undefined"
+          [checkViewportSizeWhenValueChanges]="tasks"
+        >
+          <mat-nav-list>
+            <mat-list-item
+              *cdkVirtualFor="let task of tasks; trackBy: taskId"
+              cdkDropList
+              (cdkDropListDropped)="onDrop($event, task)"
+              data-e2e="screen-tasks__task-item"
+              [activated]="rla.isActive"
+            >
+              <div class="item-content">
+                <a
+                  matLine
+                  [routerLink]="[task.id]"
+                  queryParamsHandling="merge"
+                  fixRouterLinkActive
+                  routerLinkActive
+                  class="task-link"
+                  #rla="routerLinkActive"
+                >
+                  <mat-icon
+                    [ngClass]="{ running: task | map: isTaskRunning }"
+                    data-e2e="screen-tasks__task-state-icon"
+                    >{{ task | taskStateIcon }}</mat-icon
+                  >
+                  <span class="name" data-e2e="screen-tasks__task-name">{{ task.name }}</span>
+                  <span class="duration" data-e2e="screen-tasks__task-duration">{{
+                    task | taskDuration: 5000 | formatDuration | async
+                  }}</span>
+                </a>
+                <button-task-actions [task]="task"></button-task-actions>
+              </div>
+            </mat-list-item>
+          </mat-nav-list>
+        </cdk-virtual-scroll-viewport>
+      } @else {
+        @if ((searchOpened$ | async) === false) {
+          <empty-state>
+            <img src="assets/favicon.svg" alt="Timer" illustration />
+            <span title>No tasks</span>
+            <span subtitle>
+              @switch (state$ | async) {
+                @case ('all') {
+                  Create a task and it will show up here
+                }
+                @case (taskState.active) {
+                  Create a task and it will show up here
+                }
+                @case (taskState.finished) {
+                  You didn't finish any tasks yet
+                }
+                @case (taskState.dropped) {
+                  You didn't abandon any tasks yet
+                }
+              }
+            </span>
+            <button
+              color="primary"
+              mat-raised-button
+              (click)="addTask()"
+              type="button"
+              routerLink="/tasks/active"
+              data-e2e="screen-tasks__button-add-task-empty-state"
+            >
+              Create a task
+            </button>
+          </empty-state>
+        } @else {
+          <empty-state>
+            <mat-icon color="accent" illustration>search</mat-icon>
+            <span title>Nothing found</span>
+            <span subtitle>Could not find tasks matching the criteria</span>
+            <button mat-raised-button (click)="closeFilter()" type="button">Reset filter</button>
+          </empty-state>
+        }
+      }
+    </section>
+  }
+
+  @if (taskOpened$ | async) {
+    <section class="task mat-app-background">
+      <router-outlet></router-outlet>
+    </section>
+  }
 </div>
