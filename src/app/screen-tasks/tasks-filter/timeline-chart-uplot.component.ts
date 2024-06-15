@@ -101,6 +101,10 @@ const timerTimelinePlugin = (params: { barColor: string }): PluginReturnValue =>
         position: relative;
         overflow: hidden;
 
+        .uplot {
+          position: absolute;
+        }
+
         canvas {
           width: 100% !important;
           height: 100% !important;
