@@ -118,7 +118,7 @@ export class ScreenTasksComponent {
 
   hotkeys = [
     hotkey(KEYS_ADD, 'Add task', () => this.addTask()),
-    hotkey([...KEYS_NEXT, ...KEYS_PREV], 'Next/prev task', async (e) => {
+    hotkey([...KEYS_NEXT, ...KEYS_PREV], 'Next/prev task', (e) => {
       const nextTaskId = this.store.selectSignal(selectNextTaskId)();
       const prevTaskId = this.store.selectSignal(selectPrevTaskId)();
       const state = this.state();
