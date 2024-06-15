@@ -6,6 +6,7 @@ import {
   NgZone,
   OnChanges,
   SimpleChanges,
+  ViewEncapsulation,
   afterNextRender,
   inject,
   input,
@@ -88,24 +89,27 @@ const timerTimelinePlugin = (params: { barColor: string }): PluginReturnValue =>
 @Component({
   selector: 'timeline-chart-uplot',
   template: `<canvas #canvas></canvas>`,
+  styleUrl: '/node_modules/uplot/dist/uPlot.min.css',
+  encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [
     `
-      :host {
+      timeline-chart-uplot {
         display: block;
         width: 100%;
         height: 100%;
         position: relative;
         overflow: hidden;
-      }
-      canvas {
-        width: 100% !important;
-        height: 100% !important;
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
+
+        canvas {
+          width: 100% !important;
+          height: 100% !important;
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+        }
       }
     `,
   ],
