@@ -52,18 +52,26 @@
   <button mat-menu-item (click)="setThisYear()">This year</button>
   <button mat-menu-item (click)="setPreviousYear()">Previous year</button>
 </mat-menu>
-<ng-container *ngIf="timelineUplot$ | ngrxPush as data; else ghost">
-  <ng-container *ngIf="chartRange$ | ngrxPush as range; else ghost">
-    <timeline-chart-uplot
-      *ngIf="data | map: hasChartData; else ghost"
-      [@inOutAnimation]
-      [chartData]="$any(data)"
-      barWidth="day"
-      [range]="range"
-      (rangeChange)="onChartRangeChange($event)"
-    ></timeline-chart-uplot>
-  </ng-container>
-</ng-container>
+@if (timelineUplot$ | async; as data) {
+  @if (chartRange$ | async; as range) {
+    @if (data | map: hasChartData) {
+      <timeline-chart-uplot
+        [@inOutAnimation]
+        [chartData]="data"
+        barWidth="day"
+        [range]="range"
+        (rangeChange)="onChartRangeChange($event)"
+      ></timeline-chart-uplot>
+    } @else {
+      <ng-container *ngTemplateOutlet="ghost"></ng-container>
+    }
+  } @else {
+    <ng-container *ngTemplateOutlet="ghost"></ng-container>
+  }
+} @else {
+  <ng-container *ngTemplateOutlet="ghost"></ng-container>
+}
+
 <ng-template #ghost>
   <timeline-chart-uplot [chartData]="[[], []]" barWidth="day"></timeline-chart-uplot>
 </ng-template>

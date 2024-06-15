@@ -1,14 +1,14 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { A11yModule } from '@angular/cdk/a11y';
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatSelectModule } from '@angular/material/select';
+import { MatIconButton } from '@angular/material/button';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { MatOption, MatSelect } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { DatetimeLocalDirective } from '@app/directives/datetime-local.directive';
 import { ScaleRange, hasChartData } from '@app/domain/chart';
@@ -17,7 +17,6 @@ import { StoreState } from '@app/domain/storage';
 import { selectDecodedFilterParams, selectFilterChartData, selectFilterRange } from '@app/ngrx/selectors';
 import { MapPipe } from '@app/pipes/map.pipe';
 import { deepEquals } from '@app/utils/assert';
-import { LetDirective, PushPipe } from '@ngrx/component';
 import { Store } from '@ngrx/store';
 import endOfDay from 'date-fns/endOfDay';
 import endOfMonth from 'date-fns/endOfMonth';
@@ -50,25 +49,38 @@ type Wrap<T> = Required<{ [Key in keyof T]: FormControl<T[Key]> }>;
   ],
   standalone: true,
   imports: [
-    MatButtonModule,
-    MatSelectModule,
-    MatIconModule,
-    MatMenuModule,
-    MatFormFieldModule,
-    MatInputModule,
+    MatIconButton,
+    MatSelect,
+    MatOption,
+    MatIcon,
+    MatMenu,
+    MatMenuTrigger,
+    MatMenuItem,
+    MatFormField,
+    MatLabel,
+    MatInput,
     ReactiveFormsModule,
-    LetDirective,
-    PushPipe,
     A11yModule,
-    CommonModule,
     MapPipe,
     TimelineChartUplotComponent,
     ButtonResetInputComponent,
     DatetimeLocalDirective,
+    NgTemplateOutlet,
+    AsyncPipe,
   ],
 })
-export class TasksFilterComponent implements OnDestroy {
-  constructor(private store: Store<StoreState>, private router: Router) {}
+export class TasksFilterComponent {
+  private store = inject<Store<StoreState>>(Store);
+  private router = inject<Router>(Router);
+  private destroyRef = inject(DestroyRef);
+
+  constructor() {
+    this.destroyRef.onDestroy(() => {
+      this.router.navigate([], { queryParams: {} });
+      this.subscriber.unsubscribe();
+    });
+  }
+
   hasChartData = hasChartData;
   form = new FormGroup<Wrap<FilterMatrixParams>>({
     search: new FormControl(),
@@ -80,13 +92,13 @@ export class TasksFilterComponent implements OnDestroy {
     this.form.valueChanges.pipe(
       debounceTime(10),
       distinctUntilChanged(deepEquals),
-      tap((value) => this.router.navigate([], { queryParams: encodeFilterParams(value) }))
+      tap((value) => this.router.navigate([], { queryParams: encodeFilterParams(value) })),
     ),
     this.store.select(selectDecodedFilterParams).pipe(
       tap((value) => {
         this.form.patchValue(value);
-      })
-    )
+      }),
+    ),
   ).subscribe();
   timelineUplot$ = this.store.select(selectFilterChartData);
   chartRange$ = this.store.select(selectFilterRange);
@@ -97,10 +109,6 @@ export class TasksFilterComponent implements OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-    this.router.navigate([], { queryParams: {} });
-    this.subscriber.unsubscribe();
-  }
   setAnyTime() {
     this.form.patchValue({
       from: undefined,
