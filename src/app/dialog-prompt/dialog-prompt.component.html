@@ -1,7 +1,9 @@
 <h1 mat-dialog-title data-e2e="dialog-prompt__title">{{ data.title }}</h1>
 <form mat-dialog-content id="promptForm" [formGroup]="form" (ngSubmit)="onSubmit()">
   <mat-form-field>
-    <mat-label *ngIf="data.placeholder">{{ data.placeholder }}</mat-label>
+    @if (data.placeholder) {
+      <mat-label>{{ data.placeholder }}</mat-label>
+    }
     <input type="text" matInput formControlName="value" data-e2e="dialog-prompt__input" />
     <mat-error data-e2e="dialog-prompt__validation-error">Value is required</mat-error>
   </mat-form-field>

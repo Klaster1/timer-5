@@ -1,10 +1,16 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { MatButton } from '@angular/material/button';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogActions,
+  MatDialogClose,
+  MatDialogContent,
+  MatDialogRef,
+  MatDialogTitle,
+} from '@angular/material/dialog';
+import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 
 export interface DialogPromptData {
   title: string;
@@ -18,14 +24,24 @@ export interface DialogPromptData {
   styleUrls: ['./dialog-prompt.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [MatDialogModule, MatButtonModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, CommonModule],
+  imports: [
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogActions,
+    MatDialogClose,
+    MatButton,
+    MatFormField,
+    MatLabel,
+    MatError,
+    MatInput,
+    ReactiveFormsModule,
+  ],
 })
 export class DialogPromptComponent {
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public data: DialogPromptData,
-    private dialog: MatDialogRef<DialogPromptComponent, string>
-  ) {
-    if (data.value) this.form.setValue({ value: data.value });
+  public data: DialogPromptData = inject(MAT_DIALOG_DATA);
+  private dialog = inject<MatDialogRef<DialogPromptComponent, string>>(MatDialogRef);
+  constructor() {
+    if (this.data.value) this.form.setValue({ value: this.data.value });
   }
   form = new FormGroup({
     value: new FormControl<string | null>(null, [Validators.required]),
