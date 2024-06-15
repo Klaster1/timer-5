@@ -1,4 +1,5 @@
 @use '@angular/material' as mat;
+@use 'm3-theme' as theme;
 @import 'uplot/dist/uPlot.min.css';
 
 // @mixin nav-link-active($color) {
@@ -60,40 +61,14 @@ a {
 
 @include mat.core();
 
-$tmp-theme-light: mat.define-theme(
-  (
-    color: (
-      theme-type: light,
-      primary: mat.$azure-palette,
-      tertiary: mat.$blue-palette,
-    ),
-    density: (
-      scale: 0,
-    ),
-  )
-);
-
-$tmp-theme-dark: mat.define-theme(
-  (
-    color: (
-      theme-type: dark,
-      primary: mat.$azure-palette,
-      tertiary: mat.$blue-palette,
-    ),
-    density: (
-      scale: 0,
-    ),
-  )
-);
-
 :root {
-  @include mat.all-component-themes($tmp-theme-light);
+  @include mat.all-component-themes(theme.$light-theme);
   --mat-sidenav-container-width: 65px;
   --mat-icon-color: var(--mat-form-field-leading-icon-color);
   --mat-sidenav-container-shape: 0;
 }
 :root:has(.theme-alternate) {
-  @include mat.all-component-colors($tmp-theme-dark);
+  @include mat.all-component-colors(theme.$dark-theme);
 }
 
 html,
