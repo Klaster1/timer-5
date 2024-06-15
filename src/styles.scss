@@ -1,4 +1,7 @@
 @use '@angular/material' as mat;
+@use '@angular/material/core/theming/inspection' as inspection;
+@use '@angular/material/core/theming/all-theme' as all-theme;
+@use '@angular/material/core/theming/theming' as theming;
 @use 'm3-theme' as theme;
 
 a {
@@ -8,8 +11,32 @@ a {
 
 @include mat.core();
 
+@mixin used-components-theme($theme) {
+  $dedupe-key: 'angular-material-theme';
+  @include theming.private-check-duplicate-theme-styles($theme, $dedupe-key) {
+    @include mat.core-theme($theme);
+    @include mat.tooltip-theme($theme);
+    @include mat.form-field-theme($theme);
+    @include mat.input-theme($theme);
+    @include mat.select-theme($theme);
+    @include mat.dialog-theme($theme);
+    @include mat.menu-theme($theme);
+    @include mat.list-theme($theme);
+    @include mat.button-theme($theme);
+    @include mat.icon-button-theme($theme);
+    @include mat.fab-theme($theme);
+    @include mat.icon-theme($theme);
+    @include mat.sidenav-theme($theme);
+    @include mat.toolbar-theme($theme);
+  }
+}
+
+@mixin used-components-colors($theme) {
+  @include all-theme.all-component-themes(inspection.theme-remove($theme, base, typography, density));
+}
+
 :root {
-  @include mat.all-component-themes(theme.$light-theme);
+  @include used-components-theme(theme.$light-theme);
 
   --mat-sidenav-container-width: 65px;
   --mat-icon-color: var(--mat-form-field-leading-icon-color);
@@ -20,7 +47,7 @@ a {
   --scrollbar-radius: 4px;
 }
 :root:has(.theme-alternate) {
-  @include mat.all-component-colors(theme.$dark-theme);
+  @include used-components-colors(theme.$dark-theme);
 }
 
 html,
