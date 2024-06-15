@@ -1,5 +1,6 @@
-import { enableProdMode, importProvidersFrom } from '@angular/core';
+import { enableProdMode, importProvidersFrom, provideExperimentalZonelessChangeDetection } from '@angular/core';
 import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogConfig, MatDialogModule } from '@angular/material/dialog';
+import { MAT_TOOLTIP_DEFAULT_OPTIONS, MatTooltipDefaultOptions } from '@angular/material/tooltip';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter, withRouterConfig } from '@angular/router';
@@ -23,6 +24,7 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
+    provideExperimentalZonelessChangeDetection(),
     importProvidersFrom(MatDialogModule),
     importProvidersFrom(BrowserModule),
     importProvidersFrom(BrowserAnimationsModule),
@@ -49,7 +51,7 @@ bootstrapApplication(AppComponent, {
           ],
         },
       ],
-      withRouterConfig({ paramsInheritanceStrategy: 'always' })
+      withRouterConfig({ paramsInheritanceStrategy: 'always' }),
     ),
     provideRouterStore({
       serializer: MinimalRouterStateSerializer,
@@ -61,13 +63,17 @@ bootstrapApplication(AppComponent, {
         // Register the ServiceWorker as soon as the app is stable
         // or after 30 seconds (whichever comes first).
         registrationStrategy: 'registerWhenStable:30000',
-      })
+      }),
     ),
     {
       provide: MAT_DIALOG_DEFAULT_OPTIONS,
       useFactory(): MatDialogConfig<any> {
         return { width: '600px', autoFocus: true };
       },
+    },
+    {
+      provide: MAT_TOOLTIP_DEFAULT_OPTIONS,
+      useValue: { disableTooltipInteractivity: true } as MatTooltipDefaultOptions,
     },
   ],
 });

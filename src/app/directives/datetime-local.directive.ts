@@ -11,10 +11,14 @@ const localDateToUtcDate = (date: Date): Date => {
   return new Date(localDate.getTime() + localDate.getTimezoneOffset() * 60000);
 };
 
+const toDateTimeLocalValue = (date: Date): string => {
+  return date.toISOString().replace('Z', '');
+};
+
 @Directive({
   selector: 'input[type="datetime-local"]',
   host: {
-    '(input)': 'this._handleInput($event.target.valueAsDate)',
+    '(input)': 'this._handleInput($event.target.value)',
     '(blur)': 'onTouched()',
   },
   providers: [
@@ -30,12 +34,12 @@ export class DatetimeLocalDirective implements ControlValueAccessor {
   private _elementRef = inject<ElementRef<HTMLInputElement>>(ElementRef);
 
   writeValue(value: unknown): void {
-    const normalizedValue = value instanceof Date ? utcDateToLocalDate(value) : null;
-    this._elementRef.nativeElement.valueAsDate = normalizedValue;
+    const normalizedValue = value instanceof Date ? toDateTimeLocalValue(utcDateToLocalDate(value)) : null;
+    this._elementRef.nativeElement.value = normalizedValue ?? '';
   }
 
-  _handleInput(value: Date | undefined): void {
-    this.onChange(value instanceof Date ? localDateToUtcDate(value) : value);
+  _handleInput(value: string | undefined): void {
+    this.onChange(value?.length ? new Date(value) : value);
   }
 
   onChange = (_: any) => {};

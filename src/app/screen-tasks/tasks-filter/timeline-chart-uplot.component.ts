@@ -3,7 +3,6 @@ import {
   Component,
   DestroyRef,
   ElementRef,
-  NgZone,
   OnChanges,
   SimpleChanges,
   ViewEncapsulation,
@@ -118,7 +117,6 @@ const timerTimelinePlugin = (params: { barColor: string }): PluginReturnValue =>
 export class TimelineChartUplotComponent implements OnChanges {
   private store = inject<Store<StoreState>>(Store);
   private elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
-  private ngZone = inject<NgZone>(NgZone);
   private destroyRef = inject(DestroyRef);
 
   public chartData = input<AlignedData>();
@@ -168,67 +166,63 @@ export class TimelineChartUplotComponent implements OnChanges {
           });
       });
       this.resizeObserver.observe(this.elementRef.nativeElement);
-      this.ngZone.runOutsideAngular(() => {
-        const barColor = 'rgb(126, 203, 32)';
-        this.uplot = new uPlot(
-          {
-            width: this.elementRef.nativeElement.offsetWidth,
-            height: this.elementRef.nativeElement.offsetHeight - this.headerHeight,
-            plugins: [timerTimelinePlugin({ barColor })],
-            hooks: {
-              setScale: [
-                (self: uPlot, key: string) => {
-                  if (!this.firstRangeChangeSkipped) {
-                    this.firstRangeChangeSkipped = true;
-                    return;
-                  }
-                  const scale = self.scales[key];
-                  if (key !== 'x' || !scale || !isNumber(scale.min) || !isNumber(scale.max)) {
-                    return;
-                  }
-                  const dataMin = self.data[0][0];
-                  const dataMax = self.data[0][self.data[0].length - 1];
-                  const min = scale.min === dataMin ? null : new Date(secondsToMilliseconds(scale.min));
-                  const max = scale.max === dataMax ? null : new Date(secondsToMilliseconds(scale.max));
-                  const event = [min, max] as const;
-                  this.ngZone.runTask(() => {
-                    this.rangeChange.emit(event);
-                  });
-                },
-              ],
-            },
-            scales: {
-              m: {
-                auto: true,
-              },
-            },
-            series: [
-              {
-                value: (_, value) => format(new Date(secondsToMilliseconds(value)), 'yyyy-MM-dd'),
-                label: 'Day',
-              },
-              {
-                show: true,
-                label: this.getLegendLabel(),
-                scale: 'm',
-                value: (_, value) => this.getLegendValue(value),
-                fill: barColor,
-              },
-            ],
-            axes: [
-              {},
-              {
-                scale: 'm',
-                size: 50,
-                label: this.getLegendLabel(),
-                values: (_, ticks) => ticks.map((raw) => this.getLegendValue(raw)),
+      const barColor = 'rgb(126, 203, 32)';
+      this.uplot = new uPlot(
+        {
+          width: this.elementRef.nativeElement.offsetWidth,
+          height: this.elementRef.nativeElement.offsetHeight - this.headerHeight,
+          plugins: [timerTimelinePlugin({ barColor })],
+          hooks: {
+            setScale: [
+              (self: uPlot, key: string) => {
+                if (!this.firstRangeChangeSkipped) {
+                  this.firstRangeChangeSkipped = true;
+                  return;
+                }
+                const scale = self.scales[key];
+                if (key !== 'x' || !scale || !isNumber(scale.min) || !isNumber(scale.max)) {
+                  return;
+                }
+                const dataMin = self.data[0][0];
+                const dataMax = self.data[0][self.data[0].length - 1];
+                const min = scale.min === dataMin ? null : new Date(secondsToMilliseconds(scale.min));
+                const max = scale.max === dataMax ? null : new Date(secondsToMilliseconds(scale.max));
+                const event = [min, max] as const;
+                this.rangeChange.emit(event);
               },
             ],
           },
-          this.chartData(),
-          this.elementRef.nativeElement,
-        );
-      });
+          scales: {
+            m: {
+              auto: true,
+            },
+          },
+          series: [
+            {
+              value: (_, value) => format(new Date(secondsToMilliseconds(value)), 'yyyy-MM-dd'),
+              label: 'Day',
+            },
+            {
+              show: true,
+              label: this.getLegendLabel(),
+              scale: 'm',
+              value: (_, value) => this.getLegendValue(value),
+              fill: barColor,
+            },
+          ],
+          axes: [
+            {},
+            {
+              scale: 'm',
+              size: 50,
+              label: this.getLegendLabel(),
+              values: (_, ticks) => ticks.map((raw) => this.getLegendValue(raw)),
+            },
+          ],
+        },
+        this.chartData(),
+        this.elementRef.nativeElement,
+      );
     });
   }
   themeSubscriber = this.store.select(selectTheme).subscribe(() => {
