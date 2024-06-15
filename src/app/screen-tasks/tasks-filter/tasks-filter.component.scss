@@ -27,6 +27,8 @@ form {
 .dates-menu {
   grid-row: 2;
   grid-column: 3;
+  position: relative;
+  top: 10px;
 }
 
 @media (max-width: 530px) {

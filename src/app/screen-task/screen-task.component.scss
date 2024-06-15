@@ -9,10 +9,11 @@ h2 {
   margin-right: auto;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-bottom: 8px;
 
   mat-icon {
     position: relative;
-    top: 3px;
+    top: 4px;
     margin-right: 0.25em;
   }
 }
