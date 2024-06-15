@@ -1,9 +1,9 @@
-<div class="container" [ngClass]="{ 'task-opened': taskOpened$ | async }">
-  @if (tasks$ | async; as tasks) {
+<div class="container" [ngClass]="{ 'task-opened': taskOpened() }">
+  @if (tasks(); as tasks) {
     <section class="tasks">
       <mat-toolbar>
         <h1>
-          <ng-container> {{ (state$ | async) || undefined | taskState }} </ng-container>
+          <ng-container> {{ state() | taskState }} </ng-container>
           @if (tasks | tasksDuration: 20000 | formatDuration | async; as duration) {
             <span class="state-duration" data-e2e="screen-tasks__total"> ({{ duration }}) </span>
           }
@@ -12,7 +12,7 @@
           <mat-icon>filter_list</mat-icon>
         </button>
       </mat-toolbar>
-      @if (searchOpened$ | async) {
+      @if (searchOpened()) {
         @defer {
           <tasks-filter (keyup.esc)="closeFilter()"></tasks-filter>
         }
@@ -24,7 +24,7 @@
         <cdk-virtual-scroll-viewport
           #scroll
           [itemSize]="48"
-          [scrollToIndex]="(currentTaskIndex$ | async) || undefined"
+          [scrollToIndex]="currentTaskIndex()"
           [checkViewportSizeWhenValueChanges]="tasks"
         >
           <mat-nav-list>
@@ -61,13 +61,13 @@
           </mat-nav-list>
         </cdk-virtual-scroll-viewport>
       } @else {
-        @if ((searchOpened$ | async) === false) {
+        @if (searchOpened() === false) {
           @defer {
             <empty-state>
               <img src="assets/favicon.svg" alt="Timer" illustration />
               <span title>No tasks</span>
               <span subtitle>
-                @switch (state$ | async) {
+                @switch (state()) {
                   @case ('all') {
                     Create a task and it will show up here
                   }
@@ -108,7 +108,7 @@
     </section>
   }
 
-  @if (taskOpened$ | async) {
+  @if (taskOpened()) {
     <section class="task mat-app-background">
       <router-outlet></router-outlet>
     </section>

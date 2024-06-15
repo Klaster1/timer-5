@@ -8,7 +8,9 @@ import {
   DestroyRef,
   TrackByFunction,
   afterNextRender,
+  computed,
   inject,
+  signal,
 } from '@angular/core';
 import { MatButton, MatFabButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -39,7 +41,6 @@ import { TaskStatePipe } from '@app/pipes/task-state.pipe';
 import { TasksDurationPipe } from '@app/pipes/tasks-duration.pipe';
 import { Store } from '@ngrx/store';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
-import { Observable, Subject, firstValueFrom, map, merge, shareReplay, take } from 'rxjs';
 import { CheckViewportSizeWhenValueChangesDirective } from './checkViewportSizeWhenValueChanges.directive';
 import { EmptyStateComponent } from './empty-state/empty-state.component';
 import { ScrollToIndexDirective } from './scrollToIndex.directive';
@@ -87,37 +88,40 @@ export class ScreenTasksComponent {
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
 
+  public state = this.store.selectSignal(selectCurrentTaskState);
+  public tasks = this.store.selectSignal(selectCurrentTasks);
+  public currentTaskIndex = this.store.selectSignal(selectCurrentTaskIndex);
+  public taskOpened = this.store.selectSignal(selectIsCurrentTaskOpened);
+  private filterPresent = computed(() => {
+    const filterParams = this.store.selectSignal(selectDecodedFilterParams)();
+    return !!Object.keys(filterParams).length;
+  });
+  private filterToggles = signal<boolean | undefined>(undefined);
+  public searchOpened = computed(() => {
+    const filterPresent = this.filterPresent();
+    const filterToggles = this.filterToggles();
+    if (filterToggles !== undefined) return filterToggles;
+    return filterPresent;
+  });
+
   constructor() {
-    this.destroyRef.onDestroy(() => {
-      this.keys.remove(this.hotkeys);
-      this.filterToggles$.complete();
-    });
     afterNextRender(() => {
       this.keys.add(this.hotkeys);
+    });
+    this.destroyRef.onDestroy(() => {
+      this.keys.remove(this.hotkeys);
     });
   }
 
   taskState = TaskState;
   isTaskRunning = isTaskRunning;
-  state$ = this.store.select(selectCurrentTaskState);
-  filterParams$ = this.store.select(selectDecodedFilterParams);
-  filterToggles$ = new Subject<boolean>();
-  filterPresent$: Observable<boolean> = this.filterParams$.pipe(map((params) => !!Object.keys(params).length));
-  searchOpened$ = merge(this.filterPresent$.pipe(take(1)), this.filterToggles$).pipe(
-    shareReplay({ refCount: true, bufferSize: 1 }),
-  );
-  tasks$ = this.store.select(selectCurrentTasks);
-  currentTaskIndex$ = this.store.select(selectCurrentTaskIndex);
-  taskOpened$ = this.store.select(selectIsCurrentTaskOpened);
 
   hotkeys = [
     hotkey(KEYS_ADD, 'Add task', () => this.addTask()),
     hotkey([...KEYS_NEXT, ...KEYS_PREV], 'Next/prev task', async (e) => {
-      const [nextTaskId, prevTaskId, state] = await Promise.all([
-        firstValueFrom(this.store.select(selectNextTaskId)),
-        firstValueFrom(this.store.select(selectPrevTaskId)),
-        firstValueFrom(this.state$),
-      ]);
+      const nextTaskId = this.store.selectSignal(selectNextTaskId)();
+      const prevTaskId = this.store.selectSignal(selectPrevTaskId)();
+      const state = this.state();
       const taskId = KEYS_NEXT.includes(e.key) ? nextTaskId : KEYS_PREV.includes(e.key) ? prevTaskId : null;
       if (state && taskId) this.router.navigate([state, taskId], { queryParamsHandling: 'merge' });
     }),
@@ -140,16 +144,15 @@ export class ScreenTasksComponent {
     this.store.dispatch(actions.createTaskIntent());
   }
   openFilter() {
-    this.filterToggles$.next(true);
+    this.filterToggles.update(() => true);
   }
   closeFilter() {
-    this.filterToggles$.next(false);
+    this.filterToggles.update(() => false);
   }
   toggleFilter() {
-    this.searchOpened$.pipe(take(1)).subscribe((searchOpened) => {
-      if (searchOpened) this.closeFilter();
-      else this.openFilter();
-    });
+    const searchOpened = this.searchOpened();
+    if (searchOpened) this.closeFilter();
+    else this.openFilter();
   }
   onDrop(event: SessionDragEvent, item: Task) {
     this.store.dispatch(
