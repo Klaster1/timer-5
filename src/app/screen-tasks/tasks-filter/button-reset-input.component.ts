@@ -1,15 +1,16 @@
-import { NgIf } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'button-reset-input-control',
   template: `
-    <button *ngIf="control?.value" mat-icon-button (click)="control?.reset()">
-      <mat-icon>clear</mat-icon>
-    </button>
+    @if (control()?.value) {
+      <button mat-icon-button (click)="control()?.reset()">
+        <mat-icon>clear</mat-icon>
+      </button>
+    }
   `,
   styles: [
     `
@@ -22,8 +23,8 @@ import { MatIconModule } from '@angular/material/icon';
     `,
   ],
   standalone: true,
-  imports: [MatButtonModule, NgIf, MatIconModule],
+  imports: [MatIconButton, MatIcon],
 })
 export class ButtonResetInputComponent<T> {
-  @Input() control?: FormControl<T>;
+  public control = input<FormControl<T> | undefined>();
 }
