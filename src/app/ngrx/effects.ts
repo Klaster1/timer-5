@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import {
@@ -25,20 +25,18 @@ import {
 
 @Injectable()
 export class Effects {
-  constructor(
-    private actions$: Actions,
-    private store: Store<StoreState>,
-    private router: Router,
-    private prompt: Prompt,
-    private dialog: MatDialog
-  ) {}
+  private actions$ = inject(Actions);
+  private store = inject<Store<StoreState>>(Store);
+  private router = inject(Router);
+  private prompt = inject(Prompt);
+  private dialog = inject(MatDialog);
 
   createTask$ = createEffect(() =>
     this.actions$.pipe(
       ofType(createTaskIntent),
       switchMap(() => this.prompt.prompt('Create task', '', 'Task name')),
-      switchMap((result) => (result ? of(createTask({ taskId: makeTaskId(), name: result })) : []))
-    )
+      switchMap((result) => (result ? of(createTask({ taskId: makeTaskId(), name: result })) : [])),
+    ),
   );
 
   newTaskRedirect$ = createEffect(
@@ -46,9 +44,9 @@ export class Effects {
       this.actions$.pipe(
         ofType(createTask),
         withLatestFrom(this.store.select(selectCurrentTaskState)),
-        tap(([a, state]) => this.router.navigate([state === 'all' ? 'all' : 'active', a.taskId]))
+        tap(([a, state]) => this.router.navigate([state === 'all' ? 'all' : 'active', a.taskId])),
       ),
-    { dispatch: false }
+    { dispatch: false },
   );
 
   deleteTaskRedirect$ = createEffect(
@@ -58,9 +56,9 @@ export class Effects {
         withLatestFrom(this.store.select(selectCurrentTaskState), this.store.select(selectCurrentTaskId)),
         tap(([action, state, taskId]) => {
           if (action.taskId === taskId && state) this.router.navigate([state], { queryParamsHandling: 'merge' });
-        })
+        }),
       ),
-    { dispatch: false }
+    { dispatch: false },
   );
 
   renameTask$ = createEffect(() =>
@@ -70,10 +68,10 @@ export class Effects {
         this.store.select(selectTaskById(a.taskId)).pipe(
           take(1),
           exhaustMap((task) => this.prompt.prompt('Rename task', task?.name, 'Task name')),
-          switchMap((result) => (result ? of(renameTask({ taskId: a.taskId, name: result })) : EMPTY))
-        )
-      )
-    )
+          switchMap((result) => (result ? of(renameTask({ taskId: a.taskId, name: result })) : EMPTY)),
+        ),
+      ),
+    ),
   );
 
   editSession$ = createEffect(() =>
@@ -89,7 +87,7 @@ export class Effects {
               ? this.dialog
                   .open<DialogEditSessionComponent, DialogEditSessionData, DialogEditSessionData>(
                     DialogEditSessionComponent,
-                    { data: { start: session.start, end: session.end } }
+                    { data: { start: session.start, end: session.end } },
                   )
                   .afterClosed()
                   .pipe(
@@ -101,15 +99,15 @@ export class Effects {
                               sessionId: a.sessionId,
                               start: result.start,
                               end: result.end,
-                            })
+                            }),
                           )
-                        : EMPTY
-                    )
+                        : EMPTY,
+                    ),
                   )
               : EMPTY;
-          })
-        )
-      )
-    )
+          }),
+        ),
+      ),
+    ),
   );
 }
