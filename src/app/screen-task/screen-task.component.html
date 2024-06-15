@@ -1,8 +1,8 @@
 @if (task(); as task) {
   <mat-toolbar>
-    <a routerLink="./.." queryParamsHandling="merge" mat-icon-button>
+    <button routerLink="./.." queryParamsHandling="merge" mat-icon-button>
       <mat-icon>arrow_back</mat-icon>
-    </a>
+    </button>
     <h2>
       <mat-icon class="fix-icon-color" data-e2e="screen-task__state-icon">{{ task | taskStateIcon }}</mat-icon
       ><span data-e2e="screen-task__name">{{ task.name }}</span>
