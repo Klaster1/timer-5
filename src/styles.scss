@@ -10,9 +10,14 @@ a {
 
 :root {
   @include mat.all-component-themes(theme.$light-theme);
+
   --mat-sidenav-container-width: 65px;
   --mat-icon-color: var(--mat-form-field-leading-icon-color);
   --mat-sidenav-container-shape: 0;
+
+  --scrollbar-color: var(--mat-menu-divider-color);
+  --scrollbar-active-color: var(--mat-option-selected-state-layer-color);
+  --scrollbar-radius: 4px;
 }
 :root:has(.theme-alternate) {
   @include mat.all-component-colors(theme.$dark-theme);
@@ -32,4 +37,23 @@ body {
 
 .ng-scroll-content {
   max-width: 100%;
+}
+
+// Chrome custom scrollbar
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: inherit;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-color);
+  border-radius: var(--scrollbar-radius);
+
+  &:active {
+    background-color: var(--scrollbar-active-color);
+  }
 }
