@@ -1,16 +1,15 @@
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { Router, RouterModule } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIcon } from '@angular/material/icon';
+import { MatActionList, MatListItem, MatNavList } from '@angular/material/list';
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
+import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
+import { MatTooltip } from '@angular/material/tooltip';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { toggleTheme } from '@app/ngrx/actions';
 import { isAnyTaskActive, selectTasks, selectTheme } from '@app/ngrx/selectors';
-import { LetDirective, PushPipe } from '@ngrx/component';
 import { Store } from '@ngrx/store';
 import { HotkeysService } from 'angular2-hotkeys';
 import { distinctUntilChanged } from 'rxjs';
@@ -32,43 +31,47 @@ import { ImportExportService } from './services/import-export.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    CommonModule,
-    LetDirective,
-    PushPipe,
-    MatSidenavModule,
-    MatMenuModule,
-    MatListModule,
-    MatIconModule,
-    MatTooltipModule,
-    MatDialogModule,
+    MatDrawerContainer,
+    MatDrawer,
+    MatDrawerContent,
+    MatMenuTrigger,
+    MatMenu,
+    MatNavList,
+    MatListItem,
+    MatActionList,
+    MatIcon,
+    MatTooltip,
     TaskStateIconPipe,
     MapPipe,
     DragDropModule,
     SafeUrlPipe,
-    RouterModule,
+    RouterLink,
+    RouterLinkActive,
+    RouterOutlet,
+    AsyncPipe,
   ],
 })
 export class AppComponent {
+  private store = inject<Store<StoreState>>(Store);
+  public keys = inject<HotkeysService>(HotkeysService);
+  public router = inject<Router>(Router);
+  private importExport = inject<ImportExportService>(ImportExportService);
+  private favicon = inject<FaviconService>(FaviconService);
+  private hotkeysService = inject<HotkeysService>(HotkeysService);
+  private dialogs = inject<MatDialog>(MatDialog);
+
   theme$ = this.store.select(selectTheme);
   taskState = TaskState;
 
-  constructor(
-    private store: Store<StoreState>,
-    keys: HotkeysService,
-    router: Router,
-    private importExport: ImportExportService,
-    private favicon: FaviconService,
-    private hotkeysService: HotkeysService,
-    private dialogs: MatDialog,
-  ) {
+  constructor() {
     this.handleHotkeyCheatsheet();
-    keys.add([
-      hotkey(KEYS_GO_ALL, 'Go to all tasks', () => router.navigate(['all'], { queryParamsHandling: 'merge' })),
+    this.keys.add([
+      hotkey(KEYS_GO_ALL, 'Go to all tasks', () => this.router.navigate(['all'], { queryParamsHandling: 'merge' })),
       hotkey(KEYS_GO_ACTIVE, 'Go to active tasks', () =>
-        router.navigate([TaskState.active], { queryParamsHandling: 'merge' }),
+        this.router.navigate([TaskState.active], { queryParamsHandling: 'merge' }),
       ),
       hotkey(KEYS_GO_FINISHED, 'Go to finished tasks', () =>
-        router.navigate([TaskState.finished], { queryParamsHandling: 'merge' }),
+        this.router.navigate([TaskState.finished], { queryParamsHandling: 'merge' }),
       ),
     ]);
     this.theme$.subscribe((t) => document.body.classList.toggle('theme-alternate', t === 'dark'));

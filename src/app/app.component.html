@@ -16,9 +16,11 @@
       <mat-nav-list class="states">
         <a
           mat-list-item
+          [activated]="rlaActive.isActive"
           [routerLink]="taskState.active"
+          routerLinkActive
+          #rlaActive="routerLinkActive"
           queryParamsHandling="merge"
-          routerLinkActive="nav-link-active"
           matTooltip="Active tasks"
           data-e2e="navigation__button-tasks-active"
         >
@@ -26,18 +28,22 @@
         </a>
         <a
           mat-list-item
+          [activated]="rlaFinished.isActive"
           [routerLink]="taskState.finished"
+          routerLinkActive
           queryParamsHandling="merge"
-          routerLinkActive="nav-link-active"
+          #rlaFinished="routerLinkActive"
           matTooltip="Finished tasks"
           data-e2e="navigation__button-tasks-finished"
           ><mat-icon>{{ taskState.finished | taskStateIcon }}</mat-icon></a
         >
         <a
           mat-list-item
+          [activated]="rlaDropped.isActive"
           [routerLink]="taskState.dropped"
+          routerLinkActive
+          #rlaDropped="routerLinkActive"
           queryParamsHandling="merge"
-          routerLinkActive="nav-link-active"
           matTooltip="Dropped tasks"
           data-e2e="navigation__button-tasks-dropped"
           ><mat-icon>{{ taskState.dropped | taskStateIcon }}</mat-icon></a
@@ -60,8 +66,7 @@
           <a
             mat-menu-item
             data-e2e="navigation__button-export"
-            *ngrxLet="exportUrl$ as exportUrl"
-            [href]="exportUrl | safeResourceUrl"
+            [href]="exportUrl$ | async | safeResourceUrl"
             download="timer-data.json"
             target="_blank"
             >Export</a
@@ -69,12 +74,11 @@
         </mat-menu>
 
         <button
-          *ngrxLet="theme$ as theme"
           mat-list-item
           (click)="toggleTheme()"
-          [matTooltip]="theme !== 'dark' ? 'Dark mode' : 'Day mode'"
+          [matTooltip]="(theme$ | async) !== 'dark' ? 'Dark mode' : 'Day mode'"
         >
-          <mat-icon>{{ theme !== 'dark' ? 'nights_stay' : 'wb_sunny' }}</mat-icon>
+          <mat-icon>{{ (theme$ | async) !== 'dark' ? 'nights_stay' : 'wb_sunny' }}</mat-icon>
         </button>
       </mat-action-list>
     </div>
