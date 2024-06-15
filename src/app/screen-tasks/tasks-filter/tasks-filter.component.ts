@@ -5,7 +5,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, injec
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
@@ -57,6 +57,7 @@ type Wrap<T> = Required<{ [Key in keyof T]: FormControl<T[Key]> }>;
     MatMenuTrigger,
     MatMenuItem,
     MatFormField,
+    MatSuffix,
     MatLabel,
     MatInput,
     ReactiveFormsModule,

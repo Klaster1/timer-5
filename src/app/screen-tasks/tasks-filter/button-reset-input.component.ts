@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 
@@ -8,7 +7,7 @@ import { MatIcon } from '@angular/material/icon';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (showButton()) {
-      <button mat-icon-button (click)="control()?.reset()">
+      <button mat-icon-button (click)="reset.emit()">
         <mat-icon>clear</mat-icon>
       </button>
     }
@@ -18,15 +17,15 @@ import { MatIcon } from '@angular/material/icon';
       :host {
         display: contents;
       }
-      button {
-        width: 36px;
-      }
     `,
   ],
   standalone: true,
   imports: [MatIconButton, MatIcon],
 })
 export class ButtonResetInputComponent<T> {
-  public control = input<FormControl<T> | undefined>();
-  public showButton = computed(() => this.control()?.value !== null);
+  value = input<T>();
+  reset = output<void>();
+  public showButton = computed(() => {
+    return this.value() !== null;
+  });
 }

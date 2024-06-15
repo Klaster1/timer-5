@@ -17,7 +17,11 @@
       cdkFocusRegionStart
       cdkFocusInitial
     />
-    <button-reset-input-control matSuffix [control]="form.controls.search"></button-reset-input-control>
+    <button-reset-input-control
+      matSuffix
+      [value]="form.controls.search.value"
+      (reset)="form.controls.search.reset()"
+    ></button-reset-input-control>
   </mat-form-field>
   <mat-form-field class="duration">
     <mat-label>Sort by duration</mat-label>
@@ -30,12 +34,20 @@
   <mat-form-field class="from">
     <mat-label>From</mat-label>
     <input matInput placeholder="From" formControlName="from" type="datetime-local" />
-    <button-reset-input-control matSuffix [control]="form.controls.from"></button-reset-input-control>
+    <button-reset-input-control
+      matSuffix
+      [value]="form.controls.from.value"
+      (reset)="form.controls.from.reset()"
+    ></button-reset-input-control>
   </mat-form-field>
   <mat-form-field class="to">
     <mat-label>To</mat-label>
     <input matInput placeholder="To" formControlName="to" cdkFocusRegionEnd type="datetime-local" />
-    <button-reset-input-control matSuffix [control]="form.controls.to"></button-reset-input-control>
+    <button-reset-input-control
+      matSuffix
+      [value]="form.controls.to.value"
+      (reset)="form.controls.to.reset()"
+    ></button-reset-input-control>
   </mat-form-field>
   <button class="dates-menu" mat-icon-button matSuffix [matMenuTriggerFor]="fromMenu">
     <mat-icon>expand_more</mat-icon>
