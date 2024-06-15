@@ -1,4 +1,4 @@
-import { Directive, ElementRef, forwardRef } from '@angular/core';
+import { Directive, ElementRef, forwardRef, inject } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 const utcDateToLocalDate = (date: Date): Date => {
@@ -27,7 +27,7 @@ const localDateToUtcDate = (date: Date): Date => {
   standalone: true,
 })
 export class DatetimeLocalDirective implements ControlValueAccessor {
-  constructor(private _elementRef: ElementRef<HTMLInputElement>) {}
+  private _elementRef = inject<ElementRef<HTMLInputElement>>(ElementRef);
 
   writeValue(value: unknown): void {
     const normalizedValue = value instanceof Date ? utcDateToLocalDate(value) : null;
