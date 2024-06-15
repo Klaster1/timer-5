@@ -66,19 +66,15 @@
           <a
             mat-menu-item
             data-e2e="navigation__button-export"
-            [href]="exportUrl$ | async | safeResourceUrl"
+            [href]="exportUrl() | safeResourceUrl"
             download="timer-data.json"
             target="_blank"
             >Export</a
           >
         </mat-menu>
 
-        <button
-          mat-list-item
-          (click)="toggleTheme()"
-          [matTooltip]="(theme$ | async) !== 'dark' ? 'Dark mode' : 'Day mode'"
-        >
-          <mat-icon>{{ (theme$ | async) !== 'dark' ? 'nights_stay' : 'wb_sunny' }}</mat-icon>
+        <button mat-list-item (click)="toggleTheme()" [matTooltip]="theme() !== 'dark' ? 'Dark mode' : 'Day mode'">
+          <mat-icon>{{ theme() !== 'dark' ? 'nights_stay' : 'wb_sunny' }}</mat-icon>
         </button>
       </mat-action-list>
     </div>

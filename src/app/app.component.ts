@@ -1,10 +1,9 @@
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatActionList, MatListItem, MatNavList } from '@angular/material/list';
-import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 import { MatTooltip } from '@angular/material/tooltip';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
@@ -12,10 +11,9 @@ import { toggleTheme } from '@app/ngrx/actions';
 import { isAnyTaskActive, selectTasks, selectTheme } from '@app/ngrx/selectors';
 import { Store } from '@ngrx/store';
 import { HotkeysService } from 'angular2-hotkeys';
-import { distinctUntilChanged, map, tap } from 'rxjs';
 import { DIALOG_HOTKEYS_CHEATSHEET_ID } from './dialog-hotkeys-cheatsheet/id';
 import { KEYS_GO_ACTIVE, KEYS_GO_ALL, KEYS_GO_FINISHED, hotkey } from './domain/hotkeys';
-import { StoreState, toStoredTasks } from './domain/storage';
+import { StoreState } from './domain/storage';
 import { TaskState } from './domain/task';
 import { MapPipe } from './pipes/map.pipe';
 import { SafeUrlPipe } from './pipes/safe-resource-url.pipe';
@@ -35,6 +33,7 @@ import { ImportExportService } from './services/import-export.service';
     MatDrawerContent,
     MatMenuTrigger,
     MatMenu,
+    MatMenuItem,
     MatNavList,
     MatListItem,
     MatActionList,
@@ -47,7 +46,6 @@ import { ImportExportService } from './services/import-export.service';
     RouterLink,
     RouterLinkActive,
     RouterOutlet,
-    AsyncPipe,
   ],
 })
 export class AppComponent {
@@ -58,8 +56,16 @@ export class AppComponent {
   private favicon = inject<FaviconService>(FaviconService);
   private hotkeysService = inject<HotkeysService>(HotkeysService);
   private dialogs = inject<MatDialog>(MatDialog);
+  private destroyRef = inject(DestroyRef);
 
-  theme$ = this.store.select(selectTheme);
+  public theme = this.store.selectSignal(selectTheme);
+  public exportUrl = computed(() => {
+    const tasks = this.store.selectSignal(selectTasks)();
+    return URL.createObjectURL(
+      new Blob([JSON.stringify(tasks, null, '  ')], { type: 'application/json;charset=utf-8;' }),
+    );
+  });
+
   taskState = TaskState;
 
   constructor() {
@@ -73,17 +79,23 @@ export class AppComponent {
         this.router.navigate([TaskState.finished], { queryParamsHandling: 'merge' }),
       ),
     ]);
-    this.theme$.subscribe((t) => document.body.classList.toggle('theme-alternate', t === 'dark'));
-    this.store
-      .select(isAnyTaskActive)
-      .pipe(distinctUntilChanged())
-      .subscribe((isAnyTaskActive) => {
-        if (isAnyTaskActive) {
-          this.favicon.setIcon('assets/favicon-active.svg');
-        } else {
-          this.favicon.setIcon('assets/favicon.svg');
-        }
-      });
+    effect(() => {
+      const theme = this.theme();
+      document.body.classList.toggle('theme-alternate', theme === 'dark');
+    });
+
+    effect(() => {
+      const anyTaskActive = this.store.selectSignal(isAnyTaskActive)();
+      if (anyTaskActive) {
+        this.favicon.setIcon('assets/favicon-active.svg');
+      } else {
+        this.favicon.setIcon('assets/favicon.svg');
+      }
+    });
+    this.destroyRef.onDestroy(() => {
+      const exportUrl = this.exportUrl();
+      if (exportUrl) URL.revokeObjectURL(exportUrl);
+    });
   }
   toggleTheme() {
     this.store.dispatch(toggleTheme());
@@ -91,19 +103,7 @@ export class AppComponent {
   import(event: Event) {
     this.importExport.import(event);
   }
-  private lastExportUrl?: string;
-  exportUrl$ = this.store.select(selectTasks).pipe(
-    map(toStoredTasks),
-    map((tasks) =>
-      URL.createObjectURL(new Blob([JSON.stringify(tasks, null, '  ')], { type: 'application/json;charset=utf-8;' })),
-    ),
-    tap({
-      next: (url) => (this.lastExportUrl = url),
-      complete: () => {
-        if (this.lastExportUrl) URL.revokeObjectURL(this.lastExportUrl);
-      },
-    }),
-  );
+
   private handleHotkeyCheatsheet() {
     let isDialogOpen = false;
     this.hotkeysService.cheatSheetToggle.subscribe(async (isOpen) => {
