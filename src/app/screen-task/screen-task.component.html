@@ -10,7 +10,7 @@
     <button-task-actions [task]="task"></button-task-actions>
   </mat-toolbar>
   <cdk-virtual-scroll-viewport [itemSize]="42" #viewport>
-    <table class="mat-mdc-table">
+    <table class="mat-mdc-table" cdkDropList [cdkDropListSortingDisabled]="true">
       <thead [ngStyle]="{ top: '-' + viewport.getOffsetToRenderedContentStart() + 'px' }">
         <tr class="mat-mdc-header-row mdc-data-table__header-row">
           <th class="header-start mat-mdc-header-cell mdc-data-table__header-cell">Start</th>
@@ -24,7 +24,10 @@
           *cdkVirtualFor="let item of task.sessions"
           class="mat-mdc-row mdc-data-table__row"
           data-e2e="screen-task__session-row"
+          cdkDrag
+          [cdkDragData]="[item, task.id]"
         >
+          <div *cdkDragPlaceholder></div>
           <td class="mat-mdc-cell mdc-data-table__cell" data-e2e="screen-task__session-start">
             {{ item.start | date: 'yyyy-MM-dd H:mm' }}
           </td>
