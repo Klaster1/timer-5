@@ -18,14 +18,14 @@ kbd {
   text-transform: capitalize;
   text-shadow: 1px 1px rgb(255, 255, 255);
   font-size: 1.15cqh;
-  border-image: url(/assets/keycap.svg) 25 25 25 25 fill round;
+  border-image: url(/assets/keycap.svg) 25 20 24 25 fill round;
   border-image-outset: 0;
   border-image-width: 1;
   border-image-width: 30px;
-  border-image-outset: 3px;
+  border-image-outset: 5px;
   height: 48px;
   min-width: 48px;
-  margin: 3px 5px;
+  margin: 5px 8px;
   color: rgb(0, 0, 0);
 }
 .combo,
