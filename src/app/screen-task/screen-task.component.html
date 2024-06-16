@@ -20,18 +20,26 @@
         </tr>
       </thead>
       <tbody>
-        <tr *cdkVirtualFor="let item of task.sessions" class="mat-mdc-row mdc-data-table__row">
-          <td class="mat-mdc-cell mdc-data-table__cell">
+        <tr
+          *cdkVirtualFor="let item of task.sessions"
+          class="mat-mdc-row mdc-data-table__row"
+          data-e2e="screen-task__session-row"
+        >
+          <td class="mat-mdc-cell mdc-data-table__cell" data-e2e="screen-task__session-start">
             {{ item.start | date: 'yyyy-MM-dd H:mm' }}
           </td>
-          <td class="mat-mdc-cell mdc-data-table__cell">
+          <td class="mat-mdc-cell mdc-data-table__cell" data-e2e="screen-task__session-end">
             {{ item.end | date: 'yyyy-MM-dd H:mm' }}
           </td>
-          <td class="mat-mdc-cell mdc-data-table__cell">
+          <td class="mat-mdc-cell mdc-data-table__cell" data-e2e="screen-task__session-duration">
             {{ item | map: sessionDuration | formatDuration | async }}
           </td>
           <td class="mat-mdc-cell mdc-data-table__cell">
-            <button-session-actions [session]="item" [task]="task"></button-session-actions>
+            <button-session-actions
+              [session]="item"
+              [task]="task"
+              data-e2e="screen-task__button-session-action"
+            ></button-session-actions>
           </td>
         </tr>
       </tbody>

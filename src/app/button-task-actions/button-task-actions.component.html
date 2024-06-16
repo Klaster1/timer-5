@@ -4,7 +4,7 @@
   </button>
   <mat-menu #menu="matMenu">
     <ng-template matMenuContent>
-      <button mat-menu-item [mat-menu-trigger-for]="statuses" data-e2e="button-task-actions__trigger-state">
+      <button mat-menu-item [mat-menu-trigger-for]="statuses" data-e2e="button-task-actions__selector-state">
         <mat-icon>{{ task.state | taskStateIcon }}</mat-icon>
         State: {{ task.state | taskState }}
       </button>

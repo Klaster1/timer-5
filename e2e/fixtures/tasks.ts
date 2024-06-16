@@ -60,7 +60,7 @@ test('Starting/stopping the task', async (t) => {
   // Assert the task is marked as active/not-running in the task list item, task list item context action, task view title and task view context action
   await t.expect(screenTasks.taskStateIcon.textContent).contains('play_circle_outline');
   await t.click(screenTasks.buttonTaskAction.nth(1));
-  await t.expect(menuTaskActions.selectorState.textContent).contains('Active');
+  await t.expect(menuTaskActions.selectorState.textContent).contains('State: Active');
   await t.pressKey('esc');
   await t.expect(screenTask.stateIcon.textContent).contains('play_circle_outline');
   await t.click(screenTask.buttonTaskAction);
