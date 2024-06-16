@@ -24,6 +24,7 @@
     "@angular/service-worker": "^18.0.3",
     "@ngrx/effects": "^18.0.0",
     "@ngrx/router-store": "^18.0.0",
+    "@ngrx/signals": "^17.2.0",
     "@ngrx/store": "^18.0.0",
     "angular2-hotkeys": "^16.0.1",
     "date-fns": "^2.28.0",
