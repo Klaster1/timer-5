@@ -2,16 +2,16 @@ import { DestroyRef, computed, effect, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import { Theme } from '@app/domain/storage';
-import { patchState, signalStore, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
+import {
+  patchState,
+  signalStore,
+  signalStoreFeature,
+  withComputed,
+  withHooks,
+  withMethods,
+  withState,
+} from '@ngrx/signals';
 import { produce } from 'immer';
-
-type State = {
-  theme: Theme;
-};
-
-const initialState: State = {
-  theme: 'dark',
-};
 
 type RouterState = {
   root: {
@@ -20,6 +20,42 @@ type RouterState = {
     queryParams: ActivatedRouteSnapshot['queryParams'];
     firstChild?: ActivatedRouteSnapshot['firstChild'];
   } | null;
+};
+
+const withTheme = () => {
+  type ThemeState = {
+    theme: Theme;
+  };
+  const initialState: ThemeState = {
+    theme: 'dark',
+  };
+  return signalStoreFeature(
+    withState<ThemeState>(initialState),
+    withMethods((store) => {
+      const router = inject(Router);
+      return {
+        toggleTheme(theme?: Theme) {
+          patchState(store, (state) =>
+            produce(state, (draft) => {
+              if (theme) {
+                draft.theme = theme;
+              } else {
+                draft.theme = draft.theme === 'dark' ? 'light' : 'dark';
+              }
+            }),
+          );
+        },
+      };
+    }),
+    withHooks({
+      onInit(store) {
+        store.toggleTheme((localStorage.getItem('theme') as Theme | null) ?? initialState.theme);
+        effect(() => {
+          localStorage.setItem('theme', store.theme());
+        });
+      },
+    }),
+  );
 };
 
 export const RouterStore = signalStore(
@@ -70,36 +106,4 @@ export const RouterStore = signalStore(
   }),
 );
 
-export const AppStore = signalStore(
-  { providedIn: 'root' },
-  withState<State>(initialState),
-  withMethods((store) => {
-    const router = inject(Router);
-    return {
-      toggleTheme() {
-        patchState(store, (state) =>
-          produce(state, (draft) => {
-            draft.theme = draft.theme === 'dark' ? 'light' : 'dark';
-          }),
-        );
-      },
-      loadFromLocalStorage() {
-        const theme = localStorage.getItem('theme') ?? initialState.theme;
-        patchState(store, (state) =>
-          produce(state, (draft) => {
-            draft.theme = theme as Theme;
-          }),
-        );
-      },
-    };
-  }),
-  withHooks({
-    onInit(store) {
-      store.loadFromLocalStorage();
-      effect(() => {
-        const theme = store.theme();
-        localStorage.setItem('theme', theme);
-      });
-    },
-  }),
-);
+export const AppStore = signalStore({ providedIn: 'root' }, withTheme());
