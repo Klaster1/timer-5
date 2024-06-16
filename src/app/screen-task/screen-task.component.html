@@ -9,7 +9,7 @@
     </h2>
     <button-task-actions [task]="task"></button-task-actions>
   </mat-toolbar>
-  <cdk-virtual-scroll-viewport [itemSize]="42" #viewport>
+  <cdk-virtual-scroll-viewport [itemSize]="52" #viewport minBufferPx="200" maxBufferPx="2000">
     <table class="mat-mdc-table" cdkDropList [cdkDropListSortingDisabled]="true">
       <thead [ngStyle]="{ top: '-' + viewport.getOffsetToRenderedContentStart() + 'px' }">
         <tr class="mat-mdc-header-row mdc-data-table__header-row">
@@ -20,31 +20,32 @@
         </tr>
       </thead>
       <tbody>
-        <tr
-          *cdkVirtualFor="let item of task.sessions"
-          class="mat-mdc-row mdc-data-table__row"
-          data-e2e="screen-task__session-row"
-          cdkDrag
-          [cdkDragData]="[item, task.id]"
-        >
-          <div *cdkDragPlaceholder></div>
-          <td class="mat-mdc-cell mdc-data-table__cell" data-e2e="screen-task__session-start">
-            {{ item.start | date: 'yyyy-MM-dd H:mm' }}
-          </td>
-          <td class="mat-mdc-cell mdc-data-table__cell" data-e2e="screen-task__session-end">
-            {{ item.end | date: 'yyyy-MM-dd H:mm' }}
-          </td>
-          <td class="mat-mdc-cell mdc-data-table__cell" data-e2e="screen-task__session-duration">
-            {{ item | map: sessionDuration | formatDuration | async }}
-          </td>
-          <td class="mat-mdc-cell mdc-data-table__cell">
-            <button-session-actions
-              [session]="item"
-              [task]="task"
-              data-e2e="screen-task__button-session-action"
-            ></button-session-actions>
-          </td>
-        </tr>
+        <ng-container *cdkVirtualFor="let item of task.sessions">
+          <tr
+            class="mat-mdc-row mdc-data-table__row"
+            data-e2e="screen-task__session-row"
+            cdkDrag
+            [cdkDragData]="[item, task.id]"
+          >
+            <div *cdkDragPlaceholder></div>
+            <td class="mat-mdc-cell mdc-data-table__cell" data-e2e="screen-task__session-start">
+              {{ item.start | date: 'yyyy-MM-dd H:mm' }}
+            </td>
+            <td class="mat-mdc-cell mdc-data-table__cell" data-e2e="screen-task__session-end">
+              {{ item.end | date: 'yyyy-MM-dd H:mm' }}
+            </td>
+            <td class="mat-mdc-cell mdc-data-table__cell" data-e2e="screen-task__session-duration">
+              {{ item | map: sessionDuration | formatDuration | async }}
+            </td>
+            <td class="mat-mdc-cell mdc-data-table__cell">
+              <button-session-actions
+                [session]="item"
+                [task]="task"
+                data-e2e="screen-task__button-session-action"
+              ></button-session-actions>
+            </td>
+          </tr>
+        </ng-container>
       </tbody>
       <tfoot [ngStyle]="{ bottom: viewport.getOffsetToRenderedContentStart() + 'px' }" class="">
         <tr class="mat-mdc-footer-row mdc-data-table__row">
