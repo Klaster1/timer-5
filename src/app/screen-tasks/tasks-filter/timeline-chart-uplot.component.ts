@@ -131,7 +131,6 @@ export class TimelineChartUplotComponent implements OnChanges {
   private setRange(value: ScaleRange | undefined) {
     if (!value) return;
     const chartData = this.chartData();
-    const range = this.range();
     const oldMin = Math.round(this.uplot?.scales.x?.min ?? -1);
     const oldMax = Math.round(this.uplot?.scales.x?.max ?? -1);
     const dataMin = chartData?.[0]?.[0];
