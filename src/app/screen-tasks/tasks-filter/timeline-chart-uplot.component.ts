@@ -161,7 +161,9 @@ export class TimelineChartUplotComponent implements OnChanges {
       const theme = this.store.selectSignal(selectTheme)();
       const stroke = window.getComputedStyle(this.elementRef.nativeElement).color;
       this.uplot?.axes.forEach((a) => (a.stroke = () => stroke));
-      this.uplot?.redraw(false);
+      setTimeout(() => {
+        this.uplot?.redraw(false);
+      });
     });
     this.destroyRef.onDestroy(() => {
       this.resizeObserver?.unobserve(this.elementRef.nativeElement);
@@ -248,7 +250,7 @@ export class TimelineChartUplotComponent implements OnChanges {
       this.uplot?.setData(chartData);
     }
     if (changes.range) {
-      this.setRange(changes.range.currentValue);
+      this.setRange(this.range());
     }
   }
 }
