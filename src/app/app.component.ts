@@ -13,7 +13,7 @@ import { Store } from '@ngrx/store';
 import { HotkeysService } from 'angular2-hotkeys';
 import { DIALOG_HOTKEYS_CHEATSHEET_ID } from './dialog-hotkeys-cheatsheet/id';
 import { KEYS_GO_ACTIVE, KEYS_GO_ALL, KEYS_GO_FINISHED, hotkey } from './domain/hotkeys';
-import { StoreState } from './domain/storage';
+import { StoreState, toStoredTasks } from './domain/storage';
 import { TaskState } from './domain/task';
 import { MapPipe } from './pipes/map.pipe';
 import { SafeUrlPipe } from './pipes/safe-resource-url.pipe';
@@ -62,7 +62,7 @@ export class AppComponent {
   public exportUrl = computed(() => {
     const tasks = this.store.selectSignal(selectTasks)();
     return URL.createObjectURL(
-      new Blob([JSON.stringify(tasks, null, '  ')], { type: 'application/json;charset=utf-8;' }),
+      new Blob([JSON.stringify(toStoredTasks(tasks), null, '  ')], { type: 'application/json;charset=utf-8;' }),
     );
   });
 

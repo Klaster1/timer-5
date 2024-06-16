@@ -41,13 +41,14 @@
     "@angular/cli": "^18.0.4",
     "@angular/compiler-cli": "^18.0.3",
     "@angular/language-service": "^18.0.3",
-    "@types/node": "^18.16.3",
+    "@types/chrome-remote-interface": "^0.31.14",
+    "@types/node": "^20.14.2",
     "angular-cli-ghpages": "^1.0.0",
     "angular-testcafe": "^4.0.0",
+    "chrome-remote-interface": "^0.33.0",
     "prettier": "^3.3.2",
     "prettier-plugin-organize-imports": "^3.2.4",
     "testcafe": "^3.6.1",
-    "tmp-promise": "^3.0.3",
     "typescript": "~5.4.5"
   }
 }

@@ -1,4 +1,5 @@
-import { writeFile } from 'fs/promises';
+import { randomUUID } from 'node:crypto';
+import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { fixture, test } from 'testcafe';
 import { app } from '../page-objects/app';
 import { dialogEditSession } from '../page-objects/dialog-edit-session';
@@ -7,7 +8,7 @@ import { menuTaskActions } from '../page-objects/menu-task-actions';
 import { screenTask } from '../page-objects/screen-task';
 import { screenTasks } from '../page-objects/screen-tasks';
 import { tooltip } from '../page-objects/tooltip';
-import { getLocationPathname, reload, urlTo } from '../utils';
+import { getLocationPathname, reload, setDownloadsDirectory, urlTo } from '../utils';
 
 fixture('Tasks');
 
@@ -261,6 +262,11 @@ test('Deleting the task', async (t) => {
 });
 
 test('Export/import', async (t) => {
+  // Have a file with test data
+  const testId = randomUUID();
+  t.ctx.testId = testId;
+  await setDownloadsDirectory(testId);
+  await mkdir(`e2e/downloads/${testId}`, { recursive: true });
   const referenceData = {
     version: 1,
     value: [
@@ -269,40 +275,25 @@ test('Export/import', async (t) => {
       { id: 'EnBz', name: 'Task 3', state: 0, sessions: [] },
     ],
   };
-  const normalizeData = (data: typeof referenceData) => ({
-    ...data,
-    value: data.value.map((v, i) => ({ ...v, id: `${i}` })),
-  });
+  await writeFile(`e2e/downloads/${testId}/data.json`, JSON.stringify(referenceData, null, '  '));
   await t.navigateTo(urlTo('/'));
-  // Have some tasks
-  for (const name of ['Task 1', 'Task 2', 'Task 3']) {
-    await screenTasks.addTask(name);
-  }
-  // Assert the export about works.
-  // Checking the real downloaded files would have been much better, but there's no
-  // acceptable way to reliably get the "Downloads" dir path without having to install Python
-  // or Visual Studio on Windows.
+  // Import the data
   await t.click(app.buttonImportExport);
-  await t.expect(app.buttonExport.getAttribute('href')).contains('blob');
-  await t.expect(app.buttonExport.getAttribute('download')).eql('timer-data.json');
-  await t.expect(app.buttonExport.getAttribute('target')).eql('_blank');
-  const href = await app.buttonExport.getAttribute('href');
-  if (!href) throw new Error('Missing href');
-  const data = await t.eval(() => fetch(href as any).then((r) => r.json()), { dependencies: { href } });
-  await t.expect(normalizeData(data)).eql(normalizeData(referenceData));
-  // Remove all tasks
-  await t.pressKey('d t').pressKey('j').pressKey('d t').pressKey('j').pressKey('d t');
-  await t.expect(screenTasks.taskItem.count).eql(0);
-  // Import the tasks, assert all tasks are imported
-  const { file } = await import('tmp-promise');
-  const { path, cleanup } = await file();
-  await writeFile(path, JSON.stringify(data));
-  await t.setFilesToUpload(app.inputImport, [path]);
+  await t.setFilesToUpload(app.inputImport, [`../downloads/${testId}/data.json`]);
+  // Assert the tasks are added
   await t.expect(screenTasks.taskItem.count).eql(3);
   await t.expect(screenTasks.taskName.nth(0).textContent).eql('Task 1');
   await t.expect(screenTasks.taskName.nth(1).textContent).eql('Task 2');
   await t.expect(screenTasks.taskName.nth(2).textContent).eql('Task 3');
-  await cleanup();
+  // Assert that export works
+  await t.click(app.buttonExport);
+  const exportedData = await readFile(`e2e/downloads/${testId}/timer-data.json`, 'utf8').then(JSON.parse);
+  await t.expect(exportedData).eql(referenceData);
+  t.ctx.ok = true;
+}).after(async (t) => {
+  if (t.ctx.ok) {
+    await rm(`e2e/downloads/${t.ctx.testId}`, { recursive: true, force: true });
+  }
 });
 
 test('Editing a session', async (t) => {
