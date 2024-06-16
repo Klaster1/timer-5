@@ -1,6 +1,7 @@
 import { DestroyRef, computed, effect, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
+import { Prompt } from '@app/dialog-prompt/dialog-prompt.service';
 import { chartSeries } from '@app/domain/chart';
 import { decodeFilterMatrixParams, decodeRouteParams } from '@app/domain/router';
 import { NormalizedTasks, Theme, fromStoredTasks } from '@app/domain/storage';
@@ -26,6 +27,7 @@ import {
   withState,
 } from '@ngrx/signals';
 import { Draft, produce } from 'immer';
+import { firstValueFrom } from 'rxjs';
 
 const updateState = <State extends object>(store: StateSignal<State>, recipe: (draft: Draft<State>) => any) => {
   patchState(store, (state) => produce(state, recipe));
@@ -186,11 +188,6 @@ const withTasks = () => {
           if (task) task.state = state;
         });
       },
-      deleteTask(taskId: string) {
-        updateState(store, (draft) => {
-          delete draft.tasks[taskId];
-        });
-      },
       startTask(taskId: string, timestamp: number) {
         updateState(store, (draft) => {
           const task = draft.tasks[taskId];
@@ -300,7 +297,29 @@ export const AppStore = signalStore(
       filterRange,
     };
   }),
-  withMethods((store) => ({
-    taskById: (taskId: string) => computed(() => store.tasks()[taskId]),
-  })),
+  withMethods((store) => {
+    const prompt = inject(Prompt);
+    const router = inject(Router);
+
+    const taskById = (taskId: string) => computed(() => store.tasks()[taskId]);
+    const renameTask = async (taskId: string) => {
+      const task = taskById(taskId)();
+      const result = await firstValueFrom(prompt.prompt('Rename task', task?.name, 'Task name'));
+      if (result) store.renameTask(taskId, result);
+    };
+    const deleteTask = (taskIdToRemove: string) => {
+      updateState(store, (draft) => {
+        delete draft.tasks[taskIdToRemove];
+      });
+      const state = store.currentTaskState();
+      const taskId = store.currentTaskId();
+      if (taskIdToRemove === taskId && state) router.navigate([state], { queryParamsHandling: 'merge' });
+    };
+
+    return {
+      taskById,
+      renameTask,
+      deleteTask,
+    };
+  }),
 );

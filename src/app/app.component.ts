@@ -7,12 +7,10 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 import { MatTooltip } from '@angular/material/tooltip';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { isAnyTaskActive, selectTasks } from '@app/ngrx/selectors';
-import { Store } from '@ngrx/store';
 import { HotkeysService } from 'angular2-hotkeys';
 import { DIALOG_HOTKEYS_CHEATSHEET_ID } from './dialog-hotkeys-cheatsheet/id';
 import { KEYS_GO_ACTIVE, KEYS_GO_ALL, KEYS_GO_FINISHED, hotkey } from './domain/hotkeys';
-import { StoreState, toStoredTasks } from './domain/storage';
+import { toStoredTasks } from './domain/storage';
 import { TaskState } from './domain/task';
 import { MapPipe } from './pipes/map.pipe';
 import { SafeUrlPipe } from './pipes/safe-resource-url.pipe';
@@ -49,7 +47,6 @@ import { AppStore } from './services/state';
   ],
 })
 export class AppComponent {
-  private oldStore = inject<Store<StoreState>>(Store);
   public keys = inject<HotkeysService>(HotkeysService);
   public router = inject<Router>(Router);
   private importExport = inject<ImportExportService>(ImportExportService);
@@ -60,7 +57,7 @@ export class AppComponent {
   public store = inject(AppStore);
 
   public exportUrl = computed(() => {
-    const tasks = this.oldStore.selectSignal(selectTasks)();
+    const tasks = this.store.tasks();
     return URL.createObjectURL(
       new Blob([JSON.stringify(toStoredTasks(tasks), null, '  ')], { type: 'application/json;charset=utf-8;' }),
     );
@@ -85,7 +82,7 @@ export class AppComponent {
     });
 
     effect(() => {
-      const anyTaskActive = this.oldStore.selectSignal(isAnyTaskActive)();
+      const anyTaskActive = this.store.isAnyTaskActive();
       if (anyTaskActive) {
         this.favicon.setIcon('assets/favicon-active.svg');
       } else {
