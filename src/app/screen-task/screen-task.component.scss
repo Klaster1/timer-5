@@ -48,8 +48,3 @@ mat-toolbar {
 cdk-virtual-scroll-viewport {
   grid-row: 2;
 }
-thead,
-tfoot {
-  position: sticky;
-  z-index: 10;
-}

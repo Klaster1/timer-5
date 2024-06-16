@@ -27,6 +27,7 @@ import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
 import { Store } from '@ngrx/store';
 import { HotkeysService } from 'angular2-hotkeys';
 import { ButtonSessionActionsComponent } from './button-session-actions/button-session-actions.component';
+import { VirtualScrollStickyTable } from './sticky.directive';
 
 @Component({
   selector: 'screen-task',
@@ -54,6 +55,7 @@ import { ButtonSessionActionsComponent } from './button-session-actions/button-s
     MatFabButton,
     ScrollingModule,
     NgStyle,
+    VirtualScrollStickyTable,
   ],
 })
 export class ScreenTaskComponent {
