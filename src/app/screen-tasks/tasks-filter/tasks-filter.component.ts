@@ -10,6 +10,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatOption, MatSelect } from '@angular/material/select';
+import { MatTooltip } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { DatetimeLocalDirective } from '@app/directives/datetime-local.directive';
 import { ScaleRange, hasChartData } from '@app/domain/chart';
@@ -67,6 +68,7 @@ type Wrap<T> = Required<{ [Key in keyof T]: FormControl<T[Key]> }>;
     ButtonResetInputComponent,
     DatetimeLocalDirective,
     NgTemplateOutlet,
+    MatTooltip,
   ],
 })
 export class TasksFilterComponent {
