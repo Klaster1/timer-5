@@ -1,8 +1,19 @@
 import { DestroyRef, computed, effect, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
-import { NormalizedTasks, Theme } from '@app/domain/storage';
-import { Session, SessionId, TaskState, isSessionWithId, isTaskRunning } from '@app/domain/task';
+import { chartSeries } from '@app/domain/chart';
+import { decodeFilterMatrixParams, decodeRouteParams } from '@app/domain/router';
+import { NormalizedTasks, Theme, fromStoredTasks } from '@app/domain/storage';
+import {
+  Session,
+  SessionId,
+  TaskState,
+  filterTaskSessions,
+  filterTasks,
+  isSessionWithId,
+  isTaskRunning,
+  sortTaskSessions,
+} from '@app/domain/task';
 import { deepEquals } from '@app/utils/assert';
 import {
   StateSignal,
@@ -201,7 +212,95 @@ const withTasks = () => {
         });
       },
     })),
+    withHooks({
+      onInit(store) {
+        const storedTasks = localStorage.getItem('tasks') ?? JSON.stringify(store.tasks());
+        const parsedTasks = JSON.parse(storedTasks);
+        const tasksToLoad = fromStoredTasks(parsedTasks);
+        store.loadTasks(tasksToLoad);
+        effect(() => {
+          localStorage.setItem('tasks', JSON.stringify(store.tasks()));
+        });
+      },
+    }),
   );
 };
 
-export const AppStore = signalStore({ providedIn: 'root' }, withTheme(), withRouter(), withTasks());
+export const AppStore = signalStore(
+  { providedIn: 'root' },
+  withTheme(),
+  withRouter(),
+  withTasks(),
+  withComputed((store) => {
+    // Params
+    const decodedFilterParams = computed(() => decodeFilterMatrixParams(store.queryParams() ?? {}));
+    const decodedRouteParams = computed(() => decodeRouteParams(store.routeParams() ?? {}));
+    const filterFrom = computed(() => decodedFilterParams().from);
+    const filterTo = computed(() => decodedFilterParams().to);
+    const currentTaskId = computed(() => decodedRouteParams().taskId);
+    const currentTaskState = computed(() => decodedRouteParams().state);
+
+    // Tasks
+    const allTasks = computed(() => Object.values(store.tasks()));
+    const currentTasks = computed(() => {
+      const tasks = allTasks();
+      const filterParams = {
+        ...decodedFilterParams(),
+        state: currentTaskState(),
+      };
+      return filterTasks(filterParams, tasks);
+    });
+    const currentTask = computed(() => {
+      const taskId = currentTaskId();
+      const from = filterFrom();
+      const to = filterTo();
+      if (!taskId) return;
+      const maybeTask = store.tasks()[taskId];
+      if (!maybeTask) return;
+      return sortTaskSessions(filterTaskSessions(maybeTask, { from, to }));
+    });
+    const filterChartData = computed(() => chartSeries(allTasks()));
+    const currentTaskIndex = computed(() => currentTasks().findIndex(({ id }) => id === currentTask()?.id) ?? -1);
+    const nextTaskId = computed(() => {
+      const tasks = currentTasks();
+      const currentIndex = currentTaskIndex();
+      if (!tasks.length) return;
+      const nextTaskIndex = currentIndex >= tasks.length - 1 ? 0 : currentIndex + 1;
+      return tasks[nextTaskIndex]?.id;
+    });
+    const prevTaskId = computed(() => {
+      const tasks = currentTasks();
+      const currentIndex = currentTaskIndex();
+      if (!tasks.length) return;
+      const prevTaskIndex = currentIndex <= 0 ? tasks.length - 1 : currentIndex - 1;
+      return tasks[prevTaskIndex]?.id;
+    });
+    const isCurrentTaskOpened = computed(() => !!currentTask());
+    const isAnyTaskActive = computed(() => allTasks().some(isTaskRunning));
+
+    // Filter
+    const filterRange = computed(() => [filterFrom() ?? null, filterTo() ?? null] as const);
+
+    return {
+      decodedFilterParams,
+      decodedRouteParams,
+      filterFrom,
+      filterTo,
+      currentTaskId,
+      currentTaskState,
+      allTasks,
+      currentTasks,
+      currentTask,
+      filterChartData,
+      currentTaskIndex,
+      nextTaskId,
+      prevTaskId,
+      isCurrentTaskOpened,
+      isAnyTaskActive,
+      filterRange,
+    };
+  }),
+  withMethods((store) => ({
+    taskById: (taskId: string) => computed(() => store.tasks()[taskId]),
+  })),
+);
