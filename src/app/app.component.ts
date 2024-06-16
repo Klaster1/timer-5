@@ -7,8 +7,7 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 import { MatTooltip } from '@angular/material/tooltip';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { toggleTheme } from '@app/ngrx/actions';
-import { isAnyTaskActive, selectTasks, selectTheme } from '@app/ngrx/selectors';
+import { isAnyTaskActive, selectTasks } from '@app/ngrx/selectors';
 import { Store } from '@ngrx/store';
 import { HotkeysService } from 'angular2-hotkeys';
 import { DIALOG_HOTKEYS_CHEATSHEET_ID } from './dialog-hotkeys-cheatsheet/id';
@@ -20,6 +19,7 @@ import { SafeUrlPipe } from './pipes/safe-resource-url.pipe';
 import { TaskStateIconPipe } from './pipes/task-state-icon.pipe';
 import { FaviconService } from './services/favicon.service';
 import { ImportExportService } from './services/import-export.service';
+import { AppStore } from './services/state';
 
 @Component({
   selector: 'app-root',
@@ -49,7 +49,7 @@ import { ImportExportService } from './services/import-export.service';
   ],
 })
 export class AppComponent {
-  private store = inject<Store<StoreState>>(Store);
+  private oldStore = inject<Store<StoreState>>(Store);
   public keys = inject<HotkeysService>(HotkeysService);
   public router = inject<Router>(Router);
   private importExport = inject<ImportExportService>(ImportExportService);
@@ -57,10 +57,10 @@ export class AppComponent {
   private hotkeysService = inject<HotkeysService>(HotkeysService);
   private dialogs = inject<MatDialog>(MatDialog);
   private destroyRef = inject(DestroyRef);
+  public store = inject(AppStore);
 
-  public theme = this.store.selectSignal(selectTheme);
   public exportUrl = computed(() => {
-    const tasks = this.store.selectSignal(selectTasks)();
+    const tasks = this.oldStore.selectSignal(selectTasks)();
     return URL.createObjectURL(
       new Blob([JSON.stringify(toStoredTasks(tasks), null, '  ')], { type: 'application/json;charset=utf-8;' }),
     );
@@ -80,12 +80,12 @@ export class AppComponent {
       ),
     ]);
     effect(() => {
-      const theme = this.theme();
+      const theme = this.store.theme();
       document.body.classList.toggle('theme-alternate', theme === 'dark');
     });
 
     effect(() => {
-      const anyTaskActive = this.store.selectSignal(isAnyTaskActive)();
+      const anyTaskActive = this.oldStore.selectSignal(isAnyTaskActive)();
       if (anyTaskActive) {
         this.favicon.setIcon('assets/favicon-active.svg');
       } else {
@@ -96,9 +96,6 @@ export class AppComponent {
       const exportUrl = this.exportUrl();
       if (exportUrl) URL.revokeObjectURL(exportUrl);
     });
-  }
-  toggleTheme() {
-    this.store.dispatch(toggleTheme());
   }
   import(event: Event) {
     this.importExport.import(event);

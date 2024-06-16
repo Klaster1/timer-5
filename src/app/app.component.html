@@ -73,8 +73,12 @@
           >
         </mat-menu>
 
-        <button mat-list-item (click)="toggleTheme()" [matTooltip]="theme() !== 'dark' ? 'Dark mode' : 'Day mode'">
-          <mat-icon>{{ theme() !== 'dark' ? 'nights_stay' : 'wb_sunny' }}</mat-icon>
+        <button
+          mat-list-item
+          (click)="store.toggleTheme()"
+          [matTooltip]="store.theme() !== 'dark' ? 'Dark mode' : 'Day mode'"
+        >
+          <mat-icon>{{ store.theme() !== 'dark' ? 'nights_stay' : 'wb_sunny' }}</mat-icon>
         </button>
       </mat-action-list>
     </div>

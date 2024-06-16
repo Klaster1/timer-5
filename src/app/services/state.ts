@@ -1,10 +1,18 @@
+import { effect } from '@angular/core';
 import { Theme } from '@app/domain/storage';
-import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
+import { patchState, signalStore, withHooks, withMethods, withState } from '@ngrx/signals';
 import { produce } from 'immer';
+
+type State = {
+  theme: Theme;
+};
+const initialState: State = {
+  theme: 'dark',
+};
 
 export const AppStore = signalStore(
   { providedIn: 'root' },
-  withState<{ theme: Theme }>({ theme: 'dark' }),
+  withState<State>(initialState),
   withMethods((store) => ({
     toggleTheme() {
       patchState(store, (state) =>
@@ -13,5 +21,22 @@ export const AppStore = signalStore(
         }),
       );
     },
+    loadFromLocalStorage() {
+      const theme = localStorage.getItem('theme') ?? initialState.theme;
+      patchState(store, (state) =>
+        produce(state, (draft) => {
+          draft.theme = theme as Theme;
+        }),
+      );
+    },
   })),
+  withHooks({
+    onInit(store) {
+      store.loadFromLocalStorage();
+      effect(() => {
+        const theme = store.theme();
+        localStorage.setItem('theme', theme);
+      });
+    },
+  }),
 );

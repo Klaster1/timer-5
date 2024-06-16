@@ -1,7 +1,7 @@
 import { chartSeries } from '@app/domain/chart';
 import { decodeFilterMatrixParams, decodeRouteParams } from '@app/domain/router';
 import { StoreState } from '@app/domain/storage';
-import { filterTasks, filterTaskSessions, isTaskRunning, sortTaskSessions } from '@app/domain/task';
+import { filterTaskSessions, filterTasks, isTaskRunning, sortTaskSessions } from '@app/domain/task';
 import { isTruthy } from '@app/utils/assert';
 import { getRouterSelectors } from '@ngrx/router-store';
 import { createFeatureSelector, createSelector } from '@ngrx/store';
@@ -11,7 +11,7 @@ const router = createFeatureSelector<StoreState['router']>('router');
 // Params
 export const { selectRouteParams, selectQueryParams } = getRouterSelectors(router);
 export const selectDecodedFilterParams = createSelector(selectQueryParams, (params) =>
-  decodeFilterMatrixParams(params ?? {})
+  decodeFilterMatrixParams(params ?? {}),
 );
 export const selectDecodedRouteParams = createSelector(selectRouteParams, (params) => decodeRouteParams(params ?? {}));
 export const selectFilterFrom = createSelector(selectDecodedFilterParams, (params) => params.from);
@@ -26,7 +26,7 @@ export const selectCurrentTasks = createSelector(
   selectAllTasks,
   selectDecodedFilterParams,
   selectCurrentTaskState,
-  (tasks, filterParams, state) => filterTasks({ ...filterParams, state }, tasks)
+  (tasks, filterParams, state) => filterTasks({ ...filterParams, state }, tasks),
 );
 export const selectCurrentTask = createSelector(
   selectTasks,
@@ -38,13 +38,13 @@ export const selectCurrentTask = createSelector(
     const maybeTask = tasks[taskId];
     if (!maybeTask) return;
     return sortTaskSessions(filterTaskSessions(maybeTask, { from, to }));
-  }
+  },
 );
 export const selectFilterChartData = createSelector(selectAllTasks, (tasks) => chartSeries(tasks));
 export const selectCurrentTaskIndex = createSelector(
   selectCurrentTasks,
   selectCurrentTask,
-  (tasks, task) => tasks.findIndex(({ id }) => id === task?.id) ?? -1
+  (tasks, task) => tasks.findIndex(({ id }) => id === task?.id) ?? -1,
 );
 export const selectNextTaskId = createSelector(selectCurrentTasks, selectCurrentTaskIndex, (tasks, currentIndex) => {
   if (!tasks.length) return;
@@ -58,12 +58,11 @@ export const selectPrevTaskId = createSelector(selectCurrentTasks, selectCurrent
 });
 export const selectIsCurrentTaskOpened = createSelector(selectCurrentTask, isTruthy);
 export const selectTaskById = (taskId: string) => createSelector(selectTasks, (tasks) => tasks[taskId]);
-export const selectTheme = createFeatureSelector<StoreState['theme']>('theme');
 export const isAnyTaskActive = createSelector(selectAllTasks, (tasks) => tasks.some(isTaskRunning));
 
 // Filter
 export const selectFilterRange = createSelector(
   selectFilterFrom,
   selectFilterTo,
-  (from, to) => [from ?? null, to ?? null] as const
+  (from, to) => [from ?? null, to ?? null] as const,
 );

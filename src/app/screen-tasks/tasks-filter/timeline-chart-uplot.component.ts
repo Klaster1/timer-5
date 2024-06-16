@@ -15,7 +15,7 @@ import {
 import { ScaleRange } from '@app/domain/chart';
 import { formatHours } from '@app/domain/date-time';
 import { StoreState } from '@app/domain/storage';
-import { selectTheme } from '@app/ngrx/selectors';
+import { AppStore } from '@app/services/state';
 import { isNumber } from '@app/utils/assert';
 import { Store } from '@ngrx/store';
 import format from 'date-fns/format';
@@ -120,7 +120,8 @@ const timerTimelinePlugin = (params: { barColor: string }): PluginReturnValue =>
   standalone: true,
 })
 export class TimelineChartUplotComponent implements OnChanges {
-  private store = inject<Store<StoreState>>(Store);
+  private oldStore = inject<Store<StoreState>>(Store);
+  private store = inject(AppStore);
   private elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private destroyRef = inject(DestroyRef);
 
@@ -157,7 +158,7 @@ export class TimelineChartUplotComponent implements OnChanges {
   private resizeObserver?: ResizeObserver;
   constructor() {
     effect(() => {
-      const theme = this.store.selectSignal(selectTheme)();
+      const theme = this.store.theme();
       const stroke = window.getComputedStyle(this.elementRef.nativeElement).color;
       this.uplot?.axes.forEach((a) => (a.stroke = () => stroke));
       setTimeout(() => {

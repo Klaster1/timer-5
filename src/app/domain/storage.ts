@@ -8,7 +8,6 @@ import { Seconds } from './date-time';
 export interface StoreState {
   tasks: NormalizedTasks;
   router: RouterReducerState;
-  theme: Theme;
 }
 
 export type Theme = 'light' | 'dark';
@@ -52,7 +51,7 @@ const fromLegacyGames = (data: LegacyGames): AppTasks => {
         (session): Session => ({
           start: session.start,
           end: isNumber(session.stop) ? session.stop : undefined,
-        })
+        }),
       ),
     }));
     return Object.fromEntries(tasks.map((task) => [task.id, task] as const));

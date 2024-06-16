@@ -13,7 +13,6 @@ import {
   renameTask,
   startTask,
   stopTask,
-  toggleTheme,
   updateSession,
   updateTaskState,
 } from './actions';
@@ -43,7 +42,7 @@ function tasks(state: StoreState['tasks'] | undefined, action: Action) {
       const index = state.findIndex(isSessionWithId(action.sessionId));
       if (index !== -1) state.splice(index, 1);
       return state;
-    })
+    }),
   );
 
   const tasks = createImmerReducer<StoreState['tasks']>(
@@ -86,19 +85,13 @@ function tasks(state: StoreState['tasks'] | undefined, action: Action) {
       const task = state[action.taskId];
       if (task) task.sessions = sessions(task.sessions, action);
       return state;
-    })
+    }),
   );
 
   return tasks(state, action);
 }
 
-const theme = createImmerReducer<StoreState['theme']>(
-  'dark',
-  on(toggleTheme, (state) => (state === 'dark' ? 'light' : 'dark'))
-);
-
 export const combinedReducers = {
   tasks,
   router: routerReducer,
-  theme,
 };
