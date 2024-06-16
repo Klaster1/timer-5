@@ -13,13 +13,69 @@ import {
 } from '@ngrx/signals';
 import { produce } from 'immer';
 
-type RouterState = {
-  root: {
-    url: ActivatedRouteSnapshot['url'];
-    params: ActivatedRouteSnapshot['params'];
-    queryParams: ActivatedRouteSnapshot['queryParams'];
-    firstChild?: ActivatedRouteSnapshot['firstChild'];
-  } | null;
+const withRouter = () => {
+  type RouterState = {
+    router: {
+      url: ActivatedRouteSnapshot['url'];
+      params: ActivatedRouteSnapshot['params'];
+      queryParams: ActivatedRouteSnapshot['queryParams'];
+      firstChild?: ActivatedRouteSnapshot['firstChild'];
+    } | null;
+  };
+  const initialState: RouterState = {
+    router: null,
+  };
+  return signalStoreFeature(
+    withState<RouterState>(initialState),
+    withMethods((store) => {
+      const router = inject(Router);
+      const destroyRef = inject(DestroyRef);
+      return {
+        hookUpRouter() {
+          router.events.pipe(takeUntilDestroyed(destroyRef)).subscribe((event) => {
+            if (event instanceof NavigationEnd) {
+              patchState(store, (state) =>
+                produce(state, (draft) => {
+                  const route = router.routerState.snapshot.root;
+                  draft.router = {
+                    url: route?.url,
+                    params: route?.params,
+                    queryParams: route?.queryParams,
+                    firstChild: route?.children.at(0),
+                  };
+                }),
+              );
+            }
+          });
+        },
+      };
+    }),
+    withComputed((store) => {
+      const currentRoute = computed(() => {
+        const rootRoute = store.router();
+        if (!rootRoute) {
+          return undefined;
+        }
+        let route = rootRoute;
+        while (route.firstChild) {
+          route = route.firstChild;
+        }
+        return route;
+      });
+      const routeParams = computed(() => currentRoute()?.params);
+      const queryParams = computed(() => currentRoute()?.queryParams);
+      return {
+        currentRoute,
+        routeParams,
+        queryParams,
+      };
+    }),
+    withHooks({
+      onInit(store) {
+        store.hookUpRouter();
+      },
+    }),
+  );
 };
 
 const withTheme = () => {
@@ -58,52 +114,4 @@ const withTheme = () => {
   );
 };
 
-export const RouterStore = signalStore(
-  { providedIn: 'root' },
-  withState<RouterState>({ root: null }),
-  withMethods((store) => {
-    const router = inject(Router);
-    const destroyRef = inject(DestroyRef);
-    return {
-      hookUpRouter() {
-        router.events.pipe(takeUntilDestroyed(destroyRef)).subscribe((event) => {
-          if (event instanceof NavigationEnd) {
-            patchState(store, (state) =>
-              produce(state, (draft) => {
-                const route = router.routerState.snapshot.root;
-                draft.root = {
-                  url: route?.url,
-                  params: route?.params,
-                  queryParams: route?.queryParams,
-                  firstChild: route?.children.at(0),
-                };
-              }),
-            );
-          }
-        });
-      },
-    };
-  }),
-  withComputed((store) => {
-    const currentRoute = computed(() => {
-      const rootRoute = store.root();
-      if (!rootRoute) {
-        return undefined;
-      }
-      let route = rootRoute;
-      while (route.firstChild) {
-        route = route.firstChild;
-      }
-      return route;
-    });
-    const routeParams = computed(() => currentRoute()?.params);
-    const queryParams = computed(() => currentRoute()?.queryParams);
-    return {
-      currentRoute,
-      routeParams,
-      queryParams,
-    };
-  }),
-);
-
-export const AppStore = signalStore({ providedIn: 'root' }, withTheme());
+export const AppStore = signalStore({ providedIn: 'root' }, withTheme(), withRouter());

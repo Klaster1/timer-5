@@ -1,11 +1,4 @@
-import {
-  ENVIRONMENT_INITIALIZER,
-  effect,
-  enableProdMode,
-  importProvidersFrom,
-  inject,
-  provideExperimentalZonelessChangeDetection,
-} from '@angular/core';
+import { enableProdMode, importProvidersFrom, provideExperimentalZonelessChangeDetection } from '@angular/core';
 import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogConfig, MatDialogModule } from '@angular/material/dialog';
 import { MAT_TOOLTIP_DEFAULT_OPTIONS, MatTooltipDefaultOptions } from '@angular/material/tooltip';
 import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
@@ -17,7 +10,6 @@ import { gameStateGuard } from '@app/guards/game-state.guard';
 import { Effects } from '@app/ngrx/effects';
 import { ScreenTaskComponent } from '@app/screen-task/screen-task.component';
 import { ScreenTasksComponent } from '@app/screen-tasks/screen-tasks.component';
-import { RouterStore } from '@app/services/state';
 import { provideEffects } from '@ngrx/effects';
 import { MinimalRouterStateSerializer, provideRouterStore } from '@ngrx/router-store';
 import { provideStore } from '@ngrx/store';
@@ -82,19 +74,6 @@ bootstrapApplication(AppComponent, {
     {
       provide: MAT_TOOLTIP_DEFAULT_OPTIONS,
       useValue: { disableTooltipInteractivity: true } as MatTooltipDefaultOptions,
-    },
-    {
-      provide: ENVIRONMENT_INITIALIZER,
-      multi: true,
-      useFactory: () => {
-        const routerStore = inject(RouterStore);
-        return () => {
-          routerStore.hookUpRouter();
-          effect(() => {
-            routerStore.routeParams();
-          });
-        };
-      },
     },
   ],
 });
