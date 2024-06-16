@@ -1,7 +1,6 @@
 import { writeFile } from 'fs/promises';
 import { fixture, test } from 'testcafe';
 import { app } from '../page-objects/app';
-import { dateTimePicker } from '../page-objects/date-time-picker';
 import { dialogEditSession } from '../page-objects/dialog-edit-session';
 import { dialogPrompt } from '../page-objects/dialog-prompt';
 import { menuTaskActions } from '../page-objects/menu-task-actions';
@@ -307,6 +306,10 @@ test('Export/import', async (t) => {
 });
 
 test('Editing a session', async (t) => {
+  const utcDateToLocalDate = (date: Date): Date => {
+    const utcDate = new Date(date);
+    return new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000);
+  };
   // Have a running task
   await t.navigateTo(urlTo('/'));
   await screenTasks.addTask('Test');
@@ -315,26 +318,19 @@ test('Editing a session', async (t) => {
   await t.expect(screenTask.sessionDuration.nth(0).textContent).eql(' 00:00 ');
   await t.expect(screenTask.taskDuration.textContent).eql(' 00:00 ');
   await t.expect(screenTasks.total.textContent).eql(' (00:00) ');
-  await t
-    .click(screenTask.buttonSessionAction)
-    .click(screenTask.menuSession.buttonEdit)
-    .click(dialogEditSession.buttonStartDatepickerToggle)
-    .click(dateTimePicker.buttonHoursDecrement)
-    .click(dateTimePicker.buttonHoursDecrement)
-    .click(dateTimePicker.buttonHoursDecrement)
-    .click(dateTimePicker.buttonSubmit)
-    .click(dialogEditSession.buttonSubmit);
+  await t.click(screenTask.buttonSessionAction).click(screenTask.menuSession.buttonEdit);
+  const now = utcDateToLocalDate(new Date());
+  now.setHours(now.getHours() - 3);
+  await dialogEditSession.setStart(now);
+  await t.click(dialogEditSession.buttonSubmit);
   await t.expect(screenTask.sessionDuration.nth(0).textContent).eql(' 03:00 ');
   await t.expect(screenTask.taskDuration.textContent).eql(' 03:00 ');
   await t.expect(screenTasks.total.textContent).eql(' (03:00) ');
   // For a running task session, set the end time, assert the task becomes active/non-running
-  await t
-    .click(screenTask.buttonSessionAction)
-    .click(screenTask.menuSession.buttonEdit)
-    .click(dialogEditSession.buttonEndDatepickerToggle)
-    .click(dateTimePicker.buttonHoursDecrement)
-    .click(dateTimePicker.buttonSubmit)
-    .click(dialogEditSession.buttonSubmit);
+  await t.click(screenTask.buttonSessionAction).click(screenTask.menuSession.buttonEdit);
+  now.setHours(now.getHours() + 2);
+  await dialogEditSession.setEnd(now);
+  await t.click(dialogEditSession.buttonSubmit);
   await t.expect(screenTask.sessionDuration.nth(0).textContent).eql(' 02:00 ');
   await t.expect(screenTask.taskDuration.textContent).eql(' 02:00 ');
   await t.expect(screenTasks.total.textContent).eql(' (02:00) ');
