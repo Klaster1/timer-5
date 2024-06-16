@@ -1,7 +1,16 @@
 import { CdkDrag, CdkDragPlaceholder, CdkDropList } from '@angular/cdk/drag-drop';
-import { ScrollingModule } from '@angular/cdk/scrolling';
+import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
 import { AsyncPipe, DatePipe, NgStyle } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, afterNextRender, computed, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  afterNextRender,
+  computed,
+  effect,
+  inject,
+  viewChild,
+} from '@angular/core';
 import { MatFabButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -64,7 +73,9 @@ export class ScreenTaskComponent {
   private destroyRef = inject(DestroyRef);
 
   task = this.store.selectSignal(selectCurrentTask);
+  taskId = computed(() => this.task()?.id);
   taskIsInProgress = computed(() => isTaskRunning(this.task()));
+  viewport = viewChild(CdkVirtualScrollViewport);
 
   sessionDuration = sessionDuration;
   hotkeys = [
@@ -113,6 +124,10 @@ export class ScreenTaskComponent {
     });
     afterNextRender(() => {
       this.keys.add(this.hotkeys);
+    });
+    effect(() => {
+      const taskId = this.taskId();
+      this.viewport()?.scrollToIndex(0);
     });
   }
   start(taskId?: string) {
