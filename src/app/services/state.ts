@@ -132,102 +132,18 @@ const withTheme = () => {
   );
 };
 
-const withTasks = () => {
-  type TasksState = {
-    tasks: NormalizedTasks;
-  };
-  const initialState: TasksState = {
-    tasks: {},
-  };
-  return signalStoreFeature(
-    withState<TasksState>(initialState),
-    withMethods((store) => ({
-      stopTask(taskId: string, timestamp: number) {
-        updateState(store, (draft) => {
-          store.tasks()[taskId]?.sessions.forEach((session) => {
-            if (typeof session.end !== 'number') session.end = timestamp;
-          });
-        });
-      },
-      updateSession(taskId: string, sessionId: SessionId, start: number, end: number) {
-        updateState(store, (draft) => {
-          const session = store.tasks()[taskId]?.sessions.find(isSessionWithId(sessionId));
-          if (session) {
-            session.start = start;
-            session.end = end;
-          }
-        });
-      },
-      deleteSession(taskId: string, sessionId: SessionId) {
-        updateState(store, (draft) => {
-          const task = store.tasks()[taskId];
-          if (!task) return;
-          const index = task?.sessions.findIndex(isSessionWithId(sessionId));
-          if (index !== -1) task.sessions.splice(index, 1);
-        });
-      },
-      loadTasks(tasks: NormalizedTasks) {
-        updateState(store, (draft) => {
-          draft.tasks = tasks;
-        });
-      },
-      createTask(taskId: string, name: string) {
-        updateState(store, (draft) => {
-          draft.tasks[taskId] = { id: taskId, name, sessions: [], state: TaskState.active };
-        });
-      },
-      renameTask(taskId: string, name: string) {
-        updateState(store, (draft) => {
-          const task = draft.tasks[taskId];
-          if (task) task.name = name;
-        });
-      },
-      updateTaskState(taskId: string, state: TaskState) {
-        updateState(store, (draft) => {
-          const task = draft.tasks[taskId];
-          if (task) task.state = state;
-        });
-      },
-      startTask(taskId: string, timestamp: number) {
-        updateState(store, (draft) => {
-          const task = draft.tasks[taskId];
-          if (task) {
-            task.state = TaskState.active;
-            task.sessions.push({ start: timestamp });
-          }
-        });
-      },
-      moveSessionToTask(fromTaskId: string, toTaskId: string, session: Session) {
-        updateState(store, (draft) => {
-          const fromTask = draft.tasks[fromTaskId];
-          const toTask = draft.tasks[toTaskId];
-          if (fromTask && toTask) {
-            fromTask.sessions = fromTask.sessions.filter((session) => !deepEquals(session, session));
-            toTask.sessions.push(session);
-            if (isTaskRunning(toTask)) toTask.state = TaskState.active;
-          }
-        });
-      },
-    })),
-    withHooks({
-      onInit(store) {
-        const storedTasks = localStorage.getItem('tasks') ?? JSON.stringify(store.tasks());
-        const parsedTasks = JSON.parse(storedTasks);
-        const tasksToLoad = fromStoredTasks(parsedTasks);
-        store.loadTasks(tasksToLoad);
-        effect(() => {
-          localStorage.setItem('tasks', JSON.stringify(store.tasks()));
-        });
-      },
-    }),
-  );
+type TasksState = {
+  tasks: NormalizedTasks;
+};
+const initialState: TasksState = {
+  tasks: {},
 };
 
 export const AppStore = signalStore(
   { providedIn: 'root' },
   withTheme(),
   withRouter(),
-  withTasks(),
+  withState<TasksState>(initialState),
   withComputed((store) => {
     // Params
     const decodedFilterParams = computed(() => decodeFilterMatrixParams(store.queryParams() ?? {}));
@@ -304,8 +220,12 @@ export const AppStore = signalStore(
     const taskById = (taskId: string) => computed(() => store.tasks()[taskId]);
     const renameTask = async (taskId: string) => {
       const task = taskById(taskId)();
-      const result = await firstValueFrom(prompt.prompt('Rename task', task?.name, 'Task name'));
-      if (result) store.renameTask(taskId, result);
+      const name = await firstValueFrom(prompt.prompt('Rename task', task?.name, 'Task name'));
+      if (!name) return;
+      updateState(store, (draft) => {
+        const task = draft.tasks[taskId];
+        if (task) task.name = name;
+      });
     };
     const deleteTask = (taskIdToRemove: string) => {
       updateState(store, (draft) => {
@@ -315,11 +235,87 @@ export const AppStore = signalStore(
       const taskId = store.currentTaskId();
       if (taskIdToRemove === taskId && state) router.navigate([state], { queryParamsHandling: 'merge' });
     };
-
     return {
+      stopTask(taskId: string, timestamp: number) {
+        updateState(store, (draft) => {
+          store.tasks()[taskId]?.sessions.forEach((session) => {
+            if (typeof session.end !== 'number') session.end = timestamp;
+          });
+        });
+      },
+
+      updateSession(taskId: string, sessionId: SessionId, start: number, end: number) {
+        updateState(store, (draft) => {
+          const session = store.tasks()[taskId]?.sessions.find(isSessionWithId(sessionId));
+          if (session) {
+            session.start = start;
+            session.end = end;
+          }
+        });
+      },
+
+      deleteSession(taskId: string, sessionId: SessionId) {
+        updateState(store, (draft) => {
+          const task = store.tasks()[taskId];
+          if (!task) return;
+          const index = task?.sessions.findIndex(isSessionWithId(sessionId));
+          if (index !== -1) task.sessions.splice(index, 1);
+        });
+      },
+
+      loadTasks(tasks: NormalizedTasks) {
+        updateState(store, (draft) => {
+          draft.tasks = tasks;
+        });
+      },
+
+      createTask(taskId: string, name: string) {
+        updateState(store, (draft) => {
+          draft.tasks[taskId] = { id: taskId, name, sessions: [], state: TaskState.active };
+        });
+      },
+      updateTaskState(taskId: string, state: TaskState) {
+        updateState(store, (draft) => {
+          const task = draft.tasks[taskId];
+          if (task) task.state = state;
+        });
+      },
+
+      startTask(taskId: string, timestamp: number) {
+        updateState(store, (draft) => {
+          const task = draft.tasks[taskId];
+          if (task) {
+            task.state = TaskState.active;
+            task.sessions.push({ start: timestamp });
+          }
+        });
+      },
+
+      moveSessionToTask(fromTaskId: string, toTaskId: string, session: Session) {
+        updateState(store, (draft) => {
+          const fromTask = draft.tasks[fromTaskId];
+          const toTask = draft.tasks[toTaskId];
+          if (fromTask && toTask) {
+            fromTask.sessions = fromTask.sessions.filter((session) => !deepEquals(session, session));
+            toTask.sessions.push(session);
+            if (isTaskRunning(toTask)) toTask.state = TaskState.active;
+          }
+        });
+      },
       taskById,
-      renameTask,
       deleteTask,
+      renameTask,
     };
+  }),
+  withHooks({
+    onInit(store) {
+      const storedTasks = localStorage.getItem('tasks') ?? JSON.stringify(store.tasks());
+      const parsedTasks = JSON.parse(storedTasks);
+      const tasksToLoad = fromStoredTasks(parsedTasks);
+      store.loadTasks(tasksToLoad);
+      effect(() => {
+        localStorage.setItem('tasks', JSON.stringify(store.tasks()));
+      });
+    },
   }),
 );
