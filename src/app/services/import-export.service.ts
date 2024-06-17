@@ -1,11 +1,10 @@
 import { inject, Injectable } from '@angular/core';
-import { fromStoredTasks, StoreState } from '@app/domain/storage';
-import { loadTasks } from '@app/ngrx/actions';
-import { Store } from '@ngrx/store';
+import { fromStoredTasks } from '@app/domain/storage';
+import { AppStore } from './state';
 
 @Injectable({ providedIn: 'root' })
 export class ImportExportService {
-  private store = inject<Store<StoreState>>(Store);
+  private store = inject(AppStore);
   import(event: Event) {
     const target = event.target;
     if (!(target instanceof HTMLInputElement)) return;
@@ -16,7 +15,7 @@ export class ImportExportService {
       'load',
       () => {
         if (typeof fileReader.result !== 'string') return;
-        this.store.dispatch(loadTasks({ data: fromStoredTasks(JSON.parse(fileReader.result)) }));
+        this.store.loadTasks(fromStoredTasks(JSON.parse(fileReader.result)));
       },
       { once: true },
     );
