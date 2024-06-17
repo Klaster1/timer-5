@@ -20,26 +20,14 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ButtonTaskActionsComponent } from '@app/button-task-actions/button-task-actions.component';
 import { KEYS_ADD, KEYS_NEXT, KEYS_PREV, KEYS_SEARCH, hotkey } from '@app/domain/hotkeys';
-import { StoreState } from '@app/domain/storage';
 import { SessionDragEvent, Task, TaskState, isTaskRunning } from '@app/domain/task';
-import * as actions from '@app/ngrx/actions';
-import { moveSessionToTask } from '@app/ngrx/actions';
-import {
-  selectCurrentTaskIndex,
-  selectCurrentTaskState,
-  selectCurrentTasks,
-  selectDecodedFilterParams,
-  selectIsCurrentTaskOpened,
-  selectNextTaskId,
-  selectPrevTaskId,
-} from '@app/ngrx/selectors';
 import { FormatDurationPipe } from '@app/pipes/format-duration.pipe';
 import { MapPipe } from '@app/pipes/map.pipe';
 import { TaskDurationPipe } from '@app/pipes/task-duration.pipe';
 import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
 import { TaskStatePipe } from '@app/pipes/task-state.pipe';
 import { TasksDurationPipe } from '@app/pipes/tasks-duration.pipe';
-import { Store } from '@ngrx/store';
+import { AppStore } from '@app/services/state';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
 import { CheckViewportSizeWhenValueChangesDirective } from './checkViewportSizeWhenValueChanges.directive';
 import { EmptyStateComponent } from './empty-state/empty-state.component';
@@ -83,17 +71,13 @@ import { TasksFilterComponent } from './tasks-filter/tasks-filter.component';
 })
 export class ScreenTasksComponent {
   private cdr = inject(ChangeDetectorRef);
-  private store = inject<Store<StoreState>>(Store);
+  public store = inject(AppStore);
   private keys = inject(HotkeysService);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
 
-  public state = this.store.selectSignal(selectCurrentTaskState);
-  public tasks = this.store.selectSignal(selectCurrentTasks);
-  public currentTaskIndex = this.store.selectSignal(selectCurrentTaskIndex);
-  public taskOpened = this.store.selectSignal(selectIsCurrentTaskOpened);
   private filterPresent = computed(() => {
-    const filterParams = this.store.selectSignal(selectDecodedFilterParams)();
+    const filterParams = this.store.decodedFilterParams();
     return !!Object.keys(filterParams).length;
   });
   private filterToggles = signal<boolean | undefined>(undefined);
@@ -119,9 +103,9 @@ export class ScreenTasksComponent {
   hotkeys = [
     hotkey(KEYS_ADD, 'Add task', () => this.addTask()),
     hotkey([...KEYS_NEXT, ...KEYS_PREV], 'Next/prev task', (e) => {
-      const nextTaskId = this.store.selectSignal(selectNextTaskId)();
-      const prevTaskId = this.store.selectSignal(selectPrevTaskId)();
-      const state = this.state();
+      const nextTaskId = this.store.nextTaskId();
+      const prevTaskId = this.store.prevTaskId();
+      const state = this.store.currentTaskState();
       const taskId = KEYS_NEXT.includes(e.key) ? nextTaskId : KEYS_PREV.includes(e.key) ? prevTaskId : null;
       if (state && taskId) this.router.navigate([state, taskId], { queryParamsHandling: 'merge' });
     }),
@@ -141,7 +125,7 @@ export class ScreenTasksComponent {
   taskId: TrackByFunction<Task> = (_, task) => task.id;
 
   addTask() {
-    this.store.dispatch(actions.createTaskIntent());
+    this.store.createTask();
   }
   openFilter() {
     this.filterToggles.update(() => true);
@@ -155,12 +139,6 @@ export class ScreenTasksComponent {
     else this.openFilter();
   }
   onDrop(event: SessionDragEvent, item: Task) {
-    this.store.dispatch(
-      moveSessionToTask({
-        taskIdFrom: event.item.data[1],
-        taskIdTo: item.id,
-        session: { ...event.item.data[0] },
-      }),
-    );
+    this.store.moveSessionToTask(event.item.data[1], item.id, { ...event.item.data[0] });
   }
 }

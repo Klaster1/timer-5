@@ -15,6 +15,7 @@ import {
   getTaskSession,
   isSessionWithId,
   isTaskRunning,
+  makeTaskId,
   sortTaskSessions,
 } from '@app/domain/task';
 import { deepEquals } from '@app/utils/assert';
@@ -260,6 +261,15 @@ export const AppStore = signalStore(
         });
       }
     };
+    const createTask = async () => {
+      const name = await firstValueFrom(prompt.prompt('Create task', '', 'Task name'));
+      if (!name) return;
+      const taskId = makeTaskId();
+      updateState(store, (draft) => {
+        draft.tasks[taskId] = { id: taskId, name, sessions: [], state: TaskState.active };
+      });
+      router.navigate([store.currentTaskState() === 'all' ? 'all' : 'active', taskId]);
+    };
     return {
       stopTask(taskId: string, timestamp: number) {
         updateState(store, (draft) => {
@@ -284,12 +294,6 @@ export const AppStore = signalStore(
         });
       },
 
-      createTask(taskId: string, name: string) {
-        updateState(store, (draft) => {
-          draft.tasks[taskId] = { id: taskId, name, sessions: [], state: TaskState.active };
-        });
-        router.navigate([store.currentTaskState() === 'all' ? 'all' : 'active', taskId]);
-      },
       updateTaskState(taskId: string, state: TaskState) {
         updateState(store, (draft) => {
           const task = draft.tasks[taskId];
@@ -322,6 +326,7 @@ export const AppStore = signalStore(
       deleteTask,
       renameTask,
       editSession,
+      createTask,
     };
   }),
   withHooks({

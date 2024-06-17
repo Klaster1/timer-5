@@ -1,9 +1,9 @@
-<div class="container" [ngClass]="{ 'task-opened': taskOpened() }">
-  @if (tasks(); as tasks) {
+<div class="container" [ngClass]="{ 'task-opened': store.isCurrentTaskOpened() }">
+  @if (store.currentTasks(); as tasks) {
     <section class="tasks">
       <mat-toolbar>
         <h1>
-          <ng-container> {{ state() | taskState }} </ng-container>
+          <ng-container> {{ store.currentTaskState() | taskState }} </ng-container>
           @if (tasks | tasksDuration: 20000 | formatDuration | async; as duration) {
             <span class="state-duration" data-e2e="screen-tasks__total"> ({{ duration }}) </span>
           }
@@ -24,7 +24,7 @@
         <cdk-virtual-scroll-viewport
           #scroll
           [itemSize]="48"
-          [scrollToIndex]="currentTaskIndex()"
+          [scrollToIndex]="store.currentTaskIndex()"
           [checkViewportSizeWhenValueChanges]="tasks"
         >
           <mat-nav-list>
@@ -67,7 +67,7 @@
               <img src="assets/favicon.svg" alt="Timer" illustration />
               <span title>No tasks</span>
               <span subtitle>
-                @switch (state()) {
+                @switch (store.currentTaskState()) {
                   @case ('all') {
                     Create a task and it will show up here
                   }
@@ -108,7 +108,7 @@
     </section>
   }
 
-  @if (taskOpened()) {
+  @if (store.isCurrentTaskOpened()) {
     <section class="task mat-app-background">
       <router-outlet></router-outlet>
     </section>
