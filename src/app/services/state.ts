@@ -229,7 +229,7 @@ export const AppStore = signalStore(
     const taskById = (taskId: string) => computed(() => store.tasks()[taskId]);
     const renameTask = async (taskId: string) => {
       const task = taskById(taskId)();
-      const name = await firstValueFrom(prompt.prompt('Rename task', task?.name, 'Task name'));
+      const name = await prompt.prompt('Rename task', task?.name, 'Task name');
       if (!name) return;
       updateState(store, (draft) => {
         const task = draft.tasks[taskId];
@@ -266,7 +266,7 @@ export const AppStore = signalStore(
       }
     };
     const createTask = async () => {
-      const name = await firstValueFrom(prompt.prompt('Create task', '', 'Task name'));
+      const name = await prompt.prompt('Create task', '', 'Task name');
       if (!name) return;
       const taskId = makeTaskId();
       updateState(store, (draft) => {

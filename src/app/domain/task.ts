@@ -2,8 +2,7 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { last } from '@app/utils/array';
 import { deepEquals, isNumber } from '@app/utils/assert';
 import { nanoid } from 'nanoid';
-import { combineLatest, Observable, of, timer } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { Observable, combineLatest, map, of, startWith, timer } from 'rxjs';
 import { Milliseconds } from './date-time';
 import { FilterMatrixParams, RouteFragmentParams } from './router';
 
@@ -104,13 +103,13 @@ export const taskDuration = (task?: Task, interval = 1000): Observable<number> =
       ? of(completeDuration)
       : timer(0, interval).pipe(
           startWith(0),
-          map(() => completeDuration + Date.now() - lastSession.start)
+          map(() => completeDuration + Date.now() - lastSession.start),
         )
     : of(completeDuration);
 };
 export const tasksDuration = (tasks: Task[], interval = 1000): Observable<number> =>
   combineLatest(tasks.map((t) => taskDuration(t, interval))).pipe(
-    map((durations) => durations.reduce((acc, d) => acc + d, 0))
+    map((durations) => durations.reduce((acc, d) => acc + d, 0)),
   );
 
 type Nullable<T> = T | null;
@@ -165,7 +164,7 @@ const sortByDuration = (filter: FilterParams, tasks: Task[]): Task[] => {
     return [...tasks].sort((a, b) =>
       filter.durationSort === 'shortestFirst'
         ? taskDurationPure(a, now) - taskDurationPure(b, now)
-        : taskDurationPure(b, now) - taskDurationPure(a, now)
+        : taskDurationPure(b, now) - taskDurationPure(a, now),
     );
   } else {
     return [...tasks].sort(compareTasks);
@@ -184,7 +183,7 @@ export const filterTasks = (filter: FilterParams, values: Task[]): Task[] =>
         acc.push(result);
       }
       return acc;
-    }, [])
+    }, []),
   );
 
 export const filterTaskSessions = (task: Task, params: Pick<FilterParams, 'from' | 'to'>): Task => {

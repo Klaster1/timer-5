@@ -1,8 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { formatHours } from '@app/domain/date-time';
 import { isNumber } from '@app/utils/assert';
-import { Observable } from 'rxjs';
-import { distinctUntilChanged, map } from 'rxjs/operators';
+import { Observable, distinctUntilChanged, map } from 'rxjs';
 
 @Pipe({
   name: 'formatDuration',
@@ -16,7 +15,7 @@ export class FormatDurationPipe implements PipeTransform {
       ? formatHours(value)
       : value.pipe(
           map((v) => formatHours(v)),
-          distinctUntilChanged()
+          distinctUntilChanged(),
         );
   }
 }
