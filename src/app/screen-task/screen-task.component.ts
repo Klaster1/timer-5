@@ -77,9 +77,7 @@ export default class ScreenTaskComponent {
     hotkey(KEYS_START_STOP, 'Start/stop task', (e) => {
       const task = this.store.currentTask();
       const inProgress = this.taskIsInProgress();
-      if (!task) {
-        return;
-      }
+      if (!task) return;
       if (inProgress) {
         this.stop(task.id);
       } else {
@@ -88,27 +86,19 @@ export default class ScreenTaskComponent {
     }),
     hotkey(KEYS_MARK_FINISHED, `Mark as finished`, (e) => {
       const task = this.store.currentTask();
-      if (task) {
-        this.store.updateTaskState(task.id, TaskState.finished);
-      }
+      if (task) this.store.updateTaskState(task.id, TaskState.finished);
     }),
     hotkey(KEYS_MARK_ACTIVE, `Mark as active`, (e) => {
       const task = this.store.currentTask();
-      if (task) {
-        this.store.updateTaskState(task.id, TaskState.active);
-      }
+      if (task) this.store.updateTaskState(task.id, TaskState.active);
     }),
     hotkey(KEYS_RENAME, 'Rename task', () => {
       const task = this.store.currentTask();
-      if (task) {
-        this.store.renameTask(task.id);
-      }
+      if (task) this.store.renameTask(task.id);
     }),
     hotkey(KEYS_DELETE_TASK, 'Delete task', () => {
       const task = this.store.currentTask();
-      if (task) {
-        this.store.deleteTask(task.id);
-      }
+      if (task) this.store.deleteTask(task.id);
     }),
   ];
   displayedColumns = ['start', 'end', 'duration', 'action'];
@@ -121,17 +111,17 @@ export default class ScreenTaskComponent {
       this.keys.add(this.hotkeys);
     });
     effect(() => {
-      const taskId = this.store.currentTaskId();
+      this.store.currentTaskId();
       this.viewport()?.scrollToIndex(0);
     });
   }
-  start(taskId?: string) {
-    if (taskId) this.store.startTask(taskId, Date.now());
+  start(taskId: string) {
+    this.store.startTask(taskId, Date.now());
   }
-  stop(taskId?: string) {
-    if (taskId) this.store.stopTask(taskId, Date.now());
+  stop(taskId: string) {
+    this.store.stopTask(taskId, Date.now());
   }
-  deleteTask(task?: Task) {
-    if (task) this.store.deleteTask(task.id);
+  deleteTask(task: Task) {
+    this.store.deleteTask(task.id);
   }
 }

@@ -74,16 +74,12 @@ export default class ScreenTasksComponent {
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
 
-  private filterPresent = computed(() => {
-    const filterParams = this.store.decodedFilterParams();
-    return !!Object.keys(filterParams).length;
-  });
+  private filterPresent = computed(() => !!Object.keys(this.store.decodedFilterParams()).length);
   private filterToggles = signal<boolean | undefined>(undefined);
   public searchOpened = computed(() => {
     const filterPresent = this.filterPresent();
     const filterToggles = this.filterToggles();
-    if (filterToggles !== undefined) return filterToggles;
-    return filterPresent;
+    return filterToggles !== undefined ? filterToggles : filterPresent;
   });
 
   constructor() {
@@ -97,14 +93,17 @@ export default class ScreenTasksComponent {
 
   taskState = TaskState;
   isTaskRunning = isTaskRunning;
+  taskId: TrackByFunction<Task> = (_, task) => task.id;
 
   hotkeys = [
-    hotkey(KEYS_ADD, 'Add task', () => this.addTask()),
+    hotkey(KEYS_ADD, 'Add task', () => this.store.createTask()),
     hotkey([...KEYS_NEXT, ...KEYS_PREV], 'Next/prev task', (e) => {
-      const nextTaskId = this.store.nextTaskId();
-      const prevTaskId = this.store.prevTaskId();
       const state = this.store.currentTaskState();
-      const taskId = KEYS_NEXT.includes(e.key) ? nextTaskId : KEYS_PREV.includes(e.key) ? prevTaskId : null;
+      const taskId = KEYS_NEXT.includes(e.key)
+        ? this.store.nextTaskId()
+        : KEYS_PREV.includes(e.key)
+          ? this.store.prevTaskId()
+          : null;
       if (state && taskId) this.router.navigate([state, taskId], { queryParamsHandling: 'merge' });
     }),
     new Hotkey(
@@ -119,21 +118,8 @@ export default class ScreenTasksComponent {
     ),
   ];
 
-  taskId: TrackByFunction<Task> = (_, task) => task.id;
-
-  addTask() {
-    this.store.createTask();
-  }
-  openFilter() {
-    this.filterToggles.update(() => true);
-  }
-  closeFilter() {
-    this.filterToggles.update(() => false);
-  }
-  toggleFilter() {
-    const searchOpened = this.searchOpened();
-    if (searchOpened) this.closeFilter();
-    else this.openFilter();
+  toggleFilter(opened?: boolean) {
+    this.filterToggles.update(() => opened ?? !this.searchOpened());
   }
   onDrop(event: SessionDragEvent, item: Task) {
     this.store.moveSessionToTask(event.item.data[1], item.id, { ...event.item.data[0] });

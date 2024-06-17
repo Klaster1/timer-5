@@ -14,11 +14,17 @@
       </mat-toolbar>
       @if (searchOpened()) {
         @defer {
-          <tasks-filter (keyup.esc)="closeFilter()"></tasks-filter>
+          <tasks-filter (keyup.esc)="toggleFilter(false)"></tasks-filter>
         }
       }
       @if (tasks.length) {
-        <button (click)="addTask()" mat-fab color="accent" data-e2e="button-add-task" matTooltip="Create a task">
+        <button
+          (click)="store.createTask()"
+          mat-fab
+          color="accent"
+          data-e2e="button-add-task"
+          matTooltip="Create a task"
+        >
           <mat-icon>add</mat-icon>
         </button>
         <cdk-virtual-scroll-viewport
@@ -85,7 +91,7 @@
               <button
                 color="primary"
                 mat-raised-button
-                (click)="addTask()"
+                (click)="store.createTask()"
                 type="button"
                 routerLink="/tasks/active"
                 data-e2e="screen-tasks__button-add-task-empty-state"
@@ -100,7 +106,7 @@
               <mat-icon color="accent" illustration>search</mat-icon>
               <span title>Nothing found</span>
               <span subtitle>Could not find tasks matching the criteria</span>
-              <button mat-raised-button (click)="closeFilter()" type="button">Reset filter</button>
+              <button mat-raised-button (click)="toggleFilter(false)" type="button">Reset filter</button>
             </empty-state>
           }
         }

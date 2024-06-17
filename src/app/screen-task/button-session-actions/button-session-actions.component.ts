@@ -18,24 +18,17 @@ import { AppStore } from '@app/services/state';
 export class ButtonSessionActionsComponent {
   private store = inject(AppStore);
 
-  public task = input<Task>();
-  public session = input<Session>();
+  public task = input.required<Task>();
+  public session = input.required<Session>();
 
   edit() {
-    const task = this.task();
-    const session = this.session();
-    if (task && session) this.store.editSession(task?.id, getSessionId(session));
+    this.store.editSession(this.task().id, getSessionId(this.session()));
   }
   remove() {
-    const task = this.task();
-    const session = this.session();
-    if (task && session) {
-      this.store.deleteSession(task.id, getSessionId(session));
-    }
+    this.store.deleteSession(this.task().id, getSessionId(this.session()));
   }
   get skipBeforeParams() {
-    const session = this.session();
-    return session ? encodeFilterParams({ from: new Date(session.start) }) : {};
+    return encodeFilterParams({ from: new Date(this.session().start) });
   }
   get skipAfterParams() {
     return encodeFilterParams({ to: new Date(this.session()?.end ?? new Date()) });
