@@ -1,18 +1,24 @@
 import {
+  APP_INITIALIZER,
+  DestroyRef,
   enableProdMode,
   importProvidersFrom,
+  inject,
   isDevMode,
   provideExperimentalZonelessChangeDetection,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogConfig } from '@angular/material/dialog';
 import { MAT_TOOLTIP_DEFAULT_OPTIONS, MatTooltipDefaultOptions } from '@angular/material/tooltip';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, withRouterConfig } from '@angular/router';
-import { ServiceWorkerModule, provideServiceWorker } from '@angular/service-worker';
+import { ServiceWorkerModule, SwUpdate, provideServiceWorker } from '@angular/service-worker';
 import { AppComponent } from '@app/app.component';
 import { gameStateGuard } from '@app/guards/game-state.guard';
 import { HotkeyModule } from 'angular2-hotkeys';
+import { secondsToMilliseconds } from 'date-fns/secondsToMilliseconds';
+import { interval } from 'rxjs';
 import { environment } from './environments/environment';
 
 if (environment.production) {
@@ -63,5 +69,23 @@ bootstrapApplication(AppComponent, {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000',
     }),
+    {
+      provide: APP_INITIALIZER,
+      multi: true,
+      useFactory: () => {
+        const sw = inject(SwUpdate);
+        const destroyRef = inject(DestroyRef);
+        return () => {
+          interval(secondsToMilliseconds(1))
+            .pipe(takeUntilDestroyed(destroyRef))
+            .subscribe(() => sw.checkForUpdate());
+          sw.versionUpdates.pipe(takeUntilDestroyed(destroyRef)).subscribe((evt) => {
+            if (evt.type === 'VERSION_READY') {
+              console.log('New version available!');
+            }
+          });
+        };
+      },
+    },
   ],
 });
