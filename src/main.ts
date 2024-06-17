@@ -14,7 +14,7 @@ import { MAT_TOOLTIP_DEFAULT_OPTIONS, MatTooltipDefaultOptions } from '@angular/
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, withRouterConfig } from '@angular/router';
-import { ServiceWorkerModule, SwUpdate, provideServiceWorker } from '@angular/service-worker';
+import { SwUpdate, provideServiceWorker } from '@angular/service-worker';
 import { AppComponent } from '@app/app.component';
 import { gameStateGuard } from '@app/guards/game-state.guard';
 import { HotkeyModule } from 'angular2-hotkeys';
@@ -47,14 +47,6 @@ bootstrapApplication(AppComponent, {
         },
       ],
       withRouterConfig({ paramsInheritanceStrategy: 'always' }),
-    ),
-    importProvidersFrom(
-      ServiceWorkerModule.register('ngsw-worker.js', {
-        enabled: environment.production,
-        // Register the ServiceWorker as soon as the app is stable
-        // or after 30 seconds (whichever comes first).
-        registrationStrategy: 'registerWhenStable:30000',
-      }),
     ),
     {
       provide: MAT_DIALOG_DEFAULT_OPTIONS,
