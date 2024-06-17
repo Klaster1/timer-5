@@ -7,10 +7,8 @@ import { provideRouter, withRouterConfig } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { AppComponent } from '@app/app.component';
 import { gameStateGuard } from '@app/guards/game-state.guard';
-import { Effects } from '@app/ngrx/effects';
 import { ScreenTaskComponent } from '@app/screen-task/screen-task.component';
 import { ScreenTasksComponent } from '@app/screen-tasks/screen-tasks.component';
-import { provideEffects } from '@ngrx/effects';
 import { MinimalRouterStateSerializer, provideRouterStore } from '@ngrx/router-store';
 import { provideStore } from '@ngrx/store';
 import { HotkeyModule } from 'angular2-hotkeys';
@@ -56,7 +54,6 @@ bootstrapApplication(AppComponent, {
     provideRouterStore({
       serializer: MinimalRouterStateSerializer,
     }),
-    provideEffects([Effects]),
     importProvidersFrom(
       ServiceWorkerModule.register('ngsw-worker.js', {
         enabled: environment.production,

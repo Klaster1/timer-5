@@ -1,5 +1,6 @@
 import { DestroyRef, computed, effect, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import { Prompt } from '@app/dialog-prompt/dialog-prompt.service';
 import { chartSeries } from '@app/domain/chart';
@@ -11,6 +12,7 @@ import {
   TaskState,
   filterTaskSessions,
   filterTasks,
+  getTaskSession,
   isSessionWithId,
   isTaskRunning,
   sortTaskSessions,
@@ -28,6 +30,7 @@ import {
 } from '@ngrx/signals';
 import { Draft, produce } from 'immer';
 import { firstValueFrom } from 'rxjs';
+import { DialogEditSessionData } from '../dialog-edit-session/dialog-edit-session.component';
 
 const updateState = <State extends object>(store: StateSignal<State>, recipe: (draft: Draft<State>) => any) => {
   patchState(store, (state) => produce(state, recipe));
@@ -216,6 +219,7 @@ export const AppStore = signalStore(
   withMethods((store) => {
     const prompt = inject(Prompt);
     const router = inject(Router);
+    const dialog = inject(MatDialog);
 
     const taskById = (taskId: string) => computed(() => store.tasks()[taskId]);
     const renameTask = async (taskId: string) => {
@@ -235,22 +239,33 @@ export const AppStore = signalStore(
       const taskId = store.currentTaskId();
       if (taskIdToRemove === taskId && state) router.navigate([state], { queryParamsHandling: 'merge' });
     };
+    const editSession = async (taskId: string, sessionId: SessionId) => {
+      const task = taskById(taskId)();
+      if (!task) return;
+      const session = getTaskSession(task, sessionId);
+      if (!session) return;
+      const component = await import('../dialog-edit-session/dialog-edit-session.component').then((m) => m.default);
+      const result: DialogEditSessionData | undefined = await firstValueFrom(
+        dialog
+          .open(component, { data: { start: session.start, end: session.end } as DialogEditSessionData })
+          .afterClosed(),
+      );
+      if (result) {
+        updateState(store, (draft) => {
+          const sessionToUpdate = taskById(taskId)()?.sessions.find(isSessionWithId(sessionId));
+          if (sessionToUpdate) {
+            sessionToUpdate.start = result.start;
+            sessionToUpdate.end = result.end;
+          }
+        });
+      }
+    };
     return {
       stopTask(taskId: string, timestamp: number) {
         updateState(store, (draft) => {
           store.tasks()[taskId]?.sessions.forEach((session) => {
             if (typeof session.end !== 'number') session.end = timestamp;
           });
-        });
-      },
-
-      updateSession(taskId: string, sessionId: SessionId, start: number, end: number) {
-        updateState(store, (draft) => {
-          const session = store.tasks()[taskId]?.sessions.find(isSessionWithId(sessionId));
-          if (session) {
-            session.start = start;
-            session.end = end;
-          }
         });
       },
 
@@ -306,6 +321,7 @@ export const AppStore = signalStore(
       taskById,
       deleteTask,
       renameTask,
+      editSession,
     };
   }),
   withHooks({

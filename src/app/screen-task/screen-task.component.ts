@@ -25,15 +25,12 @@ import {
   KEYS_START_STOP,
   hotkey,
 } from '@app/domain/hotkeys';
-import { StoreState } from '@app/domain/storage';
 import { Task, TaskState, isTaskRunning, sessionDuration } from '@app/domain/task';
-import { deleteTask, renameTaskIntent, startTask, stopTask, updateTaskState } from '@app/ngrx/actions';
-import { selectCurrentTask } from '@app/ngrx/selectors';
 import { FormatDurationPipe } from '@app/pipes/format-duration.pipe';
 import { MapPipe } from '@app/pipes/map.pipe';
 import { TaskDurationPipe } from '@app/pipes/task-duration.pipe';
 import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
-import { Store } from '@ngrx/store';
+import { AppStore } from '@app/services/state';
 import { HotkeysService } from 'angular2-hotkeys';
 import { ButtonSessionActionsComponent } from './button-session-actions/button-session-actions.component';
 import { VirtualScrollStickyTable } from './sticky.directive';
@@ -68,19 +65,18 @@ import { VirtualScrollStickyTable } from './sticky.directive';
   ],
 })
 export class ScreenTaskComponent {
-  private store = inject<Store<StoreState>>(Store);
+  public store = inject(AppStore);
   private keys = inject<HotkeysService>(HotkeysService);
   private destroyRef = inject(DestroyRef);
 
-  task = this.store.selectSignal(selectCurrentTask);
-  taskId = computed(() => this.task()?.id);
-  taskIsInProgress = computed(() => isTaskRunning(this.task()));
+  taskId = computed(() => this.store.currentTask()?.id);
+  taskIsInProgress = computed(() => isTaskRunning(this.store.currentTask()));
   viewport = viewChild(CdkVirtualScrollViewport);
 
   sessionDuration = sessionDuration;
   hotkeys = [
     hotkey(KEYS_START_STOP, 'Start/stop task', (e) => {
-      const task = this.task();
+      const task = this.store.currentTask();
       const inProgress = this.taskIsInProgress();
       if (!task) {
         return;
@@ -92,27 +88,27 @@ export class ScreenTaskComponent {
       }
     }),
     hotkey(KEYS_MARK_FINISHED, `Mark as finished`, (e) => {
-      const task = this.task();
+      const task = this.store.currentTask();
       if (task) {
-        this.store.dispatch(updateTaskState({ taskId: task.id, state: TaskState.finished }));
+        this.store.updateTaskState(task.id, TaskState.finished);
       }
     }),
     hotkey(KEYS_MARK_ACTIVE, `Mark as active`, (e) => {
-      const task = this.task();
+      const task = this.store.currentTask();
       if (task) {
-        this.store.dispatch(updateTaskState({ taskId: task.id, state: TaskState.active }));
+        this.store.updateTaskState(task.id, TaskState.active);
       }
     }),
     hotkey(KEYS_RENAME, 'Rename task', () => {
-      const task = this.task();
+      const task = this.store.currentTask();
       if (task) {
-        this.store.dispatch(renameTaskIntent({ taskId: task.id }));
+        this.store.renameTask(task.id);
       }
     }),
     hotkey(KEYS_DELETE_TASK, 'Delete task', () => {
-      const task = this.task();
+      const task = this.store.currentTask();
       if (task) {
-        this.store.dispatch(deleteTask({ taskId: task.id }));
+        this.store.deleteTask(task.id);
       }
     }),
   ];
@@ -131,12 +127,12 @@ export class ScreenTaskComponent {
     });
   }
   start(taskId?: string) {
-    if (taskId) this.store.dispatch(startTask({ taskId, timestamp: Date.now() }));
+    if (taskId) this.store.startTask(taskId, Date.now());
   }
   stop(taskId?: string) {
-    if (taskId) this.store.dispatch(stopTask({ taskId, timestamp: Date.now() }));
+    if (taskId) this.store.stopTask(taskId, Date.now());
   }
   deleteTask(task?: Task) {
-    if (task) this.store.dispatch(deleteTask({ taskId: task.id }));
+    if (task) this.store.deleteTask(task.id);
   }
 }
