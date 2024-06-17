@@ -287,10 +287,11 @@ export const AppStore = signalStore(
 
       deleteSession(taskId: string, sessionId: SessionId) {
         updateState(store, (draft) => {
-          const task = store.tasks()[taskId];
-          if (!task) return;
-          const index = task?.sessions.findIndex(isSessionWithId(sessionId));
-          if (index !== -1) task.sessions.splice(index, 1);
+          const task = draft.tasks[taskId];
+          const sessions = task?.sessions;
+          const session = sessions?.find((session) => isSessionWithId(sessionId)(session));
+          if (!task || !sessions || !session) return;
+          task.sessions.splice(task.sessions.indexOf(session), 1);
         });
       },
 
