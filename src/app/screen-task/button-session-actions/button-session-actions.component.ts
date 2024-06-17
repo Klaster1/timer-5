@@ -4,10 +4,8 @@ import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { RouterLink } from '@angular/router';
 import { encodeFilterParams } from '@app/domain/router';
-import { StoreState } from '@app/domain/storage';
 import { Session, Task, getSessionId } from '@app/domain/task';
-import * as actions from '@app/ngrx/actions';
-import { Store } from '@ngrx/store';
+import { AppStore } from '@app/services/state';
 
 @Component({
   templateUrl: './button-session-actions.component.html',
@@ -18,7 +16,7 @@ import { Store } from '@ngrx/store';
   imports: [MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger, MatIconButton, MatIcon, RouterLink],
 })
 export class ButtonSessionActionsComponent {
-  private store = inject<Store<StoreState>>(Store);
+  private store = inject(AppStore);
 
   public task = input<Task>();
   public session = input<Session>();
@@ -26,19 +24,14 @@ export class ButtonSessionActionsComponent {
   edit() {
     const task = this.task();
     const session = this.session();
-    if (task && session)
-      this.store.dispatch(
-        actions.updateSessionIntent({
-          taskId: task.id,
-          sessionId: getSessionId(session),
-        }),
-      );
+    if (task && session) this.store.editSession(task?.id, getSessionId(session));
   }
   remove() {
     const task = this.task();
     const session = this.session();
-    if (task && session)
-      this.store.dispatch(actions.deleteSession({ taskId: task.id, sessionId: getSessionId(session) }));
+    if (task && session) {
+      this.store.deleteSession(task.id, getSessionId(session));
+    }
   }
   get skipBeforeParams() {
     const session = this.session();
