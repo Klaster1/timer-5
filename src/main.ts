@@ -97,7 +97,7 @@ bootstrapApplication(AppComponent, {
         const sanitizer = inject(DomSanitizer);
         return () => {
           iconRegistry.addSvgIconResolver((name) => {
-            return sanitizer.bypassSecurityTrustResourceUrl(`/assets/icons/${name}.svg`);
+            return sanitizer.bypassSecurityTrustResourceUrl(`assets/icons/${name}.svg`);
           });
         };
       },

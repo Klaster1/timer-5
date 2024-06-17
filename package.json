@@ -7,7 +7,7 @@
     "start": "ng serve",
     "build": "ng build",
     "e2e": "ng e2e",
-    "deploy": "ng deploy --base-href=/timer-5/"
+    "deploy": "ng deploy --base-href=/timer-5/ --dir=dist --repo=\"https://github.com/Klaster1/timer-5.git\""
   },
   "private": true,
   "dependencies": {
