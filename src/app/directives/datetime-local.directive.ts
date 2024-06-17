@@ -6,11 +6,6 @@ const utcDateToLocalDate = (date: Date): Date => {
   return new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000);
 };
 
-const localDateToUtcDate = (date: Date): Date => {
-  const localDate = new Date(date);
-  return new Date(localDate.getTime() + localDate.getTimezoneOffset() * 60000);
-};
-
 const toDateTimeLocalValue = (date: Date): string => {
   return date.toISOString().replace('Z', '');
 };
