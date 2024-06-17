@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogConfig } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MAT_TOOLTIP_DEFAULT_OPTIONS, MatTooltipDefaultOptions } from '@angular/material/tooltip';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -75,13 +76,19 @@ bootstrapApplication(AppComponent, {
       useFactory: () => {
         const sw = inject(SwUpdate);
         const destroyRef = inject(DestroyRef);
+        const snackbar = inject(MatSnackBar);
         return () => {
           interval(secondsToMilliseconds(1))
             .pipe(takeUntilDestroyed(destroyRef))
             .subscribe(() => sw.checkForUpdate());
           sw.versionUpdates.pipe(takeUntilDestroyed(destroyRef)).subscribe((evt) => {
             if (evt.type === 'VERSION_READY') {
-              console.log('New version available!');
+              snackbar
+                .open('New version available', 'Reload')
+                .onAction()
+                .subscribe(() => {
+                  location.reload();
+                });
             }
           });
         };
