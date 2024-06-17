@@ -1,10 +1,15 @@
-import { enableProdMode, importProvidersFrom, provideExperimentalZonelessChangeDetection } from '@angular/core';
+import {
+  enableProdMode,
+  importProvidersFrom,
+  isDevMode,
+  provideExperimentalZonelessChangeDetection,
+} from '@angular/core';
 import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogConfig } from '@angular/material/dialog';
 import { MAT_TOOLTIP_DEFAULT_OPTIONS, MatTooltipDefaultOptions } from '@angular/material/tooltip';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, withRouterConfig } from '@angular/router';
-import { ServiceWorkerModule } from '@angular/service-worker';
+import { ServiceWorkerModule, provideServiceWorker } from '@angular/service-worker';
 import { AppComponent } from '@app/app.component';
 import { gameStateGuard } from '@app/guards/game-state.guard';
 import { HotkeyModule } from 'angular2-hotkeys';
@@ -54,5 +59,9 @@ bootstrapApplication(AppComponent, {
       provide: MAT_TOOLTIP_DEFAULT_OPTIONS,
       useValue: { disableTooltipInteractivity: true } as MatTooltipDefaultOptions,
     },
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000',
+    }),
   ],
 });
