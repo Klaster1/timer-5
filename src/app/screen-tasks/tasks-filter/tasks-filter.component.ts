@@ -15,11 +15,9 @@ import { Router } from '@angular/router';
 import { DatetimeLocalDirective } from '@app/directives/datetime-local.directive';
 import { ScaleRange, hasChartData } from '@app/domain/chart';
 import { FilterMatrixParams, encodeFilterParams } from '@app/domain/router';
-import { StoreState } from '@app/domain/storage';
-import { selectDecodedFilterParams, selectFilterChartData, selectFilterRange } from '@app/ngrx/selectors';
 import { MapPipe } from '@app/pipes/map.pipe';
+import { AppStore } from '@app/services/state';
 import { deepEquals } from '@app/utils/assert';
-import { Store } from '@ngrx/store';
 import endOfDay from 'date-fns/endOfDay';
 import endOfMonth from 'date-fns/endOfMonth';
 import endOfWeek from 'date-fns/endOfWeek';
@@ -72,13 +70,13 @@ type Wrap<T> = Required<{ [Key in keyof T]: FormControl<T[Key]> }>;
   ],
 })
 export class TasksFilterComponent {
-  private store = inject<Store<StoreState>>(Store);
+  private store = inject(AppStore);
   private router = inject<Router>(Router);
   private destroyRef = inject(DestroyRef);
 
   public dataRange = computed(() => {
-    const data = this.store.selectSignal(selectFilterChartData)();
-    const range = this.store.selectSignal(selectFilterRange)();
+    const data = this.store.filterChartData();
+    const range = this.store.filterRange();
     if (!hasChartData(data) || !range) return undefined;
     return { data, range } as const;
   });
@@ -88,7 +86,7 @@ export class TasksFilterComponent {
       this.router.navigate([], { queryParams: {} });
     });
     effect(() => {
-      const decodedFilterParams = this.store.selectSignal(selectDecodedFilterParams)();
+      const decodedFilterParams = this.store.decodedFilterParams();
       this.form.patchValue(decodedFilterParams);
     });
     this.form.valueChanges
