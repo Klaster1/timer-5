@@ -1,19 +1,11 @@
 import { makeTaskId, Session, Task, TaskState } from '@app/domain/task';
+import { NormalizedTasks } from '@app/services/state';
 import { assertNever, isNumber, isTruthy } from '@app/utils/assert';
-import { RouterReducerState } from '@ngrx/router-store';
 import millisecondsToSeconds from 'date-fns/millisecondsToSeconds';
 import secondsToMilliseconds from 'date-fns/secondsToMilliseconds';
 import { Seconds } from './date-time';
 
-export interface StoreState {
-  tasks: NormalizedTasks;
-  router: RouterReducerState;
-}
-
-export type Theme = 'light' | 'dark';
-export type NormalizedTasks = { [id: string]: Task };
-
-type AppTasks = StoreState['tasks'];
+type AppTasks = NormalizedTasks;
 type StoredTasks = LegacyGames | StoredTasksV1;
 type LatestStoredTasks = StoredTasksV1;
 
@@ -25,7 +17,7 @@ type LegacyGame = {
   sessions: { start: number; stop: number }[];
 };
 type LegacyGames = LegacyGame[];
-const fromLegacyGames = (data: LegacyGames): AppTasks => {
+const fromLegacyGames = (data: LegacyGames): NormalizedTasks => {
   const game = data[0];
   if (
     game &&

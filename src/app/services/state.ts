@@ -5,10 +5,11 @@ import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import { Prompt } from '@app/dialog-prompt/dialog-prompt.service';
 import { chartSeries } from '@app/domain/chart';
 import { decodeFilterMatrixParams, decodeRouteParams } from '@app/domain/router';
-import { NormalizedTasks, Theme, fromStoredTasks } from '@app/domain/storage';
+import { fromStoredTasks } from '@app/domain/storage';
 import {
   Session,
   SessionId,
+  Task,
   TaskState,
   filterTaskSessions,
   filterTasks,
@@ -32,6 +33,9 @@ import {
 import { Draft, produce } from 'immer';
 import { firstValueFrom } from 'rxjs';
 import { DialogEditSessionData } from '../dialog-edit-session/dialog-edit-session.component';
+
+export type NormalizedTasks = { [id: string]: Task };
+export type Theme = 'light' | 'dark';
 
 const updateState = <State extends object>(store: StateSignal<State>, recipe: (draft: Draft<State>) => any) => {
   patchState(store, (state) => produce(state, recipe));

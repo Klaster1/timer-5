@@ -9,11 +9,7 @@ import { AppComponent } from '@app/app.component';
 import { gameStateGuard } from '@app/guards/game-state.guard';
 import { ScreenTaskComponent } from '@app/screen-task/screen-task.component';
 import { ScreenTasksComponent } from '@app/screen-tasks/screen-tasks.component';
-import { MinimalRouterStateSerializer, provideRouterStore } from '@ngrx/router-store';
-import { provideStore } from '@ngrx/store';
 import { HotkeyModule } from 'angular2-hotkeys';
-import { metaReducers } from './app/ngrx/metareducers';
-import * as reducers from './app/ngrx/reducers';
 import { environment } from './environments/environment';
 
 if (environment.production) {
@@ -26,13 +22,6 @@ bootstrapApplication(AppComponent, {
     importProvidersFrom(MatDialogModule),
     importProvidersFrom(BrowserModule),
     importProvidersFrom(BrowserAnimationsModule),
-    provideStore(reducers.combinedReducers, {
-      metaReducers,
-      initialState: { router: null },
-      runtimeChecks: {
-        strictStateImmutability: true,
-      },
-    }),
     importProvidersFrom(HotkeyModule.forRoot({ cheatSheetCloseEsc: true })),
     provideRouter(
       [
@@ -51,9 +40,6 @@ bootstrapApplication(AppComponent, {
       ],
       withRouterConfig({ paramsInheritanceStrategy: 'always' }),
     ),
-    provideRouterStore({
-      serializer: MinimalRouterStateSerializer,
-    }),
     importProvidersFrom(
       ServiceWorkerModule.register('ngsw-worker.js', {
         enabled: environment.production,
