@@ -28,7 +28,7 @@ test('Adding a task', async (t) => {
   // Assert the task is added and is in the "Active" state
   await t.expect(screenTasks.taskName.count).eql(1);
   await t.expect(screenTasks.taskName.textContent).contains('Test');
-  await t.expect(screenTasks.taskStateIcon.textContent).contains('play_circle_outline');
+  await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).contains('play_circle');
   // Send the "a t" and "ф е" hotkeys, assert the "Add a task" dialog opens for both
   for (const combo of ['a t', 'ф е']) {
     await t.pressKey(combo);
@@ -58,11 +58,11 @@ test('Starting/stopping the task', async (t) => {
   // Assert the app has a regular favicon
   await t.expect(app.favicon.getAttribute('href')).contains('/favicon.svg');
   // Assert the task is marked as active/not-running in the task list item, task list item context action, task view title and task view context action
-  await t.expect(screenTasks.taskStateIcon.textContent).contains('play_circle_outline');
+  await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).contains('play_circle');
   await t.click(screenTasks.buttonTaskAction.nth(1));
   await t.expect(menuTaskActions.selectorState.textContent).contains('State: Active');
   await t.pressKey('esc');
-  await t.expect(screenTask.stateIcon.textContent).contains('play_circle_outline');
+  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).contains('play_circle');
   await t.click(screenTask.buttonTaskAction);
   await t.expect(menuTaskActions.selectorState.textContent).contains('Active');
   await t.pressKey('esc');
@@ -74,8 +74,8 @@ test('Starting/stopping the task', async (t) => {
   // Start a task with the "Start" button
   await t.click(screenTask.buttonStart);
   // Assert the task is marked as active/running in the task list item and task view title
-  await t.expect(screenTasks.taskStateIcon.textContent).contains('pause_circle_filled');
-  await t.expect(screenTask.stateIcon.textContent).contains('pause_circle_filled');
+  await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).contains('pause_circle');
+  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).contains('pause_circle');
   // Stop and start the session several times
   for (const _ of [1, 2, 3]) {
     await t.click(screenTask.buttonStop);
@@ -99,14 +99,14 @@ test('Starting/stopping the task', async (t) => {
   await t.expect(screenTask.buttonStart.exists).ok();
   await t.expect(screenTask.buttonStop.exists).notOk();
   // Assert all the status indicators reverted back to active/not-running
-  await t.expect(screenTasks.taskStateIcon.textContent).contains('play_circle_outline');
-  await t.expect(screenTask.stateIcon.textContent).contains('play_circle_outline');
+  await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).contains('play_circle');
+  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).contains('play_circle');
   // Start and stop the task with the "s" and "ы" hotkeys, assert it starts and stops
   for (const combo of ['s', 'ы']) {
     await t.pressKey(combo);
-    await t.expect(screenTasks.taskStateIcon.textContent).contains('pause_circle_filled');
+    await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).contains('pause_circle');
     await t.pressKey(combo);
-    await t.expect(screenTasks.taskStateIcon.textContent).contains('play_circle_outline');
+    await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).contains('play_circle');
   }
 });
 
@@ -123,9 +123,9 @@ test('Changing task status', async (t) => {
     .click(menuTaskActions.selectorState)
     .click(menuTaskActions.optionFinished)
     .pressKey('esc');
-  await t.expect(screenTask.stateIcon.textContent).eql('check_circle_outline');
+  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).eql('check_circle');
   await t.click(app.buttonFinishedTasks);
-  await t.expect(screenTasks.taskStateIcon.textContent).eql('check_circle_outline');
+  await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).eql('check_circle');
   await t.click(screenTasks.taskItem);
 
   await t
@@ -133,9 +133,9 @@ test('Changing task status', async (t) => {
     .click(menuTaskActions.selectorState)
     .click(menuTaskActions.optionDropped)
     .pressKey('esc');
-  await t.expect(screenTask.stateIcon.textContent).eql('delete_outline');
+  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).eql('delete');
   await t.click(app.buttonDroppedTasks);
-  await t.expect(screenTasks.taskStateIcon.textContent).eql('delete_outline');
+  await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).eql('delete');
   await t.click(screenTasks.taskItem);
 
   await t
@@ -143,9 +143,9 @@ test('Changing task status', async (t) => {
     .click(menuTaskActions.selectorState)
     .click(menuTaskActions.optionActive)
     .pressKey('esc');
-  await t.expect(screenTask.stateIcon.textContent).eql('play_circle_outline');
+  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).eql('play_circle');
   await t.click(app.buttonActiveTasks);
-  await t.expect(screenTasks.taskStateIcon.textContent).eql('play_circle_outline');
+  await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).eql('play_circle');
   await t.click(screenTasks.taskItem);
 
   // Cycle task statuses Active->Finished->Dropped->Active using task screen context action, assert the status changes
@@ -154,7 +154,7 @@ test('Changing task status', async (t) => {
     .click(menuTaskActions.selectorState)
     .click(menuTaskActions.optionFinished)
     .pressKey('esc');
-  await t.expect(screenTask.stateIcon.textContent).eql('check_circle_outline');
+  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).eql('check_circle');
   await t.click(app.buttonFinishedTasks);
   await t.click(screenTasks.taskItem);
 
@@ -163,7 +163,7 @@ test('Changing task status', async (t) => {
     .click(menuTaskActions.selectorState)
     .click(menuTaskActions.optionDropped)
     .pressKey('esc');
-  await t.expect(screenTask.stateIcon.textContent).eql('delete_outline');
+  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).eql('delete');
   await t.click(app.buttonDroppedTasks);
   await t.click(screenTasks.taskItem);
 
@@ -172,29 +172,29 @@ test('Changing task status', async (t) => {
     .click(menuTaskActions.selectorState)
     .click(menuTaskActions.optionActive)
     .pressKey('esc');
-  await t.expect(screenTask.stateIcon.textContent).eql('play_circle_outline');
+  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).eql('play_circle');
   await t.click(app.buttonActiveTasks);
   await t.click(screenTasks.taskItem);
 
   // Cycle task statuses Active->Finished->Active using hot keys, assert the status changes
   // ENG
   await t.pressKey('m f').pressKey('esc');
-  await t.expect(screenTask.stateIcon.textContent).eql('check_circle_outline');
+  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).eql('check_circle');
   await t.click(app.buttonFinishedTasks);
   await t.click(screenTasks.taskItem);
 
   await t.pressKey('m a').pressKey('esc');
-  await t.expect(screenTask.stateIcon.textContent).eql('play_circle_outline');
+  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).eql('play_circle');
   await t.click(app.buttonActiveTasks);
   await t.click(screenTasks.taskItem);
   // RU
   await t.pressKey('ь а').pressKey('esc');
-  await t.expect(screenTask.stateIcon.textContent).eql('check_circle_outline');
+  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).eql('check_circle');
   await t.click(app.buttonFinishedTasks);
   await t.click(screenTasks.taskItem);
 
   await t.pressKey('ь ф').pressKey('esc');
-  await t.expect(screenTask.stateIcon.textContent).eql('play_circle_outline');
+  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).eql('play_circle');
   await t.click(app.buttonActiveTasks);
   await t.click(screenTasks.taskItem);
 });
@@ -325,7 +325,7 @@ test('Editing a session', async (t) => {
   await t.expect(screenTask.sessionDuration.nth(0).textContent).eql(' 02:00 ');
   await t.expect(screenTask.taskDuration.textContent).eql(' 02:00 ');
   await t.expect(screenTasks.total.textContent).eql(' (02:00) ');
-  await t.expect(screenTask.stateIcon.textContent).contains('play_circle_outline');
+  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).contains('play_circle');
   // For a complete task session, remove the end time, assert the task becomes active/running and the total updates
   await t
     .click(screenTask.buttonSessionAction)
@@ -338,7 +338,7 @@ test('Editing a session', async (t) => {
   await t.expect(screenTask.sessionDuration.nth(0).textContent).eql(' 03:00 ');
   await t.expect(screenTask.taskDuration.textContent).eql(' 03:00 ');
   await t.expect(screenTasks.total.textContent).eql(' (03:00) ');
-  await t.expect(screenTask.stateIcon.textContent).contains('pause_circle_filled');
+  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).contains('pause_circle');
   // Edit a session, assert the form can't be submitted without start time
   await t
     .click(screenTask.buttonSessionAction)
