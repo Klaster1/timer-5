@@ -5,7 +5,7 @@ import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import { Prompt } from '@app/dialog-prompt/dialog-prompt.service';
 import { chartSeries } from '@app/domain/chart';
 import { decodeFilterMatrixParams, decodeRouteParams } from '@app/domain/router';
-import { fromStoredTasks } from '@app/domain/storage';
+import { fromStoredTasks, toStoredTasks } from '@app/domain/storage';
 import {
   Session,
   SessionId,
@@ -257,11 +257,11 @@ export const AppStore = signalStore(
       );
       if (result) {
         updateState(store, (draft) => {
-          const sessionToUpdate = taskById(taskId)()?.sessions.find(isSessionWithId(sessionId));
-          if (sessionToUpdate) {
-            sessionToUpdate.start = result.start;
-            sessionToUpdate.end = result.end;
-          }
+          const task = draft.tasks[taskId];
+          const sessions = task?.sessions;
+          const session = sessions?.find(isSessionWithId(sessionId));
+          if (!task || !sessions || !session) return;
+          task.sessions.splice(task.sessions.indexOf(session), 1, { start: result.start, end: result.end });
         });
       }
     };
@@ -277,9 +277,11 @@ export const AppStore = signalStore(
     return {
       stopTask(taskId: string, timestamp: number) {
         updateState(store, (draft) => {
-          store.tasks()[taskId]?.sessions.forEach((session) => {
-            if (typeof session.end !== 'number') session.end = timestamp;
-          });
+          const task = draft.tasks[taskId];
+          const sessions = task?.sessions;
+          const session = sessions?.find((session) => typeof session.end !== 'number');
+          if (!task || !sessions || !session) return;
+          task.sessions.splice(task.sessions.indexOf(session), 1, { start: session.start, end: timestamp });
         });
       },
 
@@ -310,7 +312,7 @@ export const AppStore = signalStore(
           const task = draft.tasks[taskId];
           if (task) {
             task.state = TaskState.active;
-            task.sessions.push({ start: timestamp });
+            task.sessions.push({ start: timestamp, end: undefined });
           }
         });
       },
@@ -335,12 +337,14 @@ export const AppStore = signalStore(
   }),
   withHooks({
     onInit(store) {
-      const storedTasks = localStorage.getItem('tasks') ?? JSON.stringify(store.tasks());
-      const parsedTasks = JSON.parse(storedTasks);
-      const tasksToLoad = fromStoredTasks(parsedTasks);
-      store.loadTasks(tasksToLoad);
+      const storedTasks = localStorage.getItem('tasks');
+      if (storedTasks) {
+        const parsedTasks = JSON.parse(storedTasks);
+        const tasksToLoad = fromStoredTasks(parsedTasks);
+        store.loadTasks(tasksToLoad);
+      }
       effect(() => {
-        localStorage.setItem('tasks', JSON.stringify(store.tasks()));
+        localStorage.setItem('tasks', JSON.stringify(toStoredTasks(store.tasks())));
       });
     },
   }),
