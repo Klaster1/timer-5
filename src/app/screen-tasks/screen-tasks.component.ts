@@ -3,7 +3,6 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { AsyncPipe, NgClass } from '@angular/common';
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   DestroyRef,
   TrackByFunction,
@@ -70,7 +69,6 @@ import { TasksFilterComponent } from './tasks-filter/tasks-filter.component';
   ],
 })
 export default class ScreenTasksComponent {
-  private cdr = inject(ChangeDetectorRef);
   public store = inject(AppStore);
   private keys = inject(HotkeysService);
   private router = inject(Router);
@@ -114,7 +112,6 @@ export default class ScreenTasksComponent {
       (e) => {
         e.preventDefault();
         this.toggleFilter();
-        this.cdr.detectChanges();
         return true;
       },
       ['INPUT'],
