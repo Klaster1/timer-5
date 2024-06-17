@@ -69,7 +69,6 @@ export class ScreenTaskComponent {
   private keys = inject<HotkeysService>(HotkeysService);
   private destroyRef = inject(DestroyRef);
 
-  taskId = computed(() => this.store.currentTask()?.id);
   taskIsInProgress = computed(() => isTaskRunning(this.store.currentTask()));
   viewport = viewChild(CdkVirtualScrollViewport);
 
@@ -122,7 +121,7 @@ export class ScreenTaskComponent {
       this.keys.add(this.hotkeys);
     });
     effect(() => {
-      const taskId = this.taskId();
+      const taskId = this.store.currentTaskId();
       this.viewport()?.scrollToIndex(0);
     });
   }
