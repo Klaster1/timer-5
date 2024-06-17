@@ -7,8 +7,6 @@ import { provideRouter, withRouterConfig } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { AppComponent } from '@app/app.component';
 import { gameStateGuard } from '@app/guards/game-state.guard';
-import { ScreenTaskComponent } from '@app/screen-task/screen-task.component';
-import { ScreenTasksComponent } from '@app/screen-tasks/screen-tasks.component';
 import { HotkeyModule } from 'angular2-hotkeys';
 import { environment } from './environments/environment';
 
@@ -26,12 +24,12 @@ bootstrapApplication(AppComponent, {
         { path: '', redirectTo: 'active', pathMatch: 'full' },
         {
           path: ':state',
-          component: ScreenTasksComponent,
+          loadComponent: () => import('./app/screen-tasks/screen-tasks.component'),
           canActivate: [gameStateGuard],
           children: [
             {
               path: ':taskId',
-              component: ScreenTaskComponent,
+              loadComponent: () => import('./app/screen-task/screen-task.component'),
             },
           ],
         },

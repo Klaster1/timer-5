@@ -64,7 +64,7 @@ import { VirtualScrollStickyTable } from './sticky.directive';
     VirtualScrollStickyTable,
   ],
 })
-export class ScreenTaskComponent {
+export default class ScreenTaskComponent {
   public store = inject(AppStore);
   private keys = inject<HotkeysService>(HotkeysService);
   private destroyRef = inject(DestroyRef);
