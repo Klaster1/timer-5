@@ -28,7 +28,7 @@
     "immer": "^10.1.1",
     "nanoid": "^5.0.7",
     "rxjs": "^7.8.1",
-    "tslib": "^2.0.0",
+    "tslib": "^2.6.3",
     "uplot": "^1.6.30"
   },
   "devDependencies": {
