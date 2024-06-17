@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/screen-task/button-session-actions/button-session-actions.component.scss"],
+  "sourcesContent": [":host {\n  display: inline-block;\n}\n"],
+  "mappings": "AAAA,MACE,QAAA",
+  "names": []
+}

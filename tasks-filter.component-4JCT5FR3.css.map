@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/screen-tasks/tasks-filter/tasks-filter.component.scss"],
+  "sourcesContent": ["form {\r\n  display: grid;\r\n  gap: 10px;\r\n  padding: 10px;\r\n  grid-template-columns: 1fr 1fr auto;\r\n}\r\n\r\n.name {\r\n  grid-row: 1;\r\n  grid-column: span 1;\r\n}\r\n\r\n.duration {\r\n  grid-row: 1;\r\n  grid-column: 2 / span 2;\r\n}\r\n\r\n.from {\r\n  grid-row: 2;\r\n  grid-column: 1;\r\n}\r\n.to {\r\n  grid-row: 2;\r\n  grid-column: 2;\r\n}\r\n\r\n.dates-menu {\r\n  grid-row: 2;\r\n  grid-column: 3;\r\n  position: relative;\r\n  top: 10px;\r\n}\r\n\r\n@media (max-width: 530px) {\r\n  form {\r\n    grid-template-columns: 1fr;\r\n  }\r\n  .name {\r\n    grid-column: span 1;\r\n  }\r\n\r\n  .dates-menu {\r\n    display: none;\r\n  }\r\n}\r\n\r\ntimeline-chart-uplot {\r\n  height: 300px;\r\n}\r\n\r\ninput[type='search']::-webkit-search-cancel-button {\r\n  -webkit-appearance: none;\r\n}\r\n"],
+  "mappings": "AAAA,KACE,QAAA,KACA,IAAA,KAFF,QAGE,KACA,sBAAA,IAAA,IAAA,KAGF,CAAA,KACE,SAAA,EACA,YAAA,KAAA,EAGF,CAAA,SACE,SAAA,EACA,YAAA,CAAA,CAAA,KAAA,EAGF,CAAA,KACE,SAAA,EACA,YAAA,EAEF,CAAA,GACE,SAAA,EACA,YAAA,EAGF,CAAA,WACE,SAAA,EACA,YAAA,EACA,SAAA,SACA,IAAA,KAGF,OAAA,CAAA,SAAA,EAAA,OACE,KACE,sBAAA,IAEF,CA9BF,KA+BI,YAAA,KAAA,EAGF,CAfF,WAgBI,QAAA,MAIJ,qBACE,OAAA,MAGF,KAAA,CAAA,YAAA,+BACE,mBAAA",
+  "names": []
+}

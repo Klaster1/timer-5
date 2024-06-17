@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/screen-task/screen-task.component.scss"],
+  "sourcesContent": [":host {\r\n  position: relative;\r\n  flex: 1;\r\n  flex-direction: column;\r\n  max-height: 100vh;\r\n  display: grid;\r\n  grid-template-rows: auto 1fr;\r\n  padding-right: 2px;\r\n}\r\nh2 {\r\n  margin-right: auto;\r\n  overflow: hidden;\r\n  text-overflow: ellipsis;\r\n  margin-bottom: 2px;\r\n\r\n  mat-icon {\r\n    position: relative;\r\n    top: 4px;\r\n    margin-right: 0.25em;\r\n  }\r\n}\r\n[mat-fab] {\r\n  position: absolute;\r\n  bottom: var(--fab-offset);\r\n  right: var(--fab-offset);\r\n  left: 50%;\r\n  z-index: 10;\r\n}\r\n.session-tabular-data {\r\n  display: grid;\r\n  grid-template-columns: 1fr 1fr 1fr;\r\n}\r\nmat-toolbar {\r\n  grid-row: 1;\r\n}\r\n.header-start,\r\n.header-end {\r\n  width: 50%;\r\n}\r\n.header-duration {\r\n  max-width: 90px;\r\n  min-width: 90px;\r\n}\r\n.header-action {\r\n  max-width: 40px;\r\n  min-width: 40px;\r\n}\r\ncdk-virtual-scroll-viewport {\r\n  grid-row: 2;\r\n}\r\n"],
+  "mappings": "AAAA,MACE,SAAA,SACA,KAAA,EACA,eAAA,OACA,WAAA,MACA,QAAA,KACA,mBAAA,KAAA,IACA,cAAA,IAEF,GACE,aAAA,KACA,SAAA,OACA,cAAA,SACA,cAAA,IAEA,GAAA,SACE,SAAA,SACA,IAAA,IACA,aAAA,MAGJ,CAAA,SACE,SAAA,SACA,OAAA,IAAA,cACA,MAAA,IAAA,cACA,KAAA,IACA,QAAA,GAEF,CAAA,qBACE,QAAA,KACA,sBAAA,IAAA,IAAA,IAEF,YACE,SAAA,EAEF,CAAA,aAAA,CAAA,WAEE,MAAA,IAEF,CAAA,gBACE,UAAA,KACA,UAAA,KAEF,CAAA,cACE,UAAA,KACA,UAAA,KAEF,4BACE,SAAA",
+  "names": []
+}

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/button-task-actions/button-task-actions.component.scss"],
+  "sourcesContent": [":host {\n  display: inline-block;\n  flex: 0 0 auto;\n}\nmat-select {\n  width: 140px;\n}\n"],
+  "mappings": "AAAA,MACE,QAAA,aACA,KAAA,EAAA,EAAA,KAEF,WACE,MAAA",
+  "names": []
+}

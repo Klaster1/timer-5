@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["button-reset-input.component.ts"],
+  "sourcesContent": ["\n      :host {\n        display: contents;\n      }\n    "],
+  "mappings": "AACM,MACE,QAAA",
+  "names": []
+}

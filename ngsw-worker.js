@@ -331,17 +331,19 @@ ${error.stack}`;
       return UpdateCacheStatus.CACHED;
     }
     async getCacheNames() {
-      const [cache, metadata] = await Promise.all([
-        this.cache,
-        this.metadata
-      ]);
+      const [cache, metadata] = await Promise.all([this.cache, this.metadata]);
       return [cache.name, metadata.cacheName];
     }
     async handleFetch(req, _event) {
       const url = this.adapter.normalizeUrl(req.url);
       if (this.urls.indexOf(url) !== -1 || this.patterns.some((pattern) => pattern.test(url))) {
         const cache = await this.cache;
-        const cachedResponse = await cache.match(req, this.config.cacheQueryOptions);
+        let cachedResponse;
+        try {
+          cachedResponse = await cache.match(req, this.config.cacheQueryOptions);
+        } catch (error) {
+          throw new SwCriticalError(`Cache is throwing while looking for a match: ${error}`);
+        }
         if (cachedResponse !== void 0) {
           if (this.hashes.has(url)) {
             return cachedResponse;
@@ -518,7 +520,12 @@ ${error.stack}`;
       await this.urls.reduce(async (previous, url) => {
         await previous;
         const req = this.adapter.newRequest(url);
-        const alreadyCached = await cache.match(req, this.config.cacheQueryOptions) !== void 0;
+        let alreadyCached = false;
+        try {
+          alreadyCached = await cache.match(req, this.config.cacheQueryOptions) !== void 0;
+        } catch (error) {
+          throw new SwCriticalError(`Cache is throwing while looking for a match in a PrefetchAssetGroup: ${error}`);
+        }
         if (alreadyCached) {
           return;
         }
@@ -555,7 +562,12 @@ ${error.stack}`;
       await this.urls.reduce(async (previous, url) => {
         await previous;
         const req = this.adapter.newRequest(url);
-        const alreadyCached = await cache.match(req, this.config.cacheQueryOptions) !== void 0;
+        let alreadyCached = false;
+        try {
+          alreadyCached = await cache.match(req, this.config.cacheQueryOptions) !== void 0;
+        } catch (error) {
+          throw new SwCriticalError(`Cache is throwing while looking for a match in a LazyAssetGroup: ${error}`);
+        }
         if (alreadyCached) {
           return;
         }
@@ -1017,7 +1029,7 @@ ${error.stack}`;
   };
 
   // bazel-out/darwin_arm64-fastbuild-ST-2e5f3376adb5/bin/packages/service-worker/worker/src/debug.mjs
-  var SW_VERSION = "16.0.0";
+  var SW_VERSION = "18.0.3";
   var DEBUG_LOG_BUFFER_SIZE = 100;
   var DebugHandler = class {
     constructor(driver, adapter2) {
@@ -1414,12 +1426,6 @@ ${msgIdle}`, { headers: this.adapter.newHeaders({ "Content-Type": "text/plain" }
       this.clientVersionMap.set(client.id, this.latestHash);
       await this.sync();
       const current = this.versions.get(this.latestHash);
-      const notice = {
-        type: "UPDATE_ACTIVATED",
-        previous,
-        current: this.mergeHashWithAppData(current.manifest, this.latestHash)
-      };
-      client.postMessage(notice);
       return true;
     }
     async handleFetch(event) {
@@ -1516,7 +1522,6 @@ ${msgIdle}`, { headers: this.adapter.newHeaders({ "Content-Type": "text/plain" }
           await this.scheduleInitialization(this.versions.get(hash));
         } catch (err) {
           this.debugger.log(err, `initialize: schedule init of ${hash}`);
-          return false;
         }
       }));
     }
@@ -1752,7 +1757,10 @@ ${msgIdle}`, { headers: this.adapter.newHeaders({ "Content-Type": "text/plain" }
       await this.initialized;
       const clients = await this.scope.clients.matchAll();
       await Promise.all(clients.map(async (client) => {
-        client.postMessage({ type: "NO_NEW_VERSION_DETECTED", version: this.mergeHashWithAppData(manifest, hash) });
+        client.postMessage({
+          type: "NO_NEW_VERSION_DETECTED",
+          version: this.mergeHashWithAppData(manifest, hash)
+        });
       }));
     }
     async notifyClientsAboutVersionDetected(manifest, hash) {
@@ -1763,7 +1771,10 @@ ${msgIdle}`, { headers: this.adapter.newHeaders({ "Content-Type": "text/plain" }
         if (version === void 0) {
           return;
         }
-        client.postMessage({ type: "VERSION_DETECTED", version: this.mergeHashWithAppData(manifest, hash) });
+        client.postMessage({
+          type: "VERSION_DETECTED",
+          version: this.mergeHashWithAppData(manifest, hash)
+        });
       }));
     }
     async notifyClientsAboutVersionReady(manifest, hash) {

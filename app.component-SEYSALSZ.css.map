@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/app.component.scss"],
+  "sourcesContent": [":host {\r\n  flex: 1;\r\n  display: flex;\r\n  flex-direction: column;\r\n  --native-scrollbar-size: -17px;\r\n}\r\n.link-all img {\r\n  width: 32px;\r\n  height: 32px;\r\n  vertical-align: middle;\r\n}\r\n.mat-mdc-list-item {\r\n  text-align: center;\r\n}\r\nmat-icon {\r\n  vertical-align: middle;\r\n}\r\nmat-drawer {\r\n  border-right: 1px solid var(--mat-menu-divider-color);\r\n}\r\nmat-drawer-container {\r\n  flex: 1;\r\n}\r\nmat-drawer-content {\r\n  display: flex;\r\n}\r\n.drawer-container {\r\n  height: 100%;\r\n  display: flex;\r\n  flex-direction: column;\r\n  padding-bottom: 1rem;\r\n  box-sizing: border-box;\r\n  overflow-x: hidden;\r\n}\r\n.states {\r\n  margin-top: auto;\r\n  margin-bottom: auto;\r\n}\r\n.import-label {\r\n  position: relative;\r\n  cursor: pointer;\r\n\r\n  input {\r\n    width: 100%;\r\n    height: 100%;\r\n    position: absolute;\r\n    opacity: 0;\r\n    z-index: -1;\r\n  }\r\n}\r\n"],
+  "mappings": "AAAA,MACE,KAAA,EACA,QAAA,KACA,eAAA,OACA,yBAAA,MAEF,CAAA,SAAA,IACE,MAAA,KACA,OAAA,KACA,eAAA,OAEF,CAAA,kBACE,WAAA,OAEF,SACE,eAAA,OAEF,WACE,aAAA,IAAA,MAAA,IAAA,0BAEF,qBACE,KAAA,EAEF,mBACE,QAAA,KAEF,CAAA,iBACE,OAAA,KACA,QAAA,KACA,eAAA,OACA,eAAA,KACA,WAAA,WACA,WAAA,OAEF,CAAA,OACE,WAAA,KACA,cAAA,KAEF,CAAA,aACE,SAAA,SACA,OAAA,QAEA,CAJF,aAIE,MACE,MAAA,KACA,OAAA,KACA,SAAA,SACA,QAAA,EACA,QAAA",
+  "names": []
+}
