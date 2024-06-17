@@ -1,8 +1,8 @@
 import { enableProdMode, importProvidersFrom, provideExperimentalZonelessChangeDetection } from '@angular/core';
-import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogConfig, MatDialogModule } from '@angular/material/dialog';
+import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogConfig } from '@angular/material/dialog';
 import { MAT_TOOLTIP_DEFAULT_OPTIONS, MatTooltipDefaultOptions } from '@angular/material/tooltip';
-import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, withRouterConfig } from '@angular/router';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { AppComponent } from '@app/app.component';
@@ -19,9 +19,7 @@ if (environment.production) {
 bootstrapApplication(AppComponent, {
   providers: [
     provideExperimentalZonelessChangeDetection(),
-    importProvidersFrom(MatDialogModule),
-    importProvidersFrom(BrowserModule),
-    importProvidersFrom(BrowserAnimationsModule),
+    provideAnimations(),
     importProvidersFrom(HotkeyModule.forRoot({ cheatSheetCloseEsc: true })),
     provideRouter(
       [
