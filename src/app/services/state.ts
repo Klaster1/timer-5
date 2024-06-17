@@ -273,6 +273,7 @@ export const AppStore = signalStore(
         updateState(store, (draft) => {
           draft.tasks[taskId] = { id: taskId, name, sessions: [], state: TaskState.active };
         });
+        router.navigate([store.currentTaskState() === 'all' ? 'all' : 'active', taskId]);
       },
       updateTaskState(taskId: string, state: TaskState) {
         updateState(store, (draft) => {
