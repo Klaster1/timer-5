@@ -1,8 +1,8 @@
 import { makeTaskId, Session, Task, TaskState } from '@app/domain/task';
 import { NormalizedTasks } from '@app/services/state';
 import { assertNever, isNumber, isTruthy } from '@app/utils/assert';
-import millisecondsToSeconds from 'date-fns/millisecondsToSeconds';
-import secondsToMilliseconds from 'date-fns/secondsToMilliseconds';
+import { millisecondsToSeconds } from 'date-fns/millisecondsToSeconds';
+import { secondsToMilliseconds } from 'date-fns/secondsToMilliseconds';
 import { Seconds } from './date-time';
 
 type AppTasks = NormalizedTasks;

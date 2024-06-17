@@ -1,5 +1,5 @@
-import isValid from 'date-fns/isValid';
-import parseISO from 'date-fns/parseISO';
+import { isValid } from 'date-fns/isValid';
+import { parseISO } from 'date-fns/parseISO';
 import { RouteTaskState, TaskId, TaskState } from './task';
 
 type EncodedParams<T> = Partial<Record<keyof T, string>>;

@@ -16,9 +16,9 @@ import { ScaleRange } from '@app/domain/chart';
 import { formatHours } from '@app/domain/date-time';
 import { AppStore } from '@app/services/state';
 import { isNumber } from '@app/utils/assert';
-import format from 'date-fns/format';
-import millisecondsToSeconds from 'date-fns/millisecondsToSeconds';
-import secondsToMilliseconds from 'date-fns/secondsToMilliseconds';
+import { format } from 'date-fns/format';
+import { millisecondsToSeconds } from 'date-fns/millisecondsToSeconds';
+import { secondsToMilliseconds } from 'date-fns/secondsToMilliseconds';
 import uPlot, { AlignedData, Hooks, Options } from 'uplot';
 
 type PluginReturnValue = {

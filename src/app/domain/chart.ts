@@ -1,7 +1,7 @@
 import { Session, sessionDurationPure, Task } from '@app/domain/task';
-import endOfDay from 'date-fns/endOfDay';
-import millisecondsToSeconds from 'date-fns/millisecondsToSeconds';
-import startOfDay from 'date-fns/startOfDay';
+import { endOfDay } from 'date-fns/endOfDay';
+import { millisecondsToSeconds } from 'date-fns/millisecondsToSeconds';
+import { startOfDay } from 'date-fns/startOfDay';
 
 const clampSession = (session: Session, start: number, end: number, now: number): Session => ({
   ...session,
@@ -44,7 +44,7 @@ const tasksToBars = (tasks: Task[]): Bars => {
         tasks: new Set(),
         duration: 0,
       },
-    ])
+    ]),
   );
   return tasks.reduce((bars: Bars, task: Task) => {
     task.sessions.forEach((s) => {
