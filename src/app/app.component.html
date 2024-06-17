@@ -24,7 +24,7 @@
           matTooltip="Active tasks"
           data-e2e="navigation__button-tasks-active"
         >
-          <mat-icon>{{ taskState.active | taskStateIcon }}</mat-icon>
+          <mat-icon [svgIcon]="taskState.active | taskStateIcon"></mat-icon>
         </a>
         <a
           mat-list-item
@@ -35,8 +35,8 @@
           #rlaFinished="routerLinkActive"
           matTooltip="Finished tasks"
           data-e2e="navigation__button-tasks-finished"
-          ><mat-icon>{{ taskState.finished | taskStateIcon }}</mat-icon></a
-        >
+          ><mat-icon [svgIcon]="taskState.finished | taskStateIcon"></mat-icon
+        ></a>
         <a
           mat-list-item
           [activated]="rlaDropped.isActive"
@@ -46,8 +46,8 @@
           queryParamsHandling="merge"
           matTooltip="Dropped tasks"
           data-e2e="navigation__button-tasks-dropped"
-          ><mat-icon>{{ taskState.dropped | taskStateIcon }}</mat-icon></a
-        >
+          ><mat-icon [svgIcon]="taskState.dropped | taskStateIcon"></mat-icon
+        ></a>
       </mat-nav-list>
       <mat-action-list>
         <button
@@ -56,7 +56,7 @@
           [matMenuTriggerFor]="importExportMenu"
           data-e2e="navigation__button-import-export"
         >
-          <mat-icon>import_export</mat-icon>
+          <mat-icon svgIcon="swap_vert"></mat-icon>
         </button>
         <mat-menu #importExportMenu="matMenu">
           <label mat-menu-item class="import-label">
@@ -78,7 +78,7 @@
           (click)="store.toggleTheme()"
           [matTooltip]="store.theme() !== 'dark' ? 'Dark mode' : 'Day mode'"
         >
-          <mat-icon>{{ store.theme() !== 'dark' ? 'nights_stay' : 'wb_sunny' }}</mat-icon>
+          <mat-icon [svgIcon]="store.theme() !== 'dark' ? 'dark_mode' : 'light_mode'"></mat-icon>
         </button>
       </mat-action-list>
     </div>

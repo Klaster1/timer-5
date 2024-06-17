@@ -1,11 +1,11 @@
 @if (task(); as task) {
   <button mat-icon-button [matMenuTriggerFor]="menu" data-e2e="button-task-actions__trigger">
-    <mat-icon>more_vert</mat-icon>
+    <mat-icon svgIcon="more_vert"></mat-icon>
   </button>
   <mat-menu #menu="matMenu">
     <ng-template matMenuContent>
       <button mat-menu-item [mat-menu-trigger-for]="statuses" data-e2e="button-task-actions__selector-state">
-        <mat-icon>{{ task.state | taskStateIcon }}</mat-icon>
+        <mat-icon [svgIcon]="task.state | taskStateIcon"></mat-icon>
         State: {{ task.state | taskState }}
       </button>
       <button mat-menu-item type="button" (click)="renameTask()" data-e2e="button-task-actions__button-rename">
@@ -23,8 +23,7 @@
       (click)="changeTaskState(taskState.active)"
       data-e2e="button-task-actions__state-option-active"
     >
-      <mat-icon>{{ taskState.active | taskStateIcon }}</mat-icon
-      >Change to active
+      <mat-icon [svgIcon]="taskState.active | taskStateIcon"></mat-icon>Change to active
     </button>
     <button
       mat-menu-item
@@ -32,8 +31,7 @@
       (click)="changeTaskState(taskState.finished)"
       data-e2e="button-task-actions__state-option-finished"
     >
-      <mat-icon>{{ taskState.finished | taskStateIcon }}</mat-icon
-      >Change to finished
+      <mat-icon [svgIcon]="taskState.finished | taskStateIcon"></mat-icon>Change to finished
     </button>
     <button
       mat-menu-item
@@ -41,8 +39,7 @@
       (click)="changeTaskState(taskState.dropped)"
       data-e2e="button-task-actions__state-option-dropped"
     >
-      <mat-icon>{{ taskState.dropped | taskStateIcon }}</mat-icon
-      >Change to dropped
+      <mat-icon [svgIcon]="taskState.dropped | taskStateIcon"></mat-icon>Change to dropped
     </button>
   </mat-menu>
 }

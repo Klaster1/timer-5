@@ -9,7 +9,7 @@
           }
         </h1>
         <button mat-icon-button (click)="toggleFilter()" matTooltip="Toggle filter panel">
-          <mat-icon>filter_list</mat-icon>
+          <mat-icon svgIcon="filter_list"></mat-icon>
         </button>
       </mat-toolbar>
       @if (searchOpened()) {
@@ -25,7 +25,7 @@
           data-e2e="button-add-task"
           matTooltip="Create a task"
         >
-          <mat-icon>add</mat-icon>
+          <mat-icon svgIcon="add"></mat-icon>
         </button>
         <cdk-virtual-scroll-viewport
           #scroll
@@ -52,10 +52,10 @@
                   #rla="routerLinkActive"
                 >
                   <mat-icon
+                    [svgIcon]="task | taskStateIcon"
                     [ngClass]="{ running: task | map: isTaskRunning }"
                     data-e2e="screen-tasks__task-state-icon"
-                    >{{ task | taskStateIcon }}</mat-icon
-                  >
+                  ></mat-icon>
                   <span class="name" data-e2e="screen-tasks__task-name">{{ task.name }}</span>
                   <span class="duration" data-e2e="screen-tasks__task-duration">{{
                     task | taskDuration: 5000 | formatDuration | async
@@ -103,7 +103,7 @@
         } @else {
           @defer {
             <empty-state>
-              <mat-icon color="accent" illustration>search</mat-icon>
+              <mat-icon color="accent" illustration svgIcon="search"></mat-icon>
               <span title>Nothing found</span>
               <span subtitle>Could not find tasks matching the criteria</span>
               <button mat-raised-button (click)="toggleFilter(false)" type="button">Reset filter</button>

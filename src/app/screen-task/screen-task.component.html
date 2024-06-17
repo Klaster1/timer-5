@@ -1,10 +1,10 @@
 @if (store.currentTask(); as task) {
   <mat-toolbar>
     <button routerLink="./.." queryParamsHandling="merge" mat-icon-button>
-      <mat-icon>arrow_back</mat-icon>
+      <mat-icon svgIcon="arrow_back"></mat-icon>
     </button>
     <h2>
-      <mat-icon class="fix-icon-color" data-e2e="screen-task__state-icon">{{ task | taskStateIcon }}</mat-icon
+      <mat-icon [svgIcon]="task | taskStateIcon" class="fix-icon-color" data-e2e="screen-task__state-icon"></mat-icon
       ><span data-e2e="screen-task__name">{{ task.name }}</span>
     </h2>
     <button-task-actions [task]="task"></button-task-actions>
@@ -61,12 +61,12 @@
   </cdk-virtual-scroll-viewport>
   @if (taskIsInProgress() === false) {
     <button (click)="start(task.id)" mat-fab color="accent" matTooltip="Start" data-e2e="screen-task__button-start">
-      <mat-icon>play_arrow</mat-icon>
+      <mat-icon svgIcon="play_arrow"></mat-icon>
     </button>
   }
   @if (taskIsInProgress() === true) {
     <button (click)="stop(task.id)" mat-fab color="primary" matTooltip="Stop" data-e2e="screen-task__button-stop">
-      <mat-icon>pause</mat-icon>
+      <mat-icon svgIcon="pause"></mat-icon>
     </button>
   }
 }

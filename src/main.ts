@@ -1,3 +1,4 @@
+import { provideHttpClient } from '@angular/common/http';
 import {
   APP_INITIALIZER,
   DestroyRef,
@@ -9,9 +10,10 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogConfig } from '@angular/material/dialog';
+import { MatIconRegistry } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MAT_TOOLTIP_DEFAULT_OPTIONS, MatTooltipDefaultOptions } from '@angular/material/tooltip';
-import { bootstrapApplication } from '@angular/platform-browser';
+import { DomSanitizer, bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, withRouterConfig } from '@angular/router';
 import { SwUpdate, provideServiceWorker } from '@angular/service-worker';
@@ -62,6 +64,7 @@ bootstrapApplication(AppComponent, {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000',
     }),
+    provideHttpClient(),
     {
       provide: APP_INITIALIZER,
       multi: true,
@@ -82,6 +85,19 @@ bootstrapApplication(AppComponent, {
                   location.reload();
                 });
             }
+          });
+        };
+      },
+    },
+    {
+      provide: APP_INITIALIZER,
+      multi: true,
+      useFactory: () => {
+        const iconRegistry = inject(MatIconRegistry);
+        const sanitizer = inject(DomSanitizer);
+        return () => {
+          iconRegistry.addSvgIconResolver((name) => {
+            return sanitizer.bypassSecurityTrustResourceUrl(`/assets/icons/${name}.svg`);
           });
         };
       },

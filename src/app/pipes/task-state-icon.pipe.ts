@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { isTask, isTaskRunning, Task, TaskState } from '@app/domain/task';
+import { Task, TaskState, isTask, isTaskRunning } from '@app/domain/task';
 import { assertNever } from '@app/utils/assert';
 
 @Pipe({
@@ -13,18 +13,18 @@ export class TaskStateIconPipe implements PipeTransform {
     const state = task?.state ?? inputState;
 
     if (task && isTaskRunning(task)) {
-      return 'pause_circle_filled';
+      return 'pause_circle';
     }
     if (!state) {
       return 'timer-logo';
     }
     switch (state) {
       case TaskState.active:
-        return 'play_circle_outline';
+        return 'play_circle';
       case TaskState.finished:
-        return 'check_circle_outline';
+        return 'check_circle';
       case TaskState.dropped:
-        return 'delete_outline';
+        return 'delete';
       default:
         return assertNever(state);
     }

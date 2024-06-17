@@ -9,7 +9,7 @@ import { MatTooltip } from '@angular/material/tooltip';
   template: `
     @if (showButton()) {
       <button mat-icon-button (click)="reset.emit()" matTooltip="Reset value">
-        <mat-icon>clear</mat-icon>
+        <mat-icon svgIcon="close_small"></mat-icon>
       </button>
     }
   `,
