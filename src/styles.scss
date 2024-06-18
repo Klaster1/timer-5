@@ -53,6 +53,7 @@ a {
   --scrollbar-color: var(--mat-menu-divider-color);
   --scrollbar-active-color: var(--mat-option-selected-state-layer-color);
   --scrollbar-radius: 4px;
+  --timer-logo-color: #82bd17;
 }
 :root:has(.theme-alternate) {
   @include used-components-colors(theme.$dark-theme);

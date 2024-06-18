@@ -39,7 +39,9 @@
     margin-right: 0.25em;
 
     &.running {
-      color: var(--primary-darker-color) !important;
+      background: var(--timer-logo-color);
+      color: var(--mat-app-background-color);
+      border-radius: 100%;
     }
   }
 }
