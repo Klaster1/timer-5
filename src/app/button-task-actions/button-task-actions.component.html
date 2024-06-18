@@ -22,6 +22,7 @@
       type="button"
       (click)="changeTaskState(taskState.active)"
       data-e2e="button-task-actions__state-option-active"
+      [disabled]="task.state === taskState.active"
     >
       <mat-icon [svgIcon]="taskState.active | taskStateIcon"></mat-icon>Change to active
     </button>
@@ -30,6 +31,7 @@
       type="button"
       (click)="changeTaskState(taskState.finished)"
       data-e2e="button-task-actions__state-option-finished"
+      [disabled]="task.state === taskState.finished"
     >
       <mat-icon [svgIcon]="taskState.finished | taskStateIcon"></mat-icon>Change to finished
     </button>
@@ -38,6 +40,7 @@
       type="button"
       (click)="changeTaskState(taskState.dropped)"
       data-e2e="button-task-actions__state-option-dropped"
+      [disabled]="task.state === taskState.dropped"
     >
       <mat-icon [svgIcon]="taskState.dropped | taskStateIcon"></mat-icon>Change to dropped
     </button>
