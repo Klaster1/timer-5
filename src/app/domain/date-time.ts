@@ -6,7 +6,7 @@ export type Seconds = number;
 export type Milliseconds = number;
 
 export const formatHours = (value: Duration): string => {
-  if (value <= 0) return '';
+  if (value <= 0) return '00:00';
 
   return (['h', 'm'] as const)
     .map((part) => {

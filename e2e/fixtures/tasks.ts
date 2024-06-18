@@ -368,7 +368,7 @@ test('Moving a session', async (t) => {
   await t.expect(screenTasks.taskItem.withText('To').hasClass('cdk-drop-list-dragging')).notOk();
   // Assert the total for both tasks were updated
   await t.expect(screenTasks.taskItem.withText('To').find(screenTasks.durationSelector).textContent).contains('00:00');
-  await t.expect(screenTasks.taskItem.withText('From').find(screenTasks.durationSelector).textContent).eql('');
+  await t.expect(screenTasks.taskItem.withText('From').find(screenTasks.durationSelector).textContent).eql('00:00');
   // Assert the session was moved from task 1 to task 2
   await t.expect(screenTask.name.textContent).contains('From');
   await t.expect(screenTask.sessionStart.count).eql(0);
