@@ -34,6 +34,7 @@ import { AppStore } from '@app/services/state';
 import { HotkeysService } from 'angular2-hotkeys';
 import { ButtonSessionActionsComponent } from './button-session-actions/button-session-actions.component';
 import { VirtualScrollStickyTable } from './sticky.directive';
+import { TypeSafeCdkVirtualForDirective } from './type-safe-virtual-for.directive';
 
 @Component({
   selector: 'screen-task',
@@ -62,6 +63,7 @@ import { VirtualScrollStickyTable } from './sticky.directive';
     ScrollingModule,
     NgStyle,
     VirtualScrollStickyTable,
+    TypeSafeCdkVirtualForDirective,
   ],
 })
 export default class ScreenTaskComponent {
