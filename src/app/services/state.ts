@@ -323,7 +323,9 @@ export const AppStore = signalStore(
           const fromTask = draft.tasks[fromTaskId];
           const toTask = draft.tasks[toTaskId];
           if (fromTask && toTask) {
-            fromTask.sessions = fromTask.sessions.filter((session) => !deepEquals(session, session));
+            const indexToRemove = fromTask.sessions.findIndex((s) => deepEquals(s, session));
+            if (indexToRemove === -1) return;
+            fromTask.sessions.splice(indexToRemove, 1);
             toTask.sessions.push(session);
             if (isTaskRunning(toTask)) toTask.state = TaskState.active;
           }

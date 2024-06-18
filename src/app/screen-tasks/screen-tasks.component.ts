@@ -121,7 +121,14 @@ export default class ScreenTasksComponent {
   toggleFilter(opened?: boolean) {
     this.filterToggles.update(() => opened ?? !this.searchOpened());
   }
-  onDrop(event: SessionDragEvent, item: Task) {
-    this.store.moveSessionToTask(event.item.data[1], item.id, { ...event.item.data[0] });
+  onDrop(
+    {
+      item: {
+        data: [session, fromTaskid],
+      },
+    }: SessionDragEvent,
+    item: Task,
+  ) {
+    if (session && fromTaskid) this.store.moveSessionToTask(fromTaskid, item.id, session);
   }
 }
