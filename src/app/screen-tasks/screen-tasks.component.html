@@ -8,12 +8,12 @@
             <span class="state-duration" data-e2e="screen-tasks__total"> ({{ duration }}) </span>
           }
         </h1>
-        <button mat-icon-button (click)="toggleFilter()" matTooltip="Toggle filter panel">
+        <button mat-icon-button (click)="toggleFilter()" matTooltip="Toggle filter panel" #toggle>
           <mat-icon svgIcon="filter_list"></mat-icon>
         </button>
       </mat-toolbar>
-      @if (searchOpened()) {
-        @defer {
+      @defer (on hover(toggle); on interaction(toggle); when searchOpened()) {
+        @if (searchOpened()) {
           <tasks-filter (keyup.esc)="toggleFilter(false)"></tasks-filter>
         }
       }
@@ -67,8 +67,8 @@
           </mat-nav-list>
         </cdk-virtual-scroll-viewport>
       } @else {
-        @if (searchOpened() === false) {
-          @defer {
+        @defer {
+          @if (searchOpened() === false) {
             <empty-state>
               <img src="assets/favicon.svg" alt="Timer" illustration />
               <span title>No tasks</span>
@@ -99,9 +99,7 @@
                 Create a task
               </button>
             </empty-state>
-          }
-        } @else {
-          @defer {
+          } @else {
             <empty-state>
               <mat-icon color="accent" illustration svgIcon="search"></mat-icon>
               <span title>Nothing found</span>
