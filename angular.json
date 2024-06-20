@@ -74,9 +74,6 @@
           "options": {
             "src": []
           }
-        },
-        "deploy": {
-          "builder": "angular-cli-ghpages:deploy"
         }
       }
     }
