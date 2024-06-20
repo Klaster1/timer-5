@@ -1,5 +1,11 @@
 @if (task(); as task) {
-  <button mat-icon-button [matMenuTriggerFor]="menu" data-e2e="button-task-actions__trigger">
+  <button
+    type="button"
+    mat-icon-button
+    [matMenuTriggerFor]="menu"
+    data-e2e="button-task-actions__trigger"
+    (click)="$event.stopPropagation(); $event.preventDefault()"
+  >
     <mat-icon svgIcon="more_vert"></mat-icon>
   </button>
   <mat-menu #menu="matMenu">

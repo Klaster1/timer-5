@@ -26,9 +26,8 @@
     }
   }
 }
-.task-link {
+[matLine] {
   flex: 1;
-  padding: calc((48px - 1.25em) / 2) 0 !important;
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;

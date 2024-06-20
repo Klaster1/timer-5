@@ -26,6 +26,7 @@ import { TaskDurationPipe } from '@app/pipes/task-duration.pipe';
 import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
 import { TaskStatePipe } from '@app/pipes/task-state.pipe';
 import { TasksDurationPipe } from '@app/pipes/tasks-duration.pipe';
+import { TypeSafeCdkVirtualForDirective } from '@app/screen-task/type-safe-virtual-for.directive';
 import { AppStore } from '@app/services/state';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
 import { CheckViewportSizeWhenValueChangesDirective } from './checkViewportSizeWhenValueChanges.directive';
@@ -66,6 +67,7 @@ import { TasksFilterComponent } from './tasks-filter/tasks-filter.component';
     ScrollToIndexDirective,
     AsyncPipe,
     NgClass,
+    TypeSafeCdkVirtualForDirective,
   ],
 })
 export default class ScreenTasksComponent {

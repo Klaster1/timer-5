@@ -34,23 +34,20 @@
           [checkViewportSizeWhenValueChanges]="tasks"
         >
           <mat-nav-list>
-            <mat-list-item
-              *cdkVirtualFor="let task of tasks; trackBy: taskId"
+            <a
+              mat-list-item
+              *cdkVirtualFor="let task of tasks; trackBy: taskId; types: tasks"
               cdkDropList
               (cdkDropListDropped)="onDrop($event, task)"
               data-e2e="screen-tasks__task-item"
               [activated]="rla.isActive"
+              [routerLink]="[task.id]"
+              routerLinkActive
+              #rla="routerLinkActive"
+              queryParamsHandling="merge"
             >
               <div class="item-content">
-                <a
-                  matLine
-                  [routerLink]="[task.id]"
-                  queryParamsHandling="merge"
-                  fixRouterLinkActive
-                  routerLinkActive
-                  class="task-link"
-                  #rla="routerLinkActive"
-                >
+                <div matLine>
                   <mat-icon
                     [svgIcon]="task | taskStateIcon"
                     [ngClass]="{ running: task | map: isTaskRunning }"
@@ -60,10 +57,10 @@
                   <span class="duration" data-e2e="screen-tasks__task-duration">{{
                     task | taskDuration: 5000 | formatDuration | async
                   }}</span>
-                </a>
+                </div>
                 <button-task-actions [task]="task"></button-task-actions>
               </div>
-            </mat-list-item>
+            </a>
           </mat-nav-list>
         </cdk-virtual-scroll-viewport>
       } @else {
