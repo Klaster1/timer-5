@@ -1,0 +1,23 @@
+name: Deploy Script
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      - name: Adding Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 20.14.0
+      - name: Install Dependencies
+        run: npm ci
+      - name: Deplopy
+        env:
+          CI: true
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: npm run deploy
