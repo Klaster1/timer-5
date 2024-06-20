@@ -89,8 +89,8 @@
                 }
               </span>
               <button
-                color="primary"
-                mat-raised-button
+                class="tertiary-button"
+                mat-flat-button
                 (click)="store.createTask()"
                 type="button"
                 routerLink="/tasks/active"
@@ -104,7 +104,7 @@
               <mat-icon color="accent" illustration svgIcon="search"></mat-icon>
               <span title>Nothing found</span>
               <span subtitle>Could not find tasks matching the criteria</span>
-              <button mat-raised-button (click)="toggleFilter(false)" type="button">Reset filter</button>
+              <button mat-flat-button (click)="toggleFilter(false)" type="button">Reset filter</button>
             </empty-state>
           }
         }
