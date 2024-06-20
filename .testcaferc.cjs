@@ -10,13 +10,18 @@ module.exports = {
     },
   },
   hooks: {
-    testRun: {
+    test: {
       before: async () => {
-        await waitOn({
-          resources: ['http://localhost:4200'],
-          timeout: 30_000,
-          interval: 500,
-        });
+        try {
+          await waitOn({
+            resources: ['http://localhost:4200/'],
+            timeout: 35_000,
+            interval: 500,
+          });
+        } catch (error) {
+          console.error('Error waiting for the server:', error);
+          process.exit(1);
+        }
       },
     },
   },

@@ -292,7 +292,7 @@ test('Export/import', async (t) => {
   t.ctx.ok = true;
 }).after(async (t) => {
   if (t.ctx.ok) {
-    await rm(`e2e/downloads/${t.ctx.testId}`, { recursive: true, force: true });
+    await rm(`e2e/downloads/${t.ctx.testId}`, { recursive: true, force: true }).catch((e) => {});
   }
 });
 
