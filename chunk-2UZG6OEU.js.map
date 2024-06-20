@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/utils/number.ts", "src/app/domain/date-time.ts"],
-  "sourcesContent": ["export const pad2 = (value: number) => ((value || 0).toString().length === 1 ? '0' + value : value);\r\n", "import { assertNever } from '@app/utils/assert';\r\nimport { pad2 } from '@app/utils/number';\r\n\r\nexport type Duration = Milliseconds;\r\nexport type Seconds = number;\r\nexport type Milliseconds = number;\r\n\r\nexport const formatHours = (value: Duration): string => {\r\n  if (value <= 0) return '00:00';\r\n\r\n  return (['h', 'm'] as const)\r\n    .map((part) => {\r\n      switch (part) {\r\n        case 'h':\r\n          return pad2(~~(value / 3600000));\r\n        case 'm':\r\n          return pad2(~~((value % 3600000) / 60000));\r\n        default:\r\n          return assertNever(part);\r\n      }\r\n    })\r\n    .join(':');\r\n};\r\n"],
-  "mappings": "wCAAO,IAAMA,EAAQC,IAAoBA,GAAS,GAAGC,SAAQ,EAAGC,SAAW,EAAI,IAAMF,EAAQA,ECOtF,IAAMG,EAAeC,GACtBA,GAAS,EAAU,QAEf,CAAC,IAAK,GAAG,EACdC,IAAKC,GAAQ,CACZ,OAAQA,EAAI,CACV,IAAK,IACH,OAAOC,EAAK,CAAC,EAAEH,EAAQ,KAAQ,EACjC,IAAK,IACH,OAAOG,EAAK,CAAC,EAAGH,EAAQ,KAAW,IAAM,EAC3C,QACE,OAAOI,EAAYF,CAAI,CAC3B,CACF,CAAC,EACAG,KAAK,GAAG",
-  "names": ["pad2", "value", "toString", "length", "formatHours", "value", "map", "part", "pad2", "assertNever", "join"]
-}
