@@ -43,6 +43,7 @@ testem.log
 /typings
 /e2e/screenshots
 /e2e/downloads
+/e2e/report.xml
 
 # System Files
 .DS_Store
