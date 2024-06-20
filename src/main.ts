@@ -22,6 +22,8 @@ import { gameStateGuard } from '@app/guards/game-state.guard';
 import { HotkeyModule } from 'angular2-hotkeys';
 import { secondsToMilliseconds } from 'date-fns/secondsToMilliseconds';
 import { interval } from 'rxjs';
+import ScreenTaskComponent from './app/screen-task/screen-task.component';
+import ScreenTasksComponent from './app/screen-tasks/screen-tasks.component';
 import { environment } from './environments/environment';
 
 if (environment.production) {
@@ -38,12 +40,12 @@ bootstrapApplication(AppComponent, {
         { path: '', redirectTo: 'active', pathMatch: 'full' },
         {
           path: ':state',
-          loadComponent: () => import('./app/screen-tasks/screen-tasks.component'),
+          component: ScreenTasksComponent,
           canActivate: [gameStateGuard],
           children: [
             {
               path: ':taskId',
-              loadComponent: () => import('./app/screen-task/screen-task.component'),
+              component: ScreenTaskComponent,
             },
           ],
         },
