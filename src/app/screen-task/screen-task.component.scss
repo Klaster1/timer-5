@@ -8,14 +8,17 @@
   padding-right: 2px;
 }
 h2 {
-  margin-right: auto;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-bottom: 2px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+
+  & > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
   mat-icon {
     position: relative;
-    top: 4px;
+    top: 2px;
     margin-right: 0.25em;
   }
 }
@@ -32,6 +35,8 @@ h2 {
 }
 mat-toolbar {
   grid-row: 1;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
 }
 .header-start,
 .header-end {
