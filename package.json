@@ -7,6 +7,7 @@
     "start": "ng serve",
     "build": "ng build",
     "e2e": "ng e2e",
+    "e2e:ci": "testcafe chrome:headless -c 4 -q --app=\"ng serve --app-init-delay=10000\"",
     "deploy": "node deploy.mjs"
   },
   "private": true,

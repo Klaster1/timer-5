@@ -1,0 +1,23 @@
+name: TestCafe tests
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    timeout-minutes: 5
+    name: Run TestCafe Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      - name: Adding Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 20.14.0
+      - name: Install Dependencies
+        run: npm ci
+      - name: Run TestCafe tests
+        run: npm run e2e:ci
