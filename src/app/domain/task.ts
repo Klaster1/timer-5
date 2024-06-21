@@ -1,5 +1,4 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { last } from '@app/utils/array';
 import { deepEquals, isNumber } from '@app/utils/assert';
 import { nanoid } from 'nanoid';
 import { Observable, combineLatest, map, of, startWith, timer } from 'rxjs';
@@ -38,8 +37,8 @@ export const getTaskRunningSession = (t?: Task) => t?.sessions.find((s) => !isNu
 const compareSessions = (a: Session, b: Session) => b.start - a.start;
 export const sortTaskSessions = (task: Task): Task => ({ ...task, sessions: [...task.sessions].sort(compareSessions) });
 export const compareTasks = (a: Task, b: Task): number => {
-  const as = last(a.sessions);
-  const bs = last(b.sessions);
+  const as = a.sessions.at(-1);
+  const bs = b.sessions.at(-1);
   if (!as && bs) {
     return -1;
   }

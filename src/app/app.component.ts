@@ -6,6 +6,7 @@ import { MatActionList, MatListItem, MatNavList } from '@angular/material/list';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 import { MatTooltip } from '@angular/material/tooltip';
+import { DomSanitizer } from '@angular/platform-browser';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { HotkeysService } from 'angular2-hotkeys';
 import { DIALOG_HOTKEYS_CHEATSHEET_ID } from './dialog-hotkeys-cheatsheet/id';
@@ -13,7 +14,6 @@ import { KEYS_GO_ACTIVE, KEYS_GO_ALL, KEYS_GO_FINISHED, hotkey } from './domain/
 import { toStoredTasks } from './domain/storage';
 import { TaskState } from './domain/task';
 import { MapPipe } from './pipes/map.pipe';
-import { SafeUrlPipe } from './pipes/safe-resource-url.pipe';
 import { TaskStateIconPipe } from './pipes/task-state-icon.pipe';
 import { FaviconService } from './services/favicon.service';
 import { ImportExportService } from './services/import-export.service';
@@ -40,7 +40,6 @@ import { AppStore } from './services/state';
     TaskStateIconPipe,
     MapPipe,
     DragDropModule,
-    SafeUrlPipe,
     RouterLink,
     RouterLinkActive,
     RouterOutlet,
@@ -55,12 +54,14 @@ export class AppComponent {
   private dialogs = inject<MatDialog>(MatDialog);
   private destroyRef = inject(DestroyRef);
   public store = inject(AppStore);
+  private sanitizer = inject(DomSanitizer);
 
   public exportUrl = computed(() => {
     const tasks = this.store.tasks();
-    return URL.createObjectURL(
+    const url = URL.createObjectURL(
       new Blob([JSON.stringify(toStoredTasks(tasks), null, '  ')], { type: 'application/json;charset=utf-8;' }),
     );
+    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   });
 
   taskState = TaskState;
@@ -91,7 +92,7 @@ export class AppComponent {
     });
     this.destroyRef.onDestroy(() => {
       const exportUrl = this.exportUrl();
-      if (exportUrl) URL.revokeObjectURL(exportUrl);
+      if (exportUrl) URL.revokeObjectURL(exportUrl.toString());
     });
   }
   import(event: Event) {

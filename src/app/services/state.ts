@@ -62,17 +62,15 @@ const withRouter = () => {
         hookUpRouter() {
           router.events.pipe(takeUntilDestroyed(destroyRef)).subscribe((event) => {
             if (event instanceof NavigationEnd) {
-              patchState(store, (state) =>
-                produce(state, (draft) => {
-                  const route = router.routerState.snapshot.root;
-                  draft.router = {
-                    url: route?.url,
-                    params: route?.params,
-                    queryParams: route?.queryParams,
-                    firstChild: route?.children.at(0),
-                  };
-                }),
-              );
+              updateState(store, (draft) => {
+                const route = router.routerState.snapshot.root;
+                draft.router = {
+                  url: route?.url,
+                  params: route?.params,
+                  queryParams: route?.queryParams,
+                  firstChild: route?.children.at(0),
+                };
+              });
             }
           });
         },
@@ -81,9 +79,7 @@ const withRouter = () => {
     withComputed((store) => {
       const currentRoute = computed(() => {
         const rootRoute = store.router();
-        if (!rootRoute) {
-          return undefined;
-        }
+        if (!rootRoute) return;
         let route = rootRoute;
         while (route.firstChild) {
           route = route.firstChild;
@@ -120,11 +116,7 @@ const withTheme = () => {
       return {
         toggleTheme(theme?: Theme) {
           updateState(store, (draft) => {
-            if (theme) {
-              draft.theme = theme;
-            } else {
-              draft.theme = draft.theme === 'dark' ? 'light' : 'dark';
-            }
+            draft.theme = theme ? theme : draft.theme === 'dark' ? 'light' : 'dark';
           });
         },
       };
