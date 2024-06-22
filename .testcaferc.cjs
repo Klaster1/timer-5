@@ -1,7 +1,12 @@
 const waitOn = require('wait-on');
 
+/** @type {TestCafeConfigurationOptions} */
 module.exports = {
   src: './e2e/fixtures/',
+  screenshots: {
+    path: './e2e/screenshots',
+    takeOnFails: true,
+  },
   compilerOptions: {
     typescript: {
       options: {
