@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["timeline-chart-uplot.component.ts"],
+  "sourcesContent": ["\n      timeline-chart-uplot {\n        display: block;\n        width: 100%;\n        height: 100%;\n        position: relative;\n        overflow: hidden;\n\n        .uplot {\n          position: absolute;\n        }\n      }\n    "],
+  "mappings": "AACM,qBACE,QAAA,MACA,MAAA,KACA,OAAA,KACA,SAAA,SACA,SAAA,OAEA,qBAAA,CAAA,MACE,SAAA",
+  "names": []
+}
