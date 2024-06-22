@@ -17,7 +17,7 @@ import {
 } from '@angular/core';
 import { MatButton, MatFabButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { MatListItem, MatNavList } from '@angular/material/list';
+import { MatListItem, MatListItemIcon, MatListItemMeta, MatListItemTitle, MatNavList } from '@angular/material/list';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatTooltip } from '@angular/material/tooltip';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
@@ -62,6 +62,9 @@ import { TasksFilterComponent } from './tasks-filter/tasks-filter.component';
     MatIconButton,
     MatFabButton,
     MatNavList,
+    MatListItemIcon,
+    MatListItemTitle,
+    MatListItemMeta,
     MatListItem,
     MatTooltip,
     ButtonTaskActionsComponent,

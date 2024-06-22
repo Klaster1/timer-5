@@ -26,26 +26,14 @@
     }
   }
 }
-[matLine] {
-  flex: 1;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  color: inherit;
-  font-weight: normal;
-
-  mat-icon {
-    margin-right: 0.25em;
-
-    &.running {
-      background: var(--timer-logo-color);
-      color: var(--mat-app-background-color);
-      border-radius: 100%;
-    }
-  }
+mat-icon.running {
+  background: var(--timer-logo-color) !important;
+  color: var(--mat-app-background-color) !important;
+  border-radius: 100%;
 }
-.duration {
-  margin-left: auto;
+[matlistitemtitle] {
+  display: grid;
+  grid-template-columns: 1fr auto;
 }
 .name {
   overflow: hidden;
@@ -73,9 +61,6 @@ mat-toolbar {
   right: var(--fab-offset);
   left: 50%;
   z-index: 10;
-}
-.active {
-  background: var(--active-link-background);
 }
 h1 {
   width: 100%;

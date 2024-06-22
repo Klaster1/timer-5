@@ -32,8 +32,6 @@
           [itemSize]="48"
           [scrollToIndex]="store.currentTaskIndex()"
           [checkViewportSizeWhenValueChanges]="tasks"
-          [minBufferPx]="0"
-          [maxBufferPx]="1"
         >
           <mat-nav-list>
             <a
@@ -48,20 +46,19 @@
               #rla="routerLinkActive"
               queryParamsHandling="merge"
             >
-              <div class="item-content">
-                <div matLine>
-                  <mat-icon
-                    [svgIcon]="task | taskStateIcon"
-                    [ngClass]="{ running: task | map: isTaskRunning }"
-                    data-e2e="screen-tasks__task-state-icon"
-                  ></mat-icon>
-                  <span class="name" data-e2e="screen-tasks__task-name">{{ task.name }}</span>
-                  <span class="duration" data-e2e="screen-tasks__task-duration">{{
-                    task | taskDuration: 5000 | formatDuration | async
-                  }}</span>
-                </div>
-                <button-task-actions [task]="task"></button-task-actions>
+              <mat-icon
+                [svgIcon]="task | taskStateIcon"
+                [ngClass]="{ running: task | map: isTaskRunning }"
+                data-e2e="screen-tasks__task-state-icon"
+                matListItemIcon
+              ></mat-icon>
+              <div matListItemTitle>
+                <span class="name" data-e2e="screen-tasks__task-name">{{ task.name }}</span>
+                <span class="duration" data-e2e="screen-tasks__task-duration">{{
+                  task | taskDuration: 5000 | formatDuration | async
+                }}</span>
               </div>
+              <button-task-actions matListItemMeta [task]="task"></button-task-actions>
             </a>
           </mat-nav-list>
         </cdk-virtual-scroll-viewport>
