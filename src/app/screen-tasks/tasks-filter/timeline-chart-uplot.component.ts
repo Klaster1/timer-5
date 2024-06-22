@@ -13,73 +13,61 @@ import {
   output,
 } from '@angular/core';
 import { ScaleRange } from '@app/domain/chart';
-import { formatHours } from '@app/domain/date-time';
+import { Milliseconds, Seconds, daysToMilliseconds, formatHours } from '@app/domain/date-time';
 import { AppStore } from '@app/services/state';
 import { isNumber } from '@app/utils/assert';
 import { format } from 'date-fns/format';
 import { millisecondsToSeconds } from 'date-fns/millisecondsToSeconds';
 import { secondsToMilliseconds } from 'date-fns/secondsToMilliseconds';
-import uPlot, { AlignedData, Hooks, Options } from 'uplot';
+import uPlot, { AlignedData, Plugin } from 'uplot';
 
-type PluginReturnValue = {
-  opts?: (self: uPlot, opts: Options) => void;
-  hooks: Hooks.Defs;
-};
+const barChartPlugin = (params: { color: string; minRangeInMs: Milliseconds }): Plugin => {
+  const minRangeInSeconds: Seconds = millisecondsToSeconds(params.minRangeInMs);
 
-const timerTimelinePlugin = (params: { barColor: string }): PluginReturnValue => {
-  const draw = (u: uPlot) => {
-    u.ctx.save();
-
-    const seriesIndex = 1;
-    const fill = new Path2D();
-    const scaleX = 'x';
-    const series = u.series[seriesIndex];
-    if (!series) return;
-    const scaleY = series?.scale;
-    if (!scaleY) return;
-    const dataX = u.data[0];
-    const dataY = u.data[1];
-    const xMin = u.scales[scaleX]?.min;
-    const yMin = u.scales[scaleY]?.min;
-    if (!isNumber(xMin) || !isNumber(yMin)) return;
-    const minX = u.valToPos(xMin, scaleX, true);
-    const minY = u.valToPos(yMin, scaleY, true);
-    const drawFromIndex = u.posToIdx(0);
-
-    u.ctx.fillStyle = params.barColor;
-
-    for (const i of u.data[0].keys()) {
-      if (i % 2 === 0) {
-        const x = dataX[i];
-        if (!isNumber(x)) break;
-        const x0 = Math.max(minX, Math.round(u.valToPos(x, scaleX, true)));
-        if (i < drawFromIndex - 1) {
-          continue;
-        }
-        const valueX = dataX[i + 1];
-        const valueY = dataY?.[i];
-        if (!isNumber(valueX) || !isNumber(valueY)) return;
-        const x1 = Math.round(u.valToPos(valueX, scaleX, true));
-        const y0 = Math.round(u.valToPos(valueY, scaleY, true));
-        const y1 = minY;
-        fill.rect(x0, y0, x1 - x0, y1 - y0);
-      }
-    }
-    u.ctx.fill(fill);
-    u.ctx.stroke(fill);
-
-    u.ctx.restore();
+  const getVisibleRangeLength = (u: uPlot): number => {
+    const visibleRangeMin = u.scales.x?.min;
+    const visibleRangeMax = u.scales.x?.max;
+    if (visibleRangeMin === undefined || visibleRangeMax === undefined) return Number.POSITIVE_INFINITY;
+    return visibleRangeMax - visibleRangeMin;
   };
-  return {
-    opts: (_, opts) => {
-      const series = opts.series[1];
-      if (series) {
-        series.paths = () => null;
-        series.points = { show: false };
+
+  const drawBarChart: any = (u: uPlot, i: number, i0: number, i1: number) => {
+    let { ctx } = u;
+    let scale = u.series[i]?.scale;
+    if (!scale) return;
+    const maxY = u.valToPos(0, scale, true);
+    ctx.fillStyle = params.color;
+
+    let j = i0;
+
+    while (j <= i1) {
+      const data0J = u.data[0][j];
+      const dataIJ = u.data[i]?.[j];
+      if (typeof data0J !== 'number' || typeof dataIJ !== 'number') continue;
+      let cx = Math.round(u.valToPos(data0J, 'x', true));
+      let cy = Math.round(u.valToPos(dataIJ, scale, true));
+      const range = getVisibleRangeLength(u);
+      if (cy < maxY && range <= minRangeInSeconds) {
+        ctx.beginPath();
+        ctx.rect(cx, cy, 1, maxY - cy);
+        ctx.fill();
       }
-    },
-    hooks: {
-      draw,
+      j++;
+    }
+
+    ctx.restore();
+  };
+
+  return {
+    hooks: {},
+    opts: (u: uPlot, opts: uPlot.Options) => {
+      opts.series
+        .filter((s) => s.scale === 'm')
+        .forEach((s) => {
+          s.points = {
+            show: drawBarChart,
+          };
+        });
     },
   };
 };
@@ -165,12 +153,12 @@ export class TimelineChartUplotComponent implements OnChanges {
           });
       });
       this.resizeObserver.observe(this.elementRef.nativeElement);
-      const barColor = 'rgb(126, 203, 32)';
+      const barColor = 'hsl(87, 74%, 46%)';
       this.uplot = new uPlot(
         {
           width: this.elementRef.nativeElement.offsetWidth,
           height: this.elementRef.nativeElement.offsetHeight - this.headerHeight,
-          plugins: [timerTimelinePlugin({ barColor })],
+          plugins: [barChartPlugin({ color: 'hsl(87, 74%, 40%)', minRangeInMs: daysToMilliseconds(365) })],
           hooks: {
             setScale: [
               (self: uPlot, key: string) => {

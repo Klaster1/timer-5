@@ -21,3 +21,5 @@ export const formatHours = (value: Duration): string => {
     })
     .join(':');
 };
+
+export const daysToMilliseconds = (days: number): Milliseconds => days * 24 * 60 * 60 * 1000;
