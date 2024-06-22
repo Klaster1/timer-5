@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1719049781094,
+  "timestamp": 1719051156958,
   "index": "/timer-5/index.html",
   "assetGroups": [
     {
@@ -40,6 +40,7 @@
         "/timer-5/chunk-TYACUCX4.js",
         "/timer-5/chunk-ULE4JE3A.js",
         "/timer-5/chunk-VS5UEOJ7.js",
+        "/timer-5/404.html",
         "/timer-5/index.html",
         "/timer-5/main-XWKWR7V2.js",
         "/timer-5/manifest.webmanifest",
@@ -95,7 +96,8 @@
     "/timer-5/index.html": "34632fcb187b84dd1362913a4c401f9a2238ad04",
     "/timer-5/main-XWKWR7V2.js": "8897bba8566da1825be8c27763f9035d354d5429",
     "/timer-5/manifest.webmanifest": "a5053b8097d58c31c09adb7cdb5abc9e0590a46b",
-    "/timer-5/styles-BS4D5OAK.css": "9a00f14baa108ed7fdb04530fc8e4f1126c3e47c"
+    "/timer-5/styles-BS4D5OAK.css": "9a00f14baa108ed7fdb04530fc8e4f1126c3e47c",
+    "/timer-5/404.html": "34632fcb187b84dd1362913a4c401f9a2238ad04"
   },
   "navigationUrls": [
     {
