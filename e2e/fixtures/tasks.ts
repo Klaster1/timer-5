@@ -287,6 +287,7 @@ test('Export/import', async (t) => {
   await t.expect(screenTasks.taskName.nth(2).textContent).eql('Task 3');
   // Assert that export works
   await t.click(app.buttonExport);
+  await t.wait(500);
   const exportedData = await readFile(`e2e/downloads/${testId}/timer-data.json`, 'utf8').then(JSON.parse);
   await t.expect(exportedData).eql(referenceData);
   t.ctx.ok = true;
