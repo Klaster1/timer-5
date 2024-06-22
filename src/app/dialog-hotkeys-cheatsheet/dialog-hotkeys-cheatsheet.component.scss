@@ -1,37 +1,9 @@
 dl {
   display: grid;
-  gap: 5px;
   grid-template-columns: auto 1fr;
   width: max-content;
   margin: auto;
 }
-dd {
-  display: flex;
-  align-items: center;
-  margin-left: 20px;
-}
-kbd {
-  display: inline-block;
-  padding: 5px 14px 0 13px;
-  box-sizing: border-box;
-  font-style: oblique;
-  text-transform: capitalize;
-  text-shadow: 1px 1px rgb(255, 255, 255);
-  font-size: 1.15cqh;
-  border-image: url('../../assets/keycap.svg') 25 20 24 25 fill round;
-  border-image-outset: 0;
-  border-image-width: 1;
-  border-image-width: 30px;
-  border-image-outset: 5px;
-  height: 48px;
-  min-width: 48px;
-  margin: 5px 8px;
-  color: rgb(0, 0, 0);
-}
-.combo,
-.separator {
-  font-size: 20px;
-  padding: 0 5px;
-  position: relative;
-  top: 9px;
+kbd:not(:last-child)::after {
+  content: ', ';
 }

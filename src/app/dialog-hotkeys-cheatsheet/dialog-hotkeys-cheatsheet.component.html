@@ -3,19 +3,8 @@
   <dl>
     @for (key of keys; track key.action) {
       <dt>
-        @for (fragment of key.formatted | map: withoutCyrillics | map: split; track $index) {
-          @switch (fragment.type) {
-            @case ('key') {
-              <kbd>{{ fragment.value }}</kbd>
-            }
-            @case ('combo') {
-              <span class="combo">+</span>
-            }
-            @case ('chord') {}
-            @case ('separator') {
-              <span class="separator">,</span>
-            }
-          }
+        @for (formatted of key.formatted | map: withoutCyrillics; track formatted) {
+          <kbd>{{ formatted }}</kbd>
         }
       </dt>
       <dd>{{ key.description }}</dd>
