@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/screen-tasks/empty-state/empty-state.component.scss"],
+  "sourcesContent": ["empty-state {\n  display: flex;\n  flex-direction: column;\n  align-content: center;\n  justify-content: center;\n  gap: 10px;\n\n  .title {\n    font-size: 1.5em;\n  }\n\n  .title,\n  .subtitle {\n    text-align: center;\n  }\n  .actions:not(:empty) {\n    margin: auto;\n    margin-top: 10px;\n  }\n  .illustration:not(:empty) {\n    margin: auto;\n    margin-bottom: 10px;\n    [illustration] {\n      width: 128px;\n      height: 128px;\n      font-size: 128px;\n    }\n  }\n}\n"],
+  "mappings": "AAAA,YACE,QAAA,KACA,eAAA,OACA,cAAA,OACA,gBAAA,OACA,IAAA,KAEA,YAAA,CAAA,MACE,UAAA,MAGF,YAAA,CAJA,MAIA,YAAA,CAAA,SAEE,WAAA,OAEF,YAAA,CAAA,OAAA,KAAA,QAfF,OAiBI,KADA,UAGF,YAAA,CAAA,YAAA,KAAA,QAnBF,OAoBI,UACA,KACA,YAAA,CAHF,YAGE,KAAA,QAAA,CAAA,cACE,MAAA,MACA,OAAA,MACA,UAAA",
+  "names": []
+}

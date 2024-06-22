@@ -1,7 +1,7 @@
 {
   "version": 3,
   "sources": ["src/app/dialog-prompt/dialog-prompt.component.scss"],
-  "sourcesContent": ["mat-form-field {\r\n  width: 100%;\r\n}\r\n"],
+  "sourcesContent": ["mat-form-field {\n  width: 100%;\n}\n"],
   "mappings": "AAAA,eACE,MAAA",
   "names": []
 }

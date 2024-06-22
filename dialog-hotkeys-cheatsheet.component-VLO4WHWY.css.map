@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/dialog-hotkeys-cheatsheet/dialog-hotkeys-cheatsheet.component.scss"],
-  "sourcesContent": ["dl {\r\n  display: grid;\r\n  gap: 5px;\r\n  grid-template-columns: auto 1fr;\r\n  width: max-content;\r\n  margin: auto;\r\n}\r\ndd {\r\n  display: flex;\r\n  align-items: center;\r\n  margin-left: 20px;\r\n}\r\nkbd {\r\n  display: inline-block;\r\n  padding: 5px 14px 0 13px;\r\n  box-sizing: border-box;\r\n  font-style: oblique;\r\n  text-transform: capitalize;\r\n  text-shadow: 1px 1px rgb(255, 255, 255);\r\n  font-size: 1.15cqh;\r\n  border-image: url('../../assets/keycap.svg') 25 20 24 25 fill round;\r\n  border-image-outset: 0;\r\n  border-image-width: 1;\r\n  border-image-width: 30px;\r\n  border-image-outset: 5px;\r\n  height: 48px;\r\n  min-width: 48px;\r\n  margin: 5px 8px;\r\n  color: rgb(0, 0, 0);\r\n}\r\n.combo,\r\n.separator {\r\n  font-size: 20px;\r\n  padding: 0 5px;\r\n  position: relative;\r\n  top: 9px;\r\n}\r\n"],
-  "mappings": "AAAA,GACE,QAAA,KACA,IAAA,IACA,sBAAA,KAAA,IACA,MAAA,YAJF,OAKE,KAEF,GACE,QAAA,KACA,YAAA,OACA,YAAA,KAEF,IACE,QAAA,aAbF,QAcE,IAAA,KAAA,EAAA,KACA,WAAA,WACA,WAAA,QACA,eAAA,WACA,YAAA,IAAA,IAAA,IAAA,GAAA,CAAA,GAAA,CAAA,KACA,UAAA,QACA,aAAA,mCAAA,GAAA,GAAA,GAAA,GAAA,KAAA,MACA,oBAAA,EACA,mBAAA,EACA,mBAAA,KACA,oBAAA,IACA,OAAA,KACA,UAAA,KA1BF,OA2BE,IAAA,IACA,MAAA,KAEF,CAAA,MAAA,CAAA,UAEE,UAAA,KAhCF,QAiCE,EAAA,IACA,SAAA,SACA,IAAA",
-  "names": []
-}
