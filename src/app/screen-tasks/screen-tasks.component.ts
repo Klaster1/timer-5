@@ -1,15 +1,19 @@
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { ScrollingModule } from '@angular/cdk/scrolling';
+import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
 import { AsyncPipe, NgClass } from '@angular/common';
 import {
+  AfterRenderPhase,
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
+  Injector,
   TrackByFunction,
   afterNextRender,
   computed,
+  effect,
   inject,
   signal,
+  viewChild,
 } from '@angular/core';
 import { MatButton, MatFabButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -75,6 +79,8 @@ export default class ScreenTasksComponent {
   private keys = inject(HotkeysService);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
+  private viewport = viewChild(CdkVirtualScrollViewport);
+  private injector = inject(Injector);
 
   private filterPresent = computed(() => !!Object.keys(this.store.decodedFilterParams()).length);
   private filterToggles = signal<boolean | undefined>(undefined);
@@ -90,6 +96,19 @@ export default class ScreenTasksComponent {
     });
     this.destroyRef.onDestroy(() => {
       this.keys.remove(this.hotkeys);
+    });
+    // Scroll to top when tasks are loaded
+    effect(() => {
+      this.store.currentTasks();
+      afterNextRender(
+        () => {
+          this.viewport()?.scrollToIndex(0);
+        },
+        {
+          injector: this.injector,
+          phase: AfterRenderPhase.Read,
+        },
+      );
     });
   }
 
