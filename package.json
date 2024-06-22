@@ -8,7 +8,7 @@
     "build": "ng build --configuration production --base-href=/timer-5/",
     "e2e": "testcafe chrome:headless -c 4 -q",
     "e2e:ci": "testcafe chrome:headless -c 4 -q --app=\"ng serve\" -r spec,xunit:e2e/report.xml",
-    "deploy": "npm run build && npx gh-pages --dist dist --nojekyll --before-add ./gh-pages-before-add.cjs"
+    "deploy": "npm run build && node ./gh-pages-before-add.js && gh-pages --nojekyll --dotfiles --dist dist"
   },
   "private": true,
   "dependencies": {
