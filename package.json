@@ -8,7 +8,7 @@
     "build": "ng build --configuration production && node ./scripts/gh-pages-before-add.js",
     "e2e": "testcafe chrome:headless -c 4 -q",
     "e2e:ci": "testcafe chrome:headless -c 4 -q --app=\"node ./scripts/serve.mjs\" -r spec,xunit:e2e/report.xml",
-    "deploy": "npm run build && gh-pages --no-push --nojekyll --dotfiles --dist dist"
+    "deploy": "npm run build && gh-pages --nojekyll --dotfiles --dist dist"
   },
   "private": true,
   "dependencies": {
@@ -46,8 +46,7 @@
     "prettier": "^3.3.2",
     "prettier-plugin-organize-imports": "^3.2.4",
     "testcafe": "^3.6.1",
-    "typescript": "~5.4.5",
-    "wait-on": "^7.2.0"
+    "typescript": "~5.4.5"
   },
   "engines": {
     "node": ">=20.14.0"
