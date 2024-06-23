@@ -1,26 +1,31 @@
-name: TestCafe tests
+name: CI/CD Pipeline
+
 on:
   push:
     branches: [master]
-  pull_request:
-    branches: [master]
 
 jobs:
-  test:
-    timeout-minutes: 5
-    name: Run TestCafe Tests
+  build-test-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+
       - name: Adding Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20.14.0
+          cache: 'npm'
+
       - name: Install Dependencies
-        run: npm ci
+        run: npm install
+
+      - name: Build Application
+        run: npm run build
+
       - name: Run TestCafe tests
         run: npm run e2e:ci
+
       - name: Test Report
         uses: dorny/test-reporter@v1
         if: success() || failure()
@@ -28,3 +33,11 @@ jobs:
           name: Test Report
           path: e2e/report.xml
           reporter: java-junit
+
+      - name: Deploy to Github Pages
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          git remote set-url origin https://git:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+          npm run deploy -- -u "github-actions-bot <support+actions@github.com>"
