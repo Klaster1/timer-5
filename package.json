@@ -23,7 +23,7 @@
     "@angular/platform-browser-dynamic": "^18.0.4",
     "@angular/router": "^18.0.4",
     "@angular/service-worker": "^18.0.4",
-    "@ngrx/signals": "^17.2.0",
+    "@ngrx/signals": "18.0.0-rc.1",
     "angular2-hotkeys": "^16.0.1",
     "date-fns": "^3.6.0",
     "immer": "^10.1.1",
