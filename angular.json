@@ -30,7 +30,8 @@
             "scripts": [],
             "serviceWorker": "ngsw-config.json",
             "allowedCommonJsDependencies": ["mousetrap", "deepmerge", "bezier-easing"],
-            "sourceMap": true
+            "sourceMap": true,
+            "baseHref": "/timer-5/"
           },
           "configurations": {
             "production": {

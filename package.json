@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --configuration production --base-href=/timer-5/",
+    "build": "ng build --configuration production",
     "e2e": "testcafe chrome:headless -c 4 -q",
     "e2e:ci": "testcafe chrome:headless -c 4 -q --app=\"ng serve\" -r spec,xunit:e2e/report.xml",
     "deploy": "npm run build && node ./scripts/gh-pages-before-add.js && gh-pages --no-push --nojekyll --dotfiles --dist dist"
