@@ -105,23 +105,18 @@ export class AppComponent {
       const component = await import('./dialog-hotkeys-cheatsheet/dialog-hotkeys-cheatsheet.component').then(
         (m) => m.default,
       );
-      if (isOpen === false) {
+      if (isOpen === false || isDialogOpen) {
         isDialogOpen = false;
         this.dialogs.getDialogById(DIALOG_HOTKEYS_CHEATSHEET_ID)?.close();
       } else {
-        if (isDialogOpen) {
-          isDialogOpen = false;
-          this.dialogs.getDialogById(DIALOG_HOTKEYS_CHEATSHEET_ID)?.close();
-        } else {
-          isDialogOpen = true;
-          this.dialogs
-            .open(component, { width: undefined, id: DIALOG_HOTKEYS_CHEATSHEET_ID })
-            .afterClosed()
-            .subscribe(() => {
-              isDialogOpen = false;
-              this.hotkeysService.cheatSheetToggle.next(false);
-            });
-        }
+        isDialogOpen = true;
+        this.dialogs
+          .open(component, { width: undefined, id: DIALOG_HOTKEYS_CHEATSHEET_ID })
+          .afterClosed()
+          .subscribe(() => {
+            isDialogOpen = false;
+            this.hotkeysService.cheatSheetToggle.next(false);
+          });
       }
     });
   }

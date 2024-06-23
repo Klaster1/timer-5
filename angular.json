@@ -29,7 +29,7 @@
             "styles": ["src/styles.scss"],
             "scripts": [],
             "serviceWorker": "ngsw-config.json",
-            "allowedCommonJsDependencies": ["mousetrap", "deepmerge", "bezier-easing"],
+            "allowedCommonJsDependencies": ["mousetrap"],
             "sourceMap": true,
             "baseHref": "/timer-5/"
           },
@@ -80,6 +80,6 @@
     }
   },
   "cli": {
-    "analytics": false
+    "analytics": true
   }
 }
