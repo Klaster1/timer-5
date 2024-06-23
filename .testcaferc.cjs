@@ -1,8 +1,10 @@
 const waitOn = require('wait-on');
+const baseUrl = 'http://localhost:4200/timer-5/';
 
 /** @type {TestCafeConfigurationOptions} */
 module.exports = {
   src: './e2e/fixtures/',
+  baseUrl,
   screenshots: {
     path: './e2e/screenshots',
     takeOnFails: true,
@@ -19,7 +21,7 @@ module.exports = {
       before: async () => {
         try {
           await waitOn({
-            resources: ['http://localhost:4200/'],
+            resources: [baseUrl],
             timeout: 35_000,
             interval: 500,
           });

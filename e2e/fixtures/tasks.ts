@@ -8,12 +8,11 @@ import { menuTaskActions } from '../page-objects/menu-task-actions';
 import { screenTask } from '../page-objects/screen-task';
 import { screenTasks } from '../page-objects/screen-tasks';
 import { tooltip } from '../page-objects/tooltip';
-import { getLocationPathname, reload, setDownloadsDirectory, urlTo } from '../utils';
+import { getLocationPathname, reload, setDownloadsDirectory } from '../utils';
 
 fixture('Tasks');
 
 test('Adding a task', async (t) => {
-  await t.navigateTo(urlTo('/'));
   // Click the empty state "Add task" button
   await t.click(screenTasks.emptyStateAddTaskButton);
   // Unfocus the input, asset validation is show
@@ -50,7 +49,6 @@ test('Adding a task', async (t) => {
 
 test('Starting/stopping the task', async (t) => {
   // Create a task
-  await t.navigateTo(urlTo('/'));
   await t
     .click(screenTasks.emptyStateAddTaskButton)
     .typeText(dialogPrompt.input, 'Task')
@@ -112,7 +110,6 @@ test('Starting/stopping the task', async (t) => {
 
 test('Changing task status', async (t) => {
   // Open an active/non-running task
-  await t.navigateTo(urlTo('/'));
   await t
     .click(screenTasks.emptyStateAddTaskButton)
     .typeText(dialogPrompt.input, 'Task')
@@ -201,7 +198,6 @@ test('Changing task status', async (t) => {
 
 test('Renaming the task', async (t) => {
   // Open the "Rename" task dialog the task list "Rename" action
-  await t.navigateTo(urlTo('/'));
   await t
     .click(screenTasks.emptyStateAddTaskButton)
     .typeText(dialogPrompt.input, 'Task')
@@ -237,7 +233,6 @@ test('Deleting the task', async (t) => {
       .click(dialogPrompt.buttonSubmit);
   };
   // Open a task
-  await t.navigateTo(urlTo('/'));
   await addTask();
   await t.expect(screenTask.screen.exists).ok();
   // Remove it with the task list "Remove" context action
@@ -276,7 +271,6 @@ test('Export/import', async (t) => {
     ],
   };
   await writeFile(`e2e/downloads/${testId}/data.json`, JSON.stringify(referenceData, null, '  '));
-  await t.navigateTo(urlTo('/'));
   // Import the data
   await t.click(app.buttonImportExport);
   await t.setFilesToUpload(app.inputImport, [`../downloads/${testId}/data.json`]);
@@ -303,7 +297,6 @@ test('Editing a session', async (t) => {
     return new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000);
   };
   // Have a running task
-  await t.navigateTo(urlTo('/'));
   await screenTasks.addTask('Test');
   await t.pressKey('s');
   // Change a running task session start time, assert the total changes
@@ -352,7 +345,6 @@ test('Editing a session', async (t) => {
 
 test('Moving a session', async (t) => {
   // Have two tasks with sessions
-  await t.navigateTo(urlTo('/'));
   await screenTasks.addTask('To');
   await screenTasks.addTask('From');
   await t.pressKey('s').wait(500).pressKey('s');

@@ -5,10 +5,10 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --configuration production",
+    "build": "ng build --configuration production && node ./scripts/gh-pages-before-add.js",
     "e2e": "testcafe chrome:headless -c 4 -q",
-    "e2e:ci": "testcafe chrome:headless -c 4 -q --app=\"ng serve\" -r spec,xunit:e2e/report.xml",
-    "deploy": "npm run build && node ./scripts/gh-pages-before-add.js && gh-pages --no-push --nojekyll --dotfiles --dist dist"
+    "e2e:ci": "testcafe chrome:headless -c 4 -q --app=\"node ./scripts/serve.mjs\" -r spec,xunit:e2e/report.xml",
+    "deploy": "npm run build && gh-pages --no-push --nojekyll --dotfiles --dist dist"
   },
   "private": true,
   "dependencies": {

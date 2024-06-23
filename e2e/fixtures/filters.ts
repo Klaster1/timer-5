@@ -1,12 +1,11 @@
 import { screenTask } from '../page-objects/screen-task';
 import { screenTasks } from '../page-objects/screen-tasks';
-import { getLocationSearch, reload, urlTo } from '../utils';
+import { getLocationSearch, reload } from '../utils';
 
 fixture('Filters');
 
 test('Name', async (t) => {
   // Have some tasks with uppercase names
-  await t.navigateTo(urlTo('/'));
   await screenTasks.addTask('GAME');
   await screenTasks.addTask('FOO');
   await screenTasks.addTask('BAR');

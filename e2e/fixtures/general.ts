@@ -1,11 +1,9 @@
 import { dialogHotkeyCheatsheet } from '../page-objects/dialog-hotkeys-cheatsheet';
 import { screenTasks } from '../page-objects/screen-tasks';
-import { urlTo } from '../utils';
 
 fixture('General');
 
 test('Hotkey help', async (t) => {
-  await t.navigateTo(urlTo('/'));
   // Send "shift+?", assert the hotkey cheatsheet is opened
   await t.pressKey('shift+?');
   // Assert it displays all hotkeys, in english only
