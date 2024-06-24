@@ -3,8 +3,6 @@ import {
   Component,
   DestroyRef,
   ElementRef,
-  OnChanges,
-  SimpleChanges,
   ViewEncapsulation,
   afterNextRender,
   effect,
@@ -14,7 +12,6 @@ import {
 } from '@angular/core';
 import { ScaleRange } from '@app/domain/chart';
 import { Milliseconds, Seconds, daysToMilliseconds, formatHours } from '@app/domain/date-time';
-import { AppStore } from '@app/services/state';
 import { isNumber } from '@app/utils/assert';
 import { format } from 'date-fns/format';
 import { millisecondsToSeconds } from 'date-fns/millisecondsToSeconds';
@@ -95,8 +92,7 @@ const barChartPlugin = (params: { color: string; minRangeInMs: Milliseconds }): 
   ],
   standalone: true,
 })
-export class TimelineChartUplotComponent implements OnChanges {
-  private store = inject(AppStore);
+export class TimelineChartUplotComponent {
   private elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private destroyRef = inject(DestroyRef);
 
@@ -133,12 +129,29 @@ export class TimelineChartUplotComponent implements OnChanges {
   private resizeObserver?: ResizeObserver;
   constructor() {
     effect(() => {
-      const theme = this.store.theme();
       const stroke = window.getComputedStyle(this.elementRef.nativeElement).color;
+      const primaryColor = window
+        .getComputedStyle(this.elementRef.nativeElement)
+        .getPropertyValue('--mdc-outlined-text-field-focus-label-text-color');
+      const secondaryColor = window
+        .getComputedStyle(this.elementRef.nativeElement)
+        .getPropertyValue('--mdc-filled-text-field-container-color');
       this.uplot?.axes.forEach((a) => (a.stroke = () => stroke));
+      this.uplot?.series.forEach((s, i) => {
+        if (i === 1) s.fill = () => primaryColor;
+        if (i === 2) s.fill = () => secondaryColor;
+      });
       setTimeout(() => {
         this.uplot?.redraw(false);
       });
+    });
+    effect(() => {
+      const chartData = this.chartData();
+      if (chartData) this.uplot?.setData(chartData);
+    });
+    effect(() => {
+      const range = this.range();
+      this.setRange(range);
     });
     this.destroyRef.onDestroy(() => {
       this.resizeObserver?.unobserve(this.elementRef.nativeElement);
@@ -153,7 +166,6 @@ export class TimelineChartUplotComponent implements OnChanges {
           });
       });
       this.resizeObserver.observe(this.elementRef.nativeElement);
-      const barColor = 'hsl(87, 74%, 46%)';
       this.uplot = new uPlot(
         {
           width: this.elementRef.nativeElement.offsetWidth,
@@ -194,7 +206,12 @@ export class TimelineChartUplotComponent implements OnChanges {
               label: this.getLegendLabel(),
               scale: 'm',
               value: (_, value) => this.getLegendValue(value),
-              fill: barColor,
+            },
+            {
+              show: true,
+              label: this.getLegendLabel(),
+              scale: 'm',
+              value: (_, value) => this.getLegendValue(value),
             },
           ],
           axes: [
@@ -218,14 +235,5 @@ export class TimelineChartUplotComponent implements OnChanges {
 
   getLegendLabel() {
     return 'Hours';
-  }
-  ngOnChanges(changes: SimpleChanges) {
-    const chartData = this.chartData();
-    if (chartData && changes.chartData?.currentValue !== changes.chartData?.previousValue) {
-      this.uplot?.setData(chartData);
-    }
-    if (changes.range) {
-      this.setRange(this.range());
-    }
   }
 }

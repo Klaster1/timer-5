@@ -172,7 +172,7 @@ export const AppStore = signalStore(
       if (!maybeTask) return;
       return sortTaskSessions(filterTaskSessions(maybeTask, { from, to }));
     });
-    const filterChartData = computed(() => chartSeries(allTasks()));
+    const filterChartData = computed(() => chartSeries(allTasks(), currentTasks()));
     const currentTaskIndex = computed(() => currentTasks().findIndex(({ id }) => id === currentTask()?.id) ?? -1);
     const nextTaskId = computed(() => {
       const tasks = currentTasks();

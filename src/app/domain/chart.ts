@@ -11,7 +11,7 @@ const clampSession = (session: Session, start: number, end: number, now: number)
 
 export type ScaleRange = readonly [Date | null, Date | null];
 type DateRange = [Date, Date];
-export type ChartData = [number[], number[]];
+export type ChartData = [number[], number[], number[]];
 
 const generateRanges = (start: Date, end: Date): DateRange[] => {
   let rangeStart: Date = start;
@@ -32,9 +32,10 @@ const getEarliestSessionStart = (tasks: Task[]): number | undefined =>
 type Bar = { start: Date; end: Date; tasks: Set<Task['id']>; duration: number; includesCurrentTasks: boolean };
 type Bars = Map<number, Bar>;
 
-const tasksToBars = (tasks: Task[]): Bars => {
+const tasksToBars = (allTasks: Task[], currentTasks: Task[]): Bars => {
+  const currentTasksIds = new Set(currentTasks.map((t) => t.id));
   const now = new Date();
-  const earliestStart = getEarliestSessionStart(tasks);
+  const earliestStart = getEarliestSessionStart(allTasks);
   if (earliestStart === undefined) {
     return new Map();
   }
@@ -50,7 +51,7 @@ const tasksToBars = (tasks: Task[]): Bars => {
       },
     ]),
   );
-  return tasks.reduce((bars: Bars, task: Task) => {
+  return allTasks.reduce((bars: Bars, task: Task) => {
     task.sessions.forEach((s) => {
       let duration = sessionDurationPure(s);
       while (duration >= 10) {
@@ -60,6 +61,7 @@ const tasksToBars = (tasks: Task[]): Bars => {
         }
         const sessionSlice = clampSession(s, bar.start.valueOf(), bar.end.valueOf(), now.valueOf());
         const sliceDuration = sessionDurationPure(sessionSlice);
+        bar.includesCurrentTasks = currentTasksIds.has(task.id);
         bar.tasks.add(task.id);
         bar.duration += sliceDuration;
         duration = duration - sliceDuration;
@@ -70,15 +72,22 @@ const tasksToBars = (tasks: Task[]): Bars => {
   }, result);
 };
 
-const barsTouPlotData = (bars: Bars): ChartData => [
-  [...bars.values()].flatMap((b) => {
-    const start = millisecondsToSeconds(b.start.valueOf());
-    const end = millisecondsToSeconds(b.end.valueOf());
-    return [start, start, end, end];
-  }),
-  [...bars.values()].flatMap((b) => [0, b.duration, b.duration, 0]),
-];
-
-export const chartSeries = (tasks: Task[]) => barsTouPlotData(tasksToBars(tasks));
+export const chartSeries = (allTasks: Task[], currentTasks: Task[]): ChartData => {
+  const bars = tasksToBars(allTasks, currentTasks);
+  const currentBars: Bars = new Map(
+    [...bars.entries()].map(([key, bar]) => [key, bar.includesCurrentTasks ? bar : { ...bar, duration: 0 }]),
+  );
+  const otherBars: Bars = new Map(
+    [...bars.entries()].map(([key, bar]) => [key, !bar.includesCurrentTasks ? bar : { ...bar, duration: 0 }]),
+  );
+  return [
+    [...bars.values()].flatMap((b) => [
+      millisecondsToSeconds(b.start.valueOf()),
+      millisecondsToSeconds(b.end.valueOf()),
+    ]),
+    [...currentBars.values()].flatMap((b) => [b.duration, b.duration]),
+    [...otherBars.values()].flatMap((b) => [b.duration, b.duration]),
+  ];
+};
 
 export const hasChartData = (data: ChartData): boolean => !!data[0]?.length;
