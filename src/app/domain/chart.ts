@@ -36,7 +36,7 @@ const tasksToBars = (tasks: Task[]): Bars => {
     return new Map();
   }
   const result: Bars = new Map(
-    generateRanges(new Date(earliestStart), now).map(([s, e]) => [
+    generateRanges(new Date(earliestStart), now).map(([s, e]): [number, Bar] => [
       s.valueOf(),
       {
         start: s,
@@ -71,7 +71,8 @@ const barsTouPlotData = (bars: Bars): ChartData => [
   [...bars.values()].flatMap((b) => [b.duration, b.duration]),
 ];
 
-type Bars = Map<number, { start: Date; end: Date; tasks: Set<Task['id']>; duration: number }>;
+type Bar = { start: Date; end: Date; tasks: Set<Task['id']>; duration: number };
+type Bars = Map<number, Bar>;
 
 export const chartSeries = (tasks: Task[]) => barsTouPlotData(tasksToBars(tasks));
 
