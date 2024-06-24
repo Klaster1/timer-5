@@ -26,12 +26,12 @@ const generateRanges = (start: Date, end: Date): DateRange[] => {
 
 const getSessionRangeId = (session: Session): number => startOfDay(new Date(session.start)).valueOf();
 
-const getEraliestSessionStart = (tasks: Task[]): number | undefined =>
+const getEarliestSessionStart = (tasks: Task[]): number | undefined =>
   tasks.flatMap((t) => t.sessions.map((s) => s.start)).sort((a, b) => a - b)[0];
 
 const tasksToBars = (tasks: Task[]): Bars => {
   const now = new Date();
-  const earliestStart = getEraliestSessionStart(tasks);
+  const earliestStart = getEarliestSessionStart(tasks);
   if (earliestStart === undefined) {
     return new Map();
   }
