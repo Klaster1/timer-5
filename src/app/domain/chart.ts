@@ -29,6 +29,9 @@ const getSessionRangeId = (session: Session): number => startOfDay(new Date(sess
 const getEarliestSessionStart = (tasks: Task[]): number | undefined =>
   tasks.flatMap((t) => t.sessions.map((s) => s.start)).sort((a, b) => a - b)[0];
 
+type Bar = { start: Date; end: Date; tasks: Set<Task['id']>; duration: number; includesCurrentTasks: boolean };
+type Bars = Map<number, Bar>;
+
 const tasksToBars = (tasks: Task[]): Bars => {
   const now = new Date();
   const earliestStart = getEarliestSessionStart(tasks);
@@ -43,6 +46,7 @@ const tasksToBars = (tasks: Task[]): Bars => {
         end: e,
         tasks: new Set(),
         duration: 0,
+        includesCurrentTasks: false,
       },
     ]),
   );
@@ -74,9 +78,6 @@ const barsTouPlotData = (bars: Bars): ChartData => [
   }),
   [...bars.values()].flatMap((b) => [0, b.duration, b.duration, 0]),
 ];
-
-type Bar = { start: Date; end: Date; tasks: Set<Task['id']>; duration: number };
-type Bars = Map<number, Bar>;
 
 export const chartSeries = (tasks: Task[]) => barsTouPlotData(tasksToBars(tasks));
 
