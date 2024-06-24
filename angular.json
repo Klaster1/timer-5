@@ -30,8 +30,7 @@
             "scripts": [],
             "serviceWorker": "ngsw-config.json",
             "allowedCommonJsDependencies": ["mousetrap"],
-            "sourceMap": true,
-            "baseHref": "/timer-5/"
+            "sourceMap": true
           },
           "configurations": {
             "production": {
@@ -48,7 +47,8 @@
                 }
               ],
               "outputHashing": "all",
-              "serviceWorker": "ngsw-config.json"
+              "serviceWorker": "ngsw-config.json",
+              "baseHref": "/timer-5/"
             },
             "development": {
               "optimization": false,
