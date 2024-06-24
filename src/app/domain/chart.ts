@@ -67,8 +67,12 @@ const tasksToBars = (tasks: Task[]): Bars => {
 };
 
 const barsTouPlotData = (bars: Bars): ChartData => [
-  [...bars.values()].flatMap((b) => [millisecondsToSeconds(b.start.valueOf()), millisecondsToSeconds(b.end.valueOf())]),
-  [...bars.values()].flatMap((b) => [b.duration, b.duration]),
+  [...bars.values()].flatMap((b) => {
+    const start = millisecondsToSeconds(b.start.valueOf());
+    const end = millisecondsToSeconds(b.end.valueOf());
+    return [start, start, end, end];
+  }),
+  [...bars.values()].flatMap((b) => [0, b.duration, b.duration, 0]),
 ];
 
 type Bar = { start: Date; end: Date; tasks: Set<Task['id']>; duration: number };
