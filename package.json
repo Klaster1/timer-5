@@ -6,9 +6,10 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build --configuration production && node ./scripts/gh-pages-before-add.js",
+    "serve:ci": "npx local-web-server --port 4200 --directory ./dist --spa timer-5/404.html",
     "e2e": "testcafe chrome:headless -c 4 -q",
-    "e2e:ci": "testcafe chrome:headless -c 4 -q --app=\"node ./scripts/serve.mjs\" -r spec,xunit:e2e/report.xml --base-url=\"http://localhost:4200/timer-5/\"",
-    "deploy": "npm run build && gh-pages --nojekyll --dotfiles --dist dist"
+    "e2e:ci": "testcafe chrome:headless -c 4 -q --app=\"npm run serve:ci\" -r spec,xunit:e2e/report.xml --base-url=\"http://localhost:4200/timer-5/\"",
+    "deploy": "npm run build && gh-pages --nojekyll --dotfiles --dist dist/timer-5"
   },
   "private": true,
   "dependencies": {
@@ -41,8 +42,8 @@
     "@types/node": "^20.14.8",
     "angular-testcafe": "^4.0.0",
     "chrome-remote-interface": "^0.33.0",
-    "express": "^4.19.2",
     "gh-pages": "^6.1.1",
+    "local-web-server": "^5.3.3",
     "prettier": "^3.3.2",
     "prettier-plugin-organize-imports": "^3.2.4",
     "testcafe": "^3.6.1",
