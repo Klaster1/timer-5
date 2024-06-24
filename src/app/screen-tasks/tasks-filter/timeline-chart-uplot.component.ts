@@ -19,7 +19,7 @@ import { millisecondsToSeconds } from 'date-fns/millisecondsToSeconds';
 import { secondsToMilliseconds } from 'date-fns/secondsToMilliseconds';
 import uPlot, { AlignedData, Plugin } from 'uplot';
 
-const barChartPlugin = (params: { color: string; minRangeInMs: Milliseconds }): Plugin => {
+const barChartPlugin = (params: { colors: (string | null)[]; minRangeInMs: Milliseconds }): Plugin => {
   const minRangeInSeconds: Seconds = millisecondsToSeconds(params.minRangeInMs);
 
   const getVisibleRangeLength = (u: uPlot): number => {
@@ -29,22 +29,24 @@ const barChartPlugin = (params: { color: string; minRangeInMs: Milliseconds }): 
     return visibleRangeMax - visibleRangeMin;
   };
 
-  const drawBarChart: any = (u: uPlot, i: number, i0: number, i1: number) => {
-    let { ctx } = u;
-    let scale = u.series[i]?.scale;
+  const drawBarChart: uPlot.Series.Points.Show = (self: uPlot, seriesIndex: number, i0: number, i1: number) => {
+    let { ctx } = self;
+    let scale = self.series[seriesIndex]?.scale;
     if (!scale) return;
-    const maxY = u.valToPos(0, scale, true);
-    ctx.fillStyle = params.color;
+    const maxY = self.valToPos(0, scale, true);
+    const color = params.colors[seriesIndex];
+    if (!color) return false;
+    ctx.fillStyle = color;
 
     let j = i0;
 
     while (j <= i1) {
-      const data0J = u.data[0][j];
-      const dataIJ = u.data[i]?.[j];
+      const data0J = self.data[0][j];
+      const dataIJ = self.data[seriesIndex]?.[j];
       if (typeof data0J !== 'number' || typeof dataIJ !== 'number') continue;
-      let cx = Math.round(u.valToPos(data0J, 'x', true));
-      let cy = Math.round(u.valToPos(dataIJ, scale, true));
-      const range = getVisibleRangeLength(u);
+      let cx = Math.round(self.valToPos(data0J, 'x', true));
+      let cy = Math.round(self.valToPos(dataIJ, scale, true));
+      const range = getVisibleRangeLength(self);
       if (cy < maxY && range <= minRangeInSeconds) {
         ctx.beginPath();
         ctx.rect(cx, cy, 1, maxY - cy);
@@ -54,6 +56,7 @@ const barChartPlugin = (params: { color: string; minRangeInMs: Milliseconds }): 
     }
 
     ctx.restore();
+    return false;
   };
 
   return {
@@ -179,7 +182,12 @@ export class TimelineChartUplotComponent {
         {
           width: this.elementRef.nativeElement.offsetWidth,
           height: this.elementRef.nativeElement.offsetHeight - this.headerHeight,
-          plugins: [barChartPlugin({ color: 'hsl(87, 74%, 40%)', minRangeInMs: daysToMilliseconds(365) })],
+          plugins: [
+            barChartPlugin({
+              colors: [null, 'hsl(87, 74%, 40%)', 'hsl(87, 0%, 40%)'],
+              minRangeInMs: daysToMilliseconds(365),
+            }),
+          ],
           hooks: {
             setScale: [
               (self: uPlot, key: string) => {
