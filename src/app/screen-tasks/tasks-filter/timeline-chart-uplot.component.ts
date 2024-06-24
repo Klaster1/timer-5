@@ -147,7 +147,7 @@ export class TimelineChartUplotComponent {
     });
     effect(() => {
       const chartData = this.chartData();
-      if (chartData) this.uplot?.setData(chartData);
+      if (chartData) this.uplot?.setData(chartData, false);
     });
     effect(() => {
       const range = this.range();
