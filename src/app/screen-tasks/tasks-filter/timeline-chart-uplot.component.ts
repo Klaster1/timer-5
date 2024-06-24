@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { ScaleRange } from '@app/domain/chart';
 import { Milliseconds, Seconds, daysToMilliseconds, formatHours } from '@app/domain/date-time';
+import { AppStore } from '@app/services/state';
 import { isNumber } from '@app/utils/assert';
 import { format } from 'date-fns/format';
 import { millisecondsToSeconds } from 'date-fns/millisecondsToSeconds';
@@ -95,6 +96,7 @@ const barChartPlugin = (params: { color: string; minRangeInMs: Milliseconds }): 
 export class TimelineChartUplotComponent {
   private elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private destroyRef = inject(DestroyRef);
+  private store = inject(AppStore);
 
   public chartData = input<AlignedData>();
   public range = input<ScaleRange>();
@@ -121,7 +123,7 @@ export class TimelineChartUplotComponent {
           : millisecondsToSeconds(Date.now());
     if (oldMin === newMin && oldMax === newMax) return;
     // Wait until visible
-    setTimeout(() => this.uplot?.setScale('x', { min: newMin, max: newMax }));
+    this.uplot?.setScale('x', { min: newMin, max: newMax });
   }
   private firstRangeChangeSkipped = false;
   private uplot?: uPlot;
@@ -129,6 +131,8 @@ export class TimelineChartUplotComponent {
   private resizeObserver?: ResizeObserver;
   constructor() {
     effect(() => {
+      this.store.theme();
+
       const stroke = window.getComputedStyle(this.elementRef.nativeElement).color;
       const primaryColor = window
         .getComputedStyle(this.elementRef.nativeElement)
@@ -136,18 +140,23 @@ export class TimelineChartUplotComponent {
       const secondaryColor = window
         .getComputedStyle(this.elementRef.nativeElement)
         .getPropertyValue('--mdc-filled-text-field-container-color');
-      this.uplot?.axes.forEach((a) => (a.stroke = () => stroke));
-      this.uplot?.series.forEach((s, i) => {
-        if (i === 1) s.fill = () => primaryColor;
-        if (i === 2) s.fill = () => secondaryColor;
-      });
-      setTimeout(() => {
-        this.uplot?.redraw(false);
+
+      this.uplot?.batch((uPlot: uPlot) => {
+        uPlot?.axes.forEach((a) => (a.stroke = () => stroke));
+        uPlot?.series.forEach((s, i) => {
+          if (i === 1) s.fill = () => primaryColor;
+          if (i === 2) s.fill = () => secondaryColor;
+        });
+        uPlot?.redraw(true);
       });
     });
     effect(() => {
       const chartData = this.chartData();
-      if (chartData) this.uplot?.setData(chartData, false);
+      if (chartData) {
+        this.uplot?.batch((uPlot: uPlot) => {
+          uPlot.setData(chartData);
+        });
+      }
     });
     effect(() => {
       const range = this.range();
