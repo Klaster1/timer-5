@@ -12,7 +12,7 @@
           <mat-icon svgIcon="filter_list"></mat-icon>
         </button>
       </mat-toolbar>
-      @defer (on hover(toggle); on interaction(toggle); when searchOpened()) {
+      @defer {
         @if (searchOpened()) {
           <tasks-filter (keyup.esc)="toggleFilter(false)"></tasks-filter>
         }
