@@ -61,7 +61,7 @@ const tasksToBars = (allTasks: Task[], currentTasks: Task[]): Bars => {
         }
         const sessionSlice = clampSession(s, bar.start.valueOf(), bar.end.valueOf(), now.valueOf());
         const sliceDuration = sessionDurationPure(sessionSlice);
-        bar.includesCurrentTasks = currentTasksIds.has(task.id);
+        if (!bar.includesCurrentTasks) bar.includesCurrentTasks = currentTasksIds.has(task.id);
         bar.tasks.add(task.id);
         bar.duration += sliceDuration;
         duration = duration - sliceDuration;
