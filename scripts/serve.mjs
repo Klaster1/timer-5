@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 const angularConfig = (await import(`../angular.json`, { assert: { type: 'json' } })).default;
 
 const dir = angularConfig.projects.timer.architect.build.options.outputPath.base;
-const base = angularConfig.projects.timer.architect.build.options.baseHref;
+const base = angularConfig.projects.timer.architect.build.configurations.production.baseHref;
 
 express()
   .use(base, express.static(dir))
