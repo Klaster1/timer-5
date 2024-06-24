@@ -204,6 +204,21 @@ export class TimelineChartUplotComponent {
             m: {
               auto: true,
             },
+            x: {
+              time: true,
+              auto: true,
+              range(self, min, max) {
+                const currentMin = self.scales.x!.min!;
+                const currentMax = self.scales.x!.max!;
+                const minRangeWidthInSeconds: Seconds = millisecondsToSeconds(daysToMilliseconds(0.99));
+                const missingRange: Seconds = max - min;
+                if (missingRange <= minRangeWidthInSeconds) {
+                  return [currentMin - missingRange * 0.5, currentMax + missingRange * 0.5];
+                } else {
+                  return [min, max];
+                }
+              },
+            },
           },
           series: [
             {
