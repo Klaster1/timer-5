@@ -1,9 +1,7 @@
-const baseUrl = 'http://localhost:4200/timer-5/';
-
 /** @type {TestCafeConfigurationOptions} */
 module.exports = {
   src: './e2e/fixtures/',
-  baseUrl,
+  baseUrl: 'http://localhost:4200/',
   screenshots: {
     path: './e2e/screenshots',
     takeOnFails: true,

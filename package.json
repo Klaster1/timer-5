@@ -7,7 +7,7 @@
     "start": "ng serve",
     "build": "ng build --configuration production && node ./scripts/gh-pages-before-add.js",
     "e2e": "testcafe chrome:headless -c 4 -q",
-    "e2e:ci": "testcafe chrome:headless -c 4 -q --app=\"node ./scripts/serve.mjs\" -r spec,xunit:e2e/report.xml",
+    "e2e:ci": "testcafe chrome:headless -c 4 -q --app=\"node ./scripts/serve.mjs\" -r spec,xunit:e2e/report.xml --base-url=\"http://localhost:4200/timer-5/\"",
     "deploy": "npm run build && gh-pages --nojekyll --dotfiles --dist dist"
   },
   "private": true,
