@@ -240,13 +240,17 @@ export class TimelineChartUplotComponent {
               show: true,
               label: this.getLegendLabel(),
               scale: 'm',
-              value: (_, value) => this.getLegendValue(value),
+              value: (self, rawValue, seriesIndex, idx) => {
+                const otherBarValue = typeof idx === 'number' ? self.data[seriesIndex + 1]?.[idx] : undefined;
+                const valueToShow =
+                  rawValue === 0 && otherBarValue !== 0 && typeof otherBarValue === 'number' ? otherBarValue : rawValue;
+                return this.getLegendValue(valueToShow);
+              },
             },
             {
               show: true,
-              label: this.getLegendLabel(),
               scale: 'm',
-              value: (_, value) => this.getLegendValue(value),
+              class: 'hidden',
             },
           ],
           axes: [
