@@ -9,7 +9,7 @@
     "serve:ci": "npx local-web-server --port 4200 --directory ./dist --spa timer-5/404.html",
     "e2e": "testcafe chrome:headless -c 4 -q",
     "e2e:ci": "testcafe chrome:headless -c 4 -q --app=\"npm run serve:ci\" -r spec,xunit:e2e/report.xml --base-url=\"http://localhost:4200/timer-5/\"",
-    "deploy": "npm run build && gh-pages --nojekyll --dotfiles --dist dist/timer-5"
+    "deploy": "gh-pages --nojekyll --dotfiles --dist dist/timer-5"
   },
   "private": true,
   "dependencies": {
