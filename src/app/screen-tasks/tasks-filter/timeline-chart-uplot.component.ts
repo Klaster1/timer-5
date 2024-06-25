@@ -91,6 +91,9 @@ const barChartPlugin = (params: { colors: (string | null)[]; minRangeInMs: Milli
         .uplot {
           position: absolute;
         }
+        .hidden {
+          display: none;
+        }
       }
     `,
   ],
@@ -230,7 +233,7 @@ export class TimelineChartUplotComponent {
           },
           series: [
             {
-              value: (_, value) => format(new Date(secondsToMilliseconds(value)), 'yyyy-MM-dd'),
+              value: (_, value) => (!value ? '-' : format(new Date(secondsToMilliseconds(value)), 'yyyy-MM-dd')),
               label: 'Day',
             },
             {
