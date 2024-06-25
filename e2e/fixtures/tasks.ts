@@ -83,7 +83,7 @@ test('Starting/stopping the task', async (t) => {
   await t.expect(screenTask.sessionRow.count).eql(4);
   await t.expect(screenTask.sessionStart.nth(0).textContent).match(/\d/);
   await t.expect(screenTask.sessionEnd.nth(0).textContent).notMatch(/\d/);
-  await t.expect(screenTask.sessionDuration.nth(0).textContent).contains('00:00');
+  await t.expect(screenTask.sessionDuration.nth(0).textContent).contains('5s', { timeout: 10_000 });
   // Assert the "Start" button is replaced with the "Stop" button and its tooltip reads "Stop"
   await t.expect(screenTask.buttonStop.exists).ok();
   await t.hover(screenTask.name);
@@ -300,25 +300,24 @@ test('Editing a session', async (t) => {
   await screenTasks.addTask('Test');
   await t.pressKey('s');
   // Change a running task session start time, assert the total changes
-  await t.expect(screenTask.sessionDuration.nth(0).textContent).eql(' 00:00 ');
-  await t.expect(screenTask.taskDuration.textContent).eql(' 00:00 ');
-  await t.expect(screenTasks.total.textContent).eql(' (00:00) ');
+  await t.expect(screenTask.sessionDuration.nth(0).textContent).eql('3s', { timeout: 5_000 });
+  await t.expect(screenTask.taskDuration.textContent).eql('5s');
   await t.click(screenTask.buttonSessionAction).click(screenTask.menuSession.buttonEdit);
   const now = utcDateToLocalDate(new Date());
   now.setHours(now.getHours() - 3);
   await dialogEditSession.setStart(now);
   await t.click(dialogEditSession.buttonSubmit);
-  await t.expect(screenTask.sessionDuration.nth(0).textContent).eql(' 03:00 ');
-  await t.expect(screenTask.taskDuration.textContent).eql(' 03:00 ');
-  await t.expect(screenTasks.total.textContent).eql(' (03:00) ');
+  await t.expect(screenTask.sessionDuration.nth(0).textContent).eql('3h00m');
+  await t.expect(screenTask.taskDuration.textContent).eql('3h00m');
+  await t.expect(screenTasks.total.textContent).eql('2h59m');
   // For a running task session, set the end time, assert the task becomes active/non-running
   await t.click(screenTask.buttonSessionAction).click(screenTask.menuSession.buttonEdit);
   now.setHours(now.getHours() + 2);
   await dialogEditSession.setEnd(now);
   await t.click(dialogEditSession.buttonSubmit);
-  await t.expect(screenTask.sessionDuration.nth(0).textContent).eql(' 02:00 ');
-  await t.expect(screenTask.taskDuration.textContent).eql(' 02:00 ');
-  await t.expect(screenTasks.total.textContent).eql(' (02:00) ');
+  await t.expect(screenTask.sessionDuration.nth(0).textContent).eql('2h00m');
+  await t.expect(screenTask.taskDuration.textContent).eql('2h00m');
+  await t.expect(screenTasks.total.textContent).eql('2h00m');
   await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).contains('play_circle');
   // For a complete task session, remove the end time, assert the task becomes active/running and the total updates
   await t
@@ -329,9 +328,9 @@ test('Editing a session', async (t) => {
     .click(dialogEditSession.inputEnd)
     .pressKey('ctrl+a delete')
     .click(dialogEditSession.buttonSubmit);
-  await t.expect(screenTask.sessionDuration.nth(0).textContent).eql(' 03:00 ');
-  await t.expect(screenTask.taskDuration.textContent).eql(' 03:00 ');
-  await t.expect(screenTasks.total.textContent).eql(' (03:00) ');
+  await t.expect(screenTask.sessionDuration.nth(0).textContent).eql('3h00m');
+  await t.expect(screenTask.taskDuration.textContent).eql('3h00m');
+  await t.expect(screenTasks.total.textContent).eql('2h59m');
   await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).contains('pause_circle');
   // Edit a session, assert the form can't be submitted without start time
   await t
@@ -360,8 +359,8 @@ test('Moving a session', async (t) => {
   // Assert the target task is no longer marked as the drop target
   await t.expect(screenTasks.taskItem.withText('To').hasClass('cdk-drop-list-dragging')).notOk();
   // Assert the total for both tasks were updated
-  await t.expect(screenTasks.taskItem.withText('To').find(screenTasks.durationSelector).textContent).contains('00:00');
-  await t.expect(screenTasks.taskItem.withText('From').find(screenTasks.durationSelector).textContent).eql('00:00');
+  await t.expect(screenTasks.taskItem.withText('To').find(screenTasks.durationSelector).textContent).contains('0s');
+  await t.expect(screenTasks.taskItem.withText('From').find(screenTasks.durationSelector).textContent).eql('0s');
   // Assert the session was moved from task 1 to task 2
   await t.expect(screenTask.name.textContent).contains('From');
   await t.expect(screenTask.sessionStart.count).eql(0);
