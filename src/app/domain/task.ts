@@ -73,16 +73,6 @@ export const getSessionId = (session: Session): SessionId => [session.start, ses
 export const isSessionWithId = (id: SessionId) => (session: Session) => deepEquals(getSessionId(session), id);
 export const getTaskSession = (task: Task, id: SessionId) => task.sessions.find(isSessionWithId(id));
 
-export const taskDurationPure = (task: Task, now: number): number => {
-  const completeDuration = completeTaskDuration(task);
-  const lastSession = getTaskRunningSession(task);
-  return lastSession
-    ? sessionIsOver(lastSession)
-      ? completeDuration
-      : completeDuration + now - lastSession.start
-    : completeDuration;
-};
-
 export const makeTaskId = (): TaskId => nanoid(4);
 
 export const sessionDuration = (session?: Session): DurationFn => {
@@ -157,8 +147,8 @@ const sortByDuration = (filter: FilterParams, tasks: Task[]): Task[] => {
   if (filter.durationSort) {
     return [...tasks].sort((a, b) =>
       filter.durationSort === 'shortestFirst'
-        ? taskDurationPure(a, now) - taskDurationPure(b, now)
-        : taskDurationPure(b, now) - taskDurationPure(a, now),
+        ? taskDuration(a)(now) - taskDuration(b)(now)
+        : taskDuration(b)(now) - taskDuration(a)(now),
     );
   } else {
     return [...tasks].sort(compareTasks);
