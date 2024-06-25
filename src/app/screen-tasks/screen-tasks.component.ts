@@ -22,9 +22,9 @@ import { MatToolbar } from '@angular/material/toolbar';
 import { MatTooltip } from '@angular/material/tooltip';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ButtonTaskActionsComponent } from '@app/button-task-actions/button-task-actions.component';
+import { DurationComponent } from '@app/directives/duration.component';
 import { KEYS_ADD, KEYS_NEXT, KEYS_PREV, KEYS_SEARCH, hotkey } from '@app/domain/hotkeys';
 import { SessionDragEvent, Task, TaskState, isTaskRunning } from '@app/domain/task';
-import { FormatDurationPipe } from '@app/pipes/format-duration.pipe';
 import { MapPipe } from '@app/pipes/map.pipe';
 import { TaskDurationPipe } from '@app/pipes/task-duration.pipe';
 import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
@@ -48,7 +48,6 @@ import { TasksFilterComponent } from './tasks-filter/tasks-filter.component';
     EmptyStateComponent,
     TasksFilterComponent,
     TaskStatePipe,
-    FormatDurationPipe,
     TaskDurationPipe,
     TasksDurationPipe,
     TaskStateIconPipe,
@@ -75,6 +74,7 @@ import { TasksFilterComponent } from './tasks-filter/tasks-filter.component';
     AsyncPipe,
     NgClass,
     TypeSafeCdkVirtualForDirective,
+    DurationComponent,
   ],
 })
 export default class ScreenTasksComponent {

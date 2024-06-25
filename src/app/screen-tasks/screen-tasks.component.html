@@ -4,8 +4,8 @@
       <mat-toolbar>
         <h1>
           <ng-container> {{ store.currentTaskState() | taskState }} </ng-container>
-          @if (tasks | tasksDuration: 20000 | formatDuration | async; as duration) {
-            <span class="state-duration" data-e2e="screen-tasks__total"> ({{ duration }}) </span>
+          @if (tasks | tasksDuration: 20000 | async; as duration) {
+            (<duration [value]="duration" data-e2e="screen-tasks__total" class="state-duration"></duration>)
           }
         </h1>
         <button mat-icon-button (click)="toggleFilter()" matTooltip="Toggle filter panel" #toggle>
@@ -54,9 +54,10 @@
               ></mat-icon>
               <div matListItemTitle>
                 <span class="name" data-e2e="screen-tasks__task-name">{{ task.name }}</span>
-                <span class="duration" data-e2e="screen-tasks__task-duration">{{
-                  task | taskDuration: 5000 | formatDuration | async
-                }}</span>
+                <duration
+                  data-e2e="screen-tasks__task-duration"
+                  [value]="(task | taskDuration: 5000 | async) ?? 0"
+                ></duration>
               </div>
               <button-task-actions matListItemMeta [task]="task"></button-task-actions>
             </a>
