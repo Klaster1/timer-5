@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/screen-tasks/tasks-filter/tasks-filter.component.scss"],
+  "sourcesContent": ["form {\n  display: grid;\n  gap: 10px;\n  padding: 10px;\n  grid-template-columns: 1fr 1fr auto;\n}\n\n.name {\n  grid-row: 1;\n  grid-column: span 1;\n}\n\n.duration {\n  grid-row: 1;\n  grid-column: 2 / span 2;\n}\n\n.from {\n  grid-row: 2;\n  grid-column: 1;\n}\n.to {\n  grid-row: 2;\n  grid-column: 2;\n}\n\n.dates-menu {\n  grid-row: 2;\n  grid-column: 3;\n  position: relative;\n  top: 7px;\n}\n\n@media (max-width: 530px) {\n  form {\n    grid-template-columns: 1fr;\n  }\n  .name {\n    grid-column: span 1;\n  }\n\n  .dates-menu {\n    display: none;\n  }\n}\n\ntimeline-chart-uplot {\n  height: 300px;\n}\n\ninput[type='search']::-webkit-search-cancel-button {\n  -webkit-appearance: none;\n}\n"],
+  "mappings": "AAAA,KACE,QAAA,KACA,IAAA,KAFF,QAGE,KACA,sBAAA,IAAA,IAAA,KAGF,CAAA,KACE,SAAA,EACA,YAAA,KAAA,EAGF,CAAA,SACE,SAAA,EACA,YAAA,CAAA,CAAA,KAAA,EAGF,CAAA,KACE,SAAA,EACA,YAAA,EAEF,CAAA,GACE,SAAA,EACA,YAAA,EAGF,CAAA,WACE,SAAA,EACA,YAAA,EACA,SAAA,SACA,IAAA,IAGF,OAAA,CAAA,SAAA,EAAA,OACE,KACE,sBAAA,IAEF,CA9BF,KA+BI,YAAA,KAAA,EAGF,CAfF,WAgBI,QAAA,MAIJ,qBACE,OAAA,MAGF,KAAA,CAAA,YAAA,+BACE,mBAAA",
+  "names": []
+}

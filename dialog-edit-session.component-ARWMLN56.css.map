@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/dialog-edit-session/dialog-edit-session.component.scss"],
+  "sourcesContent": ["form {\n  display: grid;\n  grid-template-columns: 1fr;\n  gap: 10px;\n}\n"],
+  "mappings": "AAAA,KACE,QAAA,KACA,sBAAA,IACA,IAAA",
+  "names": []
+}
