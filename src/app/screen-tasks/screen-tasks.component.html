@@ -4,9 +4,13 @@
       <mat-toolbar>
         <h1>
           <ng-container> {{ store.currentTaskState() | taskState }} </ng-container>
-          @if (tasks | tasksDuration: 20000 | async; as duration) {
-            (<duration [value]="duration" data-e2e="screen-tasks__total" class="state-duration"></duration>)
-          }
+          (<duration
+            [value]="tasks | map: tasksDuration"
+            data-e2e="screen-tasks__total"
+            class="state-duration"
+            [durationInterval]="20_000"
+          ></duration
+          >)
         </h1>
         <button mat-icon-button (click)="toggleFilter()" matTooltip="Toggle filter panel" #toggle>
           <mat-icon svgIcon="filter_list"></mat-icon>
@@ -33,7 +37,7 @@
           [scrollToIndex]="store.currentTaskIndex()"
           [checkViewportSizeWhenValueChanges]="tasks"
         >
-          <mat-nav-list>
+          <mat-nav-list [durationInterval]="1_000">
             <a
               mat-list-item
               *cdkVirtualFor="let task of tasks; trackBy: taskId; types: tasks"
@@ -54,10 +58,7 @@
               ></mat-icon>
               <div matListItemTitle>
                 <span class="name" data-e2e="screen-tasks__task-name">{{ task.name }}</span>
-                <duration
-                  data-e2e="screen-tasks__task-duration"
-                  [value]="(task | taskDuration: 5000 | async) ?? 0"
-                ></duration>
+                <duration data-e2e="screen-tasks__task-duration" [value]="task | map: taskDuration"></duration>
               </div>
               <button-task-actions matListItemMeta [task]="task"></button-task-actions>
             </a>

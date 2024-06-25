@@ -10,7 +10,14 @@
     <button-task-actions [task]="task"></button-task-actions>
   </mat-toolbar>
   <cdk-virtual-scroll-viewport [itemSize]="52" #viewport minBufferPx="200" maxBufferPx="2000">
-    <table class="mat-mdc-table" cdkDropList [cdkDropListSortingDisabled]="true" cdkVirtualScrollingElement sticky>
+    <table
+      class="mat-mdc-table"
+      cdkDropList
+      [cdkDropListSortingDisabled]="true"
+      cdkVirtualScrollingElement
+      sticky
+      [durationInterval]="1000"
+    >
       <thead [ngStyle]="{ top: '-' + viewport.getOffsetToRenderedContentStart() + 'px' }">
         <tr class="mat-mdc-header-row mdc-data-table__header-row">
           <th class="header-start mat-mdc-header-cell mdc-data-table__header-cell">Start</th>
@@ -35,7 +42,7 @@
               {{ item.end | date: 'yyyy-MM-dd H:mm' }}
             </td>
             <td class="mat-mdc-cell mdc-data-table__cell" data-e2e="screen-task__session-duration">
-              <duration [value]="(item | map: sessionDuration | async) ?? 0"></duration>
+              <duration [value]="item | map: sessionDuration"></duration>
             </td>
             <td class="mat-mdc-cell mdc-data-table__cell">
               <button-session-actions
@@ -52,7 +59,7 @@
           <td class="mat-mdc-footer-cell mdc-data-table__cell">Total</td>
           <td class="mat-mdc-footer-cell mdc-data-table__cell"></td>
           <td class="mat-mdc-footer-cell mdc-data-table__cell" data-e2e="screen-task__task-duration">
-            <duration [value]="(task | taskDuration | async) ?? 0"></duration>
+            <duration [value]="task | map: taskDuration"></duration>
           </td>
           <td class="mat-mdc-footer-cell mdc-data-table__cell"></td>
         </tr>

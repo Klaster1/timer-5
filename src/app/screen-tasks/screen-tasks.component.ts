@@ -22,14 +22,12 @@ import { MatToolbar } from '@angular/material/toolbar';
 import { MatTooltip } from '@angular/material/tooltip';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ButtonTaskActionsComponent } from '@app/button-task-actions/button-task-actions.component';
-import { DurationComponent } from '@app/directives/duration.component';
+import { DurationComponent, DurationIntervalDirective } from '@app/directives/duration.component';
 import { KEYS_ADD, KEYS_NEXT, KEYS_PREV, KEYS_SEARCH, hotkey } from '@app/domain/hotkeys';
-import { SessionDragEvent, Task, TaskState, isTaskRunning } from '@app/domain/task';
+import { SessionDragEvent, Task, TaskState, isTaskRunning, taskDuration, tasksDuration } from '@app/domain/task';
 import { MapPipe } from '@app/pipes/map.pipe';
-import { TaskDurationPipe } from '@app/pipes/task-duration.pipe';
 import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
 import { TaskStatePipe } from '@app/pipes/task-state.pipe';
-import { TasksDurationPipe } from '@app/pipes/tasks-duration.pipe';
 import { TypeSafeCdkVirtualForDirective } from '@app/screen-task/type-safe-virtual-for.directive';
 import { AppStore } from '@app/services/state';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
@@ -48,8 +46,6 @@ import { TasksFilterComponent } from './tasks-filter/tasks-filter.component';
     EmptyStateComponent,
     TasksFilterComponent,
     TaskStatePipe,
-    TaskDurationPipe,
-    TasksDurationPipe,
     TaskStateIconPipe,
     RouterLink,
     RouterOutlet,
@@ -75,6 +71,7 @@ import { TasksFilterComponent } from './tasks-filter/tasks-filter.component';
     NgClass,
     TypeSafeCdkVirtualForDirective,
     DurationComponent,
+    DurationIntervalDirective,
   ],
 })
 export default class ScreenTasksComponent {
@@ -115,6 +112,8 @@ export default class ScreenTasksComponent {
     });
   }
 
+  taskDuration = taskDuration;
+  tasksDuration = tasksDuration;
   taskState = TaskState;
   isTaskRunning = isTaskRunning;
   taskId: TrackByFunction<Task> = (_, task) => task.id;

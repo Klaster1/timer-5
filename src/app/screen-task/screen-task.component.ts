@@ -17,7 +17,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltip } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { ButtonTaskActionsComponent } from '@app/button-task-actions/button-task-actions.component';
-import { DurationComponent } from '@app/directives/duration.component';
+import { DurationComponent, DurationIntervalDirective } from '@app/directives/duration.component';
 import {
   KEYS_DELETE_TASK,
   KEYS_MARK_ACTIVE,
@@ -26,9 +26,8 @@ import {
   KEYS_START_STOP,
   hotkey,
 } from '@app/domain/hotkeys';
-import { Task, TaskState, isTaskRunning, sessionDuration } from '@app/domain/task';
+import { Task, TaskState, isTaskRunning, sessionDuration, taskDuration } from '@app/domain/task';
 import { MapPipe } from '@app/pipes/map.pipe';
-import { TaskDurationPipe } from '@app/pipes/task-duration.pipe';
 import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
 import { AppStore } from '@app/services/state';
 import { HotkeysService } from 'angular2-hotkeys';
@@ -47,7 +46,6 @@ import { TypeSafeCdkVirtualForDirective } from './type-safe-virtual-for.directiv
     MatToolbarModule,
     MatIcon,
     MatTooltip,
-    TaskDurationPipe,
     ButtonTaskActionsComponent,
     ButtonSessionActionsComponent,
     MapPipe,
@@ -64,6 +62,7 @@ import { TypeSafeCdkVirtualForDirective } from './type-safe-virtual-for.directiv
     VirtualScrollStickyTable,
     TypeSafeCdkVirtualForDirective,
     DurationComponent,
+    DurationIntervalDirective,
   ],
 })
 export default class ScreenTaskComponent {
@@ -73,8 +72,9 @@ export default class ScreenTaskComponent {
 
   taskIsInProgress = computed(() => isTaskRunning(this.store.currentTask()));
   viewport = viewChild(CdkVirtualScrollViewport);
-
+  taskDuration = taskDuration;
   sessionDuration = sessionDuration;
+
   hotkeys = [
     hotkey(KEYS_START_STOP, 'Start/stop task', (e) => {
       const task = this.store.currentTask();

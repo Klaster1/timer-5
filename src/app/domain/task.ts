@@ -1,8 +1,7 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { deepEquals, isNumber } from '@app/utils/assert';
 import { nanoid } from 'nanoid';
-import { Observable, combineLatest, map, of, startWith, timer } from 'rxjs';
-import { Milliseconds } from './date-time';
+import { DurationFn, Milliseconds } from './date-time';
 import { FilterMatrixParams, RouteFragmentParams } from './router';
 
 export enum TaskState {
@@ -86,30 +85,26 @@ export const taskDurationPure = (task: Task, now: number): number => {
 
 export const makeTaskId = (): TaskId => nanoid(4);
 
-export const sessionDuration = (session?: Session): Observable<number> => {
+export const sessionDuration = (session?: Session): DurationFn => {
   if (!session) {
-    return of(0);
+    return () => 0;
   }
-  return sessionIsOver(session)
-    ? of(session.end - session.start)
-    : timer(0, 1000).pipe(map(() => Date.now() - session.start));
+  return (now: Milliseconds) => (session.end ? session.end - session.start : now - session.start);
 };
-export const taskDuration = (task?: Task, interval = 1000): Observable<number> => {
+
+export const taskDuration = (task?: Task): DurationFn => {
   const completeDuration = completeTaskDuration(task);
   const lastSession = getTaskRunningSession(task);
   return lastSession
     ? sessionIsOver(lastSession)
-      ? of(completeDuration)
-      : timer(0, interval).pipe(
-          startWith(0),
-          map(() => completeDuration + Date.now() - lastSession.start),
-        )
-    : of(completeDuration);
+      ? () => completeDuration
+      : (now: Milliseconds) => completeDuration + now - lastSession.start
+    : () => completeDuration;
 };
-export const tasksDuration = (tasks: Task[], interval = 1000): Observable<number> =>
-  combineLatest(tasks.map((t) => taskDuration(t, interval))).pipe(
-    map((durations) => durations.reduce((acc, d) => acc + d, 0)),
-  );
+
+export const tasksDuration = (tasks: Task[]): DurationFn => {
+  return (now: Milliseconds) => tasks.reduce((t, task) => t + taskDuration(task)(now), 0);
+};
 
 type Nullable<T> = T | null;
 
