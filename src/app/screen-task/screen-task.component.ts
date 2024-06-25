@@ -17,6 +17,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltip } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { ButtonTaskActionsComponent } from '@app/button-task-actions/button-task-actions.component';
+import { DurationComponent } from '@app/directives/duration.component';
 import {
   KEYS_DELETE_TASK,
   KEYS_MARK_ACTIVE,
@@ -26,7 +27,6 @@ import {
   hotkey,
 } from '@app/domain/hotkeys';
 import { Task, TaskState, isTaskRunning, sessionDuration } from '@app/domain/task';
-import { FormatDurationPipe } from '@app/pipes/format-duration.pipe';
 import { MapPipe } from '@app/pipes/map.pipe';
 import { TaskDurationPipe } from '@app/pipes/task-duration.pipe';
 import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
@@ -47,7 +47,6 @@ import { TypeSafeCdkVirtualForDirective } from './type-safe-virtual-for.directiv
     MatToolbarModule,
     MatIcon,
     MatTooltip,
-    FormatDurationPipe,
     TaskDurationPipe,
     ButtonTaskActionsComponent,
     ButtonSessionActionsComponent,
@@ -64,6 +63,7 @@ import { TypeSafeCdkVirtualForDirective } from './type-safe-virtual-for.directiv
     NgStyle,
     VirtualScrollStickyTable,
     TypeSafeCdkVirtualForDirective,
+    DurationComponent,
   ],
 })
 export default class ScreenTaskComponent {

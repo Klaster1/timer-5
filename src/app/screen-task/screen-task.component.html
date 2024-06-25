@@ -35,7 +35,7 @@
               {{ item.end | date: 'yyyy-MM-dd H:mm' }}
             </td>
             <td class="mat-mdc-cell mdc-data-table__cell" data-e2e="screen-task__session-duration">
-              {{ item | map: sessionDuration | formatDuration | async }}
+              <duration [value]="(item | map: sessionDuration | async) ?? 0"></duration>
             </td>
             <td class="mat-mdc-cell mdc-data-table__cell">
               <button-session-actions
@@ -52,7 +52,7 @@
           <td class="mat-mdc-footer-cell mdc-data-table__cell">Total</td>
           <td class="mat-mdc-footer-cell mdc-data-table__cell"></td>
           <td class="mat-mdc-footer-cell mdc-data-table__cell" data-e2e="screen-task__task-duration">
-            {{ task | taskDuration | formatDuration | async }}
+            <duration [value]="(task | taskDuration | async) ?? 0"></duration>
           </td>
           <td class="mat-mdc-footer-cell mdc-data-table__cell"></td>
         </tr>
