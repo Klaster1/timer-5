@@ -12,9 +12,6 @@ export const VISUAL_REGRESSION_META = { 'visual-regression': 'true' };
 type ScreenshotPathName = 'reference' | 'current' | 'diff';
 type ScreenshotPaths = Record<ScreenshotPathName, string>;
 
-export const isVisualRegressionEnabled = () =>
-  (t.test.meta as Partial<typeof VISUAL_REGRESSION_META>)['visual-regression'] === 'true';
-
 const s = (value: string) => slugify(value).replace(/["':`]/g, '');
 
 const getPaths = (name: string): { relative: ScreenshotPaths; absolute: ScreenshotPaths } => {
@@ -42,9 +39,6 @@ export async function comparePageScreenshot(
     odiff?: ODiffOptions;
   },
 ): ReturnType<typeof odiff> {
-  if (!process.argv.some((arg) => arg === 'visual-regression=true')) return await VISUAL_REGRESSION_OK;
-  if (!isVisualRegressionEnabled()) return await VISUAL_REGRESSION_OK;
-
   const paths = getPaths(name);
   const mode: VisualRegressionMode = existsSync(paths.absolute.reference) ? 'compare' : 'create';
 
