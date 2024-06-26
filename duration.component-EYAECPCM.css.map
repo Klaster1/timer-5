@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["duration.component.ts"],
+  "sourcesContent": ["\n      :host {\n        display: inline-flex;\n        gap: 0.35em;\n        --unit-font-size: 0.6em;\n      }\n      .unit {\n        font-size: var(--unit-font-size);\n      }\n      .value {\n        display: inline-flex;\n        align-items: baseline;\n      }\n      .dimmed {\n        opacity: 0.35;\n      }\n    "],
+  "mappings": "AACM,MACE,QAAA,YACA,IAAA,MACA,kBAAA,KAEF,CAAA,KACE,UAAA,IAAA,kBAEF,CAAA,MACE,QAAA,YACA,YAAA,SAEF,CAAA,OACE,QAAA",
+  "names": []
+}
