@@ -1,5 +1,5 @@
 @if (store.currentTask(); as task) {
-  <mat-toolbar>
+  <mat-toolbar [syncWidthTo]="viewport">
     <button routerLink="./.." queryParamsHandling="merge" mat-icon-button>
       <mat-icon svgIcon="arrow_back"></mat-icon>
     </button>

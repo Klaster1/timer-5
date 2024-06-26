@@ -1,7 +1,7 @@
 <div class="container" [ngClass]="{ 'task-opened': store.isCurrentTaskOpened() }">
   @if (store.currentTasks(); as tasks) {
     <section class="tasks">
-      <mat-toolbar>
+      <mat-toolbar [syncWidthTo]="viewport()">
         <h1>
           <ng-container> {{ store.currentTaskState() | taskState }} </ng-container>
           (<duration

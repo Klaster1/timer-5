@@ -23,6 +23,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ButtonTaskActionsComponent } from '@app/button-task-actions/button-task-actions.component';
 import { DurationComponent, DurationIntervalDirective } from '@app/directives/duration.component';
+import { ToolbarWidthSyncDirective } from '@app/directives/toolbar-width-sync';
 import { KEYS_ADD, KEYS_NEXT, KEYS_PREV, KEYS_SEARCH, hotkey } from '@app/domain/hotkeys';
 import { SessionDragEvent, Task, TaskState, isTaskRunning, taskDuration, tasksDuration } from '@app/domain/task';
 import { MapPipe } from '@app/pipes/map.pipe';
@@ -72,6 +73,7 @@ import { TasksFilterComponent } from './tasks-filter/tasks-filter.component';
     TypeSafeCdkVirtualForDirective,
     DurationComponent,
     DurationIntervalDirective,
+    ToolbarWidthSyncDirective,
   ],
 })
 export default class ScreenTasksComponent {
@@ -79,7 +81,7 @@ export default class ScreenTasksComponent {
   private keys = inject(HotkeysService);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
-  private viewport = viewChild(CdkVirtualScrollViewport);
+  public viewport = viewChild(CdkVirtualScrollViewport);
   private injector = inject(Injector);
 
   private filterPresent = computed(() => !!Object.keys(this.store.decodedFilterParams()).length);
