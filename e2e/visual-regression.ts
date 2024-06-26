@@ -1,57 +1,73 @@
+import looksSame from 'looks-same';
 import { existsSync, rmSync } from 'node:fs';
-import path from 'node:path';
-import { ODiffOptions, compare as odiff } from 'odiff-bin';
-import slugify from 'slugify';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { dirname, join, resolve } from 'node:path';
 import { t } from 'testcafe';
-
-type VisualRegressionMode = 'create' | 'compare';
+import { getCdpClient } from './utils';
 
 export const VISUAL_REGRESSION_OK = { match: true } as const;
-export const VISUAL_REGRESSION_META = { 'visual-regression': 'true' };
 
+type VisualRegressionMode = 'create' | 'compare';
 type ScreenshotPathName = 'reference' | 'current' | 'diff';
 type ScreenshotPaths = Record<ScreenshotPathName, string>;
 
-const s = (value: string) => slugify(value).replace(/["':`]/g, '');
-
-const getPaths = (name: string): { relative: ScreenshotPaths; absolute: ScreenshotPaths } => {
-  const BASE_PATH = ['screenshots', 'visual-regression'];
-
-  const commonFileName = `${s(t.fixture.name)}__${s(t.test.name)}__${s(name)}`;
-
-  const reference = path.join(...BASE_PATH, `${commonFileName}.reference.png`);
-  const current = path.join(...BASE_PATH, `${commonFileName}.current.png`);
-  const diff = path.join(...BASE_PATH, `${commonFileName}.diff.png`);
+const getPaths = (name: string): ScreenshotPaths => {
+  const BASE_PATH = ['visual-regression-screenshots'];
+  const commonFileName = `[${t.fixture.name}] ${t.test.name} - ${name}`;
 
   return {
-    relative: { reference, current, diff },
-    absolute: {
-      reference: path.resolve(__dirname, reference),
-      current: path.resolve(__dirname, current),
-      diff: path.resolve(__dirname, diff),
-    },
+    reference: resolve(__dirname, join(...BASE_PATH, `${commonFileName}.reference.png`)),
+    current: resolve(__dirname, join(...BASE_PATH, `${commonFileName}.current.png`)),
+    diff: resolve(__dirname, join(...BASE_PATH, `${commonFileName}.diff.png`)),
   };
+};
+
+const captureScreenshot = async (path: string, options?: { resolution: { width: number; height: number } }) => {
+  await t.eval(() => {
+    const style = document.createElement('style');
+    style.id = 'visual-regression';
+    style.innerHTML = '.root-hammerhead-shadow-ui { display: none !important; }';
+    document.head.appendChild(style);
+  });
+  const windowWidth = await t.eval(() => window.innerWidth);
+  const windowHeight = await t.eval(() => window.innerHeight);
+  await t.resizeWindow(options?.resolution?.width ?? 1920, options?.resolution.height ?? 1080);
+  const client = await getCdpClient();
+  const screenshot = await client.send('Page.captureScreenshot', { format: 'png' });
+  await t.resizeWindow(windowWidth, windowHeight);
+  await mkdir(dirname(path), { recursive: true });
+  await writeFile(path, Buffer.from(screenshot.data, 'base64'));
+  await t.eval(() => document.querySelector('#visual-regression')?.remove());
 };
 
 export async function comparePageScreenshot(
   name: string,
   options?: {
-    odiff?: ODiffOptions;
+    looksSame: Omit<looksSame.LooksSameOptions, 'createDiffImage' | 'stopOnFirstFail'>;
   },
-): ReturnType<typeof odiff> {
+) {
   const paths = getPaths(name);
-  const mode: VisualRegressionMode = existsSync(paths.absolute.reference) ? 'compare' : 'create';
+  const mode: VisualRegressionMode = existsSync(paths.reference) ? 'compare' : 'create';
 
   if (mode === 'create') {
-    await t.takeScreenshot({ path: path.relative('screenshots', paths.relative.reference), fullPage: true });
+    await captureScreenshot(paths.reference);
   } else if (mode === 'compare') {
-    rmSync(paths.absolute.diff, { force: true });
-    await t.takeScreenshot({ path: path.relative('screenshots', paths.relative.current), fullPage: true });
+    rmSync(paths.diff, { force: true });
+    await captureScreenshot(paths.current);
   }
   if (mode === 'create') {
     return VISUAL_REGRESSION_OK;
   } else if (mode === 'compare') {
-    return await odiff(paths.absolute.reference, paths.absolute.current, paths.absolute.diff);
+    const { equal, diffImage, ...rest } = await looksSame(paths.reference, paths.current, {
+      createDiffImage: true,
+      ...options?.looksSame,
+    });
+    if (equal) {
+      return VISUAL_REGRESSION_OK;
+    } else {
+      await diffImage.save(paths.diff);
+      return { match: false, ...rest };
+    }
   } else {
     return VISUAL_REGRESSION_OK;
   }
