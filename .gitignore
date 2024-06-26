@@ -50,3 +50,5 @@ testem.log
 Thumbs.db
 
 /data
+/e2e/visual-regression-screenshots/*.current.png
+/e2e/visual-regression-screenshots/*.diff.png
