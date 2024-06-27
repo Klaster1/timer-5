@@ -5,7 +5,6 @@
   max-height: 100vh;
   display: grid;
   grid-template-rows: auto 1fr;
-  padding-right: 2px;
 }
 h2 {
   display: grid;
@@ -52,6 +51,7 @@ mat-toolbar {
 }
 cdk-virtual-scroll-viewport {
   grid-row: 2;
+  padding-right: 2px;
 }
 duration {
   --unit-font-size: 10px;
