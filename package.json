@@ -40,6 +40,7 @@
     "@angular/language-service": "^18.0.5",
     "@napi-rs/canvas": "^0.1.53",
     "@types/chrome-remote-interface": "^0.31.14",
+    "@types/node": "^20.14.9",
     "angular-testcafe": "^4.0.0",
     "chrome-remote-interface": "^0.33.0",
     "gh-pages": "^6.1.1",
