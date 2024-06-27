@@ -1,0 +1,57 @@
+import express from 'express';
+import { readdir, rename, unlink } from 'node:fs/promises';
+
+/**
+ * @typedef {'reference'|'current'|'diff'} Type
+ */
+
+/**
+ * @typedef {Object} Result
+ * @property {string} fixture
+ * @property {string} test
+ * @property {string} name
+ * @property {string} referenceFile
+ * @property {string | null} diffFile
+ * @property {string | null} currentFile
+ */
+
+express()
+  .use(express.json())
+  // serve a html file when requesting /
+  .get('/', (req, res) => {
+    res.sendFile('./scripts/visual-regression-review.html', { root: '.' });
+  })
+  .get('/files/:file', async (req, res) => {
+    res.sendFile(`./e2e/visual-regression-screenshots/${req.params.file}`, { root: '.' });
+  })
+  .get('/results', async (req, res) => {
+    const files = await readdir('./e2e/visual-regression-screenshots');
+    const regex = /\[(?<fixture>.*?)\] (?<test>.*?) - (?<name>.*?).(?<type>reference|current|diff).png/;
+    /** @type {Result[]} */
+    const results = files.flatMap((file, index, all) => {
+      const match = file.match(regex);
+      const { fixture, test, name, type } = match.groups;
+      if (type !== 'reference') return [];
+      const referenceFile = file;
+      const diffFile = all.find((f) => f.includes(`[${fixture}] ${test} - ${name}.diff.png`)) ?? null;
+      const currentFile = all.find((f) => f.includes(`[${fixture}] ${test} - ${name}.current.png`)) ?? null;
+      return [{ fixture, test, name, referenceFile, diffFile, currentFile }];
+    });
+    res.json(results);
+  })
+  .post('/approvals', async (req, res) => {
+    /**
+     * @type {Result}
+     */
+    const approval = req.body;
+    await unlink(`./e2e/visual-regression-screenshots/${approval.diffFile}`);
+    await unlink(`./e2e/visual-regression-screenshots/${approval.referenceFile}`);
+    await rename(
+      `./e2e/visual-regression-screenshots/${approval.currentFile}`,
+      `./e2e/visual-regression-screenshots/${approval.referenceFile}`,
+    );
+    res.status(201).end();
+  })
+  .listen(4201);
+
+console.log('Visual regression review running at http://localhost:4201/');

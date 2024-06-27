@@ -1,0 +1,171 @@
+<html>
+  <head>
+    <title>Visual Regression Review</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/img-comparison-slider@8/dist/index.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/img-comparison-slider@8/dist/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👁️</text></svg>"
+    />
+  </head>
+  <body>
+    <ul></ul>
+    <span class="done">No regressions! 🎉</span>
+  </body>
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+      font-family: sans-serif, Robot;
+      font-size: 16px;
+    }
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+      &:empty {
+        display: none;
+      }
+      &:has(li) + .done {
+        display: none;
+      }
+    }
+    .done {
+      font-size: 60px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    li {
+      margin: 20px;
+      border: 2px solid black;
+      border-radius: 20px;
+      padding: 20px;
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 1fr auto;
+      grid-template-rows: auto auto;
+    }
+    dl {
+      display: inline-flex;
+      gap: 0.5em;
+      align-self: center;
+    }
+    dd {
+      padding: 0;
+      margin: 0;
+      font-weight: bold;
+      &:after {
+        content: ':';
+      }
+    }
+    img-comparison-slider {
+      grid-column: span 2;
+      container-type: inline-size;
+
+      > img[slot] {
+        width: 100cqw;
+      }
+    }
+    form {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    button[data-result] {
+      background: none;
+      font-size: 20px;
+      border: 1px solid black;
+      border-radius: 20px;
+      padding: 5px 20;
+      align-self: center;
+    }
+  </style>
+  <template id="item">
+    <li>
+      <dl>
+        <dd class="fixture">Fixture</dd>
+        <dt class="fixture"></dt>
+
+        <dd class="test">Test</dd>
+        <dt class="test"></dt>
+
+        <dd class="name">Name</dd>
+        <dt class="name"></dt>
+      </dl>
+      <form>
+        <fieldset>
+          <legend>Compare against</legend>
+          <label>
+            <input type="radio" name="reference" />
+            Diff
+          </label>
+          <label>
+            <input type="radio" name="reference" />
+            Current
+          </label>
+        </fieldset>
+        <button type="button">Approve ✅</button>
+      </form>
+      <img-comparison-slider>
+        <img slot="first" />
+        <img slot="second" />
+      </img-comparison-slider>
+    </li>
+  </template>
+
+  <script type="module">
+    /**
+     * @typedef {Object} Result
+     * @property {string} fixture
+     * @property {string} test
+     * @property {string} name
+     * @property {string} referenceFile
+     * @property {string | null} failureFile
+     * @property {string | null} currentFile
+     */
+    await fetch('/results')
+      .then((r) => r.json())
+      .then(
+        /** @param {Result[]} results */ (results) => {
+          results
+            .filter((result) => result.diffFile)
+            .forEach((result) => {
+              const item = document.getElementById('item').content.cloneNode(true);
+              item.querySelector('dt.fixture').textContent = result.fixture;
+              item.querySelector('dt.test').textContent = result.test;
+              item.querySelector('dt.name').textContent = result.name;
+              item.querySelector('img[slot="first"]').src = `/files/${result.referenceFile}`;
+              item.querySelector('img[slot="second"]').src = `/files/${result.diffFile}`;
+              item.querySelectorAll('input[name="reference"]')[0].value = `/files/${result.diffFile}`;
+              item.querySelectorAll('input[name="reference"]')[1].value = `/files/${result.currentFile}`;
+              item.querySelectorAll('input[name="reference"]')[0].checked = true;
+              item.querySelector('button').dataset.result = JSON.stringify(result);
+              document.querySelector('ul').appendChild(item);
+            });
+        },
+      );
+    document.addEventListener('click', async (event) => {
+      if (event.target.dataset.result) {
+        await fetch('/approvals', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: event.target.dataset.result,
+        }).then(() => {
+          event.target.closest('li').remove();
+        });
+      }
+    });
+    document.addEventListener('change', (event) => {
+      if (event.target.type === 'radio') {
+        const item = event.target.closest('li');
+        item.querySelector('img[slot="second"]').src = event.target.value;
+      }
+    });
+  </script>
+</html>
