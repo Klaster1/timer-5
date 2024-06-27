@@ -1,6 +1,7 @@
+import { createCanvas, loadImage } from '@napi-rs/canvas';
 import looksSame from 'looks-same';
-import { existsSync, rmSync } from 'node:fs';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
+import { mkdir, unlink, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { t } from 'testcafe';
 import { getCdpClient } from './utils';
@@ -22,51 +23,90 @@ const getPaths = (name: string): ScreenshotPaths => {
   };
 };
 
-const captureScreenshot = async (path: string, options?: { resolution: { width: number; height: number } }) => {
+const prepare = async () => {
+  await getCdpClient().then((client) => client.send('Animation.setPlaybackRate', { playbackRate: 100000 }));
   await t.eval(() => {
     const style = document.createElement('style');
     style.id = 'visual-regression';
     style.innerHTML = '.root-hammerhead-shadow-ui { display: none !important; }';
     document.head.appendChild(style);
   });
-  const windowWidth = await t.eval(() => window.innerWidth);
-  const windowHeight = await t.eval(() => window.innerHeight);
-  await t.resizeWindow(options?.resolution?.width ?? 1920, options?.resolution.height ?? 1080);
+
+  return async () => {
+    await t.eval(() => document.querySelector('#visual-regression')?.remove());
+    await getCdpClient().then((client) => client.send('Animation.setPlaybackRate', { playbackRate: 1 }));
+  };
+};
+
+const captureScreenshot = async (path: string) => {
   const client = await getCdpClient();
   const screenshot = await client.send('Page.captureScreenshot', { format: 'png' });
-  await t.resizeWindow(windowWidth, windowHeight);
   await mkdir(dirname(path), { recursive: true });
-  await writeFile(path, Buffer.from(screenshot.data, 'base64'));
-  await t.eval(() => document.querySelector('#visual-regression')?.remove());
+  return Buffer.from(screenshot.data, 'base64');
+};
+
+type Rect = { x: number; y: number; width: number; height: number };
+
+const getSelectorsBounds = async (selectors: Selector[]): Promise<Rect[]> => {
+  const result: Rect[] = [];
+  for (const selector of selectors) {
+    for (let i = 0; i < (await selector.count); i++) {
+      const bounds = await selector.nth(i).boundingClientRect;
+      result.push({
+        x: bounds.left,
+        y: bounds.top,
+        width: bounds.width,
+        height: bounds.height,
+      });
+    }
+  }
+  return result;
+};
+
+const maskImage = async (source: string | Buffer, bounds: Rect[]) => {
+  const image = await loadImage(source);
+  const canvas = createCanvas(image.width, image.height);
+  canvas.getContext('2d').fillStyle = 'cyan';
+  canvas.getContext('2d').drawImage(image, 0, 0);
+  for (const bound of bounds) {
+    canvas.getContext('2d').fillRect(bound.x, bound.y, bound.width, bound.height);
+  }
+  return canvas.toBuffer('image/png');
 };
 
 export async function comparePageScreenshot(
   name: string,
   options?: {
-    looksSame: Omit<looksSame.LooksSameOptions, 'createDiffImage' | 'stopOnFirstFail'>;
+    ignore?: Selector[];
+    looksSame?: Omit<looksSame.LooksSameOptions, 'createDiffImage' | 'stopOnFirstFail'>;
   },
 ) {
   const paths = getPaths(name);
   const mode: VisualRegressionMode = existsSync(paths.reference) ? 'compare' : 'create';
 
+  const cleanup = await prepare();
+  const diffClusters = await getSelectorsBounds(options?.ignore ?? []);
+  await Promise.all([unlink(paths.diff), unlink(paths.current)]).catch((e) => {});
+  const screenshot = await captureScreenshot(mode === 'compare' ? paths.current : paths.reference);
+  await cleanup();
+
   if (mode === 'create') {
-    await captureScreenshot(paths.reference);
-  } else if (mode === 'compare') {
-    rmSync(paths.diff, { force: true });
-    await captureScreenshot(paths.current);
-  }
-  if (mode === 'create') {
+    await writeFile(paths.reference, screenshot);
     return VISUAL_REGRESSION_OK;
   } else if (mode === 'compare') {
-    const { equal, diffImage, ...rest } = await looksSame(paths.reference, paths.current, {
+    const maskedReference = await maskImage(paths.reference, diffClusters);
+    const maskedCurrent = await maskImage(screenshot, diffClusters);
+    const { equal, diffImage, ...rest } = await looksSame(maskedReference, maskedCurrent, {
       createDiffImage: true,
       ignoreCaret: true,
+      shouldCluster: true,
       ...options?.looksSame,
     });
     if (equal) {
       return VISUAL_REGRESSION_OK;
     } else {
       await diffImage.save(paths.diff);
+      await writeFile(paths.current, screenshot);
       return { match: false, ...rest };
     }
   } else {

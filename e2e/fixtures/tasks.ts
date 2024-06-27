@@ -4,6 +4,7 @@ import { fixture, test } from 'testcafe';
 import { app } from '../page-objects/app';
 import { dialogEditSession } from '../page-objects/dialog-edit-session';
 import { dialogPrompt } from '../page-objects/dialog-prompt';
+import { duration } from '../page-objects/duration';
 import { menuTaskActions } from '../page-objects/menu-task-actions';
 import { screenTask } from '../page-objects/screen-task';
 import { screenTasks } from '../page-objects/screen-tasks';
@@ -206,6 +207,7 @@ test('Renaming the task', async (t) => {
     .typeText(dialogPrompt.input, 'Task')
     .click(dialogPrompt.buttonSubmit)
     .click(screenTasks.buttonTaskAction);
+  await t.expect(screenTask.screen.exists).ok();
   await t.expect(await comparePageScreenshot('context menu')).eql(VISUAL_REGRESSION_OK);
   await t.click(menuTaskActions.buttonRename);
   // Erase the value, assert a validation message is shown
@@ -309,11 +311,20 @@ test('Editing a session', async (t) => {
   // Change a running task session start time, assert the total changes
   await t.expect(screenTask.sessionDuration.nth(0).textContent).eql(' 4 s', { timeout: 5_000 });
   await t.expect(screenTask.taskDuration.textContent).eql(' 7 s');
+  await t
+    .expect(await comparePageScreenshot('running', { ignore: [duration, screenTask.sessionStart] }))
+    .eql(VISUAL_REGRESSION_OK);
   await t.click(screenTask.buttonSessionAction).click(screenTask.menuSession.buttonEdit);
   const now = utcDateToLocalDate(new Date());
   now.setHours(now.getHours() - 3);
   await dialogEditSession.setStart(now);
-  await t.expect(await comparePageScreenshot('editing')).eql(VISUAL_REGRESSION_OK);
+  await t
+    .expect(
+      await comparePageScreenshot('editing', {
+        ignore: [dialogEditSession.inputStart, dialogEditSession.inputEnd, duration, screenTask.sessionStart],
+      }),
+    )
+    .eql(VISUAL_REGRESSION_OK);
   await t.click(dialogEditSession.buttonSubmit);
   await t.expect(screenTask.sessionDuration.nth(0).textContent).eql(' 3 h 00 m');
   await t.expect(screenTask.taskDuration.textContent).eql(' 3 h 00 m');
@@ -361,7 +372,9 @@ test('Moving a session', async (t) => {
   await t.hover(screenTasks.taskItem.withText('To'));
   // Assert the task task list task is marked as drop target
   await t.expect(screenTasks.taskItem.withText('To').hasClass('cdk-drop-list-dragging')).ok();
-  await t.expect(await comparePageScreenshot('dragging')).eql(VISUAL_REGRESSION_OK);
+  await t
+    .expect(await comparePageScreenshot('dragging', { ignore: [screenTask.sessionStart, screenTask.sessionEnd] }))
+    .eql(VISUAL_REGRESSION_OK);
   await t.expect(screenTask.sessionStart.count).eql(2);
   // Drop the session
   await t.dispatchEvent(screenTasks.taskItem.withText('To'), 'mouseup');

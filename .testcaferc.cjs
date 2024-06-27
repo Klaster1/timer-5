@@ -1,3 +1,5 @@
+const { beforeEach } = require('node:test');
+
 /** @type {TestCafeConfigurationOptions} */
 module.exports = {
   src: './e2e/fixtures/',
@@ -10,6 +12,13 @@ module.exports = {
     typescript: {
       options: {
         esModuleInterop: true,
+      },
+    },
+  },
+  hooks: {
+    test: {
+      before: async (t) => {
+        await t.resizeWindow(1920, 1080);
       },
     },
   },

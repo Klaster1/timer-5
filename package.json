@@ -7,7 +7,7 @@
     "start": "ng serve",
     "build": "ng build --configuration production && node ./scripts/gh-pages-before-add.js",
     "serve:ci": "npx local-web-server --port 4200 --directory ./dist --spa timer-5/404.html",
-    "e2e": "testcafe chrome:headless -c 4 -q",
+    "e2e": "testcafe chrome:headless -c 5",
     "e2e:ci": "testcafe chrome:headless -c 4 -q --app=\"npm run serve:ci\" -r spec,xunit:e2e/report.xml --base-url=\"http://localhost:4200/timer-5/\"",
     "deploy": "gh-pages --nojekyll --dotfiles --dist dist/timer-5"
   },
@@ -38,8 +38,8 @@
     "@angular/cli": "^18.0.6",
     "@angular/compiler-cli": "^18.0.5",
     "@angular/language-service": "^18.0.5",
+    "@napi-rs/canvas": "^0.1.53",
     "@types/chrome-remote-interface": "^0.31.14",
-    "@types/node": "^20.14.9",
     "angular-testcafe": "^4.0.0",
     "chrome-remote-interface": "^0.33.0",
     "gh-pages": "^6.1.1",
