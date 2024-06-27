@@ -60,6 +60,7 @@ export async function comparePageScreenshot(
   } else if (mode === 'compare') {
     const { equal, diffImage, ...rest } = await looksSame(paths.reference, paths.current, {
       createDiffImage: true,
+      ignoreCaret: true,
       ...options?.looksSame,
     });
     if (equal) {

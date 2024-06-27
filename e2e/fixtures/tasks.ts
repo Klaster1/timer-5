@@ -9,6 +9,7 @@ import { screenTask } from '../page-objects/screen-task';
 import { screenTasks } from '../page-objects/screen-tasks';
 import { tooltip } from '../page-objects/tooltip';
 import { getLocationPathname, reload, setDownloadsDirectory } from '../utils';
+import { VISUAL_REGRESSION_OK, comparePageScreenshot } from '../visual-regression';
 
 fixture('Tasks');
 
@@ -16,7 +17,9 @@ test('Adding a task', async (t) => {
   // Click the empty state "Add task" button
   await t.click(screenTasks.emptyStateAddTaskButton);
   // Unfocus the input, asset validation is show
+  await t.expect(await comparePageScreenshot('just opened')).eql(VISUAL_REGRESSION_OK);
   await t.pressKey('tab').expect(dialogPrompt.validationError.textContent).contains('Value is required');
+  await t.expect(await comparePageScreenshot('invalid')).eql(VISUAL_REGRESSION_OK);
   // Submit the dialog with "Enter", assert form is not submitted
   await t.click(dialogPrompt.input).pressKey('enter');
   await t.expect(dialogPrompt.title.textContent).contains('Create task');
@@ -28,6 +31,7 @@ test('Adding a task', async (t) => {
   await t.expect(screenTasks.taskName.count).eql(1);
   await t.expect(screenTasks.taskName.textContent).contains('Test');
   await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).contains('play_circle');
+  await t.expect(await comparePageScreenshot('task created')).eql(VISUAL_REGRESSION_OK);
   // Send the "a t" and "ф е" hotkeys, assert the "Add a task" dialog opens for both
   for (const combo of ['a t', 'ф е']) {
     await t.pressKey(combo);
@@ -47,7 +51,7 @@ test('Adding a task', async (t) => {
   await t.expect(screenTasks.taskName.nth(1).textContent).contains('Test 2');
 });
 
-test('Starting/stopping the task', async (t) => {
+test('Starting and stopping the task', async (t) => {
   // Create a task
   await t
     .click(screenTasks.emptyStateAddTaskButton)
@@ -59,6 +63,7 @@ test('Starting/stopping the task', async (t) => {
   await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).contains('play_circle');
   await t.click(screenTasks.buttonTaskAction.nth(1));
   await t.expect(menuTaskActions.selectorState.textContent).contains('State: Active');
+  await t.expect(await comparePageScreenshot('active menu')).eql(VISUAL_REGRESSION_OK);
   await t.pressKey('esc');
   await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).contains('play_circle');
   await t.click(screenTask.buttonTaskAction);
@@ -69,6 +74,7 @@ test('Starting/stopping the task', async (t) => {
   await t.expect(screenTask.buttonStop.exists).notOk();
   await t.hover(screenTask.buttonStart);
   await t.expect(tooltip.textContent).eql('Start');
+  await t.expect(await comparePageScreenshot('start tooltip')).eql(VISUAL_REGRESSION_OK);
   // Start a task with the "Start" button
   await t.click(screenTask.buttonStart);
   // Assert the task is marked as active/running in the task list item and task view title
@@ -115,31 +121,28 @@ test('Changing task status', async (t) => {
     .typeText(dialogPrompt.input, 'Task')
     .click(dialogPrompt.buttonSubmit);
   // Cycle task statuses Active->Finished->Dropped->Active using task list context action, assert the status changes
-  await t
-    .click(screenTasks.buttonTaskAction)
-    .click(menuTaskActions.selectorState)
-    .click(menuTaskActions.optionFinished)
-    .pressKey('esc');
+  await t.click(screenTasks.buttonTaskAction).click(menuTaskActions.selectorState);
+  await t.expect(await comparePageScreenshot('active')).eql(VISUAL_REGRESSION_OK);
+  await t.click(menuTaskActions.optionFinished).pressKey('esc');
   await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).eql('check_circle');
+  await t.expect(await comparePageScreenshot('is finished')).eql(VISUAL_REGRESSION_OK);
   await t.click(app.buttonFinishedTasks);
   await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).eql('check_circle');
   await t.click(screenTasks.taskItem);
+  await t.expect(await comparePageScreenshot('finished tasks')).eql(VISUAL_REGRESSION_OK);
 
-  await t
-    .click(screenTasks.buttonTaskAction)
-    .click(menuTaskActions.selectorState)
-    .click(menuTaskActions.optionDropped)
-    .pressKey('esc');
+  await t.click(screenTasks.buttonTaskAction).click(menuTaskActions.selectorState);
+  await t.expect(await comparePageScreenshot('finished')).eql(VISUAL_REGRESSION_OK);
+  await t.click(menuTaskActions.optionDropped).pressKey('esc');
   await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).eql('delete');
+  await t.expect(await comparePageScreenshot('is dropped')).eql(VISUAL_REGRESSION_OK);
   await t.click(app.buttonDroppedTasks);
   await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).eql('delete');
   await t.click(screenTasks.taskItem);
+  await t.expect(await comparePageScreenshot('dropped')).eql(VISUAL_REGRESSION_OK);
 
-  await t
-    .click(screenTasks.buttonTaskAction)
-    .click(menuTaskActions.selectorState)
-    .click(menuTaskActions.optionActive)
-    .pressKey('esc');
+  await t.click(screenTasks.buttonTaskAction).click(menuTaskActions.selectorState);
+  await t.click(menuTaskActions.optionActive).pressKey('esc');
   await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).eql('play_circle');
   await t.click(app.buttonActiveTasks);
   await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).eql('play_circle');
@@ -202,11 +205,14 @@ test('Renaming the task', async (t) => {
     .click(screenTasks.emptyStateAddTaskButton)
     .typeText(dialogPrompt.input, 'Task')
     .click(dialogPrompt.buttonSubmit)
-    .click(screenTasks.buttonTaskAction)
-    .click(menuTaskActions.buttonRename);
+    .click(screenTasks.buttonTaskAction);
+  await t.expect(await comparePageScreenshot('context menu')).eql(VISUAL_REGRESSION_OK);
+  await t.click(menuTaskActions.buttonRename);
   // Erase the value, assert a validation message is shown
+  await t.expect(await comparePageScreenshot('just opened')).eql(VISUAL_REGRESSION_OK);
   await t.click(dialogPrompt.input).pressKey('ctrl+a').pressKey('delete').pressKey('tab');
   await t.expect(dialogPrompt.validationError.textContent).eql('Value is required');
+  await t.expect(await comparePageScreenshot('validation')).eql(VISUAL_REGRESSION_OK);
   // Submit the dialog with "Enter", assert the task got renamed
   await t.typeText(dialogPrompt.input, 'Task 1').pressKey('enter');
   await t.expect(screenTasks.taskName.textContent).eql('Task 1');
@@ -256,7 +262,7 @@ test('Deleting the task', async (t) => {
   }
 });
 
-test('Export/import', async (t) => {
+test('Export and import', async (t) => {
   // Have a file with test data
   const testId = randomUUID();
   t.ctx.testId = testId;
@@ -273,6 +279,7 @@ test('Export/import', async (t) => {
   await writeFile(`e2e/downloads/${testId}/data.json`, JSON.stringify(referenceData, null, '  '));
   // Import the data
   await t.click(app.buttonImportExport);
+  await t.expect(await comparePageScreenshot('menu')).eql(VISUAL_REGRESSION_OK);
   await t.setFilesToUpload(app.inputImport, [`../downloads/${testId}/data.json`]);
   // Assert the tasks are added
   await t.expect(screenTasks.taskItem.count).eql(3);
@@ -306,6 +313,7 @@ test('Editing a session', async (t) => {
   const now = utcDateToLocalDate(new Date());
   now.setHours(now.getHours() - 3);
   await dialogEditSession.setStart(now);
+  await t.expect(await comparePageScreenshot('editing')).eql(VISUAL_REGRESSION_OK);
   await t.click(dialogEditSession.buttonSubmit);
   await t.expect(screenTask.sessionDuration.nth(0).textContent).eql(' 3 h 00 m');
   await t.expect(screenTask.taskDuration.textContent).eql(' 3 h 00 m');
@@ -353,6 +361,7 @@ test('Moving a session', async (t) => {
   await t.hover(screenTasks.taskItem.withText('To'));
   // Assert the task task list task is marked as drop target
   await t.expect(screenTasks.taskItem.withText('To').hasClass('cdk-drop-list-dragging')).ok();
+  await t.expect(await comparePageScreenshot('dragging')).eql(VISUAL_REGRESSION_OK);
   await t.expect(screenTask.sessionStart.count).eql(2);
   // Drop the session
   await t.dispatchEvent(screenTasks.taskItem.withText('To'), 'mouseup');
