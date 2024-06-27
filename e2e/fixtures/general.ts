@@ -1,5 +1,6 @@
 import { dialogHotkeyCheatsheet } from '../page-objects/dialog-hotkeys-cheatsheet';
 import { screenTasks } from '../page-objects/screen-tasks';
+import { VISUAL_REGRESSION_OK, comparePageScreenshot } from '../visual-regression';
 
 fixture('General');
 
@@ -8,6 +9,7 @@ test('Hotkey help', async (t) => {
   await t.pressKey('shift+?');
   // Assert it displays all hotkeys, in english only
   await t.expect(dialogHotkeyCheatsheet.descriptions.count).eql(8);
+  await t.expect(await comparePageScreenshot('only tasks')).eql(VISUAL_REGRESSION_OK);
   // Assert "Close" closes the dialog
   await t.click(dialogHotkeyCheatsheet.buttonDismiss);
   await t.expect(dialogHotkeyCheatsheet.dialog.exists).notOk();
@@ -15,6 +17,7 @@ test('Hotkey help', async (t) => {
   await screenTasks.addTask('Keys');
   await t.pressKey('shift+?');
   await t.expect(dialogHotkeyCheatsheet.descriptions.count).eql(13);
+  await t.expect(await comparePageScreenshot('tasks and task')).eql(VISUAL_REGRESSION_OK);
   // Open the dialog again, assert "Esc" closes the dialog
   await t.pressKey('esc');
   await t.expect(dialogHotkeyCheatsheet.dialog.exists).notOk();
