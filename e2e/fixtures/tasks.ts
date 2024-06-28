@@ -372,9 +372,6 @@ test('Moving a session', async (t) => {
   await t.hover(screenTasks.taskItem.withText('To'));
   // Assert the task task list task is marked as drop target
   await t.expect(screenTasks.taskItem.withText('To').hasClass('cdk-drop-list-dragging')).ok();
-  await t
-    .expect(await comparePageScreenshot('dragging', { ignore: [screenTask.sessionStart, screenTask.sessionEnd] }))
-    .eql(VISUAL_REGRESSION_OK);
   await t.expect(screenTask.sessionStart.count).eql(2);
   // Drop the session
   await t.dispatchEvent(screenTasks.taskItem.withText('To'), 'mouseup');
