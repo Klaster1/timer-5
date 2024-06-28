@@ -107,7 +107,7 @@ export async function comparePageScreenshot(
     } else {
       await diffImage.save(paths.diff);
       await writeFile(paths.current, screenshot);
-      return { match: false, ...rest };
+      return { match: false, diff: paths.diff };
     }
   } else {
     return VISUAL_REGRESSION_OK;
