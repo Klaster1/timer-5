@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/screen-task/screen-task.component.scss"],
+  "sourcesContent": [":host {\n  position: relative;\n  flex: 1;\n  flex-direction: column;\n  max-height: 100vh;\n  display: grid;\n  grid-template-rows: auto 1fr;\n}\nh2 {\n  display: grid;\n  grid-template-columns: auto 1fr;\n\n  & > span {\n    overflow: hidden;\n    text-overflow: ellipsis;\n  }\n\n  mat-icon {\n    position: relative;\n    top: 2px;\n    margin-right: 0.25em;\n  }\n}\n[mat-fab] {\n  position: absolute;\n  bottom: var(--fab-offset);\n  right: var(--fab-offset);\n  left: 50%;\n  z-index: 10;\n}\n.session-tabular-data {\n  display: grid;\n  grid-template-columns: 1fr 1fr 1fr;\n}\nmat-toolbar {\n  grid-row: 1;\n  display: grid;\n  grid-template-columns: auto 1fr auto;\n}\n.header-start,\n.header-end {\n  width: 50%;\n}\n.header-duration {\n  max-width: 95px;\n  min-width: 95px;\n}\n.header-action {\n  max-width: 40px;\n  min-width: 40px;\n}\ncdk-virtual-scroll-viewport {\n  grid-row: 2;\n  padding-right: 2px;\n}\nduration {\n  --unit-font-size: 10px;\n}\n"],
+  "mappings": "AAAA,MACE,SAAA,SACA,KAAA,EACA,eAAA,OACA,WAAA,MACA,QAAA,KACA,mBAAA,KAAA,IAEF,GACE,QAAA,KACA,sBAAA,KAAA,IAEA,EAAA,CAAA,KACE,SAAA,OACA,cAAA,SAGF,GAAA,SACE,SAAA,SACA,IAAA,IACA,aAAA,MAGJ,CAAA,SACE,SAAA,SACA,OAAA,IAAA,cACA,MAAA,IAAA,cACA,KAAA,IACA,QAAA,GAEF,CAAA,qBACE,QAAA,KACA,sBAAA,IAAA,IAAA,IAEF,YACE,SAAA,EACA,QAAA,KACA,sBAAA,KAAA,IAAA,KAEF,CAAA,aAAA,CAAA,WAEE,MAAA,IAEF,CAAA,gBACE,UAAA,KACA,UAAA,KAEF,CAAA,cACE,UAAA,KACA,UAAA,KAEF,4BACE,SAAA,EACA,cAAA,IAEF,SACE,kBAAA",
+  "names": []
+}
