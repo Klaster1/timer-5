@@ -2,7 +2,11 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [master]
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build-test-deploy:
@@ -35,7 +39,7 @@ jobs:
           reporter: java-junit
 
       - name: Deploy to Github Pages
-        if: success()
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master' && success()
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
