@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/app.component.scss"],
+  "sourcesContent": [":host {\n  flex: 1;\n  display: flex;\n  flex-direction: column;\n}\n.link-all img {\n  width: 32px;\n  height: 32px;\n  vertical-align: middle;\n}\nmat-drawer {\n  border-right: 1px solid var(--mat-menu-divider-color);\n}\nmat-drawer-container {\n  flex: 1;\n}\nmat-drawer-content {\n  display: flex;\n}\n.drawer-container {\n  height: 100%;\n  display: flex;\n  flex-direction: column;\n  padding-bottom: 1rem;\n  box-sizing: border-box;\n  overflow-x: hidden;\n}\n.states {\n  margin-top: auto;\n  margin-bottom: auto;\n}\n.import-label {\n  position: relative;\n  cursor: pointer;\n\n  input {\n    width: 100%;\n    height: 100%;\n    position: absolute;\n    opacity: 0;\n    z-index: -1;\n  }\n}\n"],
+  "mappings": "AAAA,MACE,KAAA,EACA,QAAA,KACA,eAAA,OAEF,CAAA,SAAA,IACE,MAAA,KACA,OAAA,KACA,eAAA,OAEF,WACE,aAAA,IAAA,MAAA,IAAA,0BAEF,qBACE,KAAA,EAEF,mBACE,QAAA,KAEF,CAAA,iBACE,OAAA,KACA,QAAA,KACA,eAAA,OACA,eAAA,KACA,WAAA,WACA,WAAA,OAEF,CAAA,OACE,WAAA,KACA,cAAA,KAEF,CAAA,aACE,SAAA,SACA,OAAA,QAEA,CAJF,aAIE,MACE,MAAA,KACA,OAAA,KACA,SAAA,SACA,QAAA,EACA,QAAA",
+  "names": []
+}
