@@ -11,6 +11,7 @@ export const VISUAL_REGRESSION_OK = { match: true } as const;
 type VisualRegressionMode = 'create' | 'compare';
 type ScreenshotPathName = 'reference' | 'current' | 'diff';
 type ScreenshotPaths = Record<ScreenshotPathName, string>;
+type ColorScheme = 'light' | 'dark';
 
 const getPaths = (name: string): ScreenshotPaths => {
   const BASE_PATH = ['visual-regression-screenshots'];
@@ -23,8 +24,9 @@ const getPaths = (name: string): ScreenshotPaths => {
   };
 };
 
-const prepare = async () => {
+const prepare = async (colorScheme: ColorScheme) => {
   await getCdpClient().then((client) => client.send('Animation.setPlaybackRate', { playbackRate: 100000 }));
+  const restoreTheme = await forceTheme(colorScheme);
   await t.eval(() => {
     const style = document.createElement('style');
     style.id = 'visual-regression';
@@ -34,6 +36,7 @@ const prepare = async () => {
 
   return async () => {
     await t.eval(() => document.querySelector('#visual-regression')?.remove());
+    await restoreTheme();
     await getCdpClient().then((client) => client.send('Animation.setPlaybackRate', { playbackRate: 1 }));
   };
 };
@@ -74,6 +77,51 @@ const maskImage = async (source: string | Buffer, bounds: Rect[]) => {
   return canvas.toBuffer('image/png');
 };
 
+const forceTheme = async (colorScheme: ColorScheme) => {
+  const client = await getCdpClient();
+  await client.send('Emulation.setEmulatedMedia', {
+    media: 'screen',
+    features: [
+      {
+        name: 'prefers-color-scheme',
+        value: colorScheme === 'dark' ? 'light' : 'dark',
+      },
+    ],
+  });
+  await new Promise((res) => setTimeout(res, 50));
+  await client.send('Emulation.setEmulatedMedia', {
+    media: 'screen',
+    features: [
+      {
+        name: 'prefers-color-scheme',
+        value: '',
+      },
+    ],
+  });
+  await new Promise((res) => setTimeout(res, 50));
+  await client.send('Emulation.setEmulatedMedia', {
+    media: 'screen',
+    features: [
+      {
+        name: 'prefers-color-scheme',
+        value: colorScheme === 'dark' ? 'dark' : 'light',
+      },
+    ],
+  });
+  await new Promise((res) => setTimeout(res, 50));
+  return async () => {
+    await client.send('Emulation.setEmulatedMedia', {
+      media: 'screen',
+      features: [
+        {
+          name: 'prefers-color-scheme',
+          value: '',
+        },
+      ],
+    });
+  };
+};
+
 export async function comparePageScreenshot(
   name: string,
   options?: {
@@ -84,18 +132,13 @@ export async function comparePageScreenshot(
 ) {
   const paths = getPaths(name);
   const mode: VisualRegressionMode = existsSync(paths.reference) ? 'compare' : 'create';
+  const colorScheme = options?.theme ?? 'dark';
 
-  const cleanup = await prepare();
+  const cleanup = await prepare(colorScheme);
   const diffClusters = await getSelectorsBounds(options?.ignore ?? []);
   await Promise.all([unlink(paths.diff), unlink(paths.current)]).catch((e) => {});
   const screenshot = await captureScreenshot(mode === 'compare' ? paths.current : paths.reference);
   await cleanup();
-
-  await getCdpClient().then((c) =>
-    c.send('Emulation.setEmulatedMedia', {
-      features: [{ name: 'prefers-color-scheme', value: options.theme ?? 'dark' }],
-    }),
-  );
 
   if (mode === 'create') {
     await writeFile(paths.reference, screenshot);
