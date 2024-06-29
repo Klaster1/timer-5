@@ -55,7 +55,7 @@ a {
   --scrollbar-radius: 4px;
   --timer-logo-color: #82bd17;
 }
-:root:has(.theme-alternate) {
+:root:has(.theme-dark) {
   @include used-components-colors(theme.$dark-theme);
   @include overrides();
 }
@@ -92,5 +92,14 @@ body {
 
   &:active {
     background-color: var(--scrollbar-active-color);
+  }
+}
+
+.list-centered-icons {
+  .mat-mdc-list-item {
+    text-align: center;
+  }
+  mat-icon {
+    vertical-align: middle;
   }
 }

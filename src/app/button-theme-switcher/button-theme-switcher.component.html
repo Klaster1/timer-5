@@ -1,0 +1,7 @@
+@for (option of options; track $index) {
+  @if ($index === nextOptionIndex()) {
+    <button @switchItem (click)="store.setTheme(option.theme)" [matTooltip]="option.label" mat-list-item>
+      <mat-icon [svgIcon]="option.icon"></mat-icon>
+    </button>
+  }
+}

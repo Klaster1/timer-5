@@ -35,7 +35,6 @@ import { firstValueFrom } from 'rxjs';
 import { DialogEditSessionData } from '../dialog-edit-session/dialog-edit-session.component';
 
 export type NormalizedTasks = { [id: string]: Task };
-export type Theme = 'light' | 'dark';
 
 const updateState = <State extends object>(store: StateSignal<State>, recipe: (draft: Draft<State>) => any) => {
   patchState(store, (state) => produce(state, recipe));
@@ -102,31 +101,59 @@ const withRouter = () => {
   );
 };
 
+export type ThemeMode = 'auto' | 'manual';
+export type ThemeVariant = 'light' | 'dark';
+export type Theme = {
+  selectedMode: ThemeMode;
+  currentVariant: ThemeVariant;
+};
 const withTheme = () => {
   type ThemeState = {
     theme: Theme;
   };
   const initialState: ThemeState = {
-    theme: 'dark',
+    theme: { selectedMode: 'auto', currentVariant: 'light' },
   };
+  const destroySignal = new AbortController();
   return signalStoreFeature(
     withState<ThemeState>(initialState),
     withMethods((store) => {
-      const router = inject(Router);
       return {
-        toggleTheme(theme?: Theme) {
+        setTheme(theme: Theme) {
           updateState(store, (draft) => {
-            draft.theme = theme ? theme : draft.theme === 'dark' ? 'light' : 'dark';
+            draft.theme = theme;
           });
         },
       };
     }),
     withHooks({
       onInit(store) {
-        store.toggleTheme((localStorage.getItem('theme') as Theme | null) ?? initialState.theme);
+        {
+          const storedTheme = localStorage.getItem('theme');
+          const parsedTheme = storedTheme ? JSON.parse(storedTheme) : null;
+          const theme = typeof parsedTheme === 'object' ? parsedTheme : initialState.theme;
+          store.setTheme(theme);
+        }
         effect(() => {
-          localStorage.setItem('theme', store.theme());
+          localStorage.setItem('theme', JSON.stringify(store.theme()));
         });
+        window.matchMedia(`(prefers-color-scheme: dark)`).addEventListener(
+          'change',
+          (event) => {
+            const theme = store.theme();
+            if (theme.selectedMode !== 'auto') return;
+            store.setTheme({ selectedMode: 'auto', currentVariant: event.matches ? 'dark' : 'light' });
+          },
+          {
+            signal: destroySignal.signal,
+          },
+        );
+        effect(() => {
+          document.body.classList.toggle('theme-dark', store.theme().currentVariant === 'dark');
+        });
+      },
+      onDestroy(store) {
+        destroySignal.abort();
       },
     }),
   );

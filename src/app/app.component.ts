@@ -9,6 +9,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { HotkeysService } from 'angular2-hotkeys';
+import { ButtonThemeSwitcherComponent } from './button-theme-switcher/button-theme-switcher.component';
 import { DIALOG_HOTKEYS_CHEATSHEET_ID } from './dialog-hotkeys-cheatsheet/id';
 import { KEYS_GO_ACTIVE, KEYS_GO_ALL, KEYS_GO_FINISHED, hotkey } from './domain/hotkeys';
 import { toStoredTasks } from './domain/storage';
@@ -43,6 +44,7 @@ import { AppStore } from './services/state';
     RouterLink,
     RouterLinkActive,
     RouterOutlet,
+    ButtonThemeSwitcherComponent,
   ],
 })
 export class AppComponent {
@@ -77,11 +79,6 @@ export class AppComponent {
         this.router.navigate([TaskState.finished], { queryParamsHandling: 'merge' }),
       ),
     ]);
-    effect(() => {
-      const theme = this.store.theme();
-      document.body.classList.toggle('theme-alternate', theme === 'dark');
-    });
-
     effect(() => {
       const anyTaskActive = this.store.isAnyTaskActive();
       if (anyTaskActive) {

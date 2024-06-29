@@ -1,6 +1,6 @@
 <mat-drawer-container>
   <mat-drawer mode="side" [opened]="true">
-    <div class="drawer-container">
+    <div class="drawer-container list-centered-icons">
       <mat-nav-list>
         <a
           mat-list-item
@@ -72,14 +72,7 @@
             >Export</a
           >
         </mat-menu>
-
-        <button
-          mat-list-item
-          (click)="store.toggleTheme()"
-          [matTooltip]="store.theme() !== 'dark' ? 'Dark mode' : 'Day mode'"
-        >
-          <mat-icon [svgIcon]="store.theme() !== 'dark' ? 'dark_mode' : 'light_mode'"></mat-icon>
-        </button>
+        <button-theme-switcher></button-theme-switcher>
       </mat-action-list>
     </div>
   </mat-drawer>
