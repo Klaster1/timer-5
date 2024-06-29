@@ -109,7 +109,7 @@ export type Theme = {
 };
 const withTheme = () => {
   type ThemeState = {
-    theme: Theme;
+    theme: Theme | undefined;
   };
   const initialState: ThemeState = {
     theme: { selectedMode: 'auto', currentVariant: 'light' },
@@ -131,17 +131,18 @@ const withTheme = () => {
         {
           const storedTheme = localStorage.getItem('theme');
           const parsedTheme = storedTheme ? JSON.parse(storedTheme) : null;
-          const theme = typeof parsedTheme === 'object' ? parsedTheme : initialState.theme;
+          const theme = typeof parsedTheme === 'object' && parsedTheme ? parsedTheme : initialState.theme;
           store.setTheme(theme);
         }
         effect(() => {
-          localStorage.setItem('theme', JSON.stringify(store.theme()));
+          const theme = store.theme();
+          if (theme) localStorage.setItem('theme', JSON.stringify(store.theme()));
         });
         window.matchMedia(`(prefers-color-scheme: dark)`).addEventListener(
           'change',
           (event) => {
             const theme = store.theme();
-            if (theme.selectedMode !== 'auto') return;
+            if (!theme || theme.selectedMode !== 'auto') return;
             store.setTheme({ selectedMode: 'auto', currentVariant: event.matches ? 'dark' : 'light' });
           },
           {
@@ -149,7 +150,8 @@ const withTheme = () => {
           },
         );
         effect(() => {
-          document.body.classList.toggle('theme-dark', store.theme().currentVariant === 'dark');
+          const theme = store.theme();
+          if (theme) document.body.classList.toggle('theme-dark', theme.currentVariant === 'dark');
         });
       },
       onDestroy(store) {
