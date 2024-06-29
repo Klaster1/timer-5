@@ -30,6 +30,19 @@ jobs:
       - name: Run TestCafe tests
         run: npm run e2e:ci
 
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          path: |
+            e2e/screenshots
+            e2e/visual-regression-screenshots/*.diff.png
+            e2e/visual-regression-screenshots/*.current.png
+          if-no-files-found: ignore
+          retention-days: 1
+          compression-level: 0
+          overwrite: true
+
       - name: Test Report
         uses: dorny/test-reporter@v1
         if: success() || failure()
