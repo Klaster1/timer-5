@@ -78,6 +78,7 @@ export async function comparePageScreenshot(
   name: string,
   options?: {
     ignore?: Selector[];
+    theme?: 'light' | 'dark';
     looksSame?: Omit<looksSame.LooksSameOptions, 'createDiffImage' | 'stopOnFirstFail'>;
   },
 ) {
@@ -89,6 +90,12 @@ export async function comparePageScreenshot(
   await Promise.all([unlink(paths.diff), unlink(paths.current)]).catch((e) => {});
   const screenshot = await captureScreenshot(mode === 'compare' ? paths.current : paths.reference);
   await cleanup();
+
+  await getCdpClient().then((c) =>
+    c.send('Emulation.setEmulatedMedia', {
+      features: [{ name: 'prefers-color-scheme', value: options.theme ?? 'dark' }],
+    }),
+  );
 
   if (mode === 'create') {
     await writeFile(paths.reference, screenshot);
