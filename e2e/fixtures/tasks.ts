@@ -136,13 +136,17 @@ test('Changing task status', async (t) => {
   await t.expect(await comparePageScreenshot('finished tasks')).eql(VISUAL_REGRESSION_OK);
 
   await t.click(screenTasks.buttonTaskAction).click(menuTaskActions.selectorState);
+
+  await t.wait(500);
   await t.expect(await comparePageScreenshot('finished')).eql(VISUAL_REGRESSION_OK);
   await t.click(menuTaskActions.optionDropped).pressKey('esc');
   await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).eql('delete');
+  await t.wait(500);
   await t.expect(await comparePageScreenshot('is dropped')).eql(VISUAL_REGRESSION_OK);
   await t.click(app.buttonDroppedTasks);
   await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).eql('delete');
   await t.click(screenTasks.taskItem);
+  await t.wait(500);
   await t.expect(await comparePageScreenshot('dropped')).eql(VISUAL_REGRESSION_OK);
 
   await t.click(screenTasks.buttonTaskAction).click(menuTaskActions.selectorState);
