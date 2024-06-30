@@ -27,23 +27,9 @@ jobs:
       - name: Build Application
         run: npm run build
 
-      - uses: docker/setup-buildx-action@v3
-
-      - name: Build Docker image
-        uses: docker/build-push-action@v6
-        id: build-docker-image
-        with:
-          context: .
-          load: true
-          tags: 'timer-5-tests-ubuntu:latest'
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - run: docker image list
-
       - name: Run TestCafe tests in container
         run: |
-          docker run -v ${{ github.workspace }}:/opt/tests -v node_modules_volume:/opt/tests/node_modules timer-5-tests-ubuntu:latest npx testcafe chromium:headless ./e2e/fixtures --app="npm run serve:ci" -r spec,xunit:e2e/report.xml -c 4
+          docker run -w /opt/tests -v ${{ github.workspace }}:/opt/tests timbru31/node-chrome:20 ls -la  && npx testcafe chrome:headless ./e2e/fixtures --app="npm run serve:ci" -r spec,xunit:e2e/report.xml -c 4
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
