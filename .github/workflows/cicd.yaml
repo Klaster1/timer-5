@@ -18,21 +18,14 @@ jobs:
       - name: Adding Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20.14.0
           cache: 'npm'
-
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Build Application
-        run: npm run build
 
       - name: Build Docker Image
         run: docker build -t timer-5-tests-ubuntu .
 
       - name: Run TestCafe tests in container
         run: |
-          docker run -v ${{ github.workspace }}:/opt/tests -v node_modules_volume:/opt/tests/node_modules timer-5-tests-ubuntu chromium:headless --app="npm run serve:ci" -r spec,xunit:e2e/report.xml -c 4
+          docker run -v ${{ github.workspace }}:/opt/tests timer-5-tests-ubuntu npm run build && /opt/testcafe/docker/testcafe-docker.sh chromium:headless --app="npm run serve:ci" -r spec,xunit:e2e/report.xml -c 4
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
@@ -48,18 +41,10 @@ jobs:
           compression-level: 0
           overwrite: true
 
-      - name: Test Report
-        uses: dorny/test-reporter@v1
-        if: success() || failure()
-        with:
-          name: Test Report
-          path: e2e/report.xml
-          reporter: java-junit
-
       - name: Deploy to Github Pages
         if: github.event_name == 'push' && github.ref == 'refs/heads/master' && success()
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           git remote set-url origin https://git:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-          npm run deploy -- -u "github-actions-bot <support+actions@github.com>"
+          npx gh-pages --nojekyll --dotfiles --dist dist/timer-5 -- -u "github-actions-bot <support+actions@github.com>"
