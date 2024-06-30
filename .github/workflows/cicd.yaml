@@ -28,17 +28,25 @@ jobs:
         run: npm run build
 
       - uses: docker/setup-buildx-action@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - uses: docker/build-push-action@v6
         with:
           context: .
-          tags: timer-5-tests-ubuntu:latest
+          tags: ghcr.io/klaster1/timer-5-tests-ubuntu:latest
+          push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          outputs: type=docker,dest=./myimage.tar
 
       - name: Run TestCafe tests in container
         run: |
-          docker load --input ./myimage.tar
+          docker pull ghcr.io/klaster1/timer-5-tests-ubuntu:latest
           docker run -v ${{ github.workspace }}:/opt/tests -v node_modules_volume:/opt/tests/node_modules timer-5-tests-ubuntu npx testcafe chromium:headless --app="npm run serve:ci" -r spec,xunit:e2e/report.xml -c 4
 
       - name: Upload Artifacts
