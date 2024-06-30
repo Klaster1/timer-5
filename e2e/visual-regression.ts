@@ -25,7 +25,6 @@ const getPaths = (name: string): ScreenshotPaths => {
 };
 
 const prepare = async (colorScheme: ColorScheme) => {
-  await t.wait(100);
   const restoreTheme = await forceTheme(colorScheme);
   await t.eval(() => {
     const style = document.createElement('style');

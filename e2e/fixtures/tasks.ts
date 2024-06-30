@@ -32,7 +32,7 @@ test('Adding a task', async (t) => {
   await t.expect(screenTasks.taskName.count).eql(1);
   await t.expect(screenTasks.taskName.textContent).contains('Test');
   await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).contains('play_circle');
-  await t.wait(500);
+
   await t.expect(await comparePageScreenshot('task created')).eql(VISUAL_REGRESSION_OK);
   // Send the "a t" and "ф е" hotkeys, assert the "Add a task" dialog opens for both
   for (const combo of ['a t', 'ф е']) {
@@ -132,21 +132,20 @@ test('Changing task status', async (t) => {
   await t.click(app.buttonFinishedTasks);
   await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).eql('check_circle');
   await t.click(screenTasks.taskItem);
-  await t.wait(500);
+
   await t.expect(await comparePageScreenshot('finished tasks')).eql(VISUAL_REGRESSION_OK);
 
   await t.click(screenTasks.buttonTaskAction).click(menuTaskActions.selectorState);
 
-  await t.wait(500);
   await t.expect(await comparePageScreenshot('finished')).eql(VISUAL_REGRESSION_OK);
   await t.click(menuTaskActions.optionDropped).pressKey('esc');
   await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).eql('delete');
-  await t.wait(500);
+
   await t.expect(await comparePageScreenshot('is dropped')).eql(VISUAL_REGRESSION_OK);
   await t.click(app.buttonDroppedTasks);
   await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).eql('delete');
   await t.click(screenTasks.taskItem);
-  await t.wait(500);
+
   await t.expect(await comparePageScreenshot('dropped')).eql(VISUAL_REGRESSION_OK);
 
   await t.click(screenTasks.buttonTaskAction).click(menuTaskActions.selectorState);
@@ -221,7 +220,7 @@ test('Renaming the task', async (t) => {
   await t.expect(await comparePageScreenshot('just opened')).eql(VISUAL_REGRESSION_OK);
   await t.click(dialogPrompt.input).pressKey('ctrl+a').pressKey('delete').pressKey('tab');
   await t.expect(dialogPrompt.validationError.textContent).eql('Value is required');
-  await t.wait(500);
+
   await t.expect(await comparePageScreenshot('validation')).eql(VISUAL_REGRESSION_OK);
   // Submit the dialog with "Enter", assert the task got renamed
   await t.typeText(dialogPrompt.input, 'Task 1').pressKey('enter');
@@ -298,7 +297,7 @@ test('Export and import', async (t) => {
   await t.expect(screenTasks.taskName.nth(2).textContent).eql('Task 3');
   // Assert that export works
   await t.click(app.buttonExport);
-  await t.wait(500);
+
   const exportedData = await readFile(`e2e/downloads/${testId}/timer-data.json`, 'utf8').then(JSON.parse);
   await t.expect(exportedData).eql(referenceData);
   t.ctx.ok = true;
