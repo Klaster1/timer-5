@@ -90,6 +90,14 @@ const barChartPlugin = (params: { colors: (string | null)[]; minRangeInMs: Milli
 
         .uplot {
           position: absolute;
+          font-family: Roboto, 'Helvetica Neue', sans-serif !important;
+
+          & th {
+            font-weight: 400 !important;
+          }
+          .u-value {
+            vertical-align: -1px;
+          }
         }
         .hidden {
           display: none;
