@@ -68,7 +68,10 @@
               "buildTarget": "timer:build:development"
             }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "development",
+          "options": {
+            "host": "0.0.0.0"
+          }
         },
         "e2e": {
           "builder": "angular-testcafe:testcafe",
