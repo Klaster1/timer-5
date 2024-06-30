@@ -27,8 +27,12 @@ jobs:
       - name: Build Application
         run: npm run build
 
-      - name: Run TestCafe tests
-        run: npm run e2e:ci
+      - name: Build Docker Image
+        run: docker build -t timer-5-tests-ubuntu .
+
+      - name: Run TestCafe tests in container
+        run: |
+          docker run -v ${{ github.workspace }}:/opt/tests -v node_modules_volume:/opt/tests/node_modules timer-5-tests-ubuntu chromium:headless --app="npm run serve:ci" -r spec,xunit:e2e/report.xml -c 4
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
