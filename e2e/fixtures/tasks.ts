@@ -32,6 +32,7 @@ test('Adding a task', async (t) => {
   await t.expect(screenTasks.taskName.count).eql(1);
   await t.expect(screenTasks.taskName.textContent).contains('Test');
   await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).contains('play_circle');
+  await t.wait(500);
   await t.expect(await comparePageScreenshot('task created')).eql(VISUAL_REGRESSION_OK);
   // Send the "a t" and "ф е" hotkeys, assert the "Add a task" dialog opens for both
   for (const combo of ['a t', 'ф е']) {
@@ -75,6 +76,7 @@ test('Starting and stopping the task', async (t) => {
   await t.expect(screenTask.buttonStop.exists).notOk();
   await t.hover(screenTask.buttonStart);
   await t.expect(tooltip.textContent).eql('Start');
+  await t.wait(500);
   await t.expect(await comparePageScreenshot('start tooltip')).eql(VISUAL_REGRESSION_OK);
   // Start a task with the "Start" button
   await t.click(screenTask.buttonStart);
@@ -130,6 +132,7 @@ test('Changing task status', async (t) => {
   await t.click(app.buttonFinishedTasks);
   await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).eql('check_circle');
   await t.click(screenTasks.taskItem);
+  await t.wait(500);
   await t.expect(await comparePageScreenshot('finished tasks')).eql(VISUAL_REGRESSION_OK);
 
   await t.click(screenTasks.buttonTaskAction).click(menuTaskActions.selectorState);
@@ -214,6 +217,7 @@ test('Renaming the task', async (t) => {
   await t.expect(await comparePageScreenshot('just opened')).eql(VISUAL_REGRESSION_OK);
   await t.click(dialogPrompt.input).pressKey('ctrl+a').pressKey('delete').pressKey('tab');
   await t.expect(dialogPrompt.validationError.textContent).eql('Value is required');
+  await t.wait(500);
   await t.expect(await comparePageScreenshot('validation')).eql(VISUAL_REGRESSION_OK);
   // Submit the dialog with "Enter", assert the task got renamed
   await t.typeText(dialogPrompt.input, 'Task 1').pressKey('enter');
