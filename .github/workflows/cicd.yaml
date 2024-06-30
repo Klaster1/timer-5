@@ -29,7 +29,7 @@ jobs:
 
       - name: Run TestCafe tests in container
         run: |
-          docker run -w /opt/tests -v ${{ github.workspace }}:/opt/tests timbru31/node-chrome:20 ls -la  && npx testcafe chrome:headless ./e2e/fixtures --app="npm run serve:ci" -r spec,xunit:e2e/report.xml -c 4
+          docker run -w /opt/tests -v ${{ github.workspace }}:/opt/tests timbru31/node-chrome:20 npx testcafe chrome:headless ./e2e/fixtures --app="npm run serve:ci" -r spec,xunit:e2e/report.xml -c 4
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
