@@ -76,7 +76,6 @@ test('Starting and stopping the task', async (t) => {
   await t.expect(screenTask.buttonStop.exists).notOk();
   await t.hover(screenTask.buttonStart);
   await t.expect(tooltip.textContent).eql('Start');
-  await t.wait(1000);
   await t.expect(await comparePageScreenshot('start tooltip')).eql(VISUAL_REGRESSION_OK);
   // Start a task with the "Start" button
   await t.click(screenTask.buttonStart);
