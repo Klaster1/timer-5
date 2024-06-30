@@ -25,7 +25,7 @@ const getPaths = (name: string): ScreenshotPaths => {
 };
 
 const prepare = async (colorScheme: ColorScheme) => {
-  await getCdpClient().then((client) => client.send('Animation.setPlaybackRate', { playbackRate: 100000 }));
+  await t.wait(100);
   const restoreTheme = await forceTheme(colorScheme);
   await t.eval(() => {
     const style = document.createElement('style');
@@ -37,7 +37,6 @@ const prepare = async (colorScheme: ColorScheme) => {
   return async () => {
     await t.eval(() => document.querySelector('#visual-regression')?.remove());
     await restoreTheme();
-    await getCdpClient().then((client) => client.send('Animation.setPlaybackRate', { playbackRate: 1 }));
   };
 };
 
