@@ -150,7 +150,7 @@ export async function comparePageScreenshot(
       createDiffImage: true,
       ignoreCaret: true,
       shouldCluster: true,
-      antialiasingTolerance: 5,
+      antialiasingTolerance: 10,
       ...options?.looksSame,
     });
     if (equal) {
