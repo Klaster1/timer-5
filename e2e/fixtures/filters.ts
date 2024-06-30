@@ -13,6 +13,7 @@ test('Name', async (t) => {
   await screenTasks.addTask('BAZ');
   // Send "ctrl+f" keys
   await t.pressKey('ctrl+f');
+  await t.wait(500);
   await t.expect(await comparePageScreenshot('empty filter')).eql(VISUAL_REGRESSION_OK);
   // Fill in the "Name filter", in lowercase
   await t.typeText(screenTasks.filter.name.input, 'game');
