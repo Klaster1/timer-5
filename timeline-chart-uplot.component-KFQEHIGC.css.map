@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["timeline-chart-uplot.component.ts"],
+  "sourcesContent": ["\n      timeline-chart-uplot {\n        display: block;\n        width: 100%;\n        height: 100%;\n        position: relative;\n        overflow: hidden;\n\n        .uplot {\n          position: absolute;\n          font-family: Roboto, 'Helvetica Neue', sans-serif !important;\n\n          & th {\n            font-weight: 400 !important;\n          }\n          .u-value {\n            vertical-align: -1px;\n          }\n        }\n        .hidden {\n          display: none;\n        }\n      }\n    "],
+  "mappings": "AACM,qBACE,QAAA,MACA,MAAA,KACA,OAAA,KACA,SAAA,SACA,SAAA,OAEA,qBAAA,CAAA,MACE,SAAA,SACA,YAAA,MAAA,CAAA,cAAA,CAAA,qBAEA,qBAAA,CAJF,MAIE,GACE,YAAA,cAEF,qBAAA,CAPF,MAOE,CAAA,QACE,eAAA,KAGJ,qBAAA,CAAA,OACE,QAAA",
+  "names": []
+}

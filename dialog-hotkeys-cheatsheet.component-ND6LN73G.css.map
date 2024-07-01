@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/dialog-hotkeys-cheatsheet/dialog-hotkeys-cheatsheet.component.scss"],
+  "sourcesContent": ["dl {\n  display: grid;\n  grid-template-columns: auto 1fr;\n  width: max-content;\n  margin: auto;\n}\nkbd {\n  font-family: inherit;\n}\nkbd:not(:last-child)::after {\n  content: ', ';\n}\n"],
+  "mappings": "AAAA,GACE,QAAA,KACA,sBAAA,KAAA,IACA,MAAA,YAHF,OAIE,KAEF,IACE,YAAA,QAEF,GAAA,KAAA,YAAA,OACE,QAAA",
+  "names": []
+}
