@@ -1,8 +1,13 @@
 import express from 'express';
-import { readdir, rename, unlink } from 'node:fs/promises';
+import { readdirSync } from 'node:fs';
+import { rename, unlink } from 'node:fs/promises';
 
 /**
  * @typedef {'reference'|'current'|'diff'} Type
+ */
+
+/**
+ * @typedef {'linux' | 'windows' | 'unknown'} Platform
  */
 
 /**
@@ -13,6 +18,7 @@ import { readdir, rename, unlink } from 'node:fs/promises';
  * @property {string} referenceFile
  * @property {string | null} diffFile
  * @property {string | null} currentFile
+ * @property {Platform} platform
  */
 
 express()
@@ -21,22 +27,26 @@ express()
   .get('/', (req, res) => {
     res.sendFile('./scripts/visual-regression-review.html', { root: '.' });
   })
-  .get('/files/:file', async (req, res) => {
-    res.sendFile(`./e2e/visual-regression-screenshots/${req.params.file}`, { root: '.' });
+  .get('/files/:platform/:file', async (req, res) => {
+    res.sendFile(`./e2e/visual-regression-screenshots/${req.params.platform}/${req.params.file}`, { root: '.' });
   })
-  .get('/results', async (req, res) => {
-    const files = await readdir('./e2e/visual-regression-screenshots');
+  .get('/results', (req, res) => {
     const regex = /\[(?<fixture>.*?)\] (?<test>.*?) - (?<name>.*?).(?<type>reference|current|diff).png/;
+    const platforms = readdirSync('./e2e/visual-regression-screenshots');
     /** @type {Result[]} */
-    const results = files.flatMap((file, index, all) => {
-      const match = file.match(regex);
-      const { fixture, test, name, type } = match.groups;
-      if (type !== 'reference') return [];
-      const referenceFile = file;
-      const diffFile = all.find((f) => f.includes(`[${fixture}] ${test} - ${name}.diff.png`)) ?? null;
-      const currentFile = all.find((f) => f.includes(`[${fixture}] ${test} - ${name}.current.png`)) ?? null;
-      return [{ fixture, test, name, referenceFile, diffFile, currentFile }];
+    const results = platforms.flatMap((platform) => {
+      const files = readdirSync(`./e2e/visual-regression-screenshots/${platform}`);
+      return files.flatMap((file, index, all) => {
+        const match = file.match(regex);
+        const { fixture, test, name, type } = match.groups;
+        if (type !== 'reference') return [];
+        const referenceFile = file;
+        const diffFile = all.find((f) => f.includes(`[${fixture}] ${test} - ${name}.diff.png`)) ?? null;
+        const currentFile = all.find((f) => f.includes(`[${fixture}] ${test} - ${name}.current.png`)) ?? null;
+        return [{ fixture, test, name, referenceFile, diffFile, currentFile, platform }];
+      });
     });
+
     res.json(results);
   })
   .post('/approvals', async (req, res) => {
@@ -44,11 +54,11 @@ express()
      * @type {Result}
      */
     const approval = req.body;
-    await unlink(`./e2e/visual-regression-screenshots/${approval.diffFile}`);
-    await unlink(`./e2e/visual-regression-screenshots/${approval.referenceFile}`);
+    await unlink(`./e2e/visual-regression-screenshots/${approval.platform}/${approval.diffFile}`);
+    await unlink(`./e2e/visual-regression-screenshots/${approval.platform}/${approval.referenceFile}`);
     await rename(
-      `./e2e/visual-regression-screenshots/${approval.currentFile}`,
-      `./e2e/visual-regression-screenshots/${approval.referenceFile}`,
+      `./e2e/visual-regression-screenshots/${approval.platform}/${approval.currentFile}`,
+      `./e2e/visual-regression-screenshots/${approval.platform}/${approval.referenceFile}`,
     );
     res.status(201).end();
   })
