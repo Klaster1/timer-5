@@ -24,12 +24,22 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Cache Angular build output
+        id: cache-ng-build
+        uses: actions/cache@v4
+        with:
+          path: dist
+          key: ng-build-${{ hashFiles('package-lock.json', 'src/**', 'angular.json', 'scripts/gh-pages-before-add.js') }}
+          restore-keys: |
+            ng-build-${{ hashFiles('package-lock.json', 'src/**', 'angular.json', 'scripts/gh-pages-before-add.js') }}
+
       - name: Build Application
         run: npm run build
+        if: steps.cache-ng-build.outputs.cache-hit != 'true'
 
       - name: Run TestCafe tests in container
         run: |
-          docker run -w /opt/tests -v ${{ github.workspace }}:/opt/tests timbru31/node-chrome:20 npx testcafe chrome:headless ./e2e/fixtures --app="npm run serve:ci" -r spec,xunit:e2e/report.xml -c 4
+          docker run -w /opt/tests -v ${{ github.workspace }}:/opt/tests timbru31/node-chrome:20 npx testcafe chrome:headless ./e2e/fixtures --app="npm run serve:ci" -c 4
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
