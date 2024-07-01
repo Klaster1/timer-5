@@ -292,6 +292,7 @@ export const AppStore = signalStore(
         });
       }
     };
+    const splitSession = (taskId: string, sessionId: SessionId) => {};
     const createTask = async () => {
       const name = await prompt.prompt('Create task', '', 'Task name');
       if (!name) return;
@@ -362,6 +363,7 @@ export const AppStore = signalStore(
       deleteTask,
       renameTask,
       editSession,
+      splitSession,
       createTask,
     };
   }),
