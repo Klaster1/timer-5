@@ -10,7 +10,7 @@
     "vr-review": "node ./scripts/visual-regression-review.mjs",
     "docker:build": "docker build -t timer-5-tests-ubuntu .",
     "e2e": "testcafe chrome:headless -c 5",
-    "e2e:ci": "testcafe chrome:headless -c 4 -q --app=\"npm run serve:ci\" -r spec,xunit:e2e/report.xml --base-url=\"http://localhost:4200/timer-5/\"",
+    "e2e:ci": "testcafe chrome:headless -c 4 -q --app=\"npm run serve:ci\" --base-url=\"http://localhost:4200/timer-5/\"",
     "e2e:docker": "docker run -w /opt/tests -v %INIT_CWD%:/opt/tests -v /opt/tests/node_modules -it timer-5-tests-ubuntu npx testcafe chrome:headless --base-url=http://host.docker.internal:4200 -c 5",
     "deploy": "gh-pages --nojekyll --dotfiles --dist dist/timer-5"
   },
