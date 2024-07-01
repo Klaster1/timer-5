@@ -23,7 +23,6 @@ import { rename, unlink } from 'node:fs/promises';
 
 express()
   .use(express.json())
-  // serve a html file when requesting /
   .get('/', (req, res) => {
     res.sendFile('./scripts/visual-regression-review.html', { root: '.' });
   })

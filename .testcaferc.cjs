@@ -1,5 +1,3 @@
-const { beforeEach } = require('node:test');
-
 /** @type {TestCafeConfigurationOptions} */
 module.exports = {
   src: './e2e/fixtures/',
