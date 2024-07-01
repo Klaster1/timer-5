@@ -19,6 +19,7 @@ import { provideRouter, withRouterConfig } from '@angular/router';
 import { SwUpdate, provideServiceWorker } from '@angular/service-worker';
 import { AppComponent } from '@app/app.component';
 import { gameStateGuard } from '@app/guards/game-state.guard';
+import { withRoutedDialogs } from '@app/services/routed-dialogs';
 import { HotkeyModule } from 'angular2-hotkeys';
 import { secondsToMilliseconds } from 'date-fns/secondsToMilliseconds';
 import { interval } from 'rxjs';
@@ -46,6 +47,18 @@ bootstrapApplication(AppComponent, {
             {
               path: ':taskId',
               component: ScreenTaskComponent,
+              data: { dialogRoot: true },
+              children: [
+                {
+                  path: 'sessions/:sessionId',
+                  children: [
+                    {
+                      path: 'split',
+                      loadComponent: () => import('./app/dialog-split-session/dialog-split-session.component'),
+                    },
+                  ],
+                },
+              ],
             },
           ],
         },
@@ -104,5 +117,6 @@ bootstrapApplication(AppComponent, {
         };
       },
     },
+    withRoutedDialogs(),
   ],
 });
