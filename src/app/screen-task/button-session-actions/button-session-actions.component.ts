@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
@@ -20,6 +20,7 @@ export class ButtonSessionActionsComponent {
 
   public task = input.required<Task>();
   public session = input.required<Session>();
+  public sessionIndex = computed(() => this.task().sessions.indexOf(this.session()));
 
   edit() {
     this.store.editSession(this.task().id, getSessionId(this.session()));
