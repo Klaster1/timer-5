@@ -5,16 +5,21 @@ import { mkdir, unlink, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { t } from 'testcafe';
 import { getCdpClient } from './utils';
+const os = require('os');
 
 export const VISUAL_REGRESSION_OK = { match: true } as const;
+const BASE_DIR = 'visual-regression-screenshots';
 
 type VisualRegressionMode = 'create' | 'compare';
 type ScreenshotPathName = 'reference' | 'current' | 'diff';
 type ScreenshotPaths = Record<ScreenshotPathName, string>;
 type ColorScheme = 'light' | 'dark';
+type Platform = 'windows' | 'linux' | 'unknown';
 
 const getPaths = (name: string): ScreenshotPaths => {
-  const BASE_PATH = ['visual-regression-screenshots'];
+  const platform: Platform = os.platform() === 'win32' ? 'windows' : os.platform() === 'linux' ? 'linux' : 'unknown';
+
+  const BASE_PATH = [BASE_DIR, platform];
   const commonFileName = `[${t.fixture.name}] ${t.test.name} - ${name}`;
 
   return {
