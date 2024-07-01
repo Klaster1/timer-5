@@ -130,9 +130,13 @@ const withTheme = () => {
       onInit(store) {
         {
           const storedTheme = localStorage.getItem('theme');
-          const parsedTheme = storedTheme ? JSON.parse(storedTheme) : null;
-          const theme = typeof parsedTheme === 'object' && parsedTheme ? parsedTheme : initialState.theme;
-          store.setTheme(theme);
+          try {
+            const parsedTheme = storedTheme ? JSON.parse(storedTheme) : null;
+            const theme = typeof parsedTheme === 'object' && parsedTheme ? parsedTheme : initialState.theme;
+            store.setTheme(theme);
+          } catch (e) {
+            if (initialState.theme) store.setTheme(initialState.theme);
+          }
         }
         effect(() => {
           const theme = store.theme();
