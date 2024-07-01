@@ -1,3 +1,4 @@
+import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
@@ -12,6 +13,8 @@ import {
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { DatetimeLocalDirective } from '@app/directives/datetime-local.directive';
+import { RoutedDialogConfig } from '@app/services/routed-dialogs';
+import { AppStore } from '@app/services/state';
 
 export interface DialogSplitSessionData {
   start: number;
@@ -36,9 +39,14 @@ export interface DialogSplitSessionData {
     MatInput,
     ReactiveFormsModule,
     DatetimeLocalDirective,
+    JsonPipe,
   ],
 })
 export default class DialogSplitSessionComponent {
+  public readonly state = inject(AppStore);
+  static dialogConfig: RoutedDialogConfig = {
+    id: 'dialog-split-session',
+  };
   public data = inject<DialogSplitSessionData>(MAT_DIALOG_DATA);
   private dialog = inject<MatDialogRef<DialogSplitSessionComponent, DialogSplitSessionData>>(MatDialogRef);
 }
