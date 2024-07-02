@@ -188,13 +188,15 @@ export const AppStore = signalStore(
 
     // Tasks
     const allTasks = computed(() => Object.values(store.tasks()));
-    const currentTasks = computed(() => {
-      const tasks = allTasks();
-      const filterParams = {
+    const taskFilterParams = computed(
+      () => ({
         ...decodedFilterParams(),
         state: currentTaskState(),
-      };
-      return filterTasks(filterParams, tasks);
+      }),
+      { equal: deepEquals },
+    );
+    const currentTasks = computed(() => {
+      return filterTasks(taskFilterParams(), allTasks());
     });
     const currentTask = computed(() => {
       const taskId = currentTaskId();
