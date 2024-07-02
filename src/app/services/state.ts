@@ -223,6 +223,12 @@ export const AppStore = signalStore(
     });
     const isCurrentTaskOpened = computed(() => !!currentTask());
     const isAnyTaskActive = computed(() => allTasks().some(isTaskRunning));
+    const sessionToSplit = computed(() => {
+      const task = currentTask();
+      const sessionIndex = store.routeParams()?.sessionIndex;
+      if (!task || typeof sessionIndex !== 'string') return;
+      return task.sessions[Number(sessionIndex)];
+    });
 
     // Filter
     const filterRange = computed(() => [filterFrom() ?? null, filterTo() ?? null] as const);
@@ -244,6 +250,7 @@ export const AppStore = signalStore(
       isCurrentTaskOpened,
       isAnyTaskActive,
       filterRange,
+      sessionToSplit,
     };
   }),
   withMethods((store) => {
@@ -290,6 +297,7 @@ export const AppStore = signalStore(
         });
       }
     };
+    const splitSession = (taskId: string, sessionId: SessionId) => {};
     const createTask = async () => {
       const name = await prompt.prompt('Create task', '', 'Task name');
       if (!name) return;
@@ -360,6 +368,7 @@ export const AppStore = signalStore(
       deleteTask,
       renameTask,
       editSession,
+      splitSession,
       createTask,
     };
   }),
