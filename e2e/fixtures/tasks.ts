@@ -4,12 +4,11 @@ import { fixture, test } from 'testcafe';
 import { app } from '../page-objects/app';
 import { dialogEditSession } from '../page-objects/dialog-edit-session';
 import { dialogPrompt } from '../page-objects/dialog-prompt';
-import { duration } from '../page-objects/duration';
 import { menuTaskActions } from '../page-objects/menu-task-actions';
 import { screenTask } from '../page-objects/screen-task';
 import { screenTasks } from '../page-objects/screen-tasks';
 import { tooltip } from '../page-objects/tooltip';
-import { getLocationPathname, reload, setDownloadsDirectory } from '../utils';
+import { advanceDate, getLocationPathname, mockDate, reload, restoreDate, setDownloadsDirectory } from '../utils';
 import { VISUAL_REGRESSION_OK, comparePageScreenshot } from '../visual-regression';
 
 fixture('Tasks');
@@ -306,39 +305,29 @@ test('Export and import', async (t) => {
   }
 });
 
+// TestCafe client script to mock the date
+
 test('Editing a session', async (t) => {
-  const utcDateToLocalDate = (date: Date): Date => {
-    const utcDate = new Date(date);
-    return new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000);
-  };
+  const now = '2024-06-01T12:00:00';
   // Have a running task
+  await mockDate(new Date(now));
   await screenTasks.addTask('Test');
   await t.pressKey('s');
+  await advanceDate(4_000);
   // Change a running task session start time, assert the total changes
-  await t.expect(screenTask.sessionDuration.nth(0).textContent).eql(' 4 s', { timeout: 5_000 });
-  await t.expect(screenTask.taskDuration.textContent).eql(' 7 s');
-  await t
-    .expect(await comparePageScreenshot('running', { ignore: [duration, screenTask.sessionStart] }))
-    .eql(VISUAL_REGRESSION_OK);
+  await t.expect(screenTask.sessionDuration.nth(0).textContent).eql(' 4 s');
+  await t.expect(screenTask.taskDuration.textContent).eql(' 4 s');
+  await t.expect(await comparePageScreenshot('running')).eql(VISUAL_REGRESSION_OK);
   await t.click(screenTask.buttonSessionAction).click(screenTask.menuSession.buttonEdit);
-  const now = utcDateToLocalDate(new Date());
-  now.setHours(now.getHours() - 3);
-  await dialogEditSession.setStart(now);
-  await t
-    .expect(
-      await comparePageScreenshot('editing', {
-        ignore: [dialogEditSession.inputStart, dialogEditSession.inputEnd, duration, screenTask.sessionStart],
-      }),
-    )
-    .eql(VISUAL_REGRESSION_OK);
+  await dialogEditSession.setStart(now.replace('12', '09'));
+  await t.expect(await comparePageScreenshot('editing')).eql(VISUAL_REGRESSION_OK);
   await t.click(dialogEditSession.buttonSubmit);
   await t.expect(screenTask.sessionDuration.nth(0).textContent).eql(' 3 h 00 m');
   await t.expect(screenTask.taskDuration.textContent).eql(' 3 h 00 m');
-  await t.expect(screenTasks.total.textContent).eql(' 2 h 59 m');
+  await t.expect(screenTasks.total.textContent).eql(' 3 h 00 m');
   // For a running task session, set the end time, assert the task becomes active/non-running
   await t.click(screenTask.buttonSessionAction).click(screenTask.menuSession.buttonEdit);
-  now.setHours(now.getHours() + 2);
-  await dialogEditSession.setEnd(now);
+  await dialogEditSession.setEnd(now.replace('12', '11'));
   await t.click(dialogEditSession.buttonSubmit);
   await t.expect(screenTask.sessionDuration.nth(0).textContent).eql(' 2 h 00 m');
   await t.expect(screenTask.taskDuration.textContent).eql(' 2 h 00 m');
@@ -355,7 +344,7 @@ test('Editing a session', async (t) => {
     .click(dialogEditSession.buttonSubmit);
   await t.expect(screenTask.sessionDuration.nth(0).textContent).eql(' 3 h 00 m');
   await t.expect(screenTask.taskDuration.textContent).eql(' 3 h 00 m');
-  await t.expect(screenTasks.total.textContent).eql(' 2 h 59 m');
+  await t.expect(screenTasks.total.textContent).eql(' 3 h 00 m');
   await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).contains('pause_circle');
   // Edit a session, assert the form can't be submitted without start time
   await t
@@ -365,6 +354,8 @@ test('Editing a session', async (t) => {
     .pressKey('ctrl+a delete')
     .click(dialogEditSession.buttonSubmit);
   await t.expect(dialogEditSession.validationErrorStart.textContent).contains('Start is required');
+}).after(async (t) => {
+  await restoreDate();
 });
 
 test('Moving a session', async (t) => {
