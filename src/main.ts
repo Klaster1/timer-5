@@ -50,7 +50,7 @@ bootstrapApplication(AppComponent, {
               data: { dialogRoot: true },
               children: [
                 {
-                  path: 'sessions/:sessionId',
+                  path: 'sessions/:sessionIndex',
                   children: [
                     {
                       path: 'split',
