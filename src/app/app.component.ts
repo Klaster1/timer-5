@@ -11,6 +11,7 @@ import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/rou
 import { HotkeysService } from 'angular2-hotkeys';
 import { ButtonThemeSwitcherComponent } from './button-theme-switcher/button-theme-switcher.component';
 import { DIALOG_HOTKEYS_CHEATSHEET_ID } from './dialog-hotkeys-cheatsheet/id';
+import { DurationIntervalDirective } from './directives/duration.component';
 import { KEYS_GO_ACTIVE, KEYS_GO_ALL, KEYS_GO_FINISHED, hotkey } from './domain/hotkeys';
 import { toStoredTasks } from './domain/storage';
 import { TaskState } from './domain/task';
@@ -45,6 +46,7 @@ import { AppStore } from './services/state';
     RouterLinkActive,
     RouterOutlet,
     ButtonThemeSwitcherComponent,
+    DurationIntervalDirective,
   ],
 })
 export class AppComponent {

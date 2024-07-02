@@ -17,7 +17,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltip } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { ButtonTaskActionsComponent } from '@app/button-task-actions/button-task-actions.component';
-import { DurationComponent, DurationIntervalDirective } from '@app/directives/duration.component';
+import { DurationComponent } from '@app/directives/duration.component';
 import { ToolbarWidthSyncDirective } from '@app/directives/toolbar-width-sync';
 import {
   KEYS_DELETE_TASK,
@@ -63,7 +63,6 @@ import { TypeSafeCdkVirtualForDirective } from './type-safe-virtual-for.directiv
     VirtualScrollStickyTable,
     TypeSafeCdkVirtualForDirective,
     DurationComponent,
-    DurationIntervalDirective,
     ToolbarWidthSyncDirective,
   ],
 })
