@@ -15,3 +15,34 @@ export const setDownloadsDirectory = async (path: string) => {
   await client.send('Page.setDownloadBehavior', { behavior: 'allow', downloadPath });
   return downloadPath;
 };
+
+// Date mocks
+
+export const mockDate = (date: Date) =>
+  t.eval(
+    () => {
+      Date.now = () => date.valueOf();
+    },
+    {
+      dependencies: { date },
+    },
+  );
+
+export const advanceDate = (ms: number) =>
+  t.eval(
+    () => {
+      const oldNow = Date.now();
+      Date.now = () => oldNow + ms;
+    },
+    { dependencies: { ms } },
+  );
+
+export const restoreDate = () =>
+  t.eval(() => {
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+    const originalDateNow = (iframe.contentWindow as unknown as typeof globalThis).Date.now;
+    document.body.removeChild(iframe);
+    Date.now = originalDateNow;
+  });

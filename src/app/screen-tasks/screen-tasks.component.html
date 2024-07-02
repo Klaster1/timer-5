@@ -8,7 +8,6 @@
             [value]="tasks | map: tasksDuration"
             data-e2e="screen-tasks__total"
             class="state-duration"
-            [durationInterval]="20_000"
           ></duration
           >)
         </h1>
@@ -37,7 +36,7 @@
           [scrollToIndex]="store.currentTaskIndex()"
           [checkViewportSizeWhenValueChanges]="tasks"
         >
-          <mat-nav-list [durationInterval]="1_000">
+          <mat-nav-list>
             <a
               mat-list-item
               *cdkVirtualFor="let task of tasks; trackBy: taskId; types: tasks"

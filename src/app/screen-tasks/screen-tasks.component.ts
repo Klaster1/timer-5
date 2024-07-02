@@ -22,7 +22,7 @@ import { MatToolbar } from '@angular/material/toolbar';
 import { MatTooltip } from '@angular/material/tooltip';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ButtonTaskActionsComponent } from '@app/button-task-actions/button-task-actions.component';
-import { DurationComponent, DurationIntervalDirective } from '@app/directives/duration.component';
+import { DurationComponent } from '@app/directives/duration.component';
 import { ToolbarWidthSyncDirective } from '@app/directives/toolbar-width-sync';
 import { KEYS_ADD, KEYS_NEXT, KEYS_PREV, KEYS_SEARCH, hotkey } from '@app/domain/hotkeys';
 import { SessionDragEvent, Task, TaskState, isTaskRunning, taskDuration, tasksDuration } from '@app/domain/task';
@@ -72,7 +72,6 @@ import { TasksFilterComponent } from './tasks-filter/tasks-filter.component';
     NgClass,
     TypeSafeCdkVirtualForDirective,
     DurationComponent,
-    DurationIntervalDirective,
     ToolbarWidthSyncDirective,
   ],
 })

@@ -82,19 +82,28 @@ export const sessionDuration = (session?: Session): DurationFn => {
   return (now: Milliseconds) => (session.end ? session.end - session.start : now - session.start);
 };
 
-export const taskDuration = (task?: Task): DurationFn => {
-  const completeDuration = completeTaskDuration(task);
-  const lastSession = getTaskRunningSession(task);
-  return lastSession
-    ? sessionIsOver(lastSession)
-      ? () => completeDuration
-      : (now: Milliseconds) => completeDuration + now - lastSession.start
-    : () => completeDuration;
+const runningTaskDuration = (task?: Task): DurationFn | void => {
+  const sessionInProgress = getTaskRunningSession(task);
+  return sessionInProgress ? sessionDuration(sessionInProgress) : undefined;
 };
 
-export const tasksDuration = (tasks: Task[]): DurationFn => {
-  return (now: Milliseconds) => tasks.reduce((t, task) => t + taskDuration(task)(now), 0);
+export const taskDuration = (task?: Task): DurationFn => {
+  const completeDuration = completeTaskDuration(task);
+  const runningDuration = runningTaskDuration(task);
+  return runningDuration ? (now: Milliseconds) => completeDuration + runningDuration(now) : () => completeDuration;
 };
+
+export const tasksDuration = (tasks: Task[]): DurationFn =>
+  tasks.reduce(
+    (durationFn, task): DurationFn => {
+      const completeDuration = completeTaskDuration(task);
+      const runningDuration = runningTaskDuration(task);
+      return runningDuration
+        ? (now: Milliseconds) => completeDuration + durationFn(now) + runningDuration(now)
+        : (now: Milliseconds) => completeDuration + durationFn(now);
+    },
+    (now: Milliseconds) => 0,
+  );
 
 type Nullable<T> = T | null;
 

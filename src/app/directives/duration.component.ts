@@ -1,9 +1,10 @@
 import { AsyncPipe, NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Directive, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { DurationFn, Milliseconds } from '@app/domain/date-time';
+import { DurationFn } from '@app/domain/date-time';
 import { pad2 } from '@app/utils/number';
-import { Observable, combineLatest, interval, map, shareReplay, startWith, switchMap } from 'rxjs';
+import { secondsToMilliseconds } from 'date-fns';
+import { combineLatest, interval, map, shareReplay, startWith } from 'rxjs';
 
 enum DimMode {
   All,
@@ -22,6 +23,12 @@ enum Unit {
   Minutes = 'm',
   Seconds = 's',
 }
+
+const EVERY_SECOND_INTERVAL = interval(secondsToMilliseconds(1)).pipe(
+  startWith(0),
+  map(() => Date.now()),
+  shareReplay({ refCount: true, bufferSize: 1 }),
+);
 
 @Component({
   selector: 'duration',
@@ -63,10 +70,9 @@ enum Unit {
   imports: [NgClass, AsyncPipe],
 })
 export class DurationComponent {
-  private interval = inject(DurationIntervalDirective).interval;
   public readonly value = input.required<DurationFn>();
   public readonly DimMode = DimMode;
-  public readonly durationFragments = combineLatest([toObservable(this.value), this.interval]).pipe(
+  public readonly durationFragments = combineLatest([toObservable(this.value), EVERY_SECOND_INTERVAL]).pipe(
     map(([value, now]): Fragment[] => {
       const hours = ~~(value(now) / 3600000);
       const minutes = ~~((value(now) % 3600000) / 60000);
@@ -84,20 +90,6 @@ export class DurationComponent {
         },
       ];
     }),
-  );
-}
-
-@Directive({
-  selector: '[durationInterval]',
-  standalone: true,
-})
-export class DurationIntervalDirective {
-  public readonly durationInterval = input.required<Milliseconds>();
-  public interval: Observable<Milliseconds> = toObservable(this.durationInterval).pipe(
-    switchMap((value) => interval(value)),
-    startWith(0),
-    map(() => Date.now()),
     takeUntilDestroyed(),
-    shareReplay({ refCount: true, bufferSize: 1 }),
   );
 }

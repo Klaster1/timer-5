@@ -8,26 +8,32 @@ export const dialogEditSession = {
   validationErrorStart: e2e('dialog-edit-session__start-validation-error'),
   inputEnd: e2e('dialog-edit-session__input-end'),
   buttonSubmit: e2e('dialog-edit-session__button-submit'),
-  async setStart(date: Date) {
+  /**
+   * Example: "2017-06-01T08:30"
+   */
+  async setStart(value: string) {
     const input = this.inputStart;
     await t.eval(
       () => {
         const el = (input as any)() as HTMLInputElement;
-        el.value = (date as Date).toISOString().replace('Z', '');
+        el.value = value;
         el.dispatchEvent(new Event('input'));
       },
-      { dependencies: { input, date } },
+      { dependencies: { input, value } },
     );
   },
-  async setEnd(date: Date) {
+  /**
+   * Example: "2017-06-01T08:30"
+   */
+  async setEnd(value: string) {
     const input = this.inputEnd;
     await t.eval(
       () => {
         const el = (input as any)() as HTMLInputElement;
-        el.value = (date as Date).toISOString().replace('Z', '');
+        el.value = value;
         el.dispatchEvent(new Event('input'));
       },
-      { dependencies: { input, date } },
+      { dependencies: { input, value } },
     );
   },
 };
