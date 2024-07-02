@@ -1,1 +1,8 @@
-<pre>{{ state.routeParams() | json }}</pre>
+<h1 mat-dialog-title>Split session</h1>
+<form mat-dialog-content>
+  <pre>{{ state.sessionToSplit() | json }}</pre>
+</form>
+<div mat-dialog-actions align="end">
+  <button type="button" mat-button mat-dialog-close>Cancel</button>
+  <button type="submit" form="promptForm" mat-button data-e2e="dialog-split-session__button-submit">Split</button>
+</div>
