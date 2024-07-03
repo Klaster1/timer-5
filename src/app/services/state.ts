@@ -13,7 +13,6 @@ import {
   TaskState,
   filterTaskSessions,
   filterTasks,
-  getTaskSession,
   isSessionWithId,
   isTaskRunning,
   makeTaskId,
@@ -31,8 +30,6 @@ import {
   withState,
 } from '@ngrx/signals';
 import { Draft, produce } from 'immer';
-import { firstValueFrom } from 'rxjs';
-import { DialogEditSessionData } from '../dialog-edit-session/dialog-edit-session.component';
 
 export type NormalizedTasks = { [id: string]: Task };
 
@@ -184,6 +181,7 @@ export const AppStore = signalStore(
     const filterFrom = computed(() => decodedFilterParams().from);
     const filterTo = computed(() => decodedFilterParams().to);
     const currentTaskId = computed(() => decodedRouteParams().taskId);
+    const currentSessionIndex = computed(() => store.routeParams()?.sessionIndex);
     const currentTaskState = computed(() => decodedRouteParams().state);
 
     // Tasks
@@ -225,9 +223,9 @@ export const AppStore = signalStore(
     });
     const isCurrentTaskOpened = computed(() => !!currentTask());
     const isAnyTaskActive = computed(() => allTasks().some(isTaskRunning));
-    const sessionToSplit = computed(() => {
+    const sessionAtRoute = computed(() => {
       const task = currentTask();
-      const sessionIndex = store.routeParams()?.sessionIndex;
+      const sessionIndex = currentSessionIndex();
       if (!task || typeof sessionIndex !== 'string') return;
       return task.sessions[Number(sessionIndex)];
     });
@@ -241,6 +239,7 @@ export const AppStore = signalStore(
       filterFrom,
       filterTo,
       currentTaskId,
+      currentSessionIndex,
       currentTaskState,
       allTasks,
       currentTasks,
@@ -252,7 +251,7 @@ export const AppStore = signalStore(
       isCurrentTaskOpened,
       isAnyTaskActive,
       filterRange,
-      sessionToSplit,
+      sessionAtRoute,
     };
   }),
   withMethods((store) => {
@@ -270,6 +269,11 @@ export const AppStore = signalStore(
         if (task) task.name = name;
       });
     };
+    const getSessionAtIndex = (taskId: string, sessionIndex: number) =>
+      computed(() => {
+        const task = store.tasks()[taskId];
+        return task?.sessions[sessionIndex];
+      });
     const deleteTask = (taskIdToRemove: string) => {
       updateState(store, (draft) => {
         delete draft.tasks[taskIdToRemove];
@@ -278,26 +282,12 @@ export const AppStore = signalStore(
       const taskId = store.currentTaskId();
       if (taskIdToRemove === taskId && state) router.navigate([state], { queryParamsHandling: 'merge' });
     };
-    const editSession = async (taskId: string, sessionId: SessionId) => {
-      const task = taskById(taskId)();
-      if (!task) return;
-      const session = getTaskSession(task, sessionId);
-      if (!session) return;
-      const component = await import('../dialog-edit-session/dialog-edit-session.component').then((m) => m.default);
-      const result: DialogEditSessionData | undefined = await firstValueFrom(
-        dialog
-          .open(component, { data: { start: session.start, end: session.end } as DialogEditSessionData })
-          .afterClosed(),
-      );
-      if (result) {
-        updateState(store, (draft) => {
-          const task = draft.tasks[taskId];
-          const sessions = task?.sessions;
-          const session = sessions?.find(isSessionWithId(sessionId));
-          if (!task || !sessions || !session) return;
-          task.sessions.splice(task.sessions.indexOf(session), 1, { start: result.start, end: result.end });
-        });
-      }
+    const editSession = async (taskId: string, sessionIndex: number, updatedSession: Session) => {
+      updateState(store, (draft) => {
+        const task = draft.tasks[taskId];
+        if (!task) return;
+        task.sessions.splice(sessionIndex, 1, updatedSession);
+      });
     };
     const splitSession = (taskId: string, sessionId: SessionId) => {};
     const createTask = async () => {
@@ -372,6 +362,7 @@ export const AppStore = signalStore(
       editSession,
       splitSession,
       createTask,
+      getSessionAtIndex,
     };
   }),
   withHooks({
