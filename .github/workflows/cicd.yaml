@@ -47,9 +47,7 @@ jobs:
         with:
           path: |
             e2e/screenshots
-            e2e/visual-regression-screenshots/*.diff.png
-            e2e/visual-regression-screenshots/*.current.png
-            e2e/visual-regression-screenshots/*.reference.png
+            e2e/visual-regression-screenshots
           if-no-files-found: ignore
           retention-days: 1
           compression-level: 0
