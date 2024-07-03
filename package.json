@@ -28,7 +28,7 @@
     "@angular/platform-browser-dynamic": "^18.0.5",
     "@angular/router": "^18.0.5",
     "@angular/service-worker": "^18.0.5",
-    "@ngrx/signals": "18.0.0-rc.1",
+    "@ngrx/signals": "18.0.0-rc.2",
     "angular2-hotkeys": "^16.0.1",
     "date-fns": "^3.6.0",
     "immer": "^10.1.1",
@@ -51,7 +51,7 @@
     "local-web-server": "^5.3.3",
     "looks-same": "^9.0.0",
     "prettier": "^3.3.2",
-    "prettier-plugin-organize-imports": "^3.2.4",
+    "prettier-plugin-organize-imports": "^4.0.0",
     "testcafe": "^3.6.1",
     "typescript": "~5.4.5"
   },
