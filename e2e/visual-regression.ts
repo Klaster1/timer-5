@@ -124,6 +124,11 @@ const forceTheme = async (colorScheme: ColorScheme) => {
     });
   };
 };
+const getEnvMode = (): VisualRegressionMode | undefined => {
+  const validValues = new Set<VisualRegressionMode>(['create', 'compare']);
+  const raw = process.env['VR_MODE'];
+  return validValues.has(raw as any) ? (raw as VisualRegressionMode) : undefined;
+};
 
 export async function comparePageScreenshot(
   name: string,
@@ -134,7 +139,7 @@ export async function comparePageScreenshot(
   },
 ) {
   const paths = getPaths(name);
-  const mode: VisualRegressionMode = existsSync(paths.reference) ? 'compare' : 'create';
+  const mode: VisualRegressionMode = getEnvMode() ?? (existsSync(paths.reference) ? 'compare' : 'create');
   const colorScheme = options?.theme ?? 'dark';
 
   const cleanup = await prepare(colorScheme);
