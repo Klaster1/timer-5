@@ -22,14 +22,8 @@ export class ButtonSessionActionsComponent {
   public session = input.required<Session>();
   public sessionIndex = computed(() => this.task().sessions.indexOf(this.session()));
 
-  edit() {
-    this.store.editSession(this.task().id, getSessionId(this.session()));
-  }
   remove() {
     this.store.deleteSession(this.task().id, getSessionId(this.session()));
-  }
-  split() {
-    this.store.splitSession(this.task().id, getSessionId(this.session()));
   }
   get skipBeforeParams() {
     return encodeFilterParams({ from: new Date(this.session().start) });

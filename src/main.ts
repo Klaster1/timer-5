@@ -8,21 +8,22 @@ import {
   isDevMode,
   provideExperimentalZonelessChangeDetection,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogConfig } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MAT_TOOLTIP_DEFAULT_OPTIONS, MatTooltipDefaultOptions } from '@angular/material/tooltip';
 import { DomSanitizer, bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideRouter, withRouterConfig } from '@angular/router';
+import { ActivatedRouteSnapshot, provideRouter, withRouterConfig } from '@angular/router';
 import { SwUpdate, provideServiceWorker } from '@angular/service-worker';
 import { AppComponent } from '@app/app.component';
 import { gameStateGuard } from '@app/guards/game-state.guard';
 import { withRoutedDialogs } from '@app/services/routed-dialogs';
+import { AppStore } from '@app/services/state';
 import { HotkeyModule } from 'angular2-hotkeys';
 import { secondsToMilliseconds } from 'date-fns/secondsToMilliseconds';
-import { interval } from 'rxjs';
+import { filter, firstValueFrom, interval } from 'rxjs';
 import ScreenTaskComponent from './app/screen-task/screen-task.component';
 import ScreenTasksComponent from './app/screen-tasks/screen-tasks.component';
 import { environment } from './environments/environment';
@@ -51,10 +52,22 @@ bootstrapApplication(AppComponent, {
               children: [
                 {
                   path: 'sessions/:sessionIndex',
+                  resolve: {
+                    session: (route: ActivatedRouteSnapshot) =>
+                      firstValueFrom(
+                        toObservable(
+                          inject(AppStore).getSessionAtIndex(route.params.taskId, route.params.sessionIndex),
+                        ).pipe(filter((session) => !!session)),
+                      ),
+                  },
                   children: [
                     {
                       path: 'split',
                       loadComponent: () => import('./app/dialog-split-session/dialog-split-session.component'),
+                    },
+                    {
+                      path: 'edit',
+                      loadComponent: () => import('./app/dialog-edit-session/dialog-edit-session.component'),
                     },
                   ],
                 },

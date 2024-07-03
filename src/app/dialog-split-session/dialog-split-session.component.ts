@@ -43,10 +43,11 @@ export interface DialogSplitSessionData {
   ],
 })
 export default class DialogSplitSessionComponent {
-  public readonly state = inject(AppStore);
   static dialogConfig: RoutedDialogConfig = {
     id: 'dialog-split-session',
   };
+
+  public readonly state = inject(AppStore);
   public data = inject<DialogSplitSessionData>(MAT_DIALOG_DATA);
   private dialog = inject<MatDialogRef<DialogSplitSessionComponent, DialogSplitSessionData>>(MatDialogRef);
 }
