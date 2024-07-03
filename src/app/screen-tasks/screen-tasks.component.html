@@ -55,7 +55,7 @@
                 data-e2e="screen-tasks__task-state-icon"
                 matListItemIcon
               ></mat-icon>
-              <div matListItemTitle>
+              <div matListItemTitle class="item-title">
                 <span class="name" data-e2e="screen-tasks__task-name">{{ task.name }}</span>
                 <duration data-e2e="screen-tasks__task-duration" [value]="task | map: taskDuration"></duration>
               </div>
