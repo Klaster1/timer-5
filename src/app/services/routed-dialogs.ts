@@ -1,4 +1,4 @@
-import { ENVIRONMENT_INITIALIZER, Provider, inject } from '@angular/core';
+import { ENVIRONMENT_INITIALIZER, Injector, Provider, inject } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRouteSnapshot, ActivationEnd, Router } from '@angular/router';
 import { filter, map } from 'rxjs';
@@ -22,6 +22,7 @@ export const withRoutedDialogs = (): Provider => {
     provide: ENVIRONMENT_INITIALIZER,
     multi: true,
     useFactory: () => {
+      const injector = inject(Injector);
       const router = inject(Router);
       const matDialog = inject(MatDialog);
       const activationEnd$ = router.events.pipe(
@@ -42,10 +43,21 @@ export const withRoutedDialogs = (): Provider => {
           const component = event.snapshot.component;
           const dialogRoot = getAllChildren(event.snapshot.root).reverse().find(isDialogRoot);
 
-          if (!component || !('dialogConfig' in component) || !dialogRoot) return;
+          if (!component || !isDialogRoute(event.snapshot) || !dialogRoot) return;
+
+          const dialogInjector = Injector.create({
+            parent: injector,
+            providers: [
+              {
+                provide: ActivatedRouteSnapshot,
+                useFactory: () => event.snapshot,
+              },
+            ],
+          });
 
           const dialogRef = matDialog.open(component, {
             closeOnNavigation: false,
+            injector: dialogInjector,
           });
           dialogRef.afterClosed().subscribe(() => {
             router.navigate(dialogRoot.pathFromRoot.flatMap((route) => route.url.map((url) => url.path)));
