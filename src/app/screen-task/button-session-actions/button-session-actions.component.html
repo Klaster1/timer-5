@@ -6,7 +6,8 @@
     <a
       mat-menu-item
       type="button"
-      [routerLink]="['sessions', sessionIndex(), 'edit']"
+      [routerLink]="['/', { outlets: { dialog: ['tasks', task().id, 'sessions', sessionIndex(), 'edit'] } }]"
+      queryParamsHandling="preserve"
       data-e2e="menu-session__button-edit"
     >
       Edit
@@ -14,7 +15,8 @@
     <a
       mat-menu-item
       type="button"
-      [routerLink]="['sessions', sessionIndex(), 'split']"
+      [routerLink]="['/', { outlets: { dialog: ['tasks', task().id, 'sessions', sessionIndex(), 'split'] } }]"
+      queryParamsHandling="preserve"
       data-e2e="menu-session__button-split"
     >
       Split

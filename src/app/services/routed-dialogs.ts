@@ -1,20 +1,18 @@
 import { ENVIRONMENT_INITIALIZER, Injector, Provider, inject } from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRouteSnapshot, ActivationEnd, Router } from '@angular/router';
 import { filter, map } from 'rxjs';
-
-export type RoutedDialogConfig = MatDialogConfig;
 
 const getAllChildren = (route: ActivatedRouteSnapshot): ActivatedRouteSnapshot[] => {
   return route.children.flatMap((child) => [child, ...getAllChildren(child)]);
 };
 
-const isDialogRoute = (route: ActivatedRouteSnapshot): boolean => {
-  return !!route.component && 'dialogConfig' in route.component;
+const getAllParents = (route: ActivatedRouteSnapshot): ActivatedRouteSnapshot[] => {
+  return route.parent ? [route.parent, ...getAllParents(route.parent)] : [];
 };
 
-const isDialogRoot = (route: ActivatedRouteSnapshot): boolean => {
-  return 'dialogRoot' in route.data && (!route.parent || !('dialogRoot' in route.parent.data));
+const isDialogRoute = (route: ActivatedRouteSnapshot): boolean => {
+  return !!route.component && getAllParents(route).some((parent) => parent.outlet === 'dialog');
 };
 
 export const withRoutedDialogs = (): Provider => {
@@ -40,10 +38,7 @@ export const withRoutedDialogs = (): Provider => {
             }
           });
 
-          const component = event.snapshot.component;
-          const dialogRoot = getAllChildren(event.snapshot.root).reverse().find(isDialogRoot);
-
-          if (!component || !isDialogRoute(event.snapshot) || !dialogRoot) return;
+          if (!event.snapshot.component || !isDialogRoute(event.snapshot)) return;
 
           const dialogInjector = Injector.create({
             parent: injector,
@@ -55,12 +50,12 @@ export const withRoutedDialogs = (): Provider => {
             ],
           });
 
-          const dialogRef = matDialog.open(component, {
+          const dialogRef = matDialog.open(event.snapshot.component, {
             closeOnNavigation: false,
             injector: dialogInjector,
           });
           dialogRef.afterClosed().subscribe(() => {
-            router.navigate(dialogRoot.pathFromRoot.flatMap((route) => route.url.map((url) => url.path)));
+            router.navigate(['..', { outlets: { dialog: null } }], { queryParamsHandling: 'preserve' });
           });
         });
       };

@@ -15,7 +15,7 @@ import { MatFabButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltip } from '@angular/material/tooltip';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ButtonTaskActionsComponent } from '@app/button-task-actions/button-task-actions.component';
 import { DurationComponent } from '@app/directives/duration.component';
 import { ToolbarWidthSyncDirective } from '@app/directives/toolbar-width-sync';
@@ -70,6 +70,7 @@ export default class ScreenTaskComponent {
   public store = inject(AppStore);
   private keys = inject<HotkeysService>(HotkeysService);
   private destroyRef = inject(DestroyRef);
+  private router = inject(Router);
 
   taskIsInProgress = computed(() => isTaskRunning(this.store.currentTask()));
   viewport = viewChild(CdkVirtualScrollViewport);
@@ -97,7 +98,10 @@ export default class ScreenTaskComponent {
     }),
     hotkey(KEYS_RENAME, 'Rename task', () => {
       const task = this.store.currentTask();
-      if (task) this.store.renameTask(task.id);
+      if (task)
+        this.router.navigate(['/', { outlets: { dialog: ['tasks', task.id, 'rename'] } }], {
+          queryParamsHandling: 'preserve',
+        });
     }),
     hotkey(KEYS_DELETE_TASK, 'Delete task', () => {
       const task = this.store.currentTask();

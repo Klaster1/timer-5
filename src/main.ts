@@ -48,8 +48,24 @@ bootstrapApplication(AppComponent, {
             {
               path: ':taskId',
               component: ScreenTaskComponent,
-              data: { dialogRoot: true },
+            },
+          ],
+        },
+        {
+          outlet: 'dialog',
+          path: '',
+          children: [
+            {
+              path: 'tasks/:taskId',
+              resolve: {
+                task: (route: ActivatedRouteSnapshot) =>
+                  firstValueFrom(toObservable(inject(AppStore).taskById(route.params.taskId))),
+              },
               children: [
+                {
+                  path: 'rename',
+                  loadComponent: () => import('./app/dialog-rename-task/dialog-rename-task.component'),
+                },
                 {
                   path: 'sessions/:sessionIndex',
                   resolve: {

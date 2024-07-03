@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { RouterLink } from '@angular/router';
 import { Task, TaskState } from '@app/domain/task';
 import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
 import { TaskStatePipe } from '@app/pipes/task-state.pipe';
@@ -22,6 +23,7 @@ import { AppStore } from '@app/services/state';
     MatIcon,
     TaskStateIconPipe,
     TaskStatePipe,
+    RouterLink,
   ],
 })
 export class ButtonTaskActionsComponent {
@@ -29,10 +31,6 @@ export class ButtonTaskActionsComponent {
   task = input<Task>();
   taskState = TaskState;
 
-  renameTask() {
-    const task = this.task();
-    if (task) this.store.renameTask(task.id);
-  }
   deleteTask() {
     const task = this.task();
     if (task) this.store.deleteTask(task.id);

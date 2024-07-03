@@ -260,10 +260,7 @@ export const AppStore = signalStore(
     const dialog = inject(MatDialog);
 
     const taskById = (taskId: string) => computed(() => store.tasks()[taskId]);
-    const renameTask = async (taskId: string) => {
-      const task = taskById(taskId)();
-      const name = await prompt.prompt('Rename task', task?.name, 'Task name');
-      if (!name) return;
+    const renameTask = async (taskId: string, name: string) => {
       updateState(store, (draft) => {
         const task = draft.tasks[taskId];
         if (task) task.name = name;

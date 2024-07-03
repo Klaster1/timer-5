@@ -14,9 +14,15 @@
         <mat-icon [svgIcon]="task.state | taskStateIcon"></mat-icon>
         State: {{ task.state | taskState }}
       </button>
-      <button mat-menu-item type="button" (click)="renameTask()" data-e2e="button-task-actions__button-rename">
+      <a
+        mat-menu-item
+        type="button"
+        [routerLink]="['/', { outlets: { dialog: ['tasks', task.id, 'rename'] } }]"
+        queryParamsHandling="preserve"
+        data-e2e="button-task-actions__button-rename"
+      >
         Rename
-      </button>
+      </a>
       <button mat-menu-item type="button" (click)="deleteTask()" data-e2e="button-task-actions__button-delete">
         Delete
       </button>
