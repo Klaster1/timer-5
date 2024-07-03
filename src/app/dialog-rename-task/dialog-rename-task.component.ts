@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import {
-  MAT_DIALOG_DATA,
   MatDialogActions,
   MatDialogClose,
   MatDialogContent,
@@ -11,6 +10,8 @@ import {
 } from '@angular/material/dialog';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
+import { ActivatedRouteSnapshot } from '@angular/router';
+import { AppStore } from '@app/services/state';
 
 export interface DialogPromptData {
   title: string;
@@ -19,9 +20,9 @@ export interface DialogPromptData {
 }
 
 @Component({
-  selector: 'dialog-prompt',
-  templateUrl: './dialog-prompt.component.html',
-  styleUrls: ['./dialog-prompt.component.scss'],
+  selector: 'dialog-rename-task',
+  templateUrl: './dialog-rename-task.component.html',
+  styleUrl: './dialog-rename-task.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
@@ -37,18 +38,20 @@ export interface DialogPromptData {
     ReactiveFormsModule,
   ],
 })
-export default class DialogPromptComponent {
+export default class DialogRenameTaskComponent {
   static dialogConfig = {};
-  public data: DialogPromptData = inject(MAT_DIALOG_DATA);
-  private dialog = inject<MatDialogRef<DialogPromptComponent, string>>(MatDialogRef);
-  constructor() {
-    if (this.data.value) this.form.setValue({ value: this.data.value });
-  }
+
+  private route = inject(ActivatedRouteSnapshot);
+  private state = inject(AppStore);
+  private dialog = inject<MatDialogRef<DialogRenameTaskComponent, string>>(MatDialogRef);
   form = new FormGroup({
-    value: new FormControl<string | null>(null, [Validators.required]),
+    value: new FormControl<string | null>(this.route.data.task.name, [Validators.required]),
   });
   onSubmit() {
     const { value } = this.form.value;
-    if (this.form.valid && typeof value === 'string') this.dialog.close(value);
+    if (this.form.valid && typeof value === 'string') {
+      this.state.renameTask(this.route.params.taskId, value);
+      this.dialog.close(value);
+    }
   }
 }

@@ -12,7 +12,6 @@ import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { DatetimeLocalDirective } from '@app/directives/datetime-local.directive';
-import { RoutedDialogConfig } from '@app/services/routed-dialogs';
 import { AppStore } from '@app/services/state';
 
 @Component({
@@ -36,10 +35,6 @@ import { AppStore } from '@app/services/state';
   ],
 })
 export default class DialogEditSessionComponent {
-  static dialogConfig: RoutedDialogConfig = {
-    id: 'dialog-edit-session',
-  };
-
   private dialog = inject<MatDialogRef<DialogEditSessionComponent>>(MatDialogRef);
   private route = inject(ActivatedRouteSnapshot);
   private state = inject(AppStore);

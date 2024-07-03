@@ -13,7 +13,6 @@ import {
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { DatetimeLocalDirective } from '@app/directives/datetime-local.directive';
-import { RoutedDialogConfig } from '@app/services/routed-dialogs';
 import { AppStore } from '@app/services/state';
 
 export interface DialogSplitSessionData {
@@ -43,10 +42,6 @@ export interface DialogSplitSessionData {
   ],
 })
 export default class DialogSplitSessionComponent {
-  static dialogConfig: RoutedDialogConfig = {
-    id: 'dialog-split-session',
-  };
-
   public readonly state = inject(AppStore);
   public data = inject<DialogSplitSessionData>(MAT_DIALOG_DATA);
   private dialog = inject<MatDialogRef<DialogSplitSessionComponent, DialogSplitSessionData>>(MatDialogRef);
