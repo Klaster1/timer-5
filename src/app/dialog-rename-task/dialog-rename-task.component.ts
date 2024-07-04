@@ -13,12 +13,6 @@ import { MatInput } from '@angular/material/input';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { AppStore } from '@app/services/state';
 
-export interface DialogPromptData {
-  title: string;
-  placeholder?: string;
-  value?: string;
-}
-
 @Component({
   selector: 'dialog-rename-task',
   templateUrl: './dialog-rename-task.component.html',
@@ -39,8 +33,6 @@ export interface DialogPromptData {
   ],
 })
 export default class DialogRenameTaskComponent {
-  static dialogConfig = {};
-
   private route = inject(ActivatedRouteSnapshot);
   private state = inject(AppStore);
   private dialog = inject<MatDialogRef<DialogRenameTaskComponent, string>>(MatDialogRef);

@@ -1,8 +1,6 @@
 import { DestroyRef, computed, effect, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
-import { Prompt } from '@app/dialog-prompt/dialog-prompt.service';
 import { chartSeries } from '@app/domain/chart';
 import { decodeFilterMatrixParams, decodeRouteParams } from '@app/domain/router';
 import { fromStoredTasks, toStoredTasks } from '@app/domain/storage';
@@ -255,9 +253,7 @@ export const AppStore = signalStore(
     };
   }),
   withMethods((store) => {
-    const prompt = inject(Prompt);
     const router = inject(Router);
-    const dialog = inject(MatDialog);
 
     const taskById = (taskId: string) => computed(() => store.tasks()[taskId]);
     const renameTask = async (taskId: string, name: string) => {
@@ -287,14 +283,15 @@ export const AppStore = signalStore(
       });
     };
     const splitSession = (taskId: string, sessionId: SessionId) => {};
-    const createTask = async () => {
-      const name = await prompt.prompt('Create task', '', 'Task name');
-      if (!name) return;
+    const createTask = async (name: string) => {
       const taskId = makeTaskId();
       updateState(store, (draft) => {
         draft.tasks[taskId] = { id: taskId, name, sessions: [], state: TaskState.active };
       });
-      router.navigate([store.currentTaskState() === 'all' ? 'all' : 'active', taskId]);
+      router.navigate([
+        '/',
+        { outlets: { dialog: null, primary: [store.currentTaskState() === 'all' ? 'all' : 'active', taskId] } },
+      ]);
     };
     return {
       stopTask(taskId: string, timestamp: number) {

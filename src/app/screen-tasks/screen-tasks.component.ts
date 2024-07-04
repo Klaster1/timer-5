@@ -120,7 +120,7 @@ export default class ScreenTasksComponent {
   taskId: TrackByFunction<Task> = (_, task) => task.id;
 
   hotkeys = [
-    hotkey(KEYS_ADD, 'Add task', () => this.store.createTask()),
+    hotkey(KEYS_ADD, 'Add task', () => this.router.navigate(['/', { outlets: { dialog: ['tasks', 'create'] } }])),
     hotkey([...KEYS_NEXT, ...KEYS_PREV], 'Next/prev task', (e) => {
       const state = this.store.currentTaskState();
       const taskId = KEYS_NEXT.includes(e.key)
