@@ -93,17 +93,13 @@ export const taskDuration = (task?: Task): DurationFn => {
   return runningDuration ? (now: Milliseconds) => completeDuration + runningDuration(now) : () => completeDuration;
 };
 
-export const tasksDuration = (tasks: Task[]): DurationFn =>
-  tasks.reduce(
-    (durationFn, task): DurationFn => {
-      const completeDuration = completeTaskDuration(task);
-      const runningDuration = runningTaskDuration(task);
-      return runningDuration
-        ? (now: Milliseconds) => completeDuration + durationFn(now) + runningDuration(now)
-        : (now: Milliseconds) => completeDuration + durationFn(now);
-    },
-    (now: Milliseconds) => 0,
-  );
+export const tasksDuration =
+  (tasks: Task[]): DurationFn =>
+  (now: Milliseconds) =>
+    tasks.map(runningTaskDuration).reduce(
+      (acc, runningDuration) => (runningDuration ? acc + runningDuration(now) : acc),
+      tasks.reduce((acc, task) => acc + completeTaskDuration(task), 0),
+    );
 
 type Nullable<T> = T | null;
 
