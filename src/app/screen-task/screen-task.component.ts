@@ -1,16 +1,7 @@
 import { CdkDrag, CdkDragPlaceholder, CdkDropList } from '@angular/cdk/drag-drop';
 import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
 import { AsyncPipe, DatePipe, NgStyle } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  DestroyRef,
-  afterNextRender,
-  computed,
-  effect,
-  inject,
-  viewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, viewChild } from '@angular/core';
 import { MatFabButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -111,11 +102,9 @@ export default class ScreenTaskComponent {
   displayedColumns = ['start', 'end', 'duration', 'action'];
 
   constructor() {
+    this.keys.add(this.hotkeys);
     this.destroyRef.onDestroy(() => {
       this.keys.remove(this.hotkeys);
-    });
-    afterNextRender(() => {
-      this.keys.add(this.hotkeys);
     });
     effect(() => {
       this.store.currentTaskId();

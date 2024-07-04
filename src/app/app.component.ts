@@ -10,7 +10,6 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { HotkeysService } from 'angular2-hotkeys';
 import { ButtonThemeSwitcherComponent } from './button-theme-switcher/button-theme-switcher.component';
-import { DIALOG_HOTKEYS_CHEATSHEET_ID } from './dialog-hotkeys-cheatsheet/id';
 import { KEYS_GO_ACTIVE, KEYS_GO_ALL, KEYS_GO_FINISHED, hotkey } from './domain/hotkeys';
 import { toStoredTasks } from './domain/storage';
 import { TaskState } from './domain/task';
@@ -69,7 +68,9 @@ export class AppComponent {
   taskState = TaskState;
 
   constructor() {
-    this.handleHotkeyCheatsheet();
+    this.hotkeysService.cheatSheetToggle.subscribe(() => {
+      this.router.navigate(['/', { outlets: { dialog: ['hotkeys'] } }]);
+    });
     this.keys.add([
       hotkey(KEYS_GO_ALL, 'Go to all tasks', () => this.router.navigate(['all'], { queryParamsHandling: 'merge' })),
       hotkey(KEYS_GO_ACTIVE, 'Go to active tasks', () =>
@@ -94,27 +95,5 @@ export class AppComponent {
   }
   import(event: Event) {
     this.importExport.import(event);
-  }
-
-  private handleHotkeyCheatsheet() {
-    let isDialogOpen = false;
-    this.hotkeysService.cheatSheetToggle.subscribe(async (isOpen) => {
-      const component = await import('./dialog-hotkeys-cheatsheet/dialog-hotkeys-cheatsheet.component').then(
-        (m) => m.default,
-      );
-      if (isOpen === false || isDialogOpen) {
-        isDialogOpen = false;
-        this.dialogs.getDialogById(DIALOG_HOTKEYS_CHEATSHEET_ID)?.close();
-      } else {
-        isDialogOpen = true;
-        this.dialogs
-          .open(component, { width: undefined, id: DIALOG_HOTKEYS_CHEATSHEET_ID })
-          .afterClosed()
-          .subscribe(() => {
-            isDialogOpen = false;
-            this.hotkeysService.cheatSheetToggle.next(false);
-          });
-      }
-    });
   }
 }
