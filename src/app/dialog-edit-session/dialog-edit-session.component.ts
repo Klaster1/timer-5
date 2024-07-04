@@ -12,7 +12,7 @@ import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { DatetimeLocalDirective } from '@app/directives/datetime-local.directive';
-import { AppStore } from '@app/services/state';
+import { AppStore } from '@app/providers/state';
 
 @Component({
   selector: 'dialog-edit-session',

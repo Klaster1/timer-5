@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { MatIcon } from '@angular/material/icon';
 import { MatListItem } from '@angular/material/list';
 import { MatTooltip } from '@angular/material/tooltip';
-import { AppStore, Theme } from '@app/services/state';
+import { AppStore, Theme } from '@app/providers/state';
 import { deepEquals } from '@app/utils/assert';
 
 type ThemeOption = { theme: Theme; label: string; icon: string };
