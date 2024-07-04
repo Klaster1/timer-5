@@ -15,9 +15,9 @@ import { toStoredTasks } from './domain/storage';
 import { TaskState } from './domain/task';
 import { MapPipe } from './pipes/map.pipe';
 import { TaskStateIconPipe } from './pipes/task-state-icon.pipe';
-import { FaviconService } from './services/favicon.service';
-import { ImportExportService } from './services/import-export.service';
-import { AppStore } from './services/state';
+import { FaviconService } from './providers/favicon.service';
+import { ImportExportService } from './providers/import-export.service';
+import { AppStore } from './providers/state';
 
 @Component({
   selector: 'app-root',

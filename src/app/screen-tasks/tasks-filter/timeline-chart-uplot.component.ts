@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { ScaleRange } from '@app/domain/chart';
 import { Milliseconds, Seconds, daysToMilliseconds, formatHours } from '@app/domain/date-time';
-import { AppStore } from '@app/services/state';
+import { AppStore } from '@app/providers/state';
 import { isNumber } from '@app/utils/assert';
 import { format } from 'date-fns/format';
 import { millisecondsToSeconds } from 'date-fns/millisecondsToSeconds';

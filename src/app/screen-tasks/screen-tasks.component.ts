@@ -29,8 +29,8 @@ import { SessionDragEvent, Task, TaskState, isTaskRunning, taskDuration, tasksDu
 import { MapPipe } from '@app/pipes/map.pipe';
 import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
 import { TaskStatePipe } from '@app/pipes/task-state.pipe';
+import { AppStore } from '@app/providers/state';
 import { TypeSafeCdkVirtualForDirective } from '@app/screen-task/type-safe-virtual-for.directive';
-import { AppStore } from '@app/services/state';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
 import { CheckViewportSizeWhenValueChangesDirective } from './checkViewportSizeWhenValueChanges.directive';
 import { EmptyStateComponent } from './empty-state/empty-state.component';

@@ -11,7 +11,7 @@ import {
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { ActivatedRouteSnapshot } from '@angular/router';
-import { AppStore } from '@app/services/state';
+import { AppStore } from '@app/providers/state';
 
 @Component({
   selector: 'dialog-rename-task',

@@ -5,7 +5,7 @@ import { MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger } from '@angular/m
 import { RouterLink } from '@angular/router';
 import { encodeFilterParams } from '@app/domain/router';
 import { Session, Task, getSessionId } from '@app/domain/task';
-import { AppStore } from '@app/services/state';
+import { AppStore } from '@app/providers/state';
 
 @Component({
   templateUrl: './button-session-actions.component.html',

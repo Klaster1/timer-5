@@ -6,7 +6,7 @@ import { RouterLink } from '@angular/router';
 import { Task, TaskState } from '@app/domain/task';
 import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
 import { TaskStatePipe } from '@app/pipes/task-state.pipe';
-import { AppStore } from '@app/services/state';
+import { AppStore } from '@app/providers/state';
 
 @Component({
   templateUrl: './button-task-actions.component.html',

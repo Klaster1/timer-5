@@ -21,7 +21,7 @@ import {
 import { Task, TaskState, isTaskRunning, sessionDuration, taskDuration } from '@app/domain/task';
 import { MapPipe } from '@app/pipes/map.pipe';
 import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
-import { AppStore } from '@app/services/state';
+import { AppStore } from '@app/providers/state';
 import { HotkeysService } from 'angular2-hotkeys';
 import { ButtonSessionActionsComponent } from './button-session-actions/button-session-actions.component';
 import { VirtualScrollStickyTable } from './sticky.directive';

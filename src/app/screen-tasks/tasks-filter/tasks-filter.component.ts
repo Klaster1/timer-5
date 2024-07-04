@@ -16,7 +16,7 @@ import { DatetimeLocalDirective } from '@app/directives/datetime-local.directive
 import { ScaleRange, hasChartData } from '@app/domain/chart';
 import { FilterMatrixParams, encodeFilterParams } from '@app/domain/router';
 import { MapPipe } from '@app/pipes/map.pipe';
-import { AppStore } from '@app/services/state';
+import { AppStore } from '@app/providers/state';
 import { deepEquals } from '@app/utils/assert';
 import { endOfDay } from 'date-fns/endOfDay';
 import { endOfMonth } from 'date-fns/endOfMonth';
