@@ -1,5 +1,5 @@
 import { ENVIRONMENT_INITIALIZER, Injector, Provider, inject } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRouteSnapshot, ActivationEnd, Router } from '@angular/router';
 import { filter, map } from 'rxjs';
 
@@ -38,7 +38,9 @@ export const withRoutedDialogs = (): Provider => {
             }
           });
 
-          if (!event.snapshot.component || !isDialogRoute(event.snapshot)) return;
+          const component = event.snapshot.component;
+
+          if (!component || !isDialogRoute(event.snapshot)) return;
 
           const dialogInjector = Injector.create({
             parent: injector,
@@ -50,9 +52,10 @@ export const withRoutedDialogs = (): Provider => {
             ],
           });
 
-          const dialogRef = matDialog.open(event.snapshot.component, {
+          const dialogRef = matDialog.open(component, {
             closeOnNavigation: false,
             injector: dialogInjector,
+            ...('dialogConfig' in component ? (component.dialogConfig as MatDialogConfig) : {}),
           });
           dialogRef.afterClosed().subscribe(() => {
             router.navigate(['..', { outlets: { dialog: null } }], { queryParamsHandling: 'preserve' });

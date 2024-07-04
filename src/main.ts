@@ -36,7 +36,7 @@ bootstrapApplication(AppComponent, {
   providers: [
     provideExperimentalZonelessChangeDetection(),
     provideAnimations(),
-    importProvidersFrom(HotkeyModule.forRoot({ cheatSheetCloseEsc: true })),
+    importProvidersFrom(HotkeyModule.forRoot({ cheatSheetCloseEsc: false, disableCheatSheet: false })),
     provideRouter(
       [
         { path: '', redirectTo: 'active', pathMatch: 'full' },
@@ -97,6 +97,10 @@ bootstrapApplication(AppComponent, {
                   ],
                 },
               ],
+            },
+            {
+              path: 'hotkeys',
+              loadComponent: () => import('./app/dialog-hotkeys-cheatsheet/dialog-hotkeys-cheatsheet.component'),
             },
           ],
         },
