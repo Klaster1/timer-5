@@ -1,15 +1,8 @@
 import { ENVIRONMENT_INITIALIZER, Injector, Provider, inject } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRouteSnapshot, ActivationEnd, Router } from '@angular/router';
+import { getAllChildren, getAllParents } from '@app/utils/router';
 import { filter, map } from 'rxjs';
-
-const getAllChildren = (route: ActivatedRouteSnapshot): ActivatedRouteSnapshot[] => {
-  return route.children.flatMap((child) => [child, ...getAllChildren(child)]);
-};
-
-const getAllParents = (route: ActivatedRouteSnapshot): ActivatedRouteSnapshot[] => {
-  return route.parent ? [route.parent, ...getAllParents(route.parent)] : [];
-};
 
 const isDialogRoute = (route: ActivatedRouteSnapshot): boolean => {
   return !!route.component && getAllParents(route).some((parent) => parent.outlet === 'dialog');

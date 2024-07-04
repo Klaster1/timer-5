@@ -8,7 +8,7 @@ import {
   isDevMode,
   provideExperimentalZonelessChangeDetection,
 } from '@angular/core';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogConfig } from '@angular/material/dialog';
 import { MatIconRegistry } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -18,12 +18,14 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { ActivatedRouteSnapshot, provideRouter, withRouterConfig } from '@angular/router';
 import { SwUpdate, provideServiceWorker } from '@angular/service-worker';
 import { AppComponent } from '@app/app.component';
+import { Session, Task } from '@app/domain/task';
 import { gameStateGuard } from '@app/guards/game-state.guard';
 import { withRoutedDialogs } from '@app/services/routed-dialogs';
 import { AppStore } from '@app/services/state';
+import { ResolveDataTyped } from '@app/utils/router';
 import { HotkeyModule } from 'angular2-hotkeys';
 import { secondsToMilliseconds } from 'date-fns/secondsToMilliseconds';
-import { filter, firstValueFrom, interval } from 'rxjs';
+import { interval } from 'rxjs';
 import ScreenTaskComponent from './app/screen-task/screen-task.component';
 import ScreenTasksComponent from './app/screen-tasks/screen-tasks.component';
 import { environment } from './environments/environment';
@@ -65,9 +67,8 @@ bootstrapApplication(AppComponent, {
                 {
                   path: ':taskId',
                   resolve: {
-                    task: (route: ActivatedRouteSnapshot) =>
-                      firstValueFrom(toObservable(inject(AppStore).taskById(route.params.taskId))),
-                  },
+                    task: (route: ActivatedRouteSnapshot) => inject(AppStore).taskById(route.params.taskId)()!,
+                  } satisfies ResolveDataTyped<{ task: Task }>,
                   children: [
                     {
                       path: 'rename',
@@ -77,12 +78,8 @@ bootstrapApplication(AppComponent, {
                       path: 'sessions/:sessionIndex',
                       resolve: {
                         session: (route: ActivatedRouteSnapshot) =>
-                          firstValueFrom(
-                            toObservable(
-                              inject(AppStore).getSessionAtIndex(route.params.taskId, route.params.sessionIndex),
-                            ).pipe(filter((session) => !!session)),
-                          ),
-                      },
+                          inject(AppStore).getSessionAtIndex(route.params.taskId, route.params.sessionIndex)()!,
+                      } satisfies ResolveDataTyped<{ session: Session }>,
                       children: [
                         {
                           path: 'split',
