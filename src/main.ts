@@ -56,34 +56,43 @@ bootstrapApplication(AppComponent, {
           path: '',
           children: [
             {
-              path: 'tasks/:taskId',
-              resolve: {
-                task: (route: ActivatedRouteSnapshot) =>
-                  firstValueFrom(toObservable(inject(AppStore).taskById(route.params.taskId))),
-              },
+              path: 'tasks',
               children: [
                 {
-                  path: 'rename',
-                  loadComponent: () => import('./app/dialog-rename-task/dialog-rename-task.component'),
+                  path: 'create',
+                  loadComponent: () => import('./app/dialog-create-task/dialog-create-task.component'),
                 },
                 {
-                  path: 'sessions/:sessionIndex',
+                  path: ':taskId',
                   resolve: {
-                    session: (route: ActivatedRouteSnapshot) =>
-                      firstValueFrom(
-                        toObservable(
-                          inject(AppStore).getSessionAtIndex(route.params.taskId, route.params.sessionIndex),
-                        ).pipe(filter((session) => !!session)),
-                      ),
+                    task: (route: ActivatedRouteSnapshot) =>
+                      firstValueFrom(toObservable(inject(AppStore).taskById(route.params.taskId))),
                   },
                   children: [
                     {
-                      path: 'split',
-                      loadComponent: () => import('./app/dialog-split-session/dialog-split-session.component'),
+                      path: 'rename',
+                      loadComponent: () => import('./app/dialog-rename-task/dialog-rename-task.component'),
                     },
                     {
-                      path: 'edit',
-                      loadComponent: () => import('./app/dialog-edit-session/dialog-edit-session.component'),
+                      path: 'sessions/:sessionIndex',
+                      resolve: {
+                        session: (route: ActivatedRouteSnapshot) =>
+                          firstValueFrom(
+                            toObservable(
+                              inject(AppStore).getSessionAtIndex(route.params.taskId, route.params.sessionIndex),
+                            ).pipe(filter((session) => !!session)),
+                          ),
+                      },
+                      children: [
+                        {
+                          path: 'split',
+                          loadComponent: () => import('./app/dialog-split-session/dialog-split-session.component'),
+                        },
+                        {
+                          path: 'edit',
+                          loadComponent: () => import('./app/dialog-edit-session/dialog-edit-session.component'),
+                        },
+                      ],
                     },
                   ],
                 },
