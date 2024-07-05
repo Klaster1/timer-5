@@ -18,10 +18,10 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { ActivatedRouteSnapshot, provideRouter, withRouterConfig } from '@angular/router';
 import { SwUpdate, provideServiceWorker } from '@angular/service-worker';
 import { AppComponent } from '@app/app.component';
-import { Session, Task } from '@app/domain/task';
 import { gameStateGuard } from '@app/guards/game-state.guard';
 import { withRoutedDialogs } from '@app/providers/routed-dialogs';
 import { AppStore } from '@app/providers/state';
+import { SessionRoute, TaskRoute } from '@app/types/route-data';
 import { ResolveDataTyped } from '@app/utils/router';
 import { HotkeyModule } from 'angular2-hotkeys';
 import { secondsToMilliseconds } from 'date-fns/secondsToMilliseconds';
@@ -68,7 +68,7 @@ bootstrapApplication(AppComponent, {
                   path: ':taskId',
                   resolve: {
                     task: (route: ActivatedRouteSnapshot) => inject(AppStore).taskById(route.params.taskId)()!,
-                  } satisfies ResolveDataTyped<{ task: Task }>,
+                  } satisfies ResolveDataTyped<TaskRoute>,
                   children: [
                     {
                       path: 'rename',
@@ -79,7 +79,7 @@ bootstrapApplication(AppComponent, {
                       resolve: {
                         session: (route: ActivatedRouteSnapshot) =>
                           inject(AppStore).getSessionAtIndex(route.params.taskId, route.params.sessionIndex)()!,
-                      } satisfies ResolveDataTyped<{ session: Session }>,
+                      } satisfies ResolveDataTyped<SessionRoute>,
                       children: [
                         {
                           path: 'split',
