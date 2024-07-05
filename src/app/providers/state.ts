@@ -41,7 +41,7 @@ const withRouter = () => {
       url: ActivatedRouteSnapshot['url'];
       params: ActivatedRouteSnapshot['params'];
       queryParams: ActivatedRouteSnapshot['queryParams'];
-      firstChild?: ActivatedRouteSnapshot['firstChild'];
+      children?: ActivatedRouteSnapshot['children'];
     } | null;
   };
   const initialState: RouterState = {
@@ -62,7 +62,7 @@ const withRouter = () => {
                   url: route?.url,
                   params: route?.params,
                   queryParams: route?.queryParams,
-                  firstChild: route?.children.at(0),
+                  children: route?.children,
                 };
               });
             }
@@ -71,19 +71,18 @@ const withRouter = () => {
       };
     }),
     withComputed((store) => {
-      const currentRoute = computed(() => {
-        const rootRoute = store.router();
-        if (!rootRoute) return;
-        let route = rootRoute;
-        while (route.firstChild) {
-          route = route.firstChild;
-        }
-        return route;
+      const currentRoutes = computed((): ActivatedRouteSnapshot[] | undefined => {
+        return store.router()?.children?.map((route) => {
+          while (route.firstChild) {
+            route = route.firstChild;
+          }
+          return route;
+        });
       });
-      const routeParams = computed(() => currentRoute()?.params);
-      const queryParams = computed(() => currentRoute()?.queryParams);
+      const routeParams = computed(() => currentRoutes()?.map((route) => route.params));
+      const queryParams = computed(() => currentRoutes()?.map((route) => route.queryParams));
       return {
-        currentRoute,
+        currentRoutes,
         routeParams,
         queryParams,
       };
@@ -174,12 +173,12 @@ export const AppStore = signalStore(
   withState<TasksState>(initialState),
   withComputed((store) => {
     // Params
-    const decodedFilterParams = computed(() => decodeFilterMatrixParams(store.queryParams() ?? {}));
-    const decodedRouteParams = computed(() => decodeRouteParams(store.routeParams() ?? {}));
+    const decodedFilterParams = computed(() => decodeFilterMatrixParams(store.queryParams()?.at(0) ?? {}));
+    const decodedRouteParams = computed(() => decodeRouteParams(store.routeParams()?.at(0) ?? {}));
     const filterFrom = computed(() => decodedFilterParams().from);
     const filterTo = computed(() => decodedFilterParams().to);
     const currentTaskId = computed(() => decodedRouteParams().taskId);
-    const currentSessionIndex = computed(() => store.routeParams()?.sessionIndex);
+    const currentSessionIndex = computed(() => store.routeParams()?.at(0)?.sessionIndex);
     const currentTaskState = computed(() => decodedRouteParams().state);
 
     // Tasks
@@ -275,12 +274,15 @@ export const AppStore = signalStore(
       const taskId = store.currentTaskId();
       if (taskIdToRemove === taskId && state) router.navigate([state], { queryParamsHandling: 'merge' });
     };
-    const editSession = async (taskId: string, sessionIndex: number, updatedSession: Session) => {
+    const editSession = async (updatedSession: Session) => {
+      const { taskId, sessionIndex } = store.routeParams()?.at(1) as { taskId?: string; sessionIndex?: string };
+      if (!taskId || !sessionIndex) return;
       updateState(store, (draft) => {
         const task = draft.tasks[taskId];
         if (!task) return;
-        task.sessions.splice(sessionIndex, 1, updatedSession);
+        task.sessions.splice(+sessionIndex, 1, updatedSession);
       });
+      router.navigate(['/', { outlets: { dialog: null } }]);
     };
     const splitSession = (taskId: string, sessionId: SessionId) => {};
     const createTask = async (name: string) => {
