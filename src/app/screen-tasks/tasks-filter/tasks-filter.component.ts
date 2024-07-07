@@ -31,7 +31,7 @@ import { subMonths } from 'date-fns/subMonths';
 import { subWeeks } from 'date-fns/subWeeks';
 import { subYears } from 'date-fns/subYears';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
-import { ButtonResetInputComponent } from './button-reset-input.component';
+import { ButtonResetInputComponent } from '../../directives/button-reset-input.component';
 import { TimelineChartUplotComponent } from './timeline-chart-uplot.component';
 
 type Wrap<T> = Required<{ [Key in keyof T]: FormControl<T[Key]> }>;
