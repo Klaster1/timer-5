@@ -3,6 +3,11 @@
   <mat-form-field>
     <mat-label>Start</mat-label>
     <input matInput type="datetime-local" formControlName="start" data-e2e="dialog-edit-session__input-start" />
+    <button-reset-input-control
+      matSuffix
+      [value]="form.controls.start.value"
+      (reset)="form.controls.start.reset()"
+    ></button-reset-input-control>
     @if (form.controls.start.errors?.required) {
       <mat-error data-e2e="dialog-edit-session__start-validation-error">Start is required</mat-error>
     }
@@ -10,6 +15,11 @@
   <mat-form-field>
     <mat-label>End</mat-label>
     <input matInput type="datetime-local" formControlName="end" data-e2e="dialog-edit-session__input-end" />
+    <button-reset-input-control
+      matSuffix
+      [value]="form.controls.end.value"
+      (reset)="form.controls.end.reset()"
+    ></button-reset-input-control>
   </mat-form-field>
 </form>
 <div mat-dialog-actions align="end">

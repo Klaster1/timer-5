@@ -8,7 +8,7 @@ import { MatTooltip } from '@angular/material/tooltip';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (showButton()) {
-      <button mat-icon-button (click)="reset.emit()" matTooltip="Reset value">
+      <button mat-icon-button (click)="reset.emit()" matTooltip="Reset value" type="button">
         <mat-icon svgIcon="close_small"></mat-icon>
       </button>
     }

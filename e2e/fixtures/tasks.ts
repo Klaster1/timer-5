@@ -340,8 +340,7 @@ test('Editing a session', async (t) => {
     .click(screenTask.menuSession.buttonEdit)
     .expect(dialogEditSession.inputEnd.exists)
     .ok()
-    .click(dialogEditSession.inputEnd)
-    .pressKey('ctrl+a delete')
+    .click(dialogEditSession.buttonResetEnd)
     .click(dialogEditSession.buttonSubmit);
   await t.expect(screenTask.sessionDuration.nth(0).textContent).eql(' 3 h 00 m');
   await t.expect(screenTask.taskDuration.textContent).eql(' 3 h 00 m');
@@ -351,8 +350,7 @@ test('Editing a session', async (t) => {
   await t
     .click(screenTask.buttonSessionAction)
     .click(screenTask.menuSession.buttonEdit)
-    .click(dialogEditSession.inputStart)
-    .pressKey('ctrl+a delete')
+    .click(dialogEditSession.buttonResetStart)
     .click(dialogEditSession.buttonSubmit);
   await t.expect(dialogEditSession.validationErrorStart.textContent).contains('Start is required');
 }).after(async (t) => {
