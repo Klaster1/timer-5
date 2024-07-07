@@ -1,8 +1,54 @@
+<ng-template #sessionTable let-sessions="sessions" [contextType]="sessionsContext">
+  <table class="mat-mdc-table">
+    <thead>
+      <tr class="mat-mdc-header-row mdc-data-table__header-row">
+        <th class="header-start mat-mdc-header-cell mdc-data-table__header-cell">Start</th>
+        <th class="header-end mat-mdc-header-cell mdc-data-table__header-cell">End</th>
+        <th class="header-duration mat-mdc-header-cell mdc-data-table__header-cell">Duration</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (session of sessions; track $index) {
+        <tr class="mat-mdc-row mdc-data-table__row" data-e2e="dialog-split-session__session-row">
+          <td class="mat-mdc-cell mdc-data-table__cell" data-e2e="dialog-split-session__session-start">
+            {{ session.start | date: 'yyyy-MM-dd H:mm' }}
+          </td>
+          <td class="mat-mdc-cell mdc-data-table__cell" data-e2e="dialog-split-session__session-end">
+            {{ session.end | date: 'yyyy-MM-dd H:mm' }}
+          </td>
+          <td class="mat-mdc-cell mdc-data-table__cell" data-e2e="dialog-split-session__session-duration">
+            <duration [value]="session | map: sessionDuration"></duration>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</ng-template>
+
 <h1 mat-dialog-title>Split session</h1>
 <form mat-dialog-content>
-  <pre>{{ state.dialogSession() | json }}</pre>
+  <ng-container
+    *ngTemplateOutlet="sessionTable; context: { sessions: beforeSessions() } as sessionsContext"
+  ></ng-container>
+
+  <mat-slider [min]="min()" [max]="max()">
+    <input #thumb matSliderThumb [value]="value()" (input)="value.set(thumb.valueAsNumber)" />
+  </mat-slider>
+
+  <ng-container
+    *ngTemplateOutlet="sessionTable; context: { sessions: afterSessions() } as sessionsContext"
+  ></ng-container>
 </form>
 <div mat-dialog-actions align="end">
   <button type="button" mat-button mat-dialog-close>Cancel</button>
-  <button type="submit" form="promptForm" mat-button data-e2e="dialog-split-session__button-submit">Split</button>
+  <button
+    type="submit"
+    form="promptForm"
+    mat-button
+    data-e2e="dialog-split-session__button-submit"
+    [disabled]="submitDisabled()"
+    (click)="submit()"
+  >
+    Split
+  </button>
 </div>

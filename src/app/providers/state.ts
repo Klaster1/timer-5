@@ -302,7 +302,17 @@ export const AppStore = signalStore(
       });
       routedDialogs.close();
     };
-    const splitSession = (taskId: string, sessionId: SessionId) => {};
+    const splitSession = (updatedSessions: Session[]) => {
+      const taskId = store.dialogTaskId();
+      const sessionIndex = store.dialogSessionIndex();
+      if (!taskId || sessionIndex === undefined) return;
+      updateState(store, (draft) => {
+        const task = draft.tasks[taskId];
+        if (!task) return;
+        task.sessions.splice(sessionIndex, 1, ...updatedSessions);
+      });
+      routedDialogs.close();
+    };
     const createTask = async (name: string) => {
       const taskId = makeTaskId();
       updateState(store, (draft) => {
