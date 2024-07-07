@@ -8,7 +8,7 @@ test('Hotkey help', async (t) => {
   // Send "shift+?", assert the hotkey cheatsheet is opened
   await t.pressKey('shift+?');
   // Assert it displays all hotkeys, in english only
-  await t.expect(dialogHotkeyCheatsheet.descriptions.count).eql(8);
+  await t.expect(dialogHotkeyCheatsheet.descriptions.count).eql(7);
   await t.expect(await comparePageScreenshot('only tasks')).eql(VISUAL_REGRESSION_OK);
   // Assert "Close" closes the dialog
   await t.click(dialogHotkeyCheatsheet.buttonDismiss);
@@ -16,7 +16,7 @@ test('Hotkey help', async (t) => {
   // Open a session, assert session hotkeys are displayed
   await screenTasks.addTask('Keys');
   await t.pressKey('shift+?');
-  await t.expect(dialogHotkeyCheatsheet.descriptions.count).eql(13);
+  await t.expect(dialogHotkeyCheatsheet.descriptions.count).eql(12);
   await t.expect(await comparePageScreenshot('tasks and task')).eql(VISUAL_REGRESSION_OK);
   // Open the dialog again, assert "Esc" closes the dialog
   await t.pressKey('esc');

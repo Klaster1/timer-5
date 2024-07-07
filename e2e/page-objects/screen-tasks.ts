@@ -1,6 +1,6 @@
 import { Selector, t } from 'testcafe';
 import { e2e } from '../utils';
-import { dialogPrompt } from './dialog-prompt';
+import { dialogCreateTask } from './dialog-create-task';
 
 export const screenTasks = {
   addTaskButton: e2e('button-add-task'),
@@ -12,7 +12,7 @@ export const screenTasks = {
   total: e2e('screen-tasks__total'),
   durationSelector: '[data-e2e="screen-tasks__task-duration"]',
   addTask: async (name: string) => {
-    await t.pressKey('a').typeText(dialogPrompt.input, name).click(dialogPrompt.buttonSubmit);
+    await t.pressKey('a').typeText(dialogCreateTask.input, name).click(dialogCreateTask.buttonSubmit);
     await t.expect(screenTasks.taskName.withExactText(name).exists).ok();
   },
   filter: {
