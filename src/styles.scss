@@ -30,6 +30,7 @@ a {
     @include mat.toolbar-theme($theme);
     @include mat.table-theme($theme);
     @include mat.snack-bar-theme($theme);
+    @include mat.slider-theme($theme);
   }
 }
 
