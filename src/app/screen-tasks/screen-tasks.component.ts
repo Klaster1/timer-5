@@ -29,6 +29,7 @@ import { SessionDragEvent, Task, TaskState, isTaskRunning, taskDuration, tasksDu
 import { MapPipe } from '@app/pipes/map.pipe';
 import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
 import { TaskStatePipe } from '@app/pipes/task-state.pipe';
+import { DialogLinkDirective, RoutedDialogs } from '@app/providers/routed-dialogs';
 import { AppStore } from '@app/providers/state';
 import { TypeSafeCdkVirtualForDirective } from '@app/screen-task/type-safe-virtual-for.directive';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
@@ -48,6 +49,7 @@ import { TasksFilterComponent } from './tasks-filter/tasks-filter.component';
     TasksFilterComponent,
     TaskStatePipe,
     TaskStateIconPipe,
+    DialogLinkDirective,
     RouterLink,
     RouterOutlet,
     RouterLinkActive,
@@ -79,6 +81,7 @@ export default class ScreenTasksComponent {
   public store = inject(AppStore);
   private keys = inject(HotkeysService);
   private router = inject(Router);
+  private routedDialogs = inject(RoutedDialogs);
   private destroyRef = inject(DestroyRef);
   public viewport = viewChild(CdkVirtualScrollViewport);
   private injector = inject(Injector);
@@ -120,7 +123,7 @@ export default class ScreenTasksComponent {
   taskId: TrackByFunction<Task> = (_, task) => task.id;
 
   hotkeys = [
-    hotkey(KEYS_ADD, 'Add task', () => this.router.navigate(['/', { outlets: { dialog: ['tasks', 'create'] } }])),
+    hotkey(KEYS_ADD, 'Add task', () => this.routedDialogs.navigate(['tasks', 'create'])),
     hotkey([...KEYS_NEXT, ...KEYS_PREV], 'Next/prev task', (e) => {
       const state = this.store.currentTaskState();
       const taskId = KEYS_NEXT.includes(e.key)

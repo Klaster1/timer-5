@@ -22,8 +22,7 @@
       }
       @if (tasks.length) {
         <button
-          [routerLink]="['/', { outlets: { dialog: ['tasks', 'create'] } }]"
-          queryParamsHandling="preserve"
+          [dialogLink]="['tasks', 'create']"
           mat-fab
           color="accent"
           data-e2e="button-add-task"

@@ -6,6 +6,7 @@ import { RouterLink } from '@angular/router';
 import { Task, TaskState } from '@app/domain/task';
 import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
 import { TaskStatePipe } from '@app/pipes/task-state.pipe';
+import { DialogLinkDirective } from '@app/providers/routed-dialogs';
 import { AppStore } from '@app/providers/state';
 
 @Component({
@@ -24,6 +25,7 @@ import { AppStore } from '@app/providers/state';
     TaskStateIconPipe,
     TaskStatePipe,
     RouterLink,
+    DialogLinkDirective,
   ],
 })
 export class ButtonTaskActionsComponent {

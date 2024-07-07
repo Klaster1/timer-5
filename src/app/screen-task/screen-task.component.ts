@@ -6,7 +6,7 @@ import { MatFabButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltip } from '@angular/material/tooltip';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { ButtonTaskActionsComponent } from '@app/button-task-actions/button-task-actions.component';
 import { DurationComponent } from '@app/directives/duration.component';
 import { ToolbarWidthSyncDirective } from '@app/directives/toolbar-width-sync';
@@ -21,6 +21,7 @@ import {
 import { Task, TaskState, isTaskRunning, sessionDuration, taskDuration } from '@app/domain/task';
 import { MapPipe } from '@app/pipes/map.pipe';
 import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
+import { RoutedDialogs } from '@app/providers/routed-dialogs';
 import { AppStore } from '@app/providers/state';
 import { HotkeysService } from 'angular2-hotkeys';
 import { ButtonSessionActionsComponent } from './button-session-actions/button-session-actions.component';
@@ -61,7 +62,7 @@ export default class ScreenTaskComponent {
   public store = inject(AppStore);
   private keys = inject<HotkeysService>(HotkeysService);
   private destroyRef = inject(DestroyRef);
-  private router = inject(Router);
+  private routedDialogs = inject(RoutedDialogs);
 
   taskIsInProgress = computed(() => isTaskRunning(this.store.currentTask()));
   viewport = viewChild(CdkVirtualScrollViewport);
@@ -89,10 +90,7 @@ export default class ScreenTaskComponent {
     }),
     hotkey(KEYS_RENAME, 'Rename task', () => {
       const task = this.store.currentTask();
-      if (task)
-        this.router.navigate(['/', { outlets: { dialog: ['tasks', task.id, 'rename'] } }], {
-          queryParamsHandling: 'preserve',
-        });
+      if (task) this.routedDialogs.navigate(['tasks', task.id, 'rename']);
     }),
     hotkey(KEYS_DELETE_TASK, 'Delete task', () => {
       const task = this.store.currentTask();
