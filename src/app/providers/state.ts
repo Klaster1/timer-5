@@ -14,7 +14,6 @@ import {
   isSessionWithId,
   isTaskRunning,
   makeTaskId,
-  sortTaskSessions,
 } from '@app/domain/task';
 import { deepEquals } from '@app/utils/assert';
 import {
@@ -201,7 +200,7 @@ export const AppStore = signalStore(
       if (!taskId) return;
       const maybeTask = store.tasks()[taskId];
       if (!maybeTask) return;
-      return sortTaskSessions(filterTaskSessions(maybeTask, { from, to }));
+      return filterTaskSessions(maybeTask, { from, to });
     });
     const filterChartData = computed(() => chartSeries(allTasks(), currentTasks()));
     const currentTaskIndex = computed(() => currentTasks().findIndex(({ id }) => id === currentTask()?.id) ?? -1);
