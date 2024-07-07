@@ -42,6 +42,7 @@
     "@angular/cli": "^18.0.7",
     "@angular/compiler-cli": "^18.0.6",
     "@angular/language-service": "^18.0.6",
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@napi-rs/canvas": "^0.1.53",
     "@types/chrome-remote-interface": "^0.31.14",
     "@types/node": "^20.14.9",
