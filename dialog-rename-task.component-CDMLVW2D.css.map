@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/dialog-rename-task/dialog-rename-task.component.scss"],
+  "sourcesContent": ["mat-form-field {\n  width: 100%;\n}\n"],
+  "mappings": "AAAA,eACE,MAAA",
+  "names": []
+}

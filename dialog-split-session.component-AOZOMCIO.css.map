@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/dialog-split-session/dialog-split-session.component.scss"],
+  "sourcesContent": ["mat-slider {\n  width: calc(100% - 15px);\n}\n"],
+  "mappings": "AAAA,WACE,MAAA,KAAA,KAAA,EAAA",
+  "names": []
+}
