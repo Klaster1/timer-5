@@ -16,6 +16,7 @@
       type="button"
       [dialogLink]="['tasks', task().id, 'sessions', sessionIndex(), 'split']"
       data-e2e="menu-session__button-split"
+      [disabled]="isSplitDisabled()"
     >
       Split
     </a>

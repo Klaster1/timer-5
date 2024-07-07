@@ -4,7 +4,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { RouterLink } from '@angular/router';
 import { encodeFilterParams } from '@app/domain/router';
-import { Session, Task, getSessionId } from '@app/domain/task';
+import { Session, Task, getSessionId, isSessionRunning } from '@app/domain/task';
 import { DialogLinkDirective } from '@app/providers/routed-dialogs';
 import { AppStore } from '@app/providers/state';
 
@@ -31,6 +31,8 @@ export class ButtonSessionActionsComponent {
   public task = input.required<Task>();
   public session = input.required<Session>();
   public sessionIndex = computed(() => this.task().sessions.indexOf(this.session()));
+
+  public isSplitDisabled = computed(() => isSessionRunning(this.session()));
 
   remove() {
     this.store.deleteSession(this.task().id, getSessionId(this.session()));
