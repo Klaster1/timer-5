@@ -1,7 +1,7 @@
 <h1 mat-dialog-title data-e2e="dialog-create-task__title">Create task</h1>
 <form mat-dialog-content id="createForm" [formGroup]="form" (ngSubmit)="onSubmit()">
   <mat-form-field>
-    <mat-label>Task name:</mat-label>
+    <mat-label>Task name</mat-label>
     <input type="text" matInput formControlName="value" data-e2e="dialog-create-task__input" />
     <mat-error data-e2e="dialog-create-task__validation-error">Value is required</mat-error>
   </mat-form-field>
