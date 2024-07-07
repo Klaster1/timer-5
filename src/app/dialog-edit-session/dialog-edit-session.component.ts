@@ -1,13 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { ActivatedRouteSnapshot } from '@angular/router';
 import { DatetimeLocalDirective } from '@app/directives/datetime-local.directive';
 import { AppStore } from '@app/providers/state';
-import { SessionRoute, TaskRoute } from '@app/types/route-data';
+import { option } from '@app/utils/assert';
 
 @Component({
   selector: 'dialog-edit-session',
@@ -30,16 +29,23 @@ import { SessionRoute, TaskRoute } from '@app/types/route-data';
   ],
 })
 export default class DialogEditSessionComponent {
-  private data = inject(ActivatedRouteSnapshot).data as SessionRoute & TaskRoute;
   private state = inject(AppStore);
 
-  form = new FormGroup<{ start: FormControl<Date>; end: FormControl<Date | null> }>({
-    start: new FormControl(new Date(this.data.session.start), {
+  form = new FormGroup<{ start: FormControl<Date | null>; end: FormControl<Date | null> }>({
+    start: new FormControl(null, {
       validators: [Validators.required],
       nonNullable: true,
     }),
-    end: new FormControl(this.data.session.end ? new Date(this.data.session.end) : null),
+    end: new FormControl(null),
   });
+
+  private assignValues = effect(() => {
+    this.form.reset({
+      start: option(this.state.dialogSession()?.start).map((value) => new Date(value)),
+      end: option(this.state.dialogSession()?.end).map((value) => new Date(value)),
+    });
+  });
+
   onSubmit() {
     const { start, end } = this.form.value;
     if (this.form.valid && start) {

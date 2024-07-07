@@ -220,11 +220,21 @@ export const AppStore = signalStore(
     });
     const isCurrentTaskOpened = computed(() => !!currentTask());
     const isAnyTaskActive = computed(() => allTasks().some(isTaskRunning));
-    const sessionAtRoute = computed(() => {
-      const task = currentTask();
-      const sessionIndex = currentSessionIndex();
-      if (!task || typeof sessionIndex !== 'string') return;
-      return task.sessions[Number(sessionIndex)];
+    const dialogTaskId = computed((): string | undefined => store.routeParams()?.at(1)?.taskId);
+    const dialogSessionIndex = computed((): number | undefined => {
+      const sessionIndex = store.routeParams()?.at(1)?.sessionIndex;
+      return typeof sessionIndex === 'string' ? Number(sessionIndex) : undefined;
+    });
+    const dialogTask = computed(() => {
+      const taskId = dialogTaskId();
+      if (!taskId) return;
+      return store.tasks()[taskId];
+    });
+    const dialogSession = computed(() => {
+      const task = dialogTask();
+      const sessionIndex = dialogSessionIndex();
+      if (!task || sessionIndex === undefined) return;
+      return task.sessions[sessionIndex];
     });
 
     // Filter
@@ -248,18 +258,24 @@ export const AppStore = signalStore(
       isCurrentTaskOpened,
       isAnyTaskActive,
       filterRange,
-      sessionAtRoute,
+      dialogTaskId,
+      dialogSessionIndex,
+      dialogTask,
+      dialogSession,
     };
   }),
   withMethods((store) => {
     const router = inject(Router);
 
     const taskById = (taskId: string) => computed(() => store.tasks()[taskId]);
-    const renameTask = async (taskId: string, name: string) => {
+    const renameTask = async (name: string) => {
+      const taskId = store.dialogTaskId();
+      if (!taskId) return;
       updateState(store, (draft) => {
         const task = draft.tasks[taskId];
         if (task) task.name = name;
       });
+      router.navigate(['/', { outlets: { dialog: null } }]);
     };
     const getSessionAtIndex = (taskId: string, sessionIndex: number) =>
       computed(() => {
@@ -275,12 +291,13 @@ export const AppStore = signalStore(
       if (taskIdToRemove === taskId && state) router.navigate([state], { queryParamsHandling: 'merge' });
     };
     const editSession = async (updatedSession: Session) => {
-      const { taskId, sessionIndex } = store.routeParams()?.at(1) as { taskId?: string; sessionIndex?: string };
-      if (!taskId || !sessionIndex) return;
+      const taskId = store.dialogTaskId();
+      const sessionIndex = store.dialogSessionIndex();
+      if (!taskId || sessionIndex === undefined) return;
       updateState(store, (draft) => {
         const task = draft.tasks[taskId];
         if (!task) return;
-        task.sessions.splice(+sessionIndex, 1, updatedSession);
+        task.sessions.splice(sessionIndex, 1, updatedSession);
       });
       router.navigate(['/', { outlets: { dialog: null } }]);
     };
