@@ -19,5 +19,6 @@ export const screenTask = {
     buttonDelete: e2e('menu-session__button-delete'),
     buttonSkipAfter: e2e('menu-session__button-skip-after'),
     buttonSkipBefore: e2e('menu-session__button-skip-before'),
+    buttonSplit: e2e('menu-session__button-split'),
   },
 };

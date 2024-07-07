@@ -32,7 +32,13 @@
   ></ng-container>
 
   <mat-slider [min]="min()" [max]="max()">
-    <input #thumb matSliderThumb [value]="value()" (input)="value.set(thumb.valueAsNumber)" />
+    <input
+      #thumb
+      matSliderThumb
+      [value]="value()"
+      (input)="value.set(thumb.valueAsNumber)"
+      data-e2e="dialog-split-session__slider-input"
+    />
   </mat-slider>
 
   <ng-container

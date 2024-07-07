@@ -5,6 +5,7 @@ import { app } from '../page-objects/app';
 import { dialogCreateTask } from '../page-objects/dialog-create-task';
 import { dialogEditSession } from '../page-objects/dialog-edit-session';
 import { dialogRenameTask } from '../page-objects/dialog-rename-task';
+import { dialogSplitSession } from '../page-objects/dialog-split-session';
 import { menuTaskActions } from '../page-objects/menu-task-actions';
 import { screenTask } from '../page-objects/screen-task';
 import { screenTasks } from '../page-objects/screen-tasks';
@@ -91,7 +92,7 @@ test('Starting and stopping the task', async (t) => {
   await t.expect(screenTask.sessionRow.count).eql(4);
   await t.expect(screenTask.sessionStart.nth(0).textContent).match(/\d/);
   await t.expect(screenTask.sessionEnd.nth(0).textContent).notMatch(/\d/);
-  await t.expect(screenTask.sessionDuration.nth(0).textContent).contains(' 5 s', { timeout: 10_000 });
+  await t.expect(screenTask.sessionDuration.nth(0).textContent).contains('5s', { timeout: 10_000 });
   // Assert the "Start" button is replaced with the "Stop" button and its tooltip reads "Stop"
   await t.expect(screenTask.buttonStop.exists).ok();
   await t.hover(screenTask.name);
@@ -316,23 +317,23 @@ test('Editing a session', async (t) => {
   await t.pressKey('s');
   await advanceDate(4_000);
   // Change a running task session start time, assert the total changes
-  await t.expect(screenTask.sessionDuration.nth(0).textContent).eql(' 4 s');
-  await t.expect(screenTask.taskDuration.textContent).eql(' 4 s');
+  await t.expect(screenTask.sessionDuration.nth(0).textContent).eql('4s');
+  await t.expect(screenTask.taskDuration.textContent).eql('4s');
   await t.expect(await comparePageScreenshot('running')).eql(VISUAL_REGRESSION_OK);
   await t.click(screenTask.buttonSessionAction).click(screenTask.menuSession.buttonEdit);
   await dialogEditSession.setStart(now.replace('12', '09'));
   await t.expect(await comparePageScreenshot('editing')).eql(VISUAL_REGRESSION_OK);
   await t.click(dialogEditSession.buttonSubmit);
-  await t.expect(screenTask.sessionDuration.nth(0).textContent).eql(' 3 h 00 m');
-  await t.expect(screenTask.taskDuration.textContent).eql(' 3 h 00 m');
-  await t.expect(screenTasks.total.textContent).eql(' 3 h 00 m');
+  await t.expect(screenTask.sessionDuration.nth(0).textContent).eql('3h00m');
+  await t.expect(screenTask.taskDuration.textContent).eql('3h00m');
+  await t.expect(screenTasks.total.textContent).eql('3h00m');
   // For a running task session, set the end time, assert the task becomes active/non-running
   await t.click(screenTask.buttonSessionAction).click(screenTask.menuSession.buttonEdit);
   await dialogEditSession.setEnd(now.replace('12', '11'));
   await t.click(dialogEditSession.buttonSubmit);
-  await t.expect(screenTask.sessionDuration.nth(0).textContent).eql(' 2 h 00 m');
-  await t.expect(screenTask.taskDuration.textContent).eql(' 2 h 00 m');
-  await t.expect(screenTasks.total.textContent).eql(' 2 h 00 m');
+  await t.expect(screenTask.sessionDuration.nth(0).textContent).eql('2h00m');
+  await t.expect(screenTask.taskDuration.textContent).eql('2h00m');
+  await t.expect(screenTasks.total.textContent).eql('2h00m');
   await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).contains('play_circle');
   // For a complete task session, remove the end time, assert the task becomes active/running and the total updates
   await t
@@ -342,9 +343,9 @@ test('Editing a session', async (t) => {
     .ok()
     .click(dialogEditSession.buttonResetEnd)
     .click(dialogEditSession.buttonSubmit);
-  await t.expect(screenTask.sessionDuration.nth(0).textContent).eql(' 3 h 00 m');
-  await t.expect(screenTask.taskDuration.textContent).eql(' 3 h 00 m');
-  await t.expect(screenTasks.total.textContent).eql(' 3 h 00 m');
+  await t.expect(screenTask.sessionDuration.nth(0).textContent).eql('3h00m');
+  await t.expect(screenTask.taskDuration.textContent).eql('3h00m');
+  await t.expect(screenTasks.total.textContent).eql('3h00m');
   await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).contains('pause_circle');
   // Edit a session, assert the form can't be submitted without start time
   await t
@@ -374,12 +375,63 @@ test('Moving a session', async (t) => {
   // Assert the target task is no longer marked as the drop target
   await t.expect(screenTasks.taskItem.withText('To').hasClass('cdk-drop-list-dragging')).notOk();
   // Assert the total for both tasks were updated
-  await t.expect(screenTasks.taskItem.withText('To').find(screenTasks.durationSelector).textContent).contains('0 s');
-  await t.expect(screenTasks.taskItem.withText('From').find(screenTasks.durationSelector).textContent).eql(' 0 s');
+  await t.expect(screenTasks.taskItem.withText('To').find(screenTasks.durationSelector).textContent).contains('0s');
+  await t.expect(screenTasks.taskItem.withText('From').find(screenTasks.durationSelector).textContent).eql('0s');
   // Assert the session was moved from task 1 to task 2
   await t.expect(screenTask.name.textContent).contains('From');
   await t.expect(screenTask.sessionStart.count).eql(0);
   await t.pressKey('j');
   await t.expect(screenTask.name.textContent).contains('To');
   await t.expect(screenTask.sessionStart.count).eql(1);
+});
+
+test('Session splitting', async (t) => {
+  const checkSession = async (index: number, session: { start: string; end: string; duration: string }) => {
+    await t.expect(dialogSplitSession.sessionStart.nth(index).textContent).contains(session.start);
+    await t.expect(dialogSplitSession.sessionEnd.nth(index).textContent).contains(session.end);
+    await t.expect(dialogSplitSession.sessionDuration.nth(index).textContent).eql(session.duration);
+  };
+
+  // Have a task with 4h long session
+  const now = '2024-07-07T17:56:00';
+  await mockDate(new Date(now));
+  await screenTasks.addTask('Test');
+  await t.pressKey('s');
+  await advanceDate(14_400_000);
+  await t.pressKey('s');
+  // Open the session split dialog
+  await t.click(screenTask.buttonSessionAction);
+  await t.click(screenTask.menuSession.buttonSplit);
+  // Assert the session is split in the middle by default
+  await checkSession(0, { start: '2024-07-07 17:56', end: '2024-07-07 21:56', duration: '4h00m' });
+  await checkSession(1, { start: '2024-07-07 17:56', end: '2024-07-07 19:56', duration: '2h00m' });
+  await checkSession(2, { start: '2024-07-07 19:56', end: '2024-07-07 21:56', duration: '2h00m' });
+  await t.expect(await comparePageScreenshot('default')).eql(VISUAL_REGRESSION_OK);
+  // Move the slider to the leftmost position
+  await dialogSplitSession.setSliderValue(0);
+  // await dialogSplitSession.setSliderValue(0);
+  await checkSession(1, { start: '2024-07-07 17:56', end: '2024-07-07 17:56', duration: '0s' });
+  await checkSession(2, { start: '2024-07-07 17:56', end: '2024-07-07 21:56', duration: '4h00m' });
+  // Assert form submission is disabled
+  await t.expect(dialogSplitSession.buttonSubmit.hasAttribute('disabled')).ok();
+  // Move the slider to the rightmost position
+  await dialogSplitSession.setSliderValue(1);
+  await checkSession(1, { start: '2024-07-07 17:56', end: '2024-07-07 21:56', duration: '4h00m' });
+  await checkSession(2, { start: '2024-07-07 21:56', end: '2024-07-07 21:56', duration: '0s' });
+  await t.expect(await comparePageScreenshot('invalid')).eql(VISUAL_REGRESSION_OK);
+  // Assert form submission is disabled
+  await t.expect(dialogSplitSession.buttonSubmit.hasAttribute('disabled')).ok();
+  // Move the slider roughly to the middle
+  await dialogSplitSession.setSliderValue(0.4825);
+  await checkSession(1, { start: '2024-07-07 17:56', end: '2024-07-07 19:51', duration: '1h55m' });
+  await checkSession(2, { start: '2024-07-07 19:51', end: '2024-07-07 21:56', duration: '2h04m' });
+  // Assert form submission is enabled
+  await t.expect(dialogSplitSession.buttonSubmit.hasAttribute('disabled')).notOk();
+  // Submit the form
+  await t.click(dialogSplitSession.buttonSubmit);
+  await t.expect(dialogSplitSession.buttonSubmit.exists).notOk();
+  // Assert the session was split
+  await t.expect(screenTask.sessionStart.count).eql(2);
+  await t.expect(screenTask.sessionDuration.nth(0).textContent).eql('2h04m');
+  await t.expect(screenTask.sessionDuration.nth(1).textContent).eql('1h55m');
 });
