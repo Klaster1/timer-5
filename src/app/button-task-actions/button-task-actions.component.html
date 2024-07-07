@@ -17,8 +17,7 @@
       <a
         mat-menu-item
         type="button"
-        [routerLink]="['/', { outlets: { dialog: ['tasks', task.id, 'rename'] } }]"
-        queryParamsHandling="preserve"
+        [dialogLink]="['tasks', task.id, 'rename']"
         data-e2e="button-task-actions__button-rename"
       >
         Rename

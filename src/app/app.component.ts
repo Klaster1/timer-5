@@ -1,6 +1,5 @@
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatActionList, MatListItem, MatNavList } from '@angular/material/list';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
@@ -17,6 +16,7 @@ import { MapPipe } from './pipes/map.pipe';
 import { TaskStateIconPipe } from './pipes/task-state-icon.pipe';
 import { FaviconService } from './providers/favicon.service';
 import { ImportExportService } from './providers/import-export.service';
+import { RoutedDialogs } from './providers/routed-dialogs';
 import { AppStore } from './providers/state';
 
 @Component({
@@ -52,10 +52,10 @@ export class AppComponent {
   private importExport = inject<ImportExportService>(ImportExportService);
   private favicon = inject<FaviconService>(FaviconService);
   private hotkeysService = inject<HotkeysService>(HotkeysService);
-  private dialogs = inject<MatDialog>(MatDialog);
   private destroyRef = inject(DestroyRef);
   public store = inject(AppStore);
   private sanitizer = inject(DomSanitizer);
+  private routedDialogs = inject(RoutedDialogs);
 
   public exportUrl = computed(() => {
     const tasks = this.store.tasks();
@@ -69,7 +69,7 @@ export class AppComponent {
 
   constructor() {
     this.hotkeysService.cheatSheetToggle.subscribe(() => {
-      this.router.navigate(['/', { outlets: { dialog: ['hotkeys'] } }]);
+      this.routedDialogs.navigate(['hotkeys']);
     });
     this.keys.add([
       hotkey(KEYS_GO_ALL, 'Go to all tasks', () => this.router.navigate(['all'], { queryParamsHandling: 'merge' })),

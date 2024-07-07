@@ -28,6 +28,7 @@ import {
   withState,
 } from '@ngrx/signals';
 import { Draft, produce } from 'immer';
+import { RoutedDialogs } from './routed-dialogs';
 
 export type NormalizedTasks = { [id: string]: Task };
 
@@ -266,6 +267,7 @@ export const AppStore = signalStore(
   }),
   withMethods((store) => {
     const router = inject(Router);
+    const routedDialogs = inject(RoutedDialogs);
 
     const taskById = (taskId: string) => computed(() => store.tasks()[taskId]);
     const renameTask = async (name: string) => {
@@ -275,7 +277,7 @@ export const AppStore = signalStore(
         const task = draft.tasks[taskId];
         if (task) task.name = name;
       });
-      router.navigate(['/', { outlets: { dialog: null } }]);
+      routedDialogs.close();
     };
     const getSessionAtIndex = (taskId: string, sessionIndex: number) =>
       computed(() => {
@@ -299,7 +301,7 @@ export const AppStore = signalStore(
         if (!task) return;
         task.sessions.splice(sessionIndex, 1, updatedSession);
       });
-      router.navigate(['/', { outlets: { dialog: null } }]);
+      routedDialogs.close();
     };
     const splitSession = (taskId: string, sessionId: SessionId) => {};
     const createTask = async (name: string) => {

@@ -19,7 +19,7 @@ import { provideRouter, withRouterConfig } from '@angular/router';
 import { SwUpdate, provideServiceWorker } from '@angular/service-worker';
 import { AppComponent } from '@app/app.component';
 import { gameStateGuard } from '@app/guards/game-state.guard';
-import { withRoutedDialogs } from '@app/providers/routed-dialogs';
+import { provideDialogRoutes } from '@app/providers/routed-dialogs';
 import { HotkeyModule } from 'angular2-hotkeys';
 import { secondsToMilliseconds } from 'date-fns/secondsToMilliseconds';
 import { interval } from 'rxjs';
@@ -50,50 +50,46 @@ bootstrapApplication(AppComponent, {
             },
           ],
         },
-        {
-          outlet: 'dialog',
-          path: '',
-          children: [
-            {
-              path: 'tasks',
-              children: [
-                {
-                  path: 'create',
-                  loadComponent: () => import('./app/dialog-create-task/dialog-create-task.component'),
-                },
-                {
-                  path: ':taskId',
-                  children: [
-                    {
-                      path: 'rename',
-                      loadComponent: () => import('./app/dialog-rename-task/dialog-rename-task.component'),
-                    },
-                    {
-                      path: 'sessions/:sessionIndex',
-                      children: [
-                        {
-                          path: 'split',
-                          loadComponent: () => import('./app/dialog-split-session/dialog-split-session.component'),
-                        },
-                        {
-                          path: 'edit',
-                          loadComponent: () => import('./app/dialog-edit-session/dialog-edit-session.component'),
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            },
-            {
-              path: 'hotkeys',
-              loadComponent: () => import('./app/dialog-hotkeys-cheatsheet/dialog-hotkeys-cheatsheet.component'),
-            },
-          ],
-        },
       ],
       withRouterConfig({ paramsInheritanceStrategy: 'always' }),
     ),
+    provideDialogRoutes([
+      {
+        path: 'tasks',
+        children: [
+          {
+            path: 'create',
+            loadComponent: () => import('./app/dialog-create-task/dialog-create-task.component'),
+          },
+          {
+            path: ':taskId',
+            children: [
+              {
+                path: 'rename',
+                loadComponent: () => import('./app/dialog-rename-task/dialog-rename-task.component'),
+              },
+              {
+                path: 'sessions/:sessionIndex',
+                children: [
+                  {
+                    path: 'split',
+                    loadComponent: () => import('./app/dialog-split-session/dialog-split-session.component'),
+                  },
+                  {
+                    path: 'edit',
+                    loadComponent: () => import('./app/dialog-edit-session/dialog-edit-session.component'),
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        path: 'hotkeys',
+        loadComponent: () => import('./app/dialog-hotkeys-cheatsheet/dialog-hotkeys-cheatsheet.component'),
+      },
+    ]),
     {
       provide: MAT_DIALOG_DEFAULT_OPTIONS,
       useFactory(): MatDialogConfig<any> {
@@ -146,6 +142,5 @@ bootstrapApplication(AppComponent, {
         };
       },
     },
-    withRoutedDialogs(),
   ],
 });

@@ -5,6 +5,7 @@ import { MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger } from '@angular/m
 import { RouterLink } from '@angular/router';
 import { encodeFilterParams } from '@app/domain/router';
 import { Session, Task, getSessionId } from '@app/domain/task';
+import { DialogLinkDirective } from '@app/providers/routed-dialogs';
 import { AppStore } from '@app/providers/state';
 
 @Component({
@@ -13,7 +14,16 @@ import { AppStore } from '@app/providers/state';
   selector: 'button-session-actions',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger, MatIconButton, MatIcon, RouterLink],
+  imports: [
+    MatMenu,
+    MatMenuContent,
+    MatMenuItem,
+    MatMenuTrigger,
+    MatIconButton,
+    MatIcon,
+    RouterLink,
+    DialogLinkDirective,
+  ],
 })
 export class ButtonSessionActionsComponent {
   private store = inject(AppStore);
