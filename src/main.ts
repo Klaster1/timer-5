@@ -15,14 +15,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MAT_TOOLTIP_DEFAULT_OPTIONS, MatTooltipDefaultOptions } from '@angular/material/tooltip';
 import { DomSanitizer, bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { ActivatedRouteSnapshot, provideRouter, withRouterConfig } from '@angular/router';
+import { provideRouter, withRouterConfig } from '@angular/router';
 import { SwUpdate, provideServiceWorker } from '@angular/service-worker';
 import { AppComponent } from '@app/app.component';
 import { gameStateGuard } from '@app/guards/game-state.guard';
 import { withRoutedDialogs } from '@app/providers/routed-dialogs';
-import { AppStore } from '@app/providers/state';
-import { SessionRoute, TaskRoute } from '@app/types/route-data';
-import { ResolveDataTyped } from '@app/utils/router';
 import { HotkeyModule } from 'angular2-hotkeys';
 import { secondsToMilliseconds } from 'date-fns/secondsToMilliseconds';
 import { interval } from 'rxjs';
@@ -66,9 +63,6 @@ bootstrapApplication(AppComponent, {
                 },
                 {
                   path: ':taskId',
-                  resolve: {
-                    task: (route: ActivatedRouteSnapshot) => inject(AppStore).taskById(route.params.taskId)()!,
-                  } satisfies ResolveDataTyped<TaskRoute>,
                   children: [
                     {
                       path: 'rename',
@@ -76,10 +70,6 @@ bootstrapApplication(AppComponent, {
                     },
                     {
                       path: 'sessions/:sessionIndex',
-                      resolve: {
-                        session: (route: ActivatedRouteSnapshot) =>
-                          inject(AppStore).getSessionAtIndex(route.params.taskId, route.params.sessionIndex)()!,
-                      } satisfies ResolveDataTyped<SessionRoute>,
                       children: [
                         {
                           path: 'split',

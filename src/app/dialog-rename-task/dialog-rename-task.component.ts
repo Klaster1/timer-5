@@ -1,16 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
-import {
-  MatDialogActions,
-  MatDialogClose,
-  MatDialogContent,
-  MatDialogRef,
-  MatDialogTitle,
-} from '@angular/material/dialog';
+import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { ActivatedRouteSnapshot } from '@angular/router';
 import { AppStore } from '@app/providers/state';
 
 @Component({
@@ -33,17 +26,17 @@ import { AppStore } from '@app/providers/state';
   ],
 })
 export default class DialogRenameTaskComponent {
-  private route = inject(ActivatedRouteSnapshot);
   private state = inject(AppStore);
-  private dialog = inject<MatDialogRef<DialogRenameTaskComponent, string>>(MatDialogRef);
   form = new FormGroup({
-    value: new FormControl<string | null>(this.route.data.task.name, [Validators.required]),
+    value: new FormControl<string | null>(null, [Validators.required]),
+  });
+  private assignValues = effect(() => {
+    this.form.reset({ value: this.state.dialogTask()?.name });
   });
   onSubmit() {
     const { value } = this.form.value;
     if (this.form.valid && typeof value === 'string') {
-      this.state.renameTask(this.route.params.taskId, value);
-      this.dialog.close(value);
+      this.state.renameTask(value);
     }
   }
 }

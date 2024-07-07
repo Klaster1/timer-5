@@ -7,3 +7,7 @@ export const assertNever = (value: never): never => {
 export const deepEquals = <T>(a: T, b: T): boolean => JSON.stringify(a) === JSON.stringify(b);
 
 export const isNumber = (value: any): value is number => typeof value === 'number';
+
+export const option = <T, U>(value: T | null | undefined) => ({
+  map: <U>(fn: (value: T) => U) => (value !== null && value !== undefined ? fn(value) : null),
+});
