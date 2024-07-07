@@ -18,7 +18,7 @@ import {
   KEYS_START_STOP,
   hotkey,
 } from '@app/domain/hotkeys';
-import { Task, TaskState, isTaskRunning, sessionDuration, taskDuration } from '@app/domain/task';
+import { Task, TaskState, isTaskRunning, sessionDuration, sortSessions, taskDuration } from '@app/domain/task';
 import { MapPipe } from '@app/pipes/map.pipe';
 import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
 import { RoutedDialogs } from '@app/providers/routed-dialogs';
@@ -68,6 +68,7 @@ export default class ScreenTaskComponent {
   viewport = viewChild(CdkVirtualScrollViewport);
   taskDuration = taskDuration;
   sessionDuration = sessionDuration;
+  sortSessions = sortSessions;
 
   hotkeys = [
     hotkey(KEYS_START_STOP, 'Start/stop task', (e) => {

@@ -20,7 +20,7 @@
         </tr>
       </thead>
       <tbody>
-        <ng-container *cdkVirtualFor="let item of task.sessions; types: task.sessions">
+        <ng-container *cdkVirtualFor="let item of sortSessions(task.sessions); types: task.sessions">
           <tr
             class="mat-mdc-row mdc-data-table__row"
             data-e2e="screen-task__session-row"

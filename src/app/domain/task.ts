@@ -34,7 +34,7 @@ export const isValidTaskState = (state: string): boolean =>
   (new Set([TaskState.active, TaskState.finished, TaskState.dropped]) as Set<string>).has(state);
 export const getTaskRunningSession = (t?: Task) => t?.sessions.find((s) => !isNumber(s.end));
 const compareSessions = (a: Session, b: Session) => b.start - a.start;
-export const sortTaskSessions = (task: Task): Task => ({ ...task, sessions: [...task.sessions].sort(compareSessions) });
+export const sortSessions = (sessions: Session[]): Session[] => [...sessions].sort(compareSessions);
 export const compareTasks = (a: Task, b: Task): number => {
   const as = a.sessions.at(-1);
   const bs = b.sessions.at(-1);
