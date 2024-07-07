@@ -32,20 +32,8 @@ const EVERY_SECOND_INTERVAL = interval(secondsToMilliseconds(1)).pipe(
 
 @Component({
   selector: 'duration',
-  template: `
-    @for (fragment of durationFragments | async; track fragment.unit) {
-      <span class="fragment" [ngClass]="{ dimmed: fragment.dimmed === DimMode.All }"
-        ><span class="value">
-          @if (fragment.dimmed === DimMode.First) {
-            <span class="dimmed">{{ fragment.value.at(0) }}</span
-            ><span>{{ fragment.value.slice(1) }}</span>
-          } @else {
-            {{ fragment.value }}
-          }</span
-        ><span class="unit">{{ fragment.unit }}</span></span
-      >
-    }
-  `,
+  // prettier-ignore
+  template: `@for(fragment of durationFragments | async; track fragment.unit){<span class="fragment" [ngClass]="{ dimmed: fragment.dimmed === DimMode.All }"><span class="value">@if(fragment.dimmed === DimMode.First){<span class="dimmed">{{ fragment.value.at(0) }}</span><span>{{ fragment.value.slice(1) }}</span>}@else{{{ fragment.value }}}</span><span class="unit">{{ fragment.unit }}</span></span>}`,
   styles: [
     `
       :host {
