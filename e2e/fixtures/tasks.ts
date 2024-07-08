@@ -38,7 +38,7 @@ test('Adding a task', async (t) => {
   // Send the "a t" and "ф е" hotkeys, assert the "Add a task" dialog opens for both
   for (const combo of ['a t', 'ф е']) {
     await t.pressKey(combo);
-    await t.expect(dialogCreateTask.title.exists).ok();
+    await t.expect(dialogCreateTask.title.exists).ok(`${combo} opens the dialog`);
     await t.click(dialogCreateTask.buttonDismiss);
   }
   // Click the FAB "Add task" button, assert the "Add a task" dialog opens
