@@ -1,5 +1,7 @@
+import { app } from '../page-objects/app';
 import { dialogHotkeyCheatsheet } from '../page-objects/dialog-hotkeys-cheatsheet';
 import { screenTasks } from '../page-objects/screen-tasks';
+import { getCdpClient, reload } from '../utils';
 import { VISUAL_REGRESSION_OK, comparePageScreenshot } from '../visual-regression';
 
 fixture('General');
@@ -21,4 +23,42 @@ test('Hotkey help', async (t) => {
   // Open the dialog again, assert "Esc" closes the dialog
   await t.pressKey('esc');
   await t.expect(dialogHotkeyCheatsheet.dialog.exists).notOk();
+});
+
+test('Theme switcher', async (t) => {
+  // Switch to dark theme
+  await t.click(app.buttonSwitchTheme);
+  await t.expect(await comparePageScreenshot('themes menu')).eql(VISUAL_REGRESSION_OK);
+  await t.click(app.buttonTheme.withText('Dark'));
+  // Assert the theme is applied
+  await t.expect(await comparePageScreenshot('dark theme', { theme: 'preserve' })).eql(VISUAL_REGRESSION_OK);
+  // Switch to light theme
+  await t.click(app.buttonSwitchTheme);
+  await t.click(app.buttonTheme.withText('Light'));
+  // Assert the theme is applied
+  await t.expect(await comparePageScreenshot('light theme', { theme: 'preserve' })).eql(VISUAL_REGRESSION_OK);
+  // Switch to system theme
+  await t.click(app.buttonSwitchTheme);
+  await t.click(app.buttonTheme.withText('System'));
+  // Override the system theme to dark
+  const client = await getCdpClient();
+  await client.send('Emulation.setEmulatedMedia', {
+    media: 'screen',
+    features: [{ name: 'prefers-color-scheme', value: 'dark' }],
+  });
+  // Assert the theme is applied
+  await t.expect(await comparePageScreenshot('system theme dark', { theme: 'preserve' })).eql(VISUAL_REGRESSION_OK);
+  // Override the system theme to light
+  await client.send('Emulation.setEmulatedMedia', {
+    media: 'screen',
+    features: [{ name: 'prefers-color-scheme', value: 'light' }],
+  });
+  // Assert the theme is applied
+  await t.click('body', { offsetX: 0, offsetY: 0 }); // Close the tooltip
+  await t.expect(await comparePageScreenshot('system theme light', { theme: 'preserve' })).eql(VISUAL_REGRESSION_OK);
+  // Reload the page
+  await reload();
+  // Assert the theme is preserved
+  await t.expect(app.buttonSwitchTheme.exists).ok();
+  await t.expect(await comparePageScreenshot('system theme light', { theme: 'preserve' })).eql(VISUAL_REGRESSION_OK);
 });

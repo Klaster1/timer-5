@@ -9,4 +9,6 @@ export const app = {
   buttonImportExport: e2e('navigation__button-import-export'),
   buttonExport: e2e('navigation__button-export'),
   inputImport: e2e('navigation__input-import'),
+  buttonSwitchTheme: e2e('navigation__button-theme'),
+  buttonTheme: e2e('theme-button'),
 };
