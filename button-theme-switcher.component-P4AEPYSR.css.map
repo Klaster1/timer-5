@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/button-theme-switcher/button-theme-switcher.component.scss"],
+  "sourcesContent": [":host {\n  position: relative;\n  overflow: hidden;\n  width: 100%;\n  height: 48px;\n  display: block;\n}\n"],
+  "mappings": "AAAA,MACE,SAAA,SACA,SAAA,OACA,MAAA,KACA,OAAA,KACA,QAAA",
+  "names": []
+}
