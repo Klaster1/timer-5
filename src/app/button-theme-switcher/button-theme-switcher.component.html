@@ -9,7 +9,7 @@
 </button>
 <mat-menu #themeMenu="matMenu">
   @for (option of options; track $index) {
-    <button (click)="store.setTheme(option.theme)" mat-menu-item>
+    <button (click)="store.setTheme(option.theme)" mat-menu-item data-e2e="theme-button">
       <mat-icon [svgIcon]="option.icon"></mat-icon>
       {{ option.label }}
     </button>
