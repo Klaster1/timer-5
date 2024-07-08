@@ -19,10 +19,10 @@ type ThemeOption = { theme: Theme; label: string; icon: string };
 export class ButtonThemeSwitcherComponent {
   public store = inject(AppStore);
   public options: ThemeOption[] = [
-    { theme: { selectedMode: 'manual', currentVariant: 'light' }, label: 'Light', icon: 'light_mode' },
-    { theme: { selectedMode: 'manual', currentVariant: 'dark' }, label: 'Dark', icon: 'dark_mode' },
+    { theme: { mode: 'manual', variant: 'light' }, label: 'Light', icon: 'light_mode' },
+    { theme: { mode: 'manual', variant: 'dark' }, label: 'Dark', icon: 'dark_mode' },
     {
-      theme: { selectedMode: 'auto', currentVariant: 'light' },
+      theme: { mode: 'auto', variant: 'light' },
       label: 'System',
       icon: 'brightness_medium',
     },
@@ -30,7 +30,7 @@ export class ButtonThemeSwitcherComponent {
   public currentOption = computed(() => {
     const theme = this.store.theme();
     return this.options.find((option) =>
-      theme?.selectedMode === 'manual' ? deepEquals(option.theme, theme) : option.theme.selectedMode === 'auto',
+      theme?.mode === 'manual' ? deepEquals(option.theme, theme) : option.theme.mode === 'auto',
     );
   });
   public currentThemeTooltip = computed(() => `Current theme: ${this.currentOption()?.label.toLowerCase()}`);
