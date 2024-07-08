@@ -54,6 +54,7 @@
     "prettier": "^3.3.2",
     "prettier-plugin-organize-imports": "^4.0.0",
     "testcafe": "^3.6.2",
+    "testcafe-reporter-spec-plus": "^2.3.0",
     "typescript": "~5.4.5"
   },
   "engines": {

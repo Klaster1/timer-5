@@ -13,6 +13,12 @@ module.exports = {
       },
     },
   },
+  reporter: [
+    {
+      name: 'spec-plus',
+      filter: ['It has just been rewritten with a recent screenshot', 'The browser window was resized'],
+    },
+  ],
   hooks: {
     test: {
       before: async (t) => {
