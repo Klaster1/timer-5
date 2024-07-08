@@ -1,7 +1,17 @@
-@for (option of options; track $index) {
-  @if ($index === nextOptionIndex()) {
-    <button @switchItem (click)="store.setTheme(option.theme)" [matTooltip]="option.label" mat-list-item>
+<button
+  mat-list-item
+  [matTooltip]="currentThemeTooltip()"
+  [matMenuTriggerFor]="themeMenu"
+  data-e2e="navigation__button-theme"
+  matTooltipPosition="right"
+>
+  <mat-icon [svgIcon]="currentOption()?.icon ?? ''"></mat-icon>
+</button>
+<mat-menu #themeMenu="matMenu">
+  @for (option of options; track $index) {
+    <button (click)="store.setTheme(option.theme)" mat-menu-item>
       <mat-icon [svgIcon]="option.icon"></mat-icon>
+      {{ option.label }}
     </button>
   }
-}
+</mat-menu>
