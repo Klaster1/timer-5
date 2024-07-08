@@ -13,7 +13,7 @@ const BASE_DIR = 'visual-regression-screenshots';
 type VisualRegressionMode = 'create' | 'compare';
 type ScreenshotPathName = 'reference' | 'current' | 'diff';
 type ScreenshotPaths = Record<ScreenshotPathName, string>;
-type ColorScheme = 'light' | 'dark';
+type ColorScheme = 'light' | 'dark' | 'preserve';
 type Platform = 'windows' | 'linux' | 'unknown';
 
 const getPaths = (name: string): ScreenshotPaths => {
@@ -81,37 +81,17 @@ const maskImage = async (source: string | Buffer, bounds: Rect[]) => {
 };
 
 const forceTheme = async (colorScheme: ColorScheme) => {
+  if (colorScheme === 'preserve') return () => {};
   const client = await getCdpClient();
   await client.send('Emulation.setEmulatedMedia', {
     media: 'screen',
     features: [
       {
         name: 'prefers-color-scheme',
-        value: colorScheme === 'dark' ? 'light' : 'dark',
+        value: colorScheme,
       },
     ],
   });
-  await new Promise((res) => setTimeout(res, 50));
-  await client.send('Emulation.setEmulatedMedia', {
-    media: 'screen',
-    features: [
-      {
-        name: 'prefers-color-scheme',
-        value: '',
-      },
-    ],
-  });
-  await new Promise((res) => setTimeout(res, 50));
-  await client.send('Emulation.setEmulatedMedia', {
-    media: 'screen',
-    features: [
-      {
-        name: 'prefers-color-scheme',
-        value: colorScheme === 'dark' ? 'dark' : 'light',
-      },
-    ],
-  });
-  await new Promise((res) => setTimeout(res, 50));
   return async () => {
     await client.send('Emulation.setEmulatedMedia', {
       media: 'screen',
@@ -134,7 +114,7 @@ export async function comparePageScreenshot(
   name: string,
   options?: {
     ignore?: Selector[];
-    theme?: 'light' | 'dark';
+    theme?: ColorScheme;
     looksSame?: Omit<looksSame.LooksSameOptions, 'createDiffImage' | 'stopOnFirstFail'>;
   },
 ) {
