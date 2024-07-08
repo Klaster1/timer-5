@@ -98,15 +98,15 @@ const withRouter = () => {
 export type ThemeMode = 'auto' | 'manual';
 export type ThemeVariant = 'light' | 'dark';
 export type Theme = {
-  selectedMode: ThemeMode;
-  currentVariant: ThemeVariant;
+  mode: ThemeMode;
+  variant: ThemeVariant;
 };
 const withTheme = () => {
   type ThemeState = {
     theme: Theme | undefined;
   };
   const initialState: ThemeState = {
-    theme: { selectedMode: 'auto', currentVariant: 'light' },
+    theme: { mode: 'auto', variant: 'light' },
   };
   const prefersDarkMode = () => window.matchMedia(`(prefers-color-scheme: dark)`).matches;
   const destroySignal = new AbortController();
@@ -117,9 +117,8 @@ const withTheme = () => {
         setTheme(theme: Theme) {
           updateState(store, (draft) => {
             draft.theme = {
-              selectedMode: theme.selectedMode,
-              currentVariant:
-                theme.selectedMode === 'auto' ? (prefersDarkMode() ? 'dark' : 'light') : theme.currentVariant,
+              mode: theme.mode,
+              variant: theme.mode === 'auto' ? (prefersDarkMode() ? 'dark' : 'light') : theme.variant,
             };
           });
         },
@@ -143,21 +142,20 @@ const withTheme = () => {
         });
         for (const theme of ['light', 'dark'] as const) {
           const mediaQuery = window.matchMedia(`(prefers-color-scheme: ${theme})`);
-          if (mediaQuery.matches && store.theme()?.selectedMode === 'auto')
-            store.setTheme({ selectedMode: 'auto', currentVariant: theme });
+          if (mediaQuery.matches && store.theme()?.mode === 'auto') store.setTheme({ mode: 'auto', variant: theme });
           mediaQuery.addEventListener(
             'change',
             (event) => {
               const currentTheme = store.theme();
-              if (!currentTheme || currentTheme.selectedMode !== 'auto' || !event.matches) return;
-              store.setTheme({ selectedMode: 'auto', currentVariant: theme });
+              if (!currentTheme || currentTheme.mode !== 'auto' || !event.matches) return;
+              store.setTheme({ mode: 'auto', variant: theme });
             },
             { signal: destroySignal.signal },
           );
         }
         effect(() => {
           const theme = store.theme();
-          if (theme) document.body.classList.toggle('theme-dark', theme.currentVariant === 'dark');
+          if (theme) document.body.classList.toggle('theme-dark', theme.variant === 'dark');
         });
       },
       onDestroy(store) {
