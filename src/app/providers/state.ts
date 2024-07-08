@@ -108,6 +108,7 @@ const withTheme = () => {
   const initialState: ThemeState = {
     theme: { selectedMode: 'auto', currentVariant: 'light' },
   };
+  const prefersDarkMode = () => window.matchMedia(`(prefers-color-scheme: dark)`).matches;
   const destroySignal = new AbortController();
   return signalStoreFeature(
     withState<ThemeState>(initialState),
@@ -115,7 +116,11 @@ const withTheme = () => {
       return {
         setTheme(theme: Theme) {
           updateState(store, (draft) => {
-            draft.theme = theme;
+            draft.theme = {
+              selectedMode: theme.selectedMode,
+              currentVariant:
+                theme.selectedMode === 'auto' ? (prefersDarkMode() ? 'dark' : 'light') : theme.currentVariant,
+            };
           });
         },
       };
@@ -136,17 +141,20 @@ const withTheme = () => {
           const theme = store.theme();
           if (theme) localStorage.setItem('theme', JSON.stringify(store.theme()));
         });
-        window.matchMedia(`(prefers-color-scheme: dark)`).addEventListener(
-          'change',
-          (event) => {
-            const theme = store.theme();
-            if (!theme || theme.selectedMode !== 'auto') return;
-            store.setTheme({ selectedMode: 'auto', currentVariant: event.matches ? 'dark' : 'light' });
-          },
-          {
-            signal: destroySignal.signal,
-          },
-        );
+        for (const theme of ['light', 'dark'] as const) {
+          const mediaQuery = window.matchMedia(`(prefers-color-scheme: ${theme})`);
+          if (mediaQuery.matches && store.theme()?.selectedMode === 'auto')
+            store.setTheme({ selectedMode: 'auto', currentVariant: theme });
+          mediaQuery.addEventListener(
+            'change',
+            (event) => {
+              const currentTheme = store.theme();
+              if (!currentTheme || currentTheme.selectedMode !== 'auto' || !event.matches) return;
+              store.setTheme({ selectedMode: 'auto', currentVariant: theme });
+            },
+            { signal: destroySignal.signal },
+          );
+        }
         effect(() => {
           const theme = store.theme();
           if (theme) document.body.classList.toggle('theme-dark', theme.currentVariant === 'dark');
