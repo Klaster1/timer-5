@@ -2,7 +2,6 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
 import { AsyncPipe, NgClass } from '@angular/common';
 import {
-  AfterRenderPhase,
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
@@ -105,12 +104,13 @@ export default class ScreenTasksComponent {
     effect(() => {
       this.store.currentTasks();
       afterNextRender(
-        () => {
-          this.viewport()?.scrollToIndex(0);
+        {
+          read: () => {
+            this.viewport()?.scrollToIndex(0);
+          },
         },
         {
           injector: this.injector,
-          phase: AfterRenderPhase.Read,
         },
       );
     });

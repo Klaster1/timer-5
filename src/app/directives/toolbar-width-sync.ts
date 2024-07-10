@@ -1,5 +1,5 @@
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { AfterRenderPhase, DestroyRef, Directive, ElementRef, afterNextRender, inject, input } from '@angular/core';
+import { DestroyRef, Directive, ElementRef, afterNextRender, inject, input } from '@angular/core';
 
 @Directive({
   selector: 'mat-toolbar',
@@ -10,8 +10,8 @@ export class ToolbarWidthSyncDirective {
   private elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private destroyRef = inject(DestroyRef);
   constructor() {
-    afterNextRender(
-      () => {
+    afterNextRender({
+      read: () => {
         const viewport = this.syncWidthTo();
         if (!viewport) return;
         const observer = new ResizeObserver((entries) => {
@@ -24,9 +24,6 @@ export class ToolbarWidthSyncDirective {
         observer.observe(viewport.getElementRef().nativeElement);
         this.destroyRef.onDestroy(() => observer.disconnect());
       },
-      {
-        phase: AfterRenderPhase.Read,
-      },
-    );
+    });
   }
 }

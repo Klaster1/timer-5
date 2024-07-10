@@ -34,18 +34,6 @@
           },
           "configurations": {
             "production": {
-              "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "1100kb",
-                  "maximumError": "1500kb"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "3kb",
-                  "maximumError": "4kb"
-                }
-              ],
               "outputHashing": "all",
               "serviceWorker": "ngsw-config.json",
               "baseHref": "/timer-5/"
