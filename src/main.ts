@@ -113,6 +113,8 @@ bootstrapApplication(AppComponent, {
         const destroyRef = inject(DestroyRef);
         const snackbar = inject(MatSnackBar);
         return () => {
+          if (!environment.production) return;
+
           interval(secondsToMilliseconds(60))
             .pipe(takeUntilDestroyed(destroyRef))
             .subscribe(() => sw.checkForUpdate());
