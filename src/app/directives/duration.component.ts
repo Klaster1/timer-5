@@ -1,5 +1,5 @@
 import { AsyncPipe, NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, input } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { DurationFn } from '@app/domain/date-time';
 import { pad2 } from '@app/utils/number';
@@ -58,13 +58,20 @@ const EVERY_SECOND_INTERVAL = interval(secondsToMilliseconds(1)).pipe(
   imports: [NgClass, AsyncPipe],
 })
 export class DurationComponent {
+  private elementRef = inject(ElementRef<HTMLElement>);
   public readonly value = input.required<DurationFn>();
   public readonly DimMode = DimMode;
-  public readonly durationFragments = combineLatest([toObservable(this.value), EVERY_SECOND_INTERVAL]).pipe(
-    map(([value, now]): Fragment[] => {
-      const hours = ~~(value(now) / 3600000);
-      const minutes = ~~((value(now) % 3600000) / 60000);
-      const seconds = ~~((value(now) % 60000) / 1000);
+  private readonly duration$ = combineLatest([toObservable(this.value), EVERY_SECOND_INTERVAL]).pipe(
+    map(([value, now]) => ({
+      hours: ~~(value(now) / 3600000),
+      minutes: ~~((value(now) % 3600000) / 60000),
+      seconds: ~~((value(now) % 60000) / 1000),
+    })),
+    shareReplay({ refCount: true, bufferSize: 1 }),
+    takeUntilDestroyed(),
+  );
+  public readonly durationFragments = this.duration$.pipe(
+    map(({ hours, minutes, seconds }): Fragment[] => {
       if (hours === 0 && minutes === 0) {
         return [{ value: seconds.toString(), unit: Unit.Seconds, dimmed: DimMode.None }];
       }
@@ -80,4 +87,11 @@ export class DurationComponent {
     }),
     takeUntilDestroyed(),
   );
+  private textValue$ = this.duration$.pipe(map(({ hours, minutes, seconds }) => `${hours}h ${minutes}m ${seconds}s`));
+  constructor() {
+    this.textValue$.pipe(takeUntilDestroyed()).subscribe((value) => {
+      this.elementRef.nativeElement.setAttribute('aria-label', value);
+      this.elementRef.nativeElement.setAttribute('title', value);
+    });
+  }
 }

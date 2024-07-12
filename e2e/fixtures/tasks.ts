@@ -330,6 +330,7 @@ test('Editing a session', async (t) => {
   await t.expect(screenTask.sessionDuration.nth(0).textContent).eql('2h00m');
   await t.expect(screenTask.taskDuration.textContent).eql('2h00m');
   await t.expect(screenTasks.total.textContent).eql('2h00m');
+  await t.expect(screenTasks.total.getAttribute('title')).eql('2h 0m 0s');
   await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).contains('play_circle');
   // For a complete task session, remove the end time, assert the task becomes active/running and the total updates
   await t
