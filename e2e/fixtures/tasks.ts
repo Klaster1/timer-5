@@ -1,6 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
-import { fixture, test } from 'testcafe';
+import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { app } from '../page-objects/app';
 import { dialogCreateTask } from '../page-objects/dialog-create-task';
 import { dialogEditSession } from '../page-objects/dialog-edit-session';
@@ -10,7 +9,7 @@ import { menuTaskActions } from '../page-objects/menu-task-actions';
 import { screenTask } from '../page-objects/screen-task';
 import { screenTasks } from '../page-objects/screen-tasks';
 import { tooltip } from '../page-objects/tooltip';
-import { advanceDate, getLocationPathname, mockDate, reload, restoreDate, setDownloadsDirectory } from '../utils';
+import { advanceDate, getLocationPathname, mockDate, reload, restoreDate } from '../utils';
 import { VISUAL_REGRESSION_OK, comparePageScreenshot } from '../visual-regression';
 
 fixture('Tasks');
@@ -275,8 +274,7 @@ test('Export and import', async (t) => {
   // Have a file with test data
   const testId = randomUUID();
   t.ctx.testId = testId;
-  await setDownloadsDirectory(testId);
-  await mkdir(`e2e/downloads/${testId}`, { recursive: true });
+  await mkdir(`e2e/downloads/import-export`, { recursive: true });
   const referenceData = {
     version: 1,
     value: [
@@ -285,26 +283,24 @@ test('Export and import', async (t) => {
       { id: 'EnBz', name: 'Task 3', state: 0, sessions: [] },
     ],
   };
-  await writeFile(`e2e/downloads/${testId}/data.json`, JSON.stringify(referenceData, null, '  '));
+  await writeFile(`e2e/downloads/import-export/data-${testId}.json`, JSON.stringify(referenceData, null, '  '));
   // Import the data
   await t.click(app.buttonImportExport);
   await t.expect(await comparePageScreenshot('menu')).eql(VISUAL_REGRESSION_OK);
-  await t.setFilesToUpload(app.inputImport, [`../downloads/${testId}/data.json`]);
+  await t.setFilesToUpload(app.inputImport, [`../downloads/import-export/data-${testId}.json`]);
   // Assert the tasks are added
   await t.expect(screenTasks.taskItem.count).eql(3);
   await t.expect(screenTasks.taskName.nth(0).textContent).eql('Task 1');
   await t.expect(screenTasks.taskName.nth(1).textContent).eql('Task 2');
   await t.expect(screenTasks.taskName.nth(2).textContent).eql('Task 3');
   // Assert that export works
-  await t.click(app.buttonExport);
+  const href = await app.buttonExport.getAttribute('href');
+  // Clicking and checking downloaded file works too, but flakes a lot
+  const exportedData = await t.eval(() => fetch(href).then((res) => res.json()), { dependencies: { href } });
 
-  const exportedData = await readFile(`e2e/downloads/${testId}/timer-data.json`, 'utf8').then(JSON.parse);
   await t.expect(exportedData).eql(referenceData);
-  t.ctx.ok = true;
 }).after(async (t) => {
-  if (t.ctx.ok) {
-    await rm(`e2e/downloads/${t.ctx.testId}`, { recursive: true, force: true }).catch((e) => {});
-  }
+  await rm(`e2e/downloads/import-export/data-${t.ctx.testId}.json`, { force: true }).catch((e) => {});
 });
 
 // TestCafe client script to mock the date
