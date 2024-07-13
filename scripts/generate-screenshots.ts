@@ -5,12 +5,10 @@ import { fixture, Selector, test } from 'testcafe';
 import { app } from '../e2e/page-objects/app';
 import { getCdpClient, mockDate } from '../e2e/utils';
 
-fixture`Promo`;
-
 const TEST_DATA_URL =
   'https://gist.github.com/Klaster1/a456beaf5384924fa960790160286d8a/raw/83483f6179dfd13a63eca7afb62b5571ba6bf6e9/games.json';
 
-test('Readme screenshot', async (t) => {
+fixture`Promo`.beforeEach(async (t) => {
   await t.eval(() => {
     const style = document.createElement('style');
     style.id = 'visual-regression';
@@ -26,8 +24,11 @@ test('Readme screenshot', async (t) => {
   await mockDate(new Date('2024-07-13T13:41:05'));
   await t.pressKey('g t j s');
   await mockDate(new Date('2024-07-13T15:33:44'));
-  const client = await getCdpClient();
   await t.pressKey('esc');
+});
+
+test('Readme screenshot', async (t) => {
+  const client = await getCdpClient();
   const screenshot = async (theme: 'light' | 'dark') => {
     await t.click(app.buttonSwitchTheme);
     await t.click(app.buttonTheme.withText(theme === 'dark' ? 'Dark' : 'Light'));
@@ -55,7 +56,7 @@ test('Readme screenshot', async (t) => {
   const endX = startX + lineLength * Math.cos(angle);
   const endY = startY + lineLength * Math.sin(angle);
 
-  ctx.save(); // Save the current context state
+  ctx.save();
   ctx.beginPath();
   ctx.moveTo(startX, startY);
   ctx.lineTo(endX, endY);
@@ -68,4 +69,36 @@ test('Readme screenshot', async (t) => {
 
   const buffer = canvas.toBuffer('image/png');
   await writeFile(`./screenshot.png`, buffer);
+});
+
+test('Open graph', async (t) => {
+  const padding = 40;
+  const width = 640;
+  const height = 320;
+  const scale = 2;
+  const background = '#343434';
+
+  await t.resizeWindow(width * scale - padding * 2 * scale, height * scale - padding * 2 * scale);
+  await t.click(Selector('body'), { offsetX: 0, offsetY: 0 });
+  await t.click(Selector('body'), { offsetX: 0, offsetY: 0 });
+  const client = await getCdpClient();
+  const screenshot = await client.send('Page.captureScreenshot', {
+    format: 'png',
+  });
+
+  const canvas = createCanvas(width * scale, height * scale);
+  const ctx = canvas.getContext('2d');
+
+  ctx.fillStyle = background;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(
+    await loadImage(Buffer.from(screenshot.data, 'base64')),
+    padding * scale,
+    padding * scale,
+    canvas.width - padding * 2 * scale,
+    canvas.height - padding * 2 * scale,
+  );
+
+  const buffer = canvas.toBuffer('image/png');
+  await writeFile(`./social.png`, buffer);
 });
