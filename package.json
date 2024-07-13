@@ -12,6 +12,7 @@
     "e2e": "testcafe chrome:headless -c 5",
     "e2e:ci": "testcafe chrome:headless -c 4 -q --app=\"npm run serve:ci\" --base-url=\"http://localhost:4200/timer-5/\"",
     "e2e:docker": "docker run -w /opt/tests -v %INIT_CWD%:/opt/tests -v /opt/tests/node_modules -it timer-5-tests-ubuntu npx testcafe chrome:headless --base-url=http://host.docker.internal:4200 -c 5 --video /opt/tests/e2e/videos --video-options failedOnly=true",
+    "e2e-vr-create:docker": "docker run -e VR_MODE=create -w /opt/tests -v %INIT_CWD%:/opt/tests -v /opt/tests/node_modules -it timer-5-tests-ubuntu npx testcafe chrome:headless --base-url=http://host.docker.internal:4200 -c 5 --video /opt/tests/e2e/videos --video-options failedOnly=true",
     "e2e:all": "npm run e2e && npm run e2e:docker",
     "deploy": "gh-pages --nojekyll --dotfiles --dist dist/timer-5"
   },

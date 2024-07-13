@@ -80,8 +80,7 @@ export class DurationComponent {
         {
           value: pad2(minutes),
           unit: Unit.Minutes,
-          dimmed:
-            hours === 0 && minutes === 0 ? DimMode.All : minutes < 10 && hours === 0 ? DimMode.First : DimMode.None,
+          dimmed: hours === 0 && minutes === 0 ? DimMode.All : minutes < 10 ? DimMode.First : DimMode.None,
         },
       ];
     }),
