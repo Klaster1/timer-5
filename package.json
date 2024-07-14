@@ -46,6 +46,7 @@
     "@angular/compiler-cli": "^18.1.0",
     "@angular/language-service": "^18.1.0",
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "@klaster_1/testcafe-repeat-test": "^1.0.1",
     "@napi-rs/canvas": "^0.1.53",
     "@types/chrome-remote-interface": "^0.31.14",
     "@types/node": "^20.14.10",
