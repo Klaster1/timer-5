@@ -42,7 +42,8 @@ export const KEYS_MARK_ACTIVE = [KEY_MARK_ACTIVE_EN, KEY_MARK_ACTIVE_RU];
 
 const KEY_RENAME_EN = 'r t';
 const KEY_RENAME_RU = 'к е';
-export const KEYS_RENAME = [KEY_RENAME_EN, KEY_RENAME_RU];
+const KEY_RENAME_ALT = 'f2';
+export const KEYS_RENAME = [KEY_RENAME_EN, KEY_RENAME_RU, KEY_RENAME_ALT];
 
 const KEY_DELETE_TASK_EN = 'd t';
 const KEY_DELETE_TASK_RU = 'в е';
