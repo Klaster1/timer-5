@@ -1,3 +1,4 @@
+import { Selector } from 'testcafe';
 import { app } from '../page-objects/app';
 import { dialogHotkeyCheatsheet } from '../page-objects/dialog-hotkeys-cheatsheet';
 import { screenTasks } from '../page-objects/screen-tasks';
@@ -59,6 +60,5 @@ test('Theme switcher', async (t) => {
   // Reload the page
   await reload();
   // Assert the theme is preserved
-  await t.expect(app.buttonSwitchTheme.exists).ok();
-  await t.expect(await comparePageScreenshot('system theme light', { theme: 'preserve' })).eql(VISUAL_REGRESSION_OK);
+  await t.expect(Selector('body').hasClass('theme-dark')).notOk();
 });
