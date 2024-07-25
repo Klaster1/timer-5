@@ -9,7 +9,7 @@ import { menuTaskActions } from '../page-objects/menu-task-actions';
 import { screenTask } from '../page-objects/screen-task';
 import { screenTasks } from '../page-objects/screen-tasks';
 import { tooltip } from '../page-objects/tooltip';
-import { advanceDate, getLocationPathname, mockDate, reload, restoreDate } from '../utils';
+import { advanceDate, getCdpClient, getLocationPathname, mockDate, reload, restoreDate } from '../utils';
 import { VISUAL_REGRESSION_OK, comparePageScreenshot } from '../visual-regression';
 
 fixture('Tasks');
@@ -236,7 +236,15 @@ test('Renaming the task', async (t) => {
     await t.expect(dialogRenameTask.title.textContent).eql('Rename task');
     await t.expect(dialogRenameTask.input.value).eql('Task 2');
     await t.click(dialogRenameTask.buttonDismiss);
+    await t.expect(dialogRenameTask.title.exists).notOk();
   }
+  const client = await getCdpClient();
+  await client.send('Input.dispatchKeyEvent', {
+    type: 'keyDown',
+    key: 'F2',
+    windowsVirtualKeyCode: 113,
+  });
+  await t.expect(dialogRenameTask.title.exists).ok();
 });
 
 test('Deleting the task', async (t) => {
