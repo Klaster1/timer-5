@@ -26,6 +26,7 @@ import { interval } from 'rxjs';
 import ScreenTaskComponent from './app/screen-task/screen-task.component';
 import ScreenTasksComponent from './app/screen-tasks/screen-tasks.component';
 import { environment } from './environments/environment';
+import './instantdb';
 
 if (environment.production) {
   enableProdMode();
