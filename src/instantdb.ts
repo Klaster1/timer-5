@@ -9,3 +9,7 @@ type Schema = {
 };
 
 export const db = init<Schema>({ appId: APP_ID });
+
+db.subscribeAuth((auth) => {
+  console.log('auth', auth);
+});
