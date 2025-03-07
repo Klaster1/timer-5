@@ -9,12 +9,14 @@ a {
   text-decoration: none;
 }
 
-@include mat.core();
+@include mat.elevation-classes();
+@include mat.app-background();
 
 @mixin used-components-theme($theme) {
   $dedupe-key: 'angular-material-theme';
   @include theming.private-check-duplicate-theme-styles($theme, $dedupe-key) {
-    @include mat.core-theme($theme);
+    @include mat.elevation-classes();
+    @include mat.app-background();
     @include mat.tooltip-theme($theme);
     @include mat.form-field-theme($theme);
     @include mat.input-theme($theme);
