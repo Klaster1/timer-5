@@ -18,7 +18,7 @@ jobs:
       - name: Adding Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20.14.0
+          node-version: 22.14.0
           cache: 'npm'
 
       - name: Install Dependencies
@@ -39,7 +39,7 @@ jobs:
 
       - name: Run TestCafe tests in container
         run: |
-          docker run -w /opt/tests -v ${{ github.workspace }}:/opt/tests timbru31/node-chrome:20 npx testcafe chrome:headless ./e2e/fixtures --app="npm run serve:ci" -c 4
+          docker run -w /opt/tests -v ${{ github.workspace }}:/opt/tests timbru31/node-chrome:22 npx testcafe chrome:headless ./e2e/fixtures --app="npm run serve:ci" -c 4
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
