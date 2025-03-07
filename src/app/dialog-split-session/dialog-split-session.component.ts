@@ -1,4 +1,4 @@
-import { DatePipe, JsonPipe, NgTemplateOutlet } from '@angular/common';
+import { DatePipe, NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
@@ -8,10 +8,7 @@ import {
   MatDialogContent,
   MatDialogTitle,
 } from '@angular/material/dialog';
-import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
 import { MatSlider, MatSliderThumb } from '@angular/material/slider';
-import { DatetimeLocalDirective } from '@app/directives/datetime-local.directive';
 import { DurationComponent } from '@app/directives/duration.component';
 import { TemplateContextTypeDirective } from '@app/directives/template-context-type.directive';
 import { Milliseconds } from '@app/domain/date-time';
@@ -25,30 +22,24 @@ export interface DialogSplitSessionData {
 }
 
 @Component({
-    selector: 'dialog-split-session',
-    templateUrl: './dialog-split-session.component.html',
-    styleUrls: ['./dialog-split-session.component.scss', '../screen-task/mat-table.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        MatDialogTitle,
-        MatDialogContent,
-        MatDialogActions,
-        MatDialogClose,
-        MatButton,
-        MatFormField,
-        MatError,
-        MatLabel,
-        MatInput,
-        DatetimeLocalDirective,
-        JsonPipe,
-        MatSlider,
-        MatSliderThumb,
-        DatePipe,
-        DurationComponent,
-        MapPipe,
-        TemplateContextTypeDirective,
-        NgTemplateOutlet,
-    ]
+  selector: 'dialog-split-session',
+  templateUrl: './dialog-split-session.component.html',
+  styleUrls: ['./dialog-split-session.component.scss', '../screen-task/mat-table.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogActions,
+    MatDialogClose,
+    MatButton,
+    MatSlider,
+    MatSliderThumb,
+    DatePipe,
+    DurationComponent,
+    MapPipe,
+    TemplateContextTypeDirective,
+    NgTemplateOutlet,
+  ],
 })
 export default class DialogSplitSessionComponent {
   static dialogConfig: MatDialogConfig = {

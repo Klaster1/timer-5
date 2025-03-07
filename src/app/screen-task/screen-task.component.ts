@@ -1,6 +1,6 @@
 import { CdkDrag, CdkDragPlaceholder, CdkDropList } from '@angular/cdk/drag-drop';
 import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
-import { AsyncPipe, DatePipe, NgStyle } from '@angular/common';
+import { DatePipe, NgStyle } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, viewChild } from '@angular/core';
 import { MatFabButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -29,33 +29,32 @@ import { VirtualScrollStickyTable } from './sticky.directive';
 import { TypeSafeCdkVirtualForDirective } from './type-safe-virtual-for.directive';
 
 @Component({
-    selector: 'screen-task',
-    templateUrl: './screen-task.component.html',
-    styleUrls: ['./screen-task.component.scss', './mat-table.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        TaskStateIconPipe,
-        MatToolbarModule,
-        MatIcon,
-        MatTooltip,
-        ButtonTaskActionsComponent,
-        ButtonSessionActionsComponent,
-        MapPipe,
-        CdkDrag,
-        CdkDragPlaceholder,
-        CdkDropList,
-        AsyncPipe,
-        DatePipe,
-        RouterLink,
-        MatIconButton,
-        MatFabButton,
-        ScrollingModule,
-        NgStyle,
-        VirtualScrollStickyTable,
-        TypeSafeCdkVirtualForDirective,
-        DurationComponent,
-        ToolbarWidthSyncDirective,
-    ]
+  selector: 'screen-task',
+  templateUrl: './screen-task.component.html',
+  styleUrls: ['./screen-task.component.scss', './mat-table.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    TaskStateIconPipe,
+    MatToolbarModule,
+    MatIcon,
+    MatTooltip,
+    ButtonTaskActionsComponent,
+    ButtonSessionActionsComponent,
+    MapPipe,
+    CdkDrag,
+    CdkDragPlaceholder,
+    CdkDropList,
+    DatePipe,
+    RouterLink,
+    MatIconButton,
+    MatFabButton,
+    ScrollingModule,
+    NgStyle,
+    VirtualScrollStickyTable,
+    TypeSafeCdkVirtualForDirective,
+    DurationComponent,
+    ToolbarWidthSyncDirective,
+  ],
 })
 export default class ScreenTaskComponent {
   public store = inject(AppStore);
