@@ -1,6 +1,5 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { A11yModule } from '@angular/cdk/a11y';
-import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -15,7 +14,6 @@ import { Router } from '@angular/router';
 import { DatetimeLocalDirective } from '@app/directives/datetime-local.directive';
 import { ScaleRange, hasChartData } from '@app/domain/chart';
 import { FilterMatrixParams, encodeFilterParams } from '@app/domain/router';
-import { MapPipe } from '@app/pipes/map.pipe';
 import { AppStore } from '@app/providers/state';
 import { deepEquals } from '@app/utils/assert';
 import { endOfDay } from 'date-fns/endOfDay';
@@ -37,36 +35,34 @@ import { TimelineChartUplotComponent } from './timeline-chart-uplot.component';
 type Wrap<T> = Required<{ [Key in keyof T]: FormControl<T[Key]> }>;
 
 @Component({
-    selector: 'tasks-filter',
-    templateUrl: './tasks-filter.component.html',
-    styleUrls: ['./tasks-filter.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    animations: [
-        trigger('inOutAnimation', [
-            transition(':enter', [style({ opacity: 0 }), animate('300ms ease-out', style({ opacity: 1 }))]),
-        ]),
-    ],
-    imports: [
-        MatIconButton,
-        MatSelect,
-        MatOption,
-        MatIcon,
-        MatMenu,
-        MatMenuTrigger,
-        MatMenuItem,
-        MatFormField,
-        MatSuffix,
-        MatLabel,
-        MatInput,
-        ReactiveFormsModule,
-        A11yModule,
-        MapPipe,
-        TimelineChartUplotComponent,
-        ButtonResetInputComponent,
-        DatetimeLocalDirective,
-        NgTemplateOutlet,
-        MatTooltip,
-    ]
+  selector: 'tasks-filter',
+  templateUrl: './tasks-filter.component.html',
+  styleUrls: ['./tasks-filter.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  animations: [
+    trigger('inOutAnimation', [
+      transition(':enter', [style({ opacity: 0 }), animate('300ms ease-out', style({ opacity: 1 }))]),
+    ]),
+  ],
+  imports: [
+    MatIconButton,
+    MatSelect,
+    MatOption,
+    MatIcon,
+    MatMenu,
+    MatMenuTrigger,
+    MatMenuItem,
+    MatFormField,
+    MatSuffix,
+    MatLabel,
+    MatInput,
+    ReactiveFormsModule,
+    A11yModule,
+    TimelineChartUplotComponent,
+    ButtonResetInputComponent,
+    DatetimeLocalDirective,
+    MatTooltip,
+  ],
 })
 export class TasksFilterComponent {
   private store = inject(AppStore);

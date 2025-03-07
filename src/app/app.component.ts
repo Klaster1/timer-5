@@ -12,7 +12,6 @@ import { ButtonThemeSwitcherComponent } from './button-theme-switcher/button-the
 import { KEYS_GO_ACTIVE, KEYS_GO_ALL, KEYS_GO_FINISHED, hotkey } from './domain/hotkeys';
 import { toStoredTasks } from './domain/storage';
 import { TaskState } from './domain/task';
-import { MapPipe } from './pipes/map.pipe';
 import { TaskStateIconPipe } from './pipes/task-state-icon.pipe';
 import { FaviconService } from './providers/favicon.service';
 import { ImportExportService } from './providers/import-export.service';
@@ -20,30 +19,29 @@ import { RoutedDialogs } from './providers/routed-dialogs';
 import { AppStore } from './providers/state';
 
 @Component({
-    selector: 'app-root',
-    templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        MatDrawerContainer,
-        MatDrawer,
-        MatDrawerContent,
-        MatMenuTrigger,
-        MatMenu,
-        MatMenuItem,
-        MatNavList,
-        MatListItem,
-        MatActionList,
-        MatIcon,
-        MatTooltip,
-        TaskStateIconPipe,
-        MapPipe,
-        DragDropModule,
-        RouterLink,
-        RouterLinkActive,
-        RouterOutlet,
-        ButtonThemeSwitcherComponent,
-    ]
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    MatDrawerContainer,
+    MatDrawer,
+    MatDrawerContent,
+    MatMenuTrigger,
+    MatMenu,
+    MatMenuItem,
+    MatNavList,
+    MatListItem,
+    MatActionList,
+    MatIcon,
+    MatTooltip,
+    TaskStateIconPipe,
+    DragDropModule,
+    RouterLink,
+    RouterLinkActive,
+    RouterOutlet,
+    ButtonThemeSwitcherComponent,
+  ],
 })
 export class AppComponent {
   public keys = inject<HotkeysService>(HotkeysService);
