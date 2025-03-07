@@ -4,7 +4,6 @@ import { isNumber } from '@app/utils/assert';
 
 @Directive({
   selector: '[scrollToIndex]',
-  standalone: true,
 })
 export class ScrollToIndexDirective {
   private viewport = inject(CdkVirtualScrollViewport);
