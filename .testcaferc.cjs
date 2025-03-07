@@ -23,7 +23,7 @@ module.exports = {
     test: {
       before: async (t) => {
         const client = await t.getCurrentCDPSession();
-        client.send('Animation.setPlaybackRate', { playbackRate: 100000 });
+        client.Animation.setPlaybackRate({ playbackRate: 100000 });
         await t.resizeWindow(1920, 1080);
       },
     },
