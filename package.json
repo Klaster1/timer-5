@@ -33,12 +33,12 @@
     "@angular/service-worker": "^19.2.1",
     "@ngrx/signals": "19.0.1",
     "angular2-hotkeys": "^16.0.1",
-    "date-fns": "^3.6.0",
+    "date-fns": "^4.1.0",
     "immer": "^10.1.1",
-    "nanoid": "^5.0.7",
-    "rxjs": "^7.8.1",
-    "tslib": "^2.6.3",
-    "uplot": "^1.6.30"
+    "nanoid": "^5.1.2",
+    "rxjs": "^7.8.2",
+    "tslib": "^2.8.1",
+    "uplot": "^1.6.31"
   },
   "devDependencies": {
     "@angular/build": "^19.2.1",
@@ -47,19 +47,19 @@
     "@angular/language-service": "^19.2.1",
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@klaster_1/testcafe-repeat-test": "^1.0.2",
-    "@napi-rs/canvas": "^0.1.53",
+    "@napi-rs/canvas": "^0.1.68",
     "@types/chrome-remote-interface": "^0.31.14",
-    "@types/node": "^20.14.11",
+    "@types/node": "^22.13.9",
     "angular-testcafe": "^4.0.0",
-    "chrome-remote-interface": "^0.33.2",
-    "gh-pages": "^6.1.1",
-    "local-web-server": "^5.3.4",
-    "looks-same": "^9.0.0",
-    "prettier": "^3.3.3",
-    "prettier-plugin-organize-imports": "^4.0.0",
-    "testcafe": "^3.6.2",
-    "testcafe-reporter-spec-plus": "^2.3.2",
-    "typescript": "^5.5.3"
+    "chrome-remote-interface": "^0.33.3",
+    "gh-pages": "^6.3.0",
+    "local-web-server": "^5.4.0",
+    "looks-same": "^9.0.1",
+    "prettier": "^3.5.3",
+    "prettier-plugin-organize-imports": "^4.1.0",
+    "testcafe": "^3.7.2",
+    "testcafe-reporter-spec-plus": "^2.3.5",
+    "typescript": "^5.8.2"
   },
   "engines": {
     "node": ">=20.14.0"
