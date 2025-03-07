@@ -16,7 +16,7 @@ test('Name', async (t) => {
 
   await t.expect(await comparePageScreenshot('empty filter')).eql(VISUAL_REGRESSION_OK);
   // Fill in the "Name filter", in lowercase
-  await t.typeText(screenTasks.filter.name.input, 'game');
+  await t.typeText(screenTasks.filter.name.input, 'game', { paste: true });
   // Assert current task is still opened
   await t.expect(screenTask.name.textContent).eql('BAZ');
   // Assert the displayed tasks match the filter
