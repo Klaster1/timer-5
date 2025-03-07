@@ -3,7 +3,7 @@ import { existsSync } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
 import { fixture, Selector, test } from 'testcafe';
 import { app } from '../e2e/page-objects/app';
-import { getCdpClient, mockDate } from '../e2e/utils';
+import { mockDate } from '../e2e/utils';
 
 const TEST_DATA_URL =
   'https://gist.github.com/Klaster1/a456beaf5384924fa960790160286d8a/raw/83483f6179dfd13a63eca7afb62b5571ba6bf6e9/games.json';
@@ -28,7 +28,7 @@ fixture`Promo`.beforeEach(async (t) => {
 });
 
 test('Readme screenshot', async (t) => {
-  const client = await getCdpClient();
+  const client = await t.getCurrentCDPSession();
   const screenshot = async (theme: 'light' | 'dark') => {
     await t.click(app.buttonSwitchTheme);
     await t.click(app.buttonTheme.withText(theme === 'dark' ? 'Dark' : 'Light'));
@@ -37,7 +37,7 @@ test('Readme screenshot', async (t) => {
 
     const scaling = 0.5;
     await t.resizeWindow(2152 * scaling, 1278 * scaling);
-    const screenshot = await client.send('Page.captureScreenshot', {
+    const screenshot = await client.Page.captureScreenshot({
       format: 'png',
     });
     return Buffer.from(screenshot.data, 'base64');
@@ -81,8 +81,8 @@ test('Open graph', async (t) => {
   await t.resizeWindow(width * scale - padding * 2 * scale, height * scale - padding * 2 * scale);
   await t.click(Selector('body'), { offsetX: 0, offsetY: 0 });
   await t.click(Selector('body'), { offsetX: 0, offsetY: 0 });
-  const client = await getCdpClient();
-  const screenshot = await client.send('Page.captureScreenshot', {
+  const client = await t.getCurrentCDPSession();
+  const screenshot = await client.Page.captureScreenshot({
     format: 'png',
   });
 
