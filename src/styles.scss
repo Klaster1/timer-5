@@ -41,23 +41,25 @@ a {
 }
 
 @mixin overrides() {
-  --mat-sidenav-container-width: 65px;
+  & {
   --mat-icon-color: var(--mat-form-field-leading-icon-color);
   --mat-sidenav-container-shape: 0;
   --mat-list-active-indicator-shape: 0;
   --mat-toolbar-container-background-color: var(--mdc-plain-tooltip-supporting-text-color);
   --mat-sidenav-container-background-color: var(--mdc-plain-tooltip-supporting-text-color);
   --mat-table-row-item-outline-color: var(--mat-sidenav-container-background-color);
+  }
 }
 
 :root {
   @include used-components-theme(theme.$light-theme);
   @include overrides();
 
-  --scrollbar-color: var(--mat-menu-divider-color);
+  & {
   --scrollbar-active-color: var(--mat-option-selected-state-layer-color);
   --scrollbar-radius: 4px;
   --timer-logo-color: #82bd17;
+  }
 }
 :root:has(.theme-dark) {
   @include used-components-colors(theme.$dark-theme);
