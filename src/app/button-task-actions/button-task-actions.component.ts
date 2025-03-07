@@ -10,23 +10,22 @@ import { DialogLinkDirective } from '@app/providers/routed-dialogs';
 import { AppStore } from '@app/providers/state';
 
 @Component({
-  templateUrl: './button-task-actions.component.html',
-  styleUrls: ['./button-task-actions.component.scss'],
-  selector: 'button-task-actions',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    MatMenu,
-    MatMenuTrigger,
-    MatMenuContent,
-    MatMenuItem,
-    MatIconButton,
-    MatIcon,
-    TaskStateIconPipe,
-    TaskStatePipe,
-    RouterLink,
-    DialogLinkDirective,
-  ],
+    templateUrl: './button-task-actions.component.html',
+    styleUrls: ['./button-task-actions.component.scss'],
+    selector: 'button-task-actions',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        MatMenu,
+        MatMenuTrigger,
+        MatMenuContent,
+        MatMenuItem,
+        MatIconButton,
+        MatIcon,
+        TaskStateIconPipe,
+        TaskStatePipe,
+        RouterLink,
+        DialogLinkDirective,
+    ]
 })
 export class ButtonTaskActionsComponent {
   private store = inject(AppStore);

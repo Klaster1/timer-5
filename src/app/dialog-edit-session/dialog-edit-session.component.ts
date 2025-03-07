@@ -10,26 +10,25 @@ import { AppStore } from '@app/providers/state';
 import { option } from '@app/utils/assert';
 
 @Component({
-  selector: 'dialog-edit-session',
-  templateUrl: './dialog-edit-session.component.html',
-  styleUrl: './dialog-edit-session.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    MatDialogTitle,
-    MatDialogContent,
-    MatDialogActions,
-    MatDialogClose,
-    MatButton,
-    MatFormField,
-    MatError,
-    MatLabel,
-    MatInput,
-    MatSuffix,
-    ReactiveFormsModule,
-    DatetimeLocalDirective,
-    ButtonResetInputComponent,
-  ],
+    selector: 'dialog-edit-session',
+    templateUrl: './dialog-edit-session.component.html',
+    styleUrl: './dialog-edit-session.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        MatDialogTitle,
+        MatDialogContent,
+        MatDialogActions,
+        MatDialogClose,
+        MatButton,
+        MatFormField,
+        MatError,
+        MatLabel,
+        MatInput,
+        MatSuffix,
+        ReactiveFormsModule,
+        DatetimeLocalDirective,
+        ButtonResetInputComponent,
+    ]
 })
 export default class DialogEditSessionComponent {
   private state = inject(AppStore);

@@ -7,23 +7,22 @@ import { MatInput } from '@angular/material/input';
 import { AppStore } from '@app/providers/state';
 
 @Component({
-  selector: 'dialog-create-task',
-  templateUrl: './dialog-create-task.component.html',
-  styleUrl: './dialog-create-task.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    MatDialogTitle,
-    MatDialogContent,
-    MatDialogActions,
-    MatDialogClose,
-    MatButton,
-    MatFormField,
-    MatLabel,
-    MatError,
-    MatInput,
-    ReactiveFormsModule,
-  ],
+    selector: 'dialog-create-task',
+    templateUrl: './dialog-create-task.component.html',
+    styleUrl: './dialog-create-task.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        MatDialogTitle,
+        MatDialogContent,
+        MatDialogActions,
+        MatDialogClose,
+        MatButton,
+        MatFormField,
+        MatLabel,
+        MatError,
+        MatInput,
+        ReactiveFormsModule,
+    ]
 })
 export default class DialogCreateTaskComponent {
   private state = inject(AppStore);

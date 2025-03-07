@@ -7,23 +7,22 @@ import { MatInput } from '@angular/material/input';
 import { AppStore } from '@app/providers/state';
 
 @Component({
-  selector: 'dialog-rename-task',
-  templateUrl: './dialog-rename-task.component.html',
-  styleUrl: './dialog-rename-task.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    MatDialogTitle,
-    MatDialogContent,
-    MatDialogActions,
-    MatDialogClose,
-    MatButton,
-    MatFormField,
-    MatLabel,
-    MatError,
-    MatInput,
-    ReactiveFormsModule,
-  ],
+    selector: 'dialog-rename-task',
+    templateUrl: './dialog-rename-task.component.html',
+    styleUrl: './dialog-rename-task.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        MatDialogTitle,
+        MatDialogContent,
+        MatDialogActions,
+        MatDialogClose,
+        MatButton,
+        MatFormField,
+        MatLabel,
+        MatError,
+        MatInput,
+        ReactiveFormsModule,
+    ]
 })
 export default class DialogRenameTaskComponent {
   private state = inject(AppStore);

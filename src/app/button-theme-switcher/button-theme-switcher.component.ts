@@ -9,12 +9,11 @@ import { deepEquals } from '@app/utils/assert';
 type ThemeOption = { theme: Theme; label: string; icon: string };
 
 @Component({
-  selector: 'button-theme-switcher',
-  templateUrl: './button-theme-switcher.component.html',
-  styleUrl: './button-theme-switcher.component.scss',
-  standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatTooltip, MatIcon, MatListItem, MatMenuModule],
+    selector: 'button-theme-switcher',
+    templateUrl: './button-theme-switcher.component.html',
+    styleUrl: './button-theme-switcher.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [MatTooltip, MatIcon, MatListItem, MatMenuModule]
 })
 export class ButtonThemeSwitcherComponent {
   public store = inject(AppStore);
