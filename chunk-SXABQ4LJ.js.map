@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["src/app/pipes/map.pipe.ts"],
-  "sourcesContent": ["import { Pipe, PipeTransform } from '@angular/core';\n\n@Pipe({\n  name: 'map',\n  standalone: true,\n})\nexport class MapPipe implements PipeTransform {\n  transform<Value, Args, Result>(value: Value, fn: (value: Value, ...rest: Args[]) => Result, ...rest: Args[]): Result {\n    return fn(value, ...rest);\n  }\n}\n"],
-  "mappings": "yCAMA,IAAaA,GAAO,IAAA,CAAd,MAAOA,CAAO,CAClBC,UAA+BC,EAAcC,KAAkDC,EAAY,CACzG,OAAOD,EAAGD,EAAO,GAAGE,CAAI,CAC1B,4CAHWJ,EAAO,uCAAPA,EAAOK,KAAA,GAAAC,WAAA,EAAA,CAAA,SAAPN,CAAO,GAAA",
-  "names": ["MapPipe", "transform", "value", "fn", "rest", "pure", "standalone"]
-}
