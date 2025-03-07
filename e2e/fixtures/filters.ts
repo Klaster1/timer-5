@@ -1,3 +1,4 @@
+import { Selector } from 'testcafe';
 import { screenTask } from '../page-objects/screen-task';
 import { screenTasks } from '../page-objects/screen-tasks';
 import { getLocationSearch, reload } from '../utils';
@@ -14,6 +15,7 @@ test('Name', async (t) => {
   // Send "ctrl+f" keys
   await t.pressKey('ctrl+f');
 
+  await t.expect(Selector('table.u-legend').offsetWidth).gt(100, { timeout: 30_000 }); // Wait for chart to load, unstable in container otherwise
   await t.expect(await comparePageScreenshot('empty filter')).eql(VISUAL_REGRESSION_OK);
   // Fill in the "Name filter", in lowercase
   await t.typeText(screenTasks.filter.name.input, 'game', { paste: true });
