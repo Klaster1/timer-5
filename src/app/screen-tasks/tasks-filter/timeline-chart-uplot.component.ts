@@ -18,7 +18,6 @@ import { format } from 'date-fns/format';
 import { millisecondsToSeconds } from 'date-fns/millisecondsToSeconds';
 import { secondsToMilliseconds } from 'date-fns/secondsToMilliseconds';
 import uPlot, { AlignedData, Plugin } from 'uplot';
-import 'uplot/dist/uPlot.min.css';
 
 const barChartPlugin = (params: { colors: (string | null)[]; minRangeInMs: Milliseconds }): Plugin => {
   const minRangeInSeconds: Seconds = millisecondsToSeconds(params.minRangeInMs);
@@ -77,7 +76,7 @@ const barChartPlugin = (params: { colors: (string | null)[]; minRangeInMs: Milli
 @Component({
   selector: 'timeline-chart-uplot',
   template: ``,
-  styleUrl: '/node_modules/uplot/dist/uPlot.min.css',
+  styleUrl: '../../../../node_modules/uplot/dist/uPlot.min.css',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [

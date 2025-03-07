@@ -13,9 +13,6 @@ test('Name', async (t) => {
   await screenTasks.addTask('BAZ');
   // Send "ctrl+f" keys
   await t.pressKey('ctrl+f');
-  // Reload and open again so uPlot is loaded
-  await reload();
-  await t.pressKey('ctrl+f');
 
   await t.expect(await comparePageScreenshot('empty filter')).eql(VISUAL_REGRESSION_OK);
   // Fill in the "Name filter", in lowercase
