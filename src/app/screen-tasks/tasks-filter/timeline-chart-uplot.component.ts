@@ -18,6 +18,7 @@ import { format } from 'date-fns/format';
 import { millisecondsToSeconds } from 'date-fns/millisecondsToSeconds';
 import { secondsToMilliseconds } from 'date-fns/secondsToMilliseconds';
 import uPlot, { AlignedData, Plugin } from 'uplot';
+import 'uplot/dist/uPlot.min.css';
 
 const barChartPlugin = (params: { colors: (string | null)[]; minRangeInMs: Milliseconds }): Plugin => {
   const minRangeInSeconds: Seconds = millisecondsToSeconds(params.minRangeInMs);
@@ -142,27 +143,29 @@ export class TimelineChartUplotComponent {
   private uplot?: uPlot;
   private readonly headerHeight = 31;
   private resizeObserver?: ResizeObserver;
-  constructor() {
-    effect(() => {
-      this.store.theme();
+  private updateColors = () => {
+    this.store.theme();
 
-      const stroke = window.getComputedStyle(this.elementRef.nativeElement).color;
-      const primaryColor = window
-        .getComputedStyle(this.elementRef.nativeElement)
-        .getPropertyValue('--mdc-outlined-text-field-focus-label-text-color');
-      const secondaryColor = window
-        .getComputedStyle(this.elementRef.nativeElement)
-        .getPropertyValue('--mdc-filled-text-field-container-color');
+    const stroke = window.getComputedStyle(this.elementRef.nativeElement).color;
+    const primaryColor = window
+      .getComputedStyle(this.elementRef.nativeElement)
+      .getPropertyValue('--mdc-outlined-text-field-focus-label-text-color');
+    const secondaryColor = window
+      .getComputedStyle(this.elementRef.nativeElement)
+      .getPropertyValue('--mdc-filled-text-field-container-color');
 
-      this.uplot?.batch((uPlot: uPlot) => {
-        uPlot?.axes.forEach((a) => (a.stroke = () => stroke));
-        uPlot?.series.forEach((s, i) => {
-          if (i === 1) s.fill = () => primaryColor;
-          if (i === 2) s.fill = () => secondaryColor;
-        });
-        uPlot?.redraw(true);
+    this.uplot?.batch((uPlot: uPlot) => {
+      uPlot?.axes.forEach((a) => (a.stroke = () => stroke));
+      uPlot?.series.forEach((s, i) => {
+        if (i === 1) s.fill = () => primaryColor;
+        if (i === 2) s.fill = () => secondaryColor;
       });
+      uPlot?.redraw(true);
     });
+  };
+  constructor() {
+    effect(this.updateColors);
+
     effect(() => {
       const chartData = this.chartData();
       if (chartData) {
@@ -273,6 +276,7 @@ export class TimelineChartUplotComponent {
         this.chartData(),
         this.elementRef.nativeElement,
       );
+      setTimeout(this.updateColors);
     });
   }
   getLegendValue(value: number) {
