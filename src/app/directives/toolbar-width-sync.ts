@@ -3,7 +3,6 @@ import { DestroyRef, Directive, ElementRef, afterNextRender, inject, input } fro
 
 @Directive({
   selector: 'mat-toolbar',
-  standalone: true,
 })
 export class ToolbarWidthSyncDirective {
   public syncWidthTo = input<CdkVirtualScrollViewport>();

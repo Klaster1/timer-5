@@ -105,7 +105,6 @@ const barChartPlugin = (params: { colors: (string | null)[]; minRangeInMs: Milli
       }
     `,
   ],
-  standalone: true,
 })
 export class TimelineChartUplotComponent {
   private elementRef = inject<ElementRef<HTMLElement>>(ElementRef);

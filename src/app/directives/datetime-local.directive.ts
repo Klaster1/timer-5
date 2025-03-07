@@ -23,7 +23,6 @@ const toDateTimeLocalValue = (date: Date): string => {
       multi: true,
     },
   ],
-  standalone: true,
 })
 export class DatetimeLocalDirective implements ControlValueAccessor {
   private _elementRef = inject<ElementRef<HTMLInputElement>>(ElementRef);

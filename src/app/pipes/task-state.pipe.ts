@@ -4,7 +4,6 @@ import { assertNever } from '@app/utils/assert';
 
 @Pipe({
   name: 'taskState',
-  standalone: true,
 })
 export class TaskStatePipe implements PipeTransform {
   transform(value?: RouteTaskState) {

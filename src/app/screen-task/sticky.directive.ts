@@ -2,7 +2,6 @@ import { DestroyRef, Directive, ElementRef, afterNextRender, inject } from '@ang
 
 @Directive({
   selector: '[sticky]',
-  standalone: true,
 })
 export class VirtualScrollStickyTable {
   private elementRef = inject<ElementRef<HTMLElement>>(ElementRef);

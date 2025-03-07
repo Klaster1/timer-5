@@ -1,6 +1,6 @@
 import { Directive, input } from '@angular/core';
 
-@Directive({ selector: 'ng-template[contextType]', standalone: true })
+@Directive({ selector: 'ng-template[contextType]' })
 export class TemplateContextTypeDirective<T> {
   contextType = input.required<T>();
 

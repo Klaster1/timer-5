@@ -22,7 +22,6 @@ const toDialogRoute = (route: any[]): any[] => ['/', { outlets: { [DIALOG_OUTLET
 @Directive({
   selector: '[dialogLink]',
   hostDirectives: [RouterLink],
-  standalone: true,
 })
 export class DialogLinkDirective {
   public dialogLink = input.required<any[]>();

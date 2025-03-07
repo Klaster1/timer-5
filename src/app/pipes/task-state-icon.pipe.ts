@@ -4,7 +4,6 @@ import { assertNever } from '@app/utils/assert';
 
 @Pipe({
   name: 'taskStateIcon',
-  standalone: true,
 })
 export class TaskStateIconPipe implements PipeTransform {
   transform(stateOrTask?: Task | TaskState) {

@@ -3,7 +3,6 @@ import { Directive, effect, inject, input } from '@angular/core';
 
 @Directive({
   selector: '[checkViewportSizeWhenValueChanges]',
-  standalone: true,
 })
 export class CheckViewportSizeWhenValueChangesDirective {
   private viewport = inject(CdkVirtualScrollViewport);
