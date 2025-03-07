@@ -17,7 +17,7 @@ import {
 } from '@app/domain/task';
 import { deepEquals } from '@app/utils/assert';
 import {
-  StateSignal,
+  WritableStateSource,
   patchState,
   signalStore,
   signalStoreFeature,
@@ -31,7 +31,7 @@ import { RoutedDialogs } from './routed-dialogs';
 
 export type NormalizedTasks = { [id: string]: Task };
 
-const updateState = <State extends object>(store: StateSignal<State>, recipe: (draft: Draft<State>) => any) => {
+const updateState = <State extends object>(store: WritableStateSource<State>, recipe: (draft: Draft<State>) => any) => {
   patchState(store, (state) => produce(state, recipe));
 };
 
@@ -173,7 +173,7 @@ const initialState: TasksState = {
 };
 
 export const AppStore = signalStore(
-  { providedIn: 'root' },
+  { providedIn: 'root', protectedState: false },
   withTheme(),
   withRouter(),
   withState<TasksState>(initialState),
