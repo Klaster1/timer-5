@@ -37,37 +37,36 @@ import { TimelineChartUplotComponent } from './timeline-chart-uplot.component';
 type Wrap<T> = Required<{ [Key in keyof T]: FormControl<T[Key]> }>;
 
 @Component({
-  selector: 'tasks-filter',
-  templateUrl: './tasks-filter.component.html',
-  styleUrls: ['./tasks-filter.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [
-    trigger('inOutAnimation', [
-      transition(':enter', [style({ opacity: 0 }), animate('300ms ease-out', style({ opacity: 1 }))]),
-    ]),
-  ],
-  standalone: true,
-  imports: [
-    MatIconButton,
-    MatSelect,
-    MatOption,
-    MatIcon,
-    MatMenu,
-    MatMenuTrigger,
-    MatMenuItem,
-    MatFormField,
-    MatSuffix,
-    MatLabel,
-    MatInput,
-    ReactiveFormsModule,
-    A11yModule,
-    MapPipe,
-    TimelineChartUplotComponent,
-    ButtonResetInputComponent,
-    DatetimeLocalDirective,
-    NgTemplateOutlet,
-    MatTooltip,
-  ],
+    selector: 'tasks-filter',
+    templateUrl: './tasks-filter.component.html',
+    styleUrls: ['./tasks-filter.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    animations: [
+        trigger('inOutAnimation', [
+            transition(':enter', [style({ opacity: 0 }), animate('300ms ease-out', style({ opacity: 1 }))]),
+        ]),
+    ],
+    imports: [
+        MatIconButton,
+        MatSelect,
+        MatOption,
+        MatIcon,
+        MatMenu,
+        MatMenuTrigger,
+        MatMenuItem,
+        MatFormField,
+        MatSuffix,
+        MatLabel,
+        MatInput,
+        ReactiveFormsModule,
+        A11yModule,
+        MapPipe,
+        TimelineChartUplotComponent,
+        ButtonResetInputComponent,
+        DatetimeLocalDirective,
+        NgTemplateOutlet,
+        MatTooltip,
+    ]
 })
 export class TasksFilterComponent {
   private store = inject(AppStore);

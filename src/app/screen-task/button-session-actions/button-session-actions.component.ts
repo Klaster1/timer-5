@@ -9,21 +9,20 @@ import { DialogLinkDirective } from '@app/providers/routed-dialogs';
 import { AppStore } from '@app/providers/state';
 
 @Component({
-  templateUrl: './button-session-actions.component.html',
-  styleUrls: ['./button-session-actions.component.scss'],
-  selector: 'button-session-actions',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [
-    MatMenu,
-    MatMenuContent,
-    MatMenuItem,
-    MatMenuTrigger,
-    MatIconButton,
-    MatIcon,
-    RouterLink,
-    DialogLinkDirective,
-  ],
+    templateUrl: './button-session-actions.component.html',
+    styleUrls: ['./button-session-actions.component.scss'],
+    selector: 'button-session-actions',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [
+        MatMenu,
+        MatMenuContent,
+        MatMenuItem,
+        MatMenuTrigger,
+        MatIconButton,
+        MatIcon,
+        RouterLink,
+        DialogLinkDirective,
+    ]
 })
 export class ButtonSessionActionsComponent {
   private store = inject(AppStore);

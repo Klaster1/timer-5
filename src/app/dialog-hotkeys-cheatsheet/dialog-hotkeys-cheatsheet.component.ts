@@ -12,12 +12,11 @@ import { hasCyrillics } from '@app/utils/string';
 import { HotkeysService } from 'angular2-hotkeys';
 
 @Component({
-  selector: 'dialog-hotkeys-cheatsheet',
-  templateUrl: './dialog-hotkeys-cheatsheet.component.html',
-  styleUrls: ['./dialog-hotkeys-cheatsheet.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
-  imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MapPipe],
+    selector: 'dialog-hotkeys-cheatsheet',
+    templateUrl: './dialog-hotkeys-cheatsheet.component.html',
+    styleUrls: ['./dialog-hotkeys-cheatsheet.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MapPipe]
 })
 export default class DialogHotkeysCheatsheetComponent {
   static dialogConfig: MatDialogConfig = { width: undefined };
