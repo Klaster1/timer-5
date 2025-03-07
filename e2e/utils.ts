@@ -1,11 +1,9 @@
-import type remoteChrome from 'chrome-remote-interface';
 import { ClientFunction, Selector, t } from 'testcafe';
 
 export const e2e = (id: string) => Selector(`[data-e2e="${id}"]`);
 export const getLocationPathname = ClientFunction(() => window.location.pathname);
 export const getLocationSearch = ClientFunction(() => window.location.search);
-export const getCdpClient = () => t.getCurrentCDPSession().then((client) => client as remoteChrome.Client);
-export const reload = async () => getCdpClient().then((client) => client.send('Page.reload', { ignoreCache: true }));
+export const reload = async () => t.getCurrentCDPSession().then((client) => client.Page.reload({ ignoreCache: true }));
 
 // Date mocks
 

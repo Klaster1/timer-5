@@ -2,7 +2,7 @@ import { Selector } from 'testcafe';
 import { app } from '../page-objects/app';
 import { dialogHotkeyCheatsheet } from '../page-objects/dialog-hotkeys-cheatsheet';
 import { screenTasks } from '../page-objects/screen-tasks';
-import { getCdpClient, reload } from '../utils';
+import { reload } from '../utils';
 import { VISUAL_REGRESSION_OK, comparePageScreenshot } from '../visual-regression';
 
 fixture('General');
@@ -42,15 +42,15 @@ test('Theme switcher', async (t) => {
   await t.click(app.buttonSwitchTheme);
   await t.click(app.buttonTheme.withText('System'));
   // Override the system theme to dark
-  const client = await getCdpClient();
-  await client.send('Emulation.setEmulatedMedia', {
+  const client = await t.getCurrentCDPSession();
+  await client.Emulation.setEmulatedMedia({
     media: 'screen',
     features: [{ name: 'prefers-color-scheme', value: 'dark' }],
   });
   // Assert the theme is applied
   await t.expect(await comparePageScreenshot('system theme dark', { theme: 'preserve' })).eql(VISUAL_REGRESSION_OK);
   // Override the system theme to light
-  await client.send('Emulation.setEmulatedMedia', {
+  await client.Emulation.setEmulatedMedia({
     media: 'screen',
     features: [{ name: 'prefers-color-scheme', value: 'light' }],
   });
