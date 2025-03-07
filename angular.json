@@ -58,6 +58,7 @@
           },
           "defaultConfiguration": "development",
           "options": {
+            "allowedHosts": ["localhost", "0.0.0.0", "host.docker.internal"],
             "host": "0.0.0.0"
           }
         },
