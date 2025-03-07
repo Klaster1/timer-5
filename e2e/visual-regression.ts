@@ -4,7 +4,6 @@ import { existsSync } from 'node:fs';
 import { mkdir, unlink, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { t } from 'testcafe';
-import { getCdpClient } from './utils';
 const os = require('os');
 
 export const VISUAL_REGRESSION_OK = { match: true } as const;
@@ -45,8 +44,8 @@ const prepare = async (colorScheme: ColorScheme) => {
 };
 
 const captureScreenshot = async (path: string) => {
-  const client = await getCdpClient();
-  const screenshot = await client.send('Page.captureScreenshot', { format: 'png' });
+  const client = await t.getCurrentCDPSession();
+  const screenshot = await client.Page.captureScreenshot({ format: 'png' });
   await mkdir(dirname(path), { recursive: true });
   return Buffer.from(screenshot.data, 'base64');
 };
@@ -82,8 +81,8 @@ const maskImage = async (source: string | Buffer, bounds: Rect[]) => {
 
 const forceTheme = async (colorScheme: ColorScheme) => {
   if (colorScheme === 'preserve') return () => {};
-  const client = await getCdpClient();
-  await client.send('Emulation.setEmulatedMedia', {
+  const client = await t.getCurrentCDPSession();
+  await client.Emulation.setEmulatedMedia({
     media: 'screen',
     features: [
       {
@@ -93,7 +92,7 @@ const forceTheme = async (colorScheme: ColorScheme) => {
     ],
   });
   return async () => {
-    await client.send('Emulation.setEmulatedMedia', {
+    await client.Emulation.setEmulatedMedia({
       media: 'screen',
       features: [
         {
