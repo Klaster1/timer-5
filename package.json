@@ -7,7 +7,6 @@
     "start": "ng serve",
     "build": "ng build --configuration production && node ./scripts/gh-pages-before-add.js",
     "serve:ci": "npx local-web-server --port 4200 --directory ./dist --spa timer-5/404.html",
-    "vr-review": "node ./scripts/visual-regression-review.mjs",
     "docker:build": "docker build -t timer-5-tests-ubuntu .",
     "e2e": "testcafe chromium:headless -c 5",
     "e2e-vr-create": "$env:VR_MODE=\"create\"; npm run e2e",
