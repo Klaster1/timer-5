@@ -21,15 +21,6 @@
         }
       }
       @if (tasks.length) {
-        <button
-          [dialogLink]="['tasks', 'create']"
-          mat-fab
-          color="accent"
-          data-e2e="button-add-task"
-          matTooltip="Create a task"
-        >
-          <mat-icon svgIcon="add"></mat-icon>
-        </button>
         <cdk-virtual-scroll-viewport
           #scroll
           [itemSize]="48"
@@ -63,6 +54,15 @@
             </a>
           </mat-nav-list>
         </cdk-virtual-scroll-viewport>
+        <button
+          [dialogLink]="['tasks', 'create']"
+          mat-fab
+          color="accent"
+          data-e2e="button-add-task"
+          matTooltip="Create a task"
+        >
+          <mat-icon svgIcon="add"></mat-icon>
+        </button>
       } @else {
         @defer {
           @if (searchOpened() === false) {
