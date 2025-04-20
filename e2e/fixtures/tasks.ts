@@ -77,6 +77,16 @@ test('Starting and stopping the task', async (t) => {
   await t.hover(screenTask.buttonStart);
   await t.expect(tooltip.textContent).eql('Start');
   await t.expect(await comparePageScreenshot('start tooltip')).eql(VISUAL_REGRESSION_OK);
+  // Shrink window down to single panel layout, take a screenshot - "Create task" button should not be visible and "Start task" should
+  (await t.getCurrentCDPSession()).Emulation.setDeviceMetricsOverride({
+    width: 800,
+    height: 800,
+    mobile: true,
+    deviceScaleFactor: 1,
+    screenOrientation: { angle: 0, type: 'portraitPrimary' },
+  });
+  await t.expect(await comparePageScreenshot('single panel')).eql(VISUAL_REGRESSION_OK);
+  await (await t.getCurrentCDPSession()).Emulation.clearDeviceMetricsOverride();
   // Start a task with the "Start" button
   await t.click(screenTask.buttonStart);
   // Assert the task is marked as active/running in the task list item and task view title
