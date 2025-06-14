@@ -100,4 +100,3 @@ export default class DialogSplitSessionComponent {
     this.state.splitSession(result);
   }
 }
-

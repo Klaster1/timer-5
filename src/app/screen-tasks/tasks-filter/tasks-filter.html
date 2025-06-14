@@ -64,18 +64,16 @@
   <button mat-menu-item (click)="setThisYear()">This year</button>
   <button mat-menu-item (click)="setPreviousYear()">Previous year</button>
 </mat-menu>
-@if (dataRange(); as dataRange) {
-  @defer {
-    <timeline-chart-uplot
-      [@inOutAnimation]
-      [chartData]="dataRange.data"
-      barWidth="day"
-      [range]="dataRange.range"
-      (rangeChange)="onChartRangeChange($event)"
-    ></timeline-chart-uplot>
-  }
-} @else {
-  <timeline-chart-uplot [chartData]="[[], []]" barWidth="day"></timeline-chart-uplot>
+@if (dataRange(); as dataRange) { @defer {
+<timeline-chart-uplot
+  [@inOutAnimation]
+  [chartData]="dataRange.data"
+  barWidth="day"
+  [range]="dataRange.range"
+  (rangeChange)="onChartRangeChange($event)"
+></timeline-chart-uplot>
+} } @else {
+<timeline-chart-uplot [chartData]="[[], []]" barWidth="day"></timeline-chart-uplot>
 }
 
 <svg style="display: none">

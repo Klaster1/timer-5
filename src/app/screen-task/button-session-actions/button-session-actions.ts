@@ -9,20 +9,20 @@ import { DialogLinkDirective } from '@app/providers/routed-dialogs';
 import { AppStore } from '@app/providers/state';
 
 @Component({
-    templateUrl: './button-session-actions.html',
-    styleUrls: ['./button-session-actions.scss'],
-    selector: 'button-session-actions',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        MatMenu,
-        MatMenuContent,
-        MatMenuItem,
-        MatMenuTrigger,
-        MatIconButton,
-        MatIcon,
-        RouterLink,
-        DialogLinkDirective,
-    ]
+  templateUrl: './button-session-actions.html',
+  styleUrls: ['./button-session-actions.scss'],
+  selector: 'button-session-actions',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    MatMenu,
+    MatMenuContent,
+    MatMenuItem,
+    MatMenuTrigger,
+    MatIconButton,
+    MatIcon,
+    RouterLink,
+    DialogLinkDirective,
+  ],
 })
 export class ButtonSessionActionsComponent {
   private store = inject(AppStore);
@@ -43,4 +43,3 @@ export class ButtonSessionActionsComponent {
     return encodeFilterParams({ to: new Date(this.session()?.end ?? new Date()) });
   }
 }
-

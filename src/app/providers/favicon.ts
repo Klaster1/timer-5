@@ -1,5 +1,4 @@
-
-import { Injectable, inject, DOCUMENT } from '@angular/core';
+import { DOCUMENT, Injectable, inject } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class FaviconService {
