@@ -148,10 +148,10 @@ export class TimelineChartUplotComponent {
     const stroke = window.getComputedStyle(this.elementRef.nativeElement).color;
     const primaryColor = window
       .getComputedStyle(this.elementRef.nativeElement)
-      .getPropertyValue('--mdc-outlined-text-field-focus-label-text-color');
+      .getPropertyValue('--mat-form-field-outlined-focus-label-text-color');
     const secondaryColor = window
       .getComputedStyle(this.elementRef.nativeElement)
-      .getPropertyValue('--mdc-filled-text-field-container-color');
+      .getPropertyValue('--mat-form-field-filled-container-color');
 
     this.uplot?.batch((uPlot: uPlot) => {
       uPlot?.axes.forEach((a) => (a.stroke = () => stroke));
