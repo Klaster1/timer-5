@@ -6,7 +6,7 @@ import {
   importProvidersFrom,
   inject,
   isDevMode,
-  provideExperimentalZonelessChangeDetection,
+  provideZonelessChangeDetection,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogConfig } from '@angular/material/dialog';
@@ -33,7 +33,7 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideExperimentalZonelessChangeDetection(),
+    provideZonelessChangeDetection(),
     provideAnimations(),
     importProvidersFrom(HotkeyModule.forRoot({ cheatSheetCloseEsc: false, disableCheatSheet: false })),
     provideRouter(
