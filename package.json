@@ -2,6 +2,16 @@
   "name": "timer",
   "version": "5.0.0",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Klaster1/timer-5.git"
+  },
+  "author": {
+    "name": "Klaster_1",
+    "email": "klaster1@gmail.com"
+  },
+  "license": "MIT",
+  "homepage": "https://klaster1.github.io/timer-5",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
