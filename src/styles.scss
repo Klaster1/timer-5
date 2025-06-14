@@ -65,6 +65,10 @@ a {
 :root:has(.theme-dark) {
   @include used-components-colors(theme.$dark-theme);
   @include overrides();
+
+  & {
+    color-scheme: dark;
+  }
 }
 
 html,
@@ -81,25 +85,6 @@ body {
 
 .ng-scroll-content {
   max-width: 100%;
-}
-
-// Chrome custom scrollbar
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background-color: inherit;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: var(--scrollbar-color);
-  border-radius: var(--scrollbar-radius);
-
-  &:active {
-    background-color: var(--scrollbar-active-color);
-  }
 }
 
 .list-centered-icons {
