@@ -47,7 +47,7 @@
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@klaster_1/testcafe-repeat-test": "^1.0.2",
     "@napi-rs/canvas": "^0.1.71",
-    "@types/node": "^22.13.9",
+    "@types/node": "^24.0.1",
     "angular-testcafe": "^4.0.0",
     "express": "^4.21.2",
     "gh-pages": "^6.3.0",
