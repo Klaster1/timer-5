@@ -4,23 +4,23 @@ import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
-    selector: 'button-reset-input-control',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    template: `
+  selector: 'button-reset-input-control',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
     @if (showButton()) {
       <button mat-icon-button (click)="reset.emit()" matTooltip="Reset value" type="button">
         <mat-icon svgIcon="close_small"></mat-icon>
       </button>
     }
   `,
-    styles: [
-        `
+  styles: [
+    `
       :host {
         display: contents;
       }
     `,
-    ],
-    imports: [MatIconButton, MatIcon, MatTooltip]
+  ],
+  imports: [MatIconButton, MatIcon, MatTooltip],
 })
 export class ButtonResetInputComponent<T> {
   value = input<T>();

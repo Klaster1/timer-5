@@ -1,59 +1,59 @@
 @if (task(); as task) {
+<button
+  type="button"
+  mat-icon-button
+  [matMenuTriggerFor]="menu"
+  data-e2e="button-task-actions__trigger"
+  (click)="$event.stopPropagation(); $event.preventDefault()"
+>
+  <mat-icon svgIcon="more_vert"></mat-icon>
+</button>
+<mat-menu #menu="matMenu">
+  <ng-template matMenuContent>
+    <button mat-menu-item [mat-menu-trigger-for]="statuses" data-e2e="button-task-actions__selector-state">
+      <mat-icon [svgIcon]="task.state | taskStateIcon"></mat-icon>
+      State: {{ task.state | taskState }}
+    </button>
+    <a
+      mat-menu-item
+      type="button"
+      [dialogLink]="['tasks', task.id, 'rename']"
+      data-e2e="button-task-actions__button-rename"
+    >
+      Rename
+    </a>
+    <button mat-menu-item type="button" (click)="deleteTask()" data-e2e="button-task-actions__button-delete">
+      Delete
+    </button>
+  </ng-template>
+</mat-menu>
+<mat-menu #statuses="matMenu">
   <button
+    mat-menu-item
     type="button"
-    mat-icon-button
-    [matMenuTriggerFor]="menu"
-    data-e2e="button-task-actions__trigger"
-    (click)="$event.stopPropagation(); $event.preventDefault()"
+    (click)="changeTaskState(taskState.active)"
+    data-e2e="button-task-actions__state-option-active"
+    [disabled]="task.state === taskState.active"
   >
-    <mat-icon svgIcon="more_vert"></mat-icon>
+    <mat-icon [svgIcon]="taskState.active | taskStateIcon"></mat-icon>Change to active
   </button>
-  <mat-menu #menu="matMenu">
-    <ng-template matMenuContent>
-      <button mat-menu-item [mat-menu-trigger-for]="statuses" data-e2e="button-task-actions__selector-state">
-        <mat-icon [svgIcon]="task.state | taskStateIcon"></mat-icon>
-        State: {{ task.state | taskState }}
-      </button>
-      <a
-        mat-menu-item
-        type="button"
-        [dialogLink]="['tasks', task.id, 'rename']"
-        data-e2e="button-task-actions__button-rename"
-      >
-        Rename
-      </a>
-      <button mat-menu-item type="button" (click)="deleteTask()" data-e2e="button-task-actions__button-delete">
-        Delete
-      </button>
-    </ng-template>
-  </mat-menu>
-  <mat-menu #statuses="matMenu">
-    <button
-      mat-menu-item
-      type="button"
-      (click)="changeTaskState(taskState.active)"
-      data-e2e="button-task-actions__state-option-active"
-      [disabled]="task.state === taskState.active"
-    >
-      <mat-icon [svgIcon]="taskState.active | taskStateIcon"></mat-icon>Change to active
-    </button>
-    <button
-      mat-menu-item
-      type="button"
-      (click)="changeTaskState(taskState.finished)"
-      data-e2e="button-task-actions__state-option-finished"
-      [disabled]="task.state === taskState.finished"
-    >
-      <mat-icon [svgIcon]="taskState.finished | taskStateIcon"></mat-icon>Change to finished
-    </button>
-    <button
-      mat-menu-item
-      type="button"
-      (click)="changeTaskState(taskState.dropped)"
-      data-e2e="button-task-actions__state-option-dropped"
-      [disabled]="task.state === taskState.dropped"
-    >
-      <mat-icon [svgIcon]="taskState.dropped | taskStateIcon"></mat-icon>Change to dropped
-    </button>
-  </mat-menu>
+  <button
+    mat-menu-item
+    type="button"
+    (click)="changeTaskState(taskState.finished)"
+    data-e2e="button-task-actions__state-option-finished"
+    [disabled]="task.state === taskState.finished"
+  >
+    <mat-icon [svgIcon]="taskState.finished | taskStateIcon"></mat-icon>Change to finished
+  </button>
+  <button
+    mat-menu-item
+    type="button"
+    (click)="changeTaskState(taskState.dropped)"
+    data-e2e="button-task-actions__state-option-dropped"
+    [disabled]="task.state === taskState.dropped"
+  >
+    <mat-icon [svgIcon]="taskState.dropped | taskStateIcon"></mat-icon>Change to dropped
+  </button>
+</mat-menu>
 }

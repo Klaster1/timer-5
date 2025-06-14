@@ -1,117 +1,93 @@
 <div class="container" [ngClass]="{ 'task-opened': store.isCurrentTaskOpened() }">
   @if (store.currentTasks(); as tasks) {
-    <section class="tasks">
-      <mat-toolbar [syncWidthTo]="viewport()">
-        <h1>
-          <ng-container> {{ store.currentTaskState() | taskState }} </ng-container>
-          (<duration
-            [value]="tasks | map: tasksDuration"
-            data-e2e="screen-tasks__total"
-            class="state-duration"
-          ></duration
-          >)
-        </h1>
-        <button mat-icon-button (click)="toggleFilter()" matTooltip="Toggle filter panel" #toggle>
-          <mat-icon svgIcon="filter_list"></mat-icon>
-        </button>
-      </mat-toolbar>
-      @defer {
-        @if (searchOpened()) {
-          <tasks-filter (keyup.esc)="toggleFilter(false)"></tasks-filter>
-        }
-      }
-      @if (tasks.length) {
-        <cdk-virtual-scroll-viewport
-          #scroll
-          [itemSize]="48"
-          [scrollToIndex]="store.currentTaskIndex()"
-          [checkViewportSizeWhenValueChanges]="tasks"
+  <section class="tasks">
+    <mat-toolbar [syncWidthTo]="viewport()">
+      <h1>
+        <ng-container> {{ store.currentTaskState() | taskState }} </ng-container>
+        (<duration [value]="tasks | map: tasksDuration" data-e2e="screen-tasks__total" class="state-duration"></duration
+        >)
+      </h1>
+      <button mat-icon-button (click)="toggleFilter()" matTooltip="Toggle filter panel" #toggle>
+        <mat-icon svgIcon="filter_list"></mat-icon>
+      </button>
+    </mat-toolbar>
+    @defer { @if (searchOpened()) {
+    <tasks-filter (keyup.esc)="toggleFilter(false)"></tasks-filter>
+    } } @if (tasks.length) {
+    <cdk-virtual-scroll-viewport
+      #scroll
+      [itemSize]="48"
+      [scrollToIndex]="store.currentTaskIndex()"
+      [checkViewportSizeWhenValueChanges]="tasks"
+    >
+      <mat-nav-list>
+        <a
+          mat-list-item
+          *cdkVirtualFor="let task of tasks; trackBy: taskId; types: tasks"
+          cdkDropList
+          (cdkDropListDropped)="onDrop($event, task)"
+          data-e2e="screen-tasks__task-item"
+          [activated]="rla.isActive"
+          [routerLink]="[task.id]"
+          routerLinkActive
+          #rla="routerLinkActive"
+          queryParamsHandling="merge"
         >
-          <mat-nav-list>
-            <a
-              mat-list-item
-              *cdkVirtualFor="let task of tasks; trackBy: taskId; types: tasks"
-              cdkDropList
-              (cdkDropListDropped)="onDrop($event, task)"
-              data-e2e="screen-tasks__task-item"
-              [activated]="rla.isActive"
-              [routerLink]="[task.id]"
-              routerLinkActive
-              #rla="routerLinkActive"
-              queryParamsHandling="merge"
-            >
-              <mat-icon
-                [svgIcon]="task | taskStateIcon"
-                [ngClass]="{ running: task | map: isTaskRunning }"
-                data-e2e="screen-tasks__task-state-icon"
-                matListItemIcon
-              ></mat-icon>
-              <div matListItemTitle class="item-title">
-                <span class="name" data-e2e="screen-tasks__task-name">{{ task.name }}</span>
-                <duration data-e2e="screen-tasks__task-duration" [value]="task | map: taskDuration"></duration>
-              </div>
-              <button-task-actions matListItemMeta [task]="task"></button-task-actions>
-            </a>
-          </mat-nav-list>
-        </cdk-virtual-scroll-viewport>
-        <button
-          [dialogLink]="['tasks', 'create']"
-          mat-fab
-          color="accent"
-          data-e2e="button-add-task"
-          matTooltip="Create a task"
-        >
-          <mat-icon svgIcon="add"></mat-icon>
-        </button>
-      } @else {
-        @defer {
-          @if (searchOpened() === false) {
-            <empty-state>
-              <img src="assets/favicon.svg" alt="Timer" illustration />
-              <span title>No tasks</span>
-              <span subtitle>
-                @switch (store.currentTaskState()) {
-                  @case ('all') {
-                    Create a task and it will show up here
-                  }
-                  @case (taskState.active) {
-                    Create a task and it will show up here
-                  }
-                  @case (taskState.finished) {
-                    You didn't finish any tasks yet
-                  }
-                  @case (taskState.dropped) {
-                    You didn't abandon any tasks yet
-                  }
-                }
-              </span>
-              <button
-                class="tertiary-button"
-                mat-flat-button
-                type="button"
-                [routerLink]="['/', { outlets: { dialog: ['tasks', 'create'], primary: ['active'] } }]"
-                queryParamsHandling="preserve"
-                data-e2e="screen-tasks__button-add-task-empty-state"
-              >
-                Create a task
-              </button>
-            </empty-state>
-          } @else {
-            <empty-state>
-              <mat-icon color="accent" illustration svgIcon="search"></mat-icon>
-              <span title>Nothing found</span>
-              <span subtitle>Could not find tasks matching the criteria</span>
-              <button mat-flat-button (click)="toggleFilter(false)" type="button">Reset filter</button>
-            </empty-state>
-          }
-        }
-      }
-    </section>
-  }
-
-  @if (store.isCurrentTaskOpened()) {
-    <section class="task mat-app-background">
-      <router-outlet></router-outlet>
-    </section>
+          <mat-icon
+            [svgIcon]="task | taskStateIcon"
+            [ngClass]="{ running: task | map: isTaskRunning }"
+            data-e2e="screen-tasks__task-state-icon"
+            matListItemIcon
+          ></mat-icon>
+          <div matListItemTitle class="item-title">
+            <span class="name" data-e2e="screen-tasks__task-name">{{ task.name }}</span>
+            <duration data-e2e="screen-tasks__task-duration" [value]="task | map: taskDuration"></duration>
+          </div>
+          <button-task-actions matListItemMeta [task]="task"></button-task-actions>
+        </a>
+      </mat-nav-list>
+    </cdk-virtual-scroll-viewport>
+    <button
+      [dialogLink]="['tasks', 'create']"
+      mat-fab
+      color="accent"
+      data-e2e="button-add-task"
+      matTooltip="Create a task"
+    >
+      <mat-icon svgIcon="add"></mat-icon>
+    </button>
+    } @else { @defer { @if (searchOpened() === false) {
+    <empty-state>
+      <img src="assets/favicon.svg" alt="Timer" illustration />
+      <span title>No tasks</span>
+      <span subtitle>
+        @switch (store.currentTaskState()) { @case ('all') { Create a task and it will show up here } @case
+        (taskState.active) { Create a task and it will show up here } @case (taskState.finished) { You didn't finish any
+        tasks yet } @case (taskState.dropped) { You didn't abandon any tasks yet } }
+      </span>
+      <button
+        class="tertiary-button"
+        mat-flat-button
+        type="button"
+        [routerLink]="['/', { outlets: { dialog: ['tasks', 'create'], primary: ['active'] } }]"
+        queryParamsHandling="preserve"
+        data-e2e="screen-tasks__button-add-task-empty-state"
+      >
+        Create a task
+      </button>
+    </empty-state>
+    } @else {
+    <empty-state>
+      <mat-icon color="accent" illustration svgIcon="search"></mat-icon>
+      <span title>Nothing found</span>
+      <span subtitle>Could not find tasks matching the criteria</span>
+      <button mat-flat-button (click)="toggleFilter(false)" type="button">Reset filter</button>
+    </empty-state>
+    } } }
+  </section>
+  } @if (store.isCurrentTaskOpened()) {
+  <section class="task mat-app-background">
+    <router-outlet></router-outlet>
+  </section>
   }
 </div>

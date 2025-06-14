@@ -12,11 +12,11 @@ import { hasCyrillics } from '@app/utils/string';
 import { HotkeysService } from 'angular2-hotkeys';
 
 @Component({
-    selector: 'dialog-hotkeys-cheatsheet',
-    templateUrl: './dialog-hotkeys-cheatsheet.html',
-    styleUrls: ['./dialog-hotkeys-cheatsheet.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MapPipe]
+  selector: 'dialog-hotkeys-cheatsheet',
+  templateUrl: './dialog-hotkeys-cheatsheet.html',
+  styleUrls: ['./dialog-hotkeys-cheatsheet.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MapPipe],
 })
 export default class DialogHotkeysCheatsheetComponent {
   static dialogConfig: MatDialogConfig = { width: undefined };
@@ -26,4 +26,3 @@ export default class DialogHotkeysCheatsheetComponent {
   }
   withoutCyrillics = (values: string[]): string[] => [...values].filter((value) => !hasCyrillics(value));
 }
-

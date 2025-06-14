@@ -2,12 +2,12 @@
 <div mat-dialog-content>
   <dl>
     @for (key of keys; track key.action) {
-      <dt>
-        @for (formatted of key.formatted | map: withoutCyrillics; track formatted) {
-          <kbd>{{ formatted }}</kbd>
-        }
-      </dt>
-      <dd>{{ key.description }}</dd>
+    <dt>
+      @for (formatted of key.formatted | map: withoutCyrillics; track formatted) {
+      <kbd>{{ formatted }}</kbd>
+      }
+    </dt>
+    <dd>{{ key.description }}</dd>
     }
   </dl>
 </div>
