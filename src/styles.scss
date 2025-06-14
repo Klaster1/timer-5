@@ -1,7 +1,7 @@
-@use '@angular/material' as mat;
-@use '@angular/material/core/theming/inspection' as inspection;
-@use '@angular/material/core/theming/all-theme' as all-theme;
-@use '@angular/material/core/theming/theming' as theming;
+@use 'pkg:@angular/material' as mat;
+@use 'pkg:@angular/material/core/theming/inspection' as inspection;
+@use 'pkg:@angular/material/core/theming/all-theme' as all-theme;
+@use 'pkg:@angular/material/core/theming/theming' as theming;
 @use 'm3-theme' as theme;
 
 a {
