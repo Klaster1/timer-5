@@ -30,7 +30,7 @@
     "@angular/platform-browser-dynamic": "^20.0.3",
     "@angular/router": "^20.0.3",
     "@angular/service-worker": "^20.0.3",
-    "@ngrx/signals": "19.0.1",
+    "@ngrx/signals": "19.2.1",
     "angular2-hotkeys": "^16.0.1",
     "date-fns": "^4.1.0",
     "immer": "^10.1.1",
@@ -61,5 +61,11 @@
   },
   "engines": {
     "node": ">=22.14.0"
+  },
+  "overrides": {
+    "@ngrx/signals": {
+      "@angular/common": "$@angular/common",
+      "@angular/core": "$@angular/core"
+    }
   }
 }
