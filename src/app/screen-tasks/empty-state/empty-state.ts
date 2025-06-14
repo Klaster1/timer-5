@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation } from '@angular/core';
 
 @Component({
-  templateUrl: './empty-state.component.html',
-  styleUrls: ['./empty-state.component.scss'],
+  templateUrl: './empty-state.html',
+  styleUrls: ['./empty-state.scss'],
   selector: 'empty-state',
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EmptyStateComponent {}
+

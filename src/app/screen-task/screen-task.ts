@@ -7,8 +7,8 @@ import { MatIcon } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltip } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
-import { ButtonTaskActionsComponent } from '@app/button-task-actions/button-task-actions.component';
-import { DurationComponent } from '@app/directives/duration.component';
+import { ButtonTaskActionsComponent } from '@app/button-task-actions/button-task-actions';
+import { DurationComponent } from '@app/directives/duration';
 import { ToolbarWidthSyncDirective } from '@app/directives/toolbar-width-sync';
 import {
   KEYS_DELETE_TASK,
@@ -19,19 +19,19 @@ import {
   hotkey,
 } from '@app/domain/hotkeys';
 import { Task, TaskState, isTaskRunning, sessionDuration, sortSessions, taskDuration } from '@app/domain/task';
-import { MapPipe } from '@app/pipes/map.pipe';
-import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
+import { MapPipe } from '@app/pipes/map';
+import { TaskStateIconPipe } from '@app/pipes/task-state-icon';
 import { RoutedDialogs } from '@app/providers/routed-dialogs';
 import { AppStore } from '@app/providers/state';
 import { HotkeysService } from 'angular2-hotkeys';
-import { ButtonSessionActionsComponent } from './button-session-actions/button-session-actions.component';
-import { VirtualScrollStickyTable } from './sticky.directive';
-import { TypeSafeCdkVirtualForDirective } from './type-safe-virtual-for.directive';
+import { ButtonSessionActionsComponent } from './button-session-actions/button-session-actions';
+import { VirtualScrollStickyTable } from './sticky';
+import { TypeSafeCdkVirtualForDirective } from './type-safe-virtual-for';
 
 @Component({
   selector: 'screen-task',
-  templateUrl: './screen-task.component.html',
-  styleUrls: ['./screen-task.component.scss', './mat-table.scss'],
+  templateUrl: './screen-task.html',
+  styleUrls: ['./screen-task.scss', './mat-table.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     TaskStateIconPipe,

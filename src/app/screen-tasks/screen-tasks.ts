@@ -20,27 +20,27 @@ import { MatListItem, MatListItemIcon, MatListItemMeta, MatListItemTitle, MatNav
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatTooltip } from '@angular/material/tooltip';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { ButtonTaskActionsComponent } from '@app/button-task-actions/button-task-actions.component';
-import { DurationComponent } from '@app/directives/duration.component';
+import { ButtonTaskActionsComponent } from '@app/button-task-actions/button-task-actions';
+import { DurationComponent } from '@app/directives/duration';
 import { ToolbarWidthSyncDirective } from '@app/directives/toolbar-width-sync';
 import { KEYS_ADD, KEYS_NEXT, KEYS_PREV, KEYS_SEARCH, hotkey } from '@app/domain/hotkeys';
 import { SessionDragEvent, Task, TaskState, isTaskRunning, taskDuration, tasksDuration } from '@app/domain/task';
-import { MapPipe } from '@app/pipes/map.pipe';
-import { TaskStateIconPipe } from '@app/pipes/task-state-icon.pipe';
-import { TaskStatePipe } from '@app/pipes/task-state.pipe';
+import { MapPipe } from '@app/pipes/map';
+import { TaskStatePipe } from '@app/pipes/task-state';
+import { TaskStateIconPipe } from '@app/pipes/task-state-icon';
 import { DialogLinkDirective, RoutedDialogs } from '@app/providers/routed-dialogs';
 import { AppStore } from '@app/providers/state';
-import { TypeSafeCdkVirtualForDirective } from '@app/screen-task/type-safe-virtual-for.directive';
+import { TypeSafeCdkVirtualForDirective } from '@app/screen-task/type-safe-virtual-for';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
-import { CheckViewportSizeWhenValueChangesDirective } from './checkViewportSizeWhenValueChanges.directive';
-import { EmptyStateComponent } from './empty-state/empty-state.component';
-import { ScrollToIndexDirective } from './scrollToIndex.directive';
-import { TasksFilterComponent } from './tasks-filter/tasks-filter.component';
+import { CheckViewportSizeWhenValueChangesDirective } from './checkViewportSizeWhenValueChanges';
+import { EmptyStateComponent } from './empty-state/empty-state';
+import { ScrollToIndexDirective } from './scrollToIndex';
+import { TasksFilterComponent } from './tasks-filter/tasks-filter';
 
 @Component({
   selector: 'screen-tasks',
-  templateUrl: './screen-tasks.component.html',
-  styleUrls: ['./screen-tasks.component.scss'],
+  templateUrl: './screen-tasks.html',
+  styleUrls: ['./screen-tasks.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     EmptyStateComponent,

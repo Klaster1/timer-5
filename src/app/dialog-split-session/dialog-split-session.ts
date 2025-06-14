@@ -9,11 +9,11 @@ import {
   MatDialogTitle,
 } from '@angular/material/dialog';
 import { MatSlider, MatSliderThumb } from '@angular/material/slider';
-import { DurationComponent } from '@app/directives/duration.component';
-import { TemplateContextTypeDirective } from '@app/directives/template-context-type.directive';
+import { DurationComponent } from '@app/directives/duration';
+import { TemplateContextTypeDirective } from '@app/directives/template-context-type';
 import { Milliseconds } from '@app/domain/date-time';
 import { Session, sessionDuration } from '@app/domain/task';
-import { MapPipe } from '@app/pipes/map.pipe';
+import { MapPipe } from '@app/pipes/map';
 import { AppStore } from '@app/providers/state';
 
 export interface DialogSplitSessionData {
@@ -23,8 +23,8 @@ export interface DialogSplitSessionData {
 
 @Component({
   selector: 'dialog-split-session',
-  templateUrl: './dialog-split-session.component.html',
-  styleUrls: ['./dialog-split-session.component.scss', '../screen-task/mat-table.scss'],
+  templateUrl: './dialog-split-session.html',
+  styleUrls: ['./dialog-split-session.scss', '../screen-task/mat-table.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatDialogTitle,
@@ -100,3 +100,4 @@ export default class DialogSplitSessionComponent {
     this.state.splitSession(result);
   }
 }
+
