@@ -57,7 +57,7 @@
     "prettier-plugin-organize-imports": "^4.1.0",
     "testcafe": "^3.7.2",
     "testcafe-reporter-spec-plus": "^2.3.5",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.3"
   },
   "engines": {
     "node": ">=22.14.0"
