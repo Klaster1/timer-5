@@ -17,14 +17,14 @@ import { DomSanitizer, bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, withRouterConfig } from '@angular/router';
 import { SwUpdate, provideServiceWorker } from '@angular/service-worker';
-import { AppComponent } from '@app/app.component';
-import { gameStateGuard } from '@app/guards/game-state.guard';
+import { AppComponent } from '@app/app';
+import { gameStateGuard } from '@app/guards/game-state';
 import { provideDialogRoutes } from '@app/providers/routed-dialogs';
 import { HotkeyModule } from 'angular2-hotkeys';
 import { secondsToMilliseconds } from 'date-fns/secondsToMilliseconds';
 import { interval } from 'rxjs';
-import ScreenTaskComponent from './app/screen-task/screen-task.component';
-import ScreenTasksComponent from './app/screen-tasks/screen-tasks.component';
+import ScreenTaskComponent from './app/screen-task/screen-task';
+import ScreenTasksComponent from './app/screen-tasks/screen-tasks';
 import { environment } from './environments/environment';
 
 if (environment.production) {
@@ -59,25 +59,25 @@ bootstrapApplication(AppComponent, {
         children: [
           {
             path: 'create',
-            loadComponent: () => import('./app/dialog-create-task/dialog-create-task.component'),
+            loadComponent: () => import('./app/dialog-create-task/dialog-create-task'),
           },
           {
             path: ':taskId',
             children: [
               {
                 path: 'rename',
-                loadComponent: () => import('./app/dialog-rename-task/dialog-rename-task.component'),
+                loadComponent: () => import('./app/dialog-rename-task/dialog-rename-task'),
               },
               {
                 path: 'sessions/:sessionIndex',
                 children: [
                   {
                     path: 'split',
-                    loadComponent: () => import('./app/dialog-split-session/dialog-split-session.component'),
+                    loadComponent: () => import('./app/dialog-split-session/dialog-split-session'),
                   },
                   {
                     path: 'edit',
-                    loadComponent: () => import('./app/dialog-edit-session/dialog-edit-session.component'),
+                    loadComponent: () => import('./app/dialog-edit-session/dialog-edit-session'),
                   },
                 ],
               },
@@ -87,7 +87,7 @@ bootstrapApplication(AppComponent, {
       },
       {
         path: 'hotkeys',
-        loadComponent: () => import('./app/dialog-hotkeys-cheatsheet/dialog-hotkeys-cheatsheet.component'),
+        loadComponent: () => import('./app/dialog-hotkeys-cheatsheet/dialog-hotkeys-cheatsheet'),
       },
     ]),
     {

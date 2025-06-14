@@ -8,20 +8,20 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { HotkeysService } from 'angular2-hotkeys';
-import { ButtonThemeSwitcherComponent } from './button-theme-switcher/button-theme-switcher.component';
+import { ButtonThemeSwitcherComponent } from './button-theme-switcher/button-theme-switcher';
 import { KEYS_GO_ACTIVE, KEYS_GO_ALL, KEYS_GO_FINISHED, hotkey } from './domain/hotkeys';
 import { toStoredTasks } from './domain/storage';
 import { TaskState } from './domain/task';
-import { TaskStateIconPipe } from './pipes/task-state-icon.pipe';
-import { FaviconService } from './providers/favicon.service';
-import { ImportExportService } from './providers/import-export.service';
+import { TaskStateIconPipe } from './pipes/task-state-icon';
+import { FaviconService } from './providers/favicon';
+import { ImportExportService } from './providers/import-export';
 import { RoutedDialogs } from './providers/routed-dialogs';
 import { AppStore } from './providers/state';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  templateUrl: './app.html',
+  styleUrls: ['./app.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatDrawerContainer,

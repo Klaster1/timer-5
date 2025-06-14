@@ -4,31 +4,31 @@ import { MatButton } from '@angular/material/button';
 import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
 import { MatError, MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { ButtonResetInputComponent } from '@app/directives/button-reset-input.component';
-import { DatetimeLocalDirective } from '@app/directives/datetime-local.directive';
+import { ButtonResetInputComponent } from '@app/directives/button-reset-input';
+import { DatetimeLocalDirective } from '@app/directives/datetime-local';
 import { AppStore } from '@app/providers/state';
 import { option } from '@app/utils/assert';
 
 @Component({
-    selector: 'dialog-edit-session',
-    templateUrl: './dialog-edit-session.component.html',
-    styleUrl: './dialog-edit-session.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [
-        MatDialogTitle,
-        MatDialogContent,
-        MatDialogActions,
-        MatDialogClose,
-        MatButton,
-        MatFormField,
-        MatError,
-        MatLabel,
-        MatInput,
-        MatSuffix,
-        ReactiveFormsModule,
-        DatetimeLocalDirective,
-        ButtonResetInputComponent,
-    ]
+  selector: 'dialog-edit-session',
+  templateUrl: './dialog-edit-session.html',
+  styleUrl: './dialog-edit-session.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogActions,
+    MatDialogClose,
+    MatButton,
+    MatFormField,
+    MatError,
+    MatLabel,
+    MatInput,
+    MatSuffix,
+    ReactiveFormsModule,
+    DatetimeLocalDirective,
+    ButtonResetInputComponent,
+  ],
 })
 export default class DialogEditSessionComponent {
   private state = inject(AppStore);

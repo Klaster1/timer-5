@@ -11,7 +11,7 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { MatTooltip } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
-import { DatetimeLocalDirective } from '@app/directives/datetime-local.directive';
+import { DatetimeLocalDirective } from '@app/directives/datetime-local';
 import { ScaleRange, hasChartData } from '@app/domain/chart';
 import { FilterMatrixParams, encodeFilterParams } from '@app/domain/router';
 import { AppStore } from '@app/providers/state';
@@ -29,15 +29,15 @@ import { subMonths } from 'date-fns/subMonths';
 import { subWeeks } from 'date-fns/subWeeks';
 import { subYears } from 'date-fns/subYears';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
-import { ButtonResetInputComponent } from '../../directives/button-reset-input.component';
-import { TimelineChartUplotComponent } from './timeline-chart-uplot.component';
+import { ButtonResetInputComponent } from '../../directives/button-reset-input';
+import { TimelineChartUplotComponent } from './timeline-chart-uplot';
 
 type Wrap<T> = Required<{ [Key in keyof T]: FormControl<T[Key]> }>;
 
 @Component({
   selector: 'tasks-filter',
-  templateUrl: './tasks-filter.component.html',
-  styleUrls: ['./tasks-filter.component.scss'],
+  templateUrl: './tasks-filter.html',
+  styleUrls: ['./tasks-filter.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('inOutAnimation', [
@@ -159,3 +159,4 @@ export class TasksFilterComponent {
     });
   }
 }
+
