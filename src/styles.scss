@@ -46,8 +46,8 @@ a {
     --mat-icon-color: var(--mat-form-field-leading-icon-color);
     --mat-sidenav-container-shape: 0;
     --mat-list-active-indicator-shape: 0;
-    --mat-toolbar-container-background-color: var(--mdc-plain-tooltip-supporting-text-color);
-    --mat-sidenav-container-background-color: var(--mdc-plain-tooltip-supporting-text-color);
+    --mat-toolbar-container-background-color: var(--mat-tooltip-supporting-text-color);
+    --mat-sidenav-container-background-color: var(--mat-tooltip-supporting-text-color);
     --mat-table-row-item-outline-color: var(--mat-sidenav-container-background-color);
   }
 }
