@@ -374,10 +374,16 @@ test('Editing a session', async (t) => {
 });
 
 test('Moving a session', async (t) => {
+  (await t.getCurrentCDPSession()).Emulation.setCPUThrottlingRate({
+    rate: 8,
+  });
+  await mockDate(new Date('2025-07-05T06:09:00'));
   // Have two tasks with sessions
   await screenTasks.addTask('To');
   await screenTasks.addTask('From');
-  await t.pressKey('s').wait(500).pressKey('s');
+  await t.pressKey('s');
+  await advanceDate(500);
+  await t.pressKey('s');
   // Open task 1, drag a session to the task 2
   await t.expect(screenTask.sessionStart.count).eql(1);
   await t.dispatchEvent(screenTask.sessionRow, 'mousedown');
