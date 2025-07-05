@@ -1,7 +1,7 @@
 [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://vshymanskyy.github.io/StandWithUkraine)
 [![Support Ukraine Badge](https://bit.ly/support-ukraine-now)](https://github.com/support-ukraine/support-ukraine)
 
-<div align="center"><img src="src/assets/favicon.svg" with='64' height='64'></div>
+<div align="center"><img src="src/assets/favicon.svg" width='64' height='64'></div>
 
 # Timer
 
