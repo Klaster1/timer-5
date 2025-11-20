@@ -62,8 +62,8 @@
     "gh-pages": "^6.3.0",
     "local-web-server": "^5.4.0",
     "looks-same": "^9.0.1",
-    "prettier": "^3.5.3",
-    "prettier-plugin-organize-imports": "^4.1.0",
+    "prettier": "^3.6.2",
+    "prettier-plugin-organize-imports": "^4.3.0",
     "testcafe": "^3.7.2",
     "testcafe-reporter-spec-plus": "^2.3.5",
     "typescript": "^5.9.3"
