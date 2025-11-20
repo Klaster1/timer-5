@@ -13,7 +13,7 @@ const toDateTimeLocalValue = (date: Date): string => {
 @Directive({
   selector: 'input[type="datetime-local"]',
   host: {
-    '(input)': 'this._handleInput($event.target.value)',
+    '(input)': 'this._handleInput($event)',
     '(blur)': 'onTouched()',
   },
   providers: [
@@ -32,8 +32,10 @@ export class DatetimeLocalDirective implements ControlValueAccessor {
     this._elementRef.nativeElement.value = normalizedValue ?? '';
   }
 
-  _handleInput(value: string | undefined): void {
-    this.onChange(value?.length ? new Date(value) : value);
+  _handleInput(event: Event): void {
+    if (!(event.target instanceof HTMLInputElement)) return;
+    const value = event.target.value;
+    this.onChange(value.length ? new Date(value) : value);
   }
 
   onChange = (_: any) => {};
