@@ -9,6 +9,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
+    "types": ["node"],
     "esModuleInterop": true,
     "sourceMap": true,
     "declaration": false,
