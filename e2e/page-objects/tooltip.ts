@@ -1,3 +1,9 @@
-import { Selector } from 'testcafe';
+import type { Locator, Page } from '@playwright/test';
 
-export const tooltip = Selector('mat-tooltip-component');
+export class Tooltip {
+  public constructor(private readonly page: Page) {}
+
+  public root(): Locator {
+    return this.page.locator('mat-tooltip-component');
+  }
+}

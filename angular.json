@@ -61,12 +61,6 @@
             "allowedHosts": ["localhost", "0.0.0.0", "host.docker.internal"],
             "host": "0.0.0.0"
           }
-        },
-        "e2e": {
-          "builder": "angular-testcafe:testcafe",
-          "options": {
-            "src": []
-          }
         }
       }
     }

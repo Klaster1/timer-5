@@ -1,64 +1,81 @@
-import { Selector } from 'testcafe';
-import { app } from '../page-objects/app';
-import { dialogHotkeyCheatsheet } from '../page-objects/dialog-hotkeys-cheatsheet';
-import { screenTasks } from '../page-objects/screen-tasks';
-import { reload } from '../utils';
-import { VISUAL_REGRESSION_OK, comparePageScreenshot } from '../visual-regression';
+import { expect, test } from '@playwright/test';
+import { App } from '../page-objects/app';
+import { DialogHotkeyCheatsheet } from '../page-objects/dialog-hotkeys-cheatsheet';
+import { ScreenTasks } from '../page-objects/screen-tasks';
+import { closeOverlays, forceSystemTheme, reloadIgnoringCache } from '../utils';
 
-fixture('General');
+test.describe('General', () => {
+  let app: App;
+  let dialogHotkeyCheatsheet: DialogHotkeyCheatsheet;
+  let screenTasks: ScreenTasks;
 
-test('Hotkey help', async (t) => {
-  // Send "shift+?", assert the hotkey cheatsheet is opened
-  await t.pressKey('shift+?');
-  // Assert it displays all hotkeys, in english only
-  await t.expect(dialogHotkeyCheatsheet.descriptions.count).eql(7);
-  await t.expect(await comparePageScreenshot('only tasks')).eql(VISUAL_REGRESSION_OK);
-  // Assert "Close" closes the dialog
-  await t.click(dialogHotkeyCheatsheet.buttonDismiss);
-  await t.expect(dialogHotkeyCheatsheet.dialog.exists).notOk();
-  // Open a session, assert session hotkeys are displayed
-  await screenTasks.addTask('Keys');
-  await t.pressKey('shift+?');
-  await t.expect(dialogHotkeyCheatsheet.descriptions.count).eql(12);
-  await t.expect(await comparePageScreenshot('tasks and task')).eql(VISUAL_REGRESSION_OK);
-  // Open the dialog again, assert "Esc" closes the dialog
-  await t.pressKey('esc');
-  await t.expect(dialogHotkeyCheatsheet.dialog.exists).notOk();
-});
-
-test('Theme switcher', async (t) => {
-  // Switch to dark theme
-  await t.click(app.buttonSwitchTheme);
-  await t.expect(await comparePageScreenshot('themes menu')).eql(VISUAL_REGRESSION_OK);
-  await t.click(app.buttonTheme.withText('Dark'));
-  // Assert the theme is applied
-  await t.expect(await comparePageScreenshot('dark theme', { theme: 'preserve' })).eql(VISUAL_REGRESSION_OK);
-  // Switch to light theme
-  await t.click(app.buttonSwitchTheme);
-  await t.click(app.buttonTheme.withText('Light'));
-  // Assert the theme is applied
-  await t.expect(await comparePageScreenshot('light theme', { theme: 'preserve' })).eql(VISUAL_REGRESSION_OK);
-  // Switch to system theme
-  await t.click(app.buttonSwitchTheme);
-  await t.click(app.buttonTheme.withText('System'));
-  // Override the system theme to dark
-  const client = await t.getCurrentCDPSession();
-  await client.Emulation.setEmulatedMedia({
-    media: 'screen',
-    features: [{ name: 'prefers-color-scheme', value: 'dark' }],
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
+    app = new App(page);
+    dialogHotkeyCheatsheet = new DialogHotkeyCheatsheet(page);
+    screenTasks = new ScreenTasks(page);
   });
-  // Assert the theme is applied
-  await t.expect(await comparePageScreenshot('system theme dark', { theme: 'preserve' })).eql(VISUAL_REGRESSION_OK);
-  // Override the system theme to light
-  await client.Emulation.setEmulatedMedia({
-    media: 'screen',
-    features: [{ name: 'prefers-color-scheme', value: 'light' }],
+
+  test('Hotkey help', async ({ page }) => {
+    // Send "shift+?", assert the hotkey cheatsheet is opened
+    await page.keyboard.press('Shift+?');
+    // Assert it displays all hotkeys, in english only
+    await expect(dialogHotkeyCheatsheet.descriptions()).toHaveCount(7);
+    await expect(page).toHaveScreenshot('general-hotkeys-only-tasks.png');
+
+    // Assert "Close" closes the dialog
+    await dialogHotkeyCheatsheet.buttonDismiss().click();
+    await expect(dialogHotkeyCheatsheet.dialog()).toBeHidden();
+
+    // Open a session, assert session hotkeys are displayed
+    await screenTasks.addTask('Keys');
+    await page.keyboard.press('Shift+?');
+
+    await expect(dialogHotkeyCheatsheet.descriptions()).toHaveCount(12);
+    await expect(page).toHaveScreenshot('general-hotkeys-task-opened.png');
+
+    // Open the dialog again, assert "Esc" closes the dialog
+    await page.keyboard.press('Escape');
+    await expect(dialogHotkeyCheatsheet.dialog()).toBeHidden();
   });
-  // Assert the theme is applied
-  await t.click('body', { offsetX: 0, offsetY: 0 }); // Close the tooltip
-  await t.expect(await comparePageScreenshot('system theme light', { theme: 'preserve' })).eql(VISUAL_REGRESSION_OK);
-  // Reload the page
-  await reload();
-  // Assert the theme is preserved
-  await t.expect(Selector('body').hasClass('theme-dark')).notOk();
+
+  test('Theme switcher', async ({ page }) => {
+    // Switch to dark theme
+    await app.buttonSwitchTheme().click();
+    await expect(app.buttonTheme('Dark')).toBeVisible();
+    await expect(page).toHaveScreenshot('general-themes-menu.png');
+
+    await app.buttonTheme('Dark').click();
+    // Assert the theme is applied
+    await expect(page).toHaveScreenshot('general-theme-dark.png');
+
+    // Switch to light theme
+    await app.buttonSwitchTheme().click();
+    await expect(app.buttonTheme('Light')).toBeVisible();
+    await app.buttonTheme('Light').click();
+    // Assert the theme is applied
+    await expect(page).toHaveScreenshot('general-theme-light.png');
+
+    // Switch to system theme
+    await app.buttonSwitchTheme().click();
+    await expect(app.buttonTheme('System')).toBeVisible();
+    await app.buttonTheme('System').click();
+
+    // Override the system theme to dark
+    await forceSystemTheme(page, 'dark');
+    await closeOverlays(page);
+    // Assert the theme is applied
+    await expect(page).toHaveScreenshot('general-theme-system-dark.png');
+
+    // Override the system theme to light
+    await forceSystemTheme(page, 'light');
+    await closeOverlays(page);
+    // Assert the theme is applied
+    await expect(page).toHaveScreenshot('general-theme-system-light.png');
+
+    // Reload the page
+    await reloadIgnoringCache(page);
+    // Assert the theme is preserved
+    await expect(page.locator('body')).not.toHaveClass(/theme-dark/);
+  });
 });

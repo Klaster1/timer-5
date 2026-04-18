@@ -41,9 +41,9 @@ npm-debug.log
 yarn-error.log
 testem.log
 /typings
-/e2e/screenshots
 /e2e/downloads
-/e2e/videos
+/test-results
+/playwright-report
 
 # System Files
 .DS_Store

@@ -1,14 +1,41 @@
-import { Selector } from 'testcafe';
-import { e2e } from '../utils';
+import type { Locator, Page } from '@playwright/test';
 
-export const app = {
-  favicon: Selector('link[rel="icon"]'),
-  buttonActiveTasks: e2e('navigation__button-tasks-active'),
-  buttonFinishedTasks: e2e('navigation__button-tasks-finished'),
-  buttonDroppedTasks: e2e('navigation__button-tasks-dropped'),
-  buttonImportExport: e2e('navigation__button-import-export'),
-  buttonExport: e2e('navigation__button-export'),
-  inputImport: e2e('navigation__input-import'),
-  buttonSwitchTheme: e2e('navigation__button-theme'),
-  buttonTheme: e2e('theme-button'),
-};
+export class App {
+  public constructor(private readonly page: Page) {}
+
+  public favicon(): Locator {
+    return this.page.locator('link[rel="icon"]');
+  }
+
+  public buttonActiveTasks(): Locator {
+    return this.page.getByTestId('navigation__button-tasks-active');
+  }
+
+  public buttonFinishedTasks(): Locator {
+    return this.page.getByTestId('navigation__button-tasks-finished');
+  }
+
+  public buttonDroppedTasks(): Locator {
+    return this.page.getByTestId('navigation__button-tasks-dropped');
+  }
+
+  public buttonImportExport(): Locator {
+    return this.page.getByTestId('navigation__button-import-export');
+  }
+
+  public buttonExport(): Locator {
+    return this.page.getByTestId('navigation__button-export');
+  }
+
+  public inputImport(): Locator {
+    return this.page.getByTestId('navigation__input-import');
+  }
+
+  public buttonSwitchTheme(): Locator {
+    return this.page.getByTestId('navigation__button-theme');
+  }
+
+  public buttonTheme(name: 'Dark' | 'Light' | 'System'): Locator {
+    return this.page.getByRole('menuitem', { name });
+  }
+}

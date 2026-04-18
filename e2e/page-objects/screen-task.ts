@@ -1,31 +1,89 @@
-import { Selector } from 'testcafe';
-import { e2e } from '../utils';
+import type { Locator, Page } from '@playwright/test';
 
-export const screenTask = {
-  name: e2e('screen-task__name'),
-  stateIcon: e2e('screen-task__state-icon'),
-  matTable: Selector('screen-task table[mat-table]'),
-  legacyStickyHackTable: Selector('screen-task table[sticky]'),
-  viewport: Selector('screen-task cdk-virtual-scroll-viewport'),
-  matHeaderRow: Selector('screen-task tr[mat-header-row]'),
-  matFooterRow: Selector('screen-task tr[mat-footer-row]'),
-  matHeaderStartCell: Selector('screen-task th[mat-header-cell].header-start'),
-  matFooterStartCell: Selector('screen-task td[mat-footer-cell].header-start'),
-  buttonTaskAction: Selector('screen-task [data-e2e="button-task-actions__trigger"]'),
-  buttonStart: e2e('screen-task__button-start'),
-  buttonStop: e2e('screen-task__button-stop'),
-  sessionRow: e2e('screen-task__session-row'),
-  sessionStart: e2e('screen-task__session-start'),
-  sessionEnd: e2e('screen-task__session-end'),
-  sessionDuration: e2e('screen-task__session-duration'),
-  screen: Selector('screen-task'),
-  buttonSessionAction: e2e('screen-task__button-session-action'),
-  taskDuration: e2e('screen-task__task-duration'),
-  menuSession: {
-    buttonEdit: e2e('menu-session__button-edit'),
-    buttonDelete: e2e('menu-session__button-delete'),
-    buttonSkipAfter: e2e('menu-session__button-skip-after'),
-    buttonSkipBefore: e2e('menu-session__button-skip-before'),
-    buttonSplit: e2e('menu-session__button-split'),
-  },
-};
+export class ScreenTask {
+  public constructor(private readonly page: Page) {}
+
+  public name(): Locator {
+    return this.page.getByTestId('screen-task__name');
+  }
+
+  public stateIcon(): Locator {
+    return this.page.getByTestId('screen-task__state-icon');
+  }
+
+  public matTable(): Locator {
+    return this.page.locator('screen-task table[mat-table]');
+  }
+
+  public legacyStickyHackTable(): Locator {
+    return this.page.locator('screen-task table[sticky]');
+  }
+
+  public viewport(): Locator {
+    return this.page.locator('screen-task cdk-virtual-scroll-viewport');
+  }
+
+  public matHeaderRow(): Locator {
+    return this.page.locator('screen-task tr[mat-header-row]');
+  }
+
+  public matFooterRow(): Locator {
+    return this.page.locator('screen-task tr[mat-footer-row]');
+  }
+
+  public matHeaderStartCell(): Locator {
+    return this.page.locator('screen-task th[mat-header-cell].header-start');
+  }
+
+  public matFooterStartCell(): Locator {
+    return this.page.locator('screen-task td[mat-footer-cell].header-start');
+  }
+
+  public buttonTaskAction(): Locator {
+    return this.page.locator('screen-task').getByTestId('button-task-actions__trigger');
+  }
+
+  public buttonStart(): Locator {
+    return this.page.getByTestId('screen-task__button-start');
+  }
+
+  public buttonStop(): Locator {
+    return this.page.getByTestId('screen-task__button-stop');
+  }
+
+  public sessionRow(): Locator {
+    return this.page.getByTestId('screen-task__session-row');
+  }
+
+  public sessionStart(): Locator {
+    return this.page.getByTestId('screen-task__session-start');
+  }
+
+  public sessionEnd(): Locator {
+    return this.page.getByTestId('screen-task__session-end');
+  }
+
+  public sessionDuration(): Locator {
+    return this.page.getByTestId('screen-task__session-duration');
+  }
+
+  public screen(): Locator {
+    return this.page.locator('screen-task');
+  }
+
+  public buttonSessionAction(): Locator {
+    return this.page.getByTestId('screen-task__button-session-action');
+  }
+
+  public taskDuration(): Locator {
+    return this.page.getByTestId('screen-task__task-duration');
+  }
+
+  public readonly menuSession = {
+    buttonEdit: (): Locator => this.page.getByTestId('menu-session__button-edit'),
+    buttonDelete: (): Locator => this.page.getByTestId('menu-session__button-delete'),
+    buttonSkipAfter: (): Locator => this.page.getByTestId('menu-session__button-skip-after'),
+    buttonSkipBefore: (): Locator => this.page.getByTestId('menu-session__button-skip-before'),
+    buttonSplit: (): Locator => this.page.getByTestId('menu-session__button-split'),
+  };
+}

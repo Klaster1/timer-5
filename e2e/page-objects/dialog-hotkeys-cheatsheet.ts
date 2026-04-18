@@ -1,10 +1,19 @@
-import { Selector } from 'testcafe';
+import type { Locator, Page } from '@playwright/test';
 
-const dialog = Selector('dialog-hotkeys-cheatsheet');
+const ROOT = 'dialog-hotkeys-cheatsheet';
 
-export const dialogHotkeyCheatsheet = {
-  dialog,
-  keylist: dialog.find('dl'),
-  descriptions: dialog.find('dd'),
-  buttonDismiss: dialog.find('button').withText('Close'),
-};
+export class DialogHotkeyCheatsheet {
+  public constructor(private readonly page: Page) {}
+
+  public dialog(): Locator {
+    return this.page.locator(ROOT);
+  }
+
+  public descriptions(): Locator {
+    return this.page.locator(`${ROOT} dd`);
+  }
+
+  public buttonDismiss(): Locator {
+    return this.page.locator(`${ROOT} button`).filter({ hasText: 'Close' });
+  }
+}

@@ -1,24 +1,59 @@
-import { Selector, t } from 'testcafe';
-import { e2e } from '../utils';
-import { dialogCreateTask } from './dialog-create-task';
+import type { Locator, Page } from '@playwright/test';
+import { expect } from '@playwright/test';
+import { pressCombo } from '../utils';
+import { DialogCreateTask } from './dialog-create-task';
 
-export const screenTasks = {
-  addTaskButton: e2e('button-add-task'),
-  emptyStateAddTaskButton: e2e('screen-tasks__button-add-task-empty-state'),
-  taskItem: e2e('screen-tasks__task-item'),
-  taskStateIcon: e2e('screen-tasks__task-state-icon'),
-  taskName: e2e('screen-tasks__task-name'),
-  buttonTaskAction: Selector('screen-tasks [data-e2e="button-task-actions__trigger"]'),
-  total: e2e('screen-tasks__total'),
-  durationSelector: '[data-e2e="screen-tasks__task-duration"]',
-  addTask: async (name: string) => {
-    await t.pressKey('a').typeText(dialogCreateTask.input, name).click(dialogCreateTask.buttonSubmit);
-    await t.expect(screenTasks.taskName.withExactText(name).exists).ok();
-  },
-  filter: {
+export class ScreenTasks {
+  public constructor(private readonly page: Page) {}
+
+  public addTaskButton() {
+    return this.page.getByTestId('button-add-task');
+  }
+
+  public emptyStateAddTaskButton() {
+    return this.page.getByTestId('screen-tasks__button-add-task-empty-state');
+  }
+
+  public taskItem() {
+    return this.page.getByTestId('screen-tasks__task-item');
+  }
+
+  public taskItemByText(text: string) {
+    return this.page.getByTestId('screen-tasks__task-item').filter({ hasText: text });
+  }
+
+  public taskStateIcon() {
+    return this.page.getByTestId('screen-tasks__task-state-icon');
+  }
+
+  public taskName() {
+    return this.page.getByTestId('screen-tasks__task-name');
+  }
+
+  public buttonTaskAction() {
+    return this.page.locator('screen-tasks').getByTestId('button-task-actions__trigger');
+  }
+
+  public total() {
+    return this.page.getByTestId('screen-tasks__total');
+  }
+
+  public taskDuration(task: Locator): Locator {
+    return task.getByTestId('screen-tasks__task-duration');
+  }
+
+  public async addTask(name: string): Promise<void> {
+    const dialogCreateTask = new DialogCreateTask(this.page);
+    await pressCombo(this.page, 'a');
+    await dialogCreateTask.input().fill(name);
+    await pressCombo(this.page, 'enter');
+    await expect(this.page.getByTestId('screen-tasks__task-name').filter({ hasText: name })).toBeVisible();
+  }
+
+  public readonly filter = {
     name: {
-      input: Selector('tasks-filter .name input'),
-      buttonClear: Selector('tasks-filter .name button-reset-input-control button'),
+      input: () => this.page.locator('tasks-filter .name input'),
+      buttonClear: () => this.page.locator('tasks-filter .name button-reset-input-control button'),
     },
-  },
-};
+  };
+}

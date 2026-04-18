@@ -1,491 +1,613 @@
+import { expect, test } from '@playwright/test';
 import { randomUUID } from 'node:crypto';
 import { mkdir, rm, writeFile } from 'node:fs/promises';
-import { app } from '../page-objects/app';
-import { dialogCreateTask } from '../page-objects/dialog-create-task';
-import { dialogEditSession } from '../page-objects/dialog-edit-session';
-import { dialogRenameTask } from '../page-objects/dialog-rename-task';
-import { dialogSplitSession } from '../page-objects/dialog-split-session';
-import { menuTaskActions } from '../page-objects/menu-task-actions';
-import { screenTask } from '../page-objects/screen-task';
-import { screenTasks } from '../page-objects/screen-tasks';
-import { tooltip } from '../page-objects/tooltip';
-import { advanceDate, getLocationPathname, mockDate, reload, restoreDate } from '../utils';
-import { VISUAL_REGRESSION_OK, comparePageScreenshot } from '../visual-regression';
+import { App } from '../page-objects/app';
+import { DialogCreateTask } from '../page-objects/dialog-create-task';
+import { DialogEditSession } from '../page-objects/dialog-edit-session';
+import { DialogRenameTask } from '../page-objects/dialog-rename-task';
+import { DialogSplitSession } from '../page-objects/dialog-split-session';
+import { MenuTaskActions } from '../page-objects/menu-task-actions';
+import { ScreenTask } from '../page-objects/screen-task';
+import { ScreenTasks } from '../page-objects/screen-tasks';
+import { Tooltip } from '../page-objects/tooltip';
+import {
+  advanceDate,
+  clearDeviceMetrics,
+  dispatchF2,
+  getLocationPathname,
+  mockDate,
+  pressCombo,
+  reloadIgnoringCache,
+  restoreDate,
+  setDeviceMetrics,
+} from '../utils';
 
-fixture('Tasks');
+test.describe('Tasks', () => {
+  let app: App;
+  let dialogCreateTask: DialogCreateTask;
+  let dialogEditSession: DialogEditSession;
+  let dialogRenameTask: DialogRenameTask;
+  let dialogSplitSession: DialogSplitSession;
+  let menuTaskActions: MenuTaskActions;
+  let screenTask: ScreenTask;
+  let screenTasks: ScreenTasks;
+  let tooltip: Tooltip;
 
-test('Adding a task', async (t) => {
-  // Click the empty state "Add task" button
-  await t.click(screenTasks.emptyStateAddTaskButton);
-  // Unfocus the input, asset validation is show
-  await t.expect(await comparePageScreenshot('just opened')).eql(VISUAL_REGRESSION_OK);
-  await t.pressKey('tab').expect(dialogCreateTask.validationError.textContent).contains('Value is required');
-  await t.expect(await comparePageScreenshot('invalid')).eql(VISUAL_REGRESSION_OK);
-  // Submit the dialog with "Enter", assert form is not submitted
-  await t.click(dialogCreateTask.input).pressKey('enter');
-  await t.expect(dialogCreateTask.title.textContent).contains('Create task');
-  await t.expect(dialogCreateTask.input.focused).ok();
-  // Enter the task name, submit with "Enter", assert the dialog is closed
-  await t.typeText(dialogCreateTask.input, 'Test').pressKey('enter');
-  await t.expect(dialogCreateTask.title.exists).notOk();
-  // Assert the task is added and is in the "Active" state
-  await t.expect(screenTasks.taskName.count).eql(1);
-  await t.expect(screenTasks.taskName.textContent).contains('Test');
-  await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).contains('play_circle');
-
-  await t.expect(await comparePageScreenshot('task created')).eql(VISUAL_REGRESSION_OK);
-  // Send the "a t" and "ф е" hotkeys, assert the "Add a task" dialog opens for both
-  for (const combo of ['a t', 'ф е']) {
-    await t.pressKey(combo);
-    await t.expect(dialogCreateTask.title.exists).ok(`${combo} opens the dialog`);
-    await t.click(dialogCreateTask.buttonDismiss);
-  }
-  // Click the FAB "Add task" button, assert the "Add a task" dialog opens
-  await t.click(screenTasks.addTaskButton);
-  await t.expect(dialogCreateTask.title.exists).ok();
-  // Assert in "Add task" dialog, the "OK" button submits
-  await t.typeText(dialogCreateTask.input, 'Test 2');
-  await t.click(dialogCreateTask.buttonSubmit);
-  await t.expect(screenTasks.taskName.nth(1).textContent).contains('Test 2');
-  // Reload the app, assert the tasks persists
-  await reload();
-  await t.expect(screenTasks.taskName.nth(0).textContent).contains('Test');
-  await t.expect(screenTasks.taskName.nth(1).textContent).contains('Test 2');
-});
-
-test('Starting and stopping the task', async (t) => {
-  // Create a task
-  await t
-    .click(screenTasks.emptyStateAddTaskButton)
-    .typeText(dialogCreateTask.input, 'Task')
-    .click(dialogCreateTask.buttonSubmit);
-  // Assert the app has a regular favicon
-  await t.expect(app.favicon.getAttribute('href')).contains('/favicon.svg');
-  // Assert the task is marked as active/not-running in the task list item, task list item context action, task view title and task view context action
-  await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).contains('play_circle');
-  await t.click(screenTasks.buttonTaskAction.nth(1));
-  await t.expect(menuTaskActions.selectorState.textContent).contains('State: Active');
-  await t.expect(await comparePageScreenshot('active menu')).eql(VISUAL_REGRESSION_OK);
-  await t.pressKey('esc');
-  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).contains('play_circle');
-  await t.expect(screenTask.matTable.exists).ok();
-  await t.expect(screenTask.legacyStickyHackTable.exists).notOk();
-  await t.expect(screenTask.matHeaderRow.exists).ok();
-  await t.expect(screenTask.matFooterRow.exists).ok();
-  await t.click(screenTask.buttonTaskAction);
-  await t.expect(menuTaskActions.selectorState.textContent).contains('Active');
-  await t.pressKey('esc');
-  // Assert the "Start" button is visible and has the "Start" tooltip
-  await t.expect(screenTask.buttonStart.exists).ok();
-  await t.expect(screenTask.buttonStop.exists).notOk();
-  await t.hover(screenTask.buttonStart);
-  await t.expect(tooltip.textContent).eql('Start');
-  await t.expect(await comparePageScreenshot('start tooltip')).eql(VISUAL_REGRESSION_OK);
-  // Shrink window down to single panel layout, take a screenshot - "Create task" button should not be visible and "Start task" should
-  (await t.getCurrentCDPSession()).Emulation.setDeviceMetricsOverride({
-    width: 800,
-    height: 800,
-    mobile: true,
-    deviceScaleFactor: 1,
-    screenOrientation: { angle: 0, type: 'portraitPrimary' },
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
+    app = new App(page);
+    dialogCreateTask = new DialogCreateTask(page);
+    dialogEditSession = new DialogEditSession(page);
+    dialogRenameTask = new DialogRenameTask(page);
+    dialogSplitSession = new DialogSplitSession(page);
+    menuTaskActions = new MenuTaskActions(page);
+    screenTask = new ScreenTask(page);
+    screenTasks = new ScreenTasks(page);
+    tooltip = new Tooltip(page);
   });
-  await t.expect(await comparePageScreenshot('single panel')).eql(VISUAL_REGRESSION_OK);
-  await (await t.getCurrentCDPSession()).Emulation.clearDeviceMetricsOverride();
-  // Start a task with the "Start" button
-  await t.click(screenTask.buttonStart);
-  // Assert the task is marked as active/running in the task list item and task view title
-  await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).contains('pause_circle');
-  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).contains('pause_circle');
-  // Stop and start the session several times
-  for (const _ of [1, 2, 3]) {
-    await t.click(screenTask.buttonStop);
-    await t.click(screenTask.buttonStart);
-  }
-  // Assert a session with start time and no end time appears at the top of the session list, with 00:00 duration
-  await t.expect(screenTask.sessionRow.count).eql(4);
-  await t.expect(screenTask.sessionStart.nth(0).textContent).match(/\d/);
-  await t.expect(screenTask.sessionEnd.nth(0).textContent).notMatch(/\d/);
-  await t.expect(screenTask.sessionDuration.nth(0).textContent).contains('5s', { timeout: 10_000 });
-  // Add enough sessions to enforce viewport scrolling and verify sticky header/footer remain anchored.
-  for (let i = 0; i < 18; i++) {
-    await t.click(screenTask.buttonStop);
-    await t.click(screenTask.buttonStart);
-  }
-  const viewportMetrics = await t.eval(() => {
-    const viewport = document.querySelector('screen-task cdk-virtual-scroll-viewport') as HTMLElement | null;
-    if (!viewport) return null;
-    return {
-      scrollTop: viewport.scrollTop,
-      scrollHeight: viewport.scrollHeight,
-      clientHeight: viewport.clientHeight,
+
+  test('Adding a task', async ({ page }) => {
+    // Click the empty state "Add task" button
+    await screenTasks.emptyStateAddTaskButton().click();
+    await expect(dialogCreateTask.title()).toBeVisible();
+    await expect(page).toHaveScreenshot('tasks-adding-just-opened.png');
+
+    // Unfocus the input, asset validation is show
+    await pressCombo(page, 'tab');
+    await expect(dialogCreateTask.validationError()).toContainText('Value is required');
+    await expect(page).toHaveScreenshot('tasks-adding-invalid.png');
+
+    // Submit the dialog with "Enter", assert form is not submitted
+    await dialogCreateTask.input().click();
+    await pressCombo(page, 'enter');
+    await expect(dialogCreateTask.title()).toContainText('Create task');
+    await expect(dialogCreateTask.input()).toBeFocused();
+
+    // Enter the task name, submit with "Enter", assert the dialog is closed
+    await dialogCreateTask.input().fill('Test');
+    await pressCombo(page, 'enter');
+    await expect(dialogCreateTask.title()).toBeHidden();
+
+    // Assert the task is added and is in the "Active" state
+    await expect(screenTasks.taskName()).toHaveCount(1);
+    await expect(screenTasks.taskName().first()).toContainText('Test');
+    await expect(screenTasks.taskStateIcon().first()).toHaveAttribute('data-mat-icon-name', /play_circle/);
+    await expect(page).toHaveScreenshot('tasks-adding-task-created.png');
+
+    // Send the "a t" and "ф е" hotkeys, assert the "Add a task" dialog opens for both
+    for (const combo of ['a t', 'ф е']) {
+      await pressCombo(page, combo);
+      await expect(dialogCreateTask.title(), `${combo} opens the dialog`).toBeVisible();
+      await pressCombo(page, 'esc');
+      await expect(dialogCreateTask.title()).toBeHidden();
+    }
+
+    // Click the FAB "Add task" button, assert the "Add a task" dialog opens
+    await screenTasks.addTaskButton().click();
+    await expect(dialogCreateTask.title()).toBeVisible();
+
+    // Assert in "Add task" dialog, the "OK" button submits
+    await dialogCreateTask.input().fill('Test 2');
+    await pressCombo(page, 'enter');
+    await expect(screenTasks.taskName().filter({ hasText: 'Test 2' })).toHaveCount(1);
+    await expect(screenTasks.taskName()).toHaveCount(2, { timeout: 15_000 });
+
+    // Reload the app, assert the tasks persists
+    await reloadIgnoringCache(page);
+    await expect(screenTasks.taskName()).toHaveCount(2, { timeout: 15_000 });
+    await expect(screenTasks.taskName().nth(0)).toContainText('Test');
+    await expect(screenTasks.taskName().nth(1)).toContainText('Test 2');
+  });
+
+  test('Starting and stopping the task', async ({ page }) => {
+    // Create a task
+    await screenTasks.emptyStateAddTaskButton().click();
+    await dialogCreateTask.input().fill('Task');
+    await dialogCreateTask.buttonSubmit().click();
+
+    // Assert the app has a regular favicon
+    await expect(app.favicon()).toHaveAttribute('href', /\/favicon\.svg/);
+
+    // Assert the task is marked as active/not-running in the task list item, task list item context action, task view title and task view context action
+    await expect(screenTasks.taskStateIcon().first()).toHaveAttribute('data-mat-icon-name', /play_circle/);
+    await screenTasks.buttonTaskAction().nth(1).click();
+    await expect(menuTaskActions.selectorState()).toContainText('State: Active');
+    await expect(page).toHaveScreenshot('tasks-startstop-active-menu.png');
+    await pressCombo(page, 'esc');
+
+    await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', /play_circle/);
+    await expect(screenTask.matTable()).toBeVisible();
+    await expect(screenTask.legacyStickyHackTable()).toBeHidden();
+    await expect(screenTask.matHeaderRow()).toBeVisible();
+    await expect(screenTask.matFooterRow()).toBeVisible();
+
+    await screenTask.buttonTaskAction().click();
+    await expect(menuTaskActions.selectorState()).toContainText('Active');
+    await pressCombo(page, 'esc');
+
+    // Assert the "Start" button is visible and has the "Start" tooltip
+    await expect(screenTask.buttonStart()).toBeVisible();
+    await expect(screenTask.buttonStop()).toBeHidden();
+    await screenTask.buttonStart().hover();
+    await expect(tooltip.root()).toHaveText('Start');
+    await expect(page).toHaveScreenshot('tasks-startstop-start-tooltip.png');
+
+    // Shrink window down to single panel layout, take a screenshot - "Create task" button should not be visible and "Start task" should
+    await setDeviceMetrics(page, {
+      width: 800,
+      height: 800,
+      mobile: true,
+      deviceScaleFactor: 1,
+      screenOrientation: { angle: 0, type: 'portraitPrimary' },
+    });
+    await expect(page).toHaveScreenshot('tasks-startstop-single-panel.png');
+    await clearDeviceMetrics(page);
+
+    // Start a task with the "Start" button
+    await screenTask.buttonStart().click();
+    // Assert the task is marked as active/running in the task list item and task view title
+    await expect(screenTasks.taskStateIcon().first()).toHaveAttribute('data-mat-icon-name', /pause_circle/);
+    await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', /pause_circle/);
+
+    // Stop and start the session several times
+    for (const _ of [1, 2, 3]) {
+      await screenTask.buttonStop().click();
+      await screenTask.buttonStart().click();
+    }
+
+    // Assert a session with start time and no end time appears at the top of the session list, with 00:00 duration
+    await expect(screenTask.sessionRow()).toHaveCount(4);
+    await expect(screenTask.sessionStart().nth(0)).toContainText(/\d/);
+    await expect(screenTask.sessionEnd().nth(0)).not.toContainText(/\d/);
+    await expect(screenTask.sessionDuration().nth(0)).toContainText('5s', { timeout: 10_000 });
+
+    // Add enough sessions to enforce viewport scrolling and verify sticky header/footer remain anchored.
+    for (let i = 0; i < 18; i++) {
+      await screenTask.buttonStop().click();
+      await screenTask.buttonStart().click();
+    }
+
+    const viewportMetrics = await page.evaluate(() => {
+      const viewport = document.querySelector('screen-task cdk-virtual-scroll-viewport') as HTMLElement | null;
+      if (!viewport) return null;
+      return {
+        scrollTop: viewport.scrollTop,
+        scrollHeight: viewport.scrollHeight,
+        clientHeight: viewport.clientHeight,
+      };
+    });
+    expect(viewportMetrics).not.toBeNull();
+    expect(viewportMetrics!.scrollHeight).toBeGreaterThan(viewportMetrics!.clientHeight);
+
+    const headerTopBefore = await screenTask.matHeaderStartCell().evaluate((el) => el.getBoundingClientRect().top);
+    const footerBottomBefore = await screenTask
+      .matFooterStartCell()
+      .evaluate((el) => el.getBoundingClientRect().bottom);
+
+    await page.evaluate(() => {
+      const viewport = document.querySelector('screen-task cdk-virtual-scroll-viewport') as HTMLElement | null;
+      if (!viewport) return;
+      viewport.scrollTop = Math.floor((viewport.scrollHeight - viewport.clientHeight) / 2);
+    });
+
+    const headerTopAfter = await screenTask.matHeaderStartCell().evaluate((el) => el.getBoundingClientRect().top);
+    const footerBottomAfter = await screenTask.matFooterStartCell().evaluate((el) => el.getBoundingClientRect().bottom);
+
+    expect(Math.abs(headerTopAfter - headerTopBefore)).toBeLessThanOrEqual(2);
+    expect(Math.abs(footerBottomAfter - footerBottomBefore)).toBeLessThanOrEqual(2);
+
+    // Assert the "Start" button is replaced with the "Stop" button and its tooltip reads "Stop"
+    await screenTask.name().hover();
+    await screenTask.buttonStop().hover();
+    await expect(tooltip.root()).toHaveText('Stop');
+
+    // Assert the app favicon changed to the "Running" one
+    await expect(app.favicon()).toHaveAttribute('href', /\/favicon-active\.svg/);
+
+    // Stop the task by clicking the "Stop" button
+    await screenTask.buttonStop().click();
+    // Assert the "Stop" button is replaced by the "Start" button
+    await expect(screenTask.buttonStart()).toBeVisible();
+    await expect(screenTask.buttonStop()).toBeHidden();
+
+    // Assert all the status indicators reverted back to active/not-running
+    await expect(screenTasks.taskStateIcon().first()).toHaveAttribute('data-mat-icon-name', /play_circle/);
+    await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', /play_circle/);
+
+    // Start and stop the task with the "s" and "ы" hotkeys, assert it starts and stops
+    for (const combo of ['s', 'ы']) {
+      await pressCombo(page, combo);
+      await expect(screenTasks.taskStateIcon().first()).toHaveAttribute('data-mat-icon-name', /pause_circle/);
+      await pressCombo(page, combo);
+      await expect(screenTasks.taskStateIcon().first()).toHaveAttribute('data-mat-icon-name', /play_circle/);
+    }
+  });
+
+  test('Changing task status', async ({ page }) => {
+    // Open an active/non-running task
+    await screenTasks.emptyStateAddTaskButton().click();
+    await dialogCreateTask.input().fill('Task');
+    await dialogCreateTask.buttonSubmit().click();
+    await page.evaluate(() => document.fonts.ready);
+
+    // Cycle task statuses Active->Finished->Dropped->Active using task list context action, assert the status changes
+    await screenTasks.buttonTaskAction().first().click();
+    await menuTaskActions.selectorState().click();
+    await expect(menuTaskActions.optionFinished()).toBeVisible();
+    await expect(page).toHaveScreenshot('tasks-status-active.png');
+    await menuTaskActions.optionFinished().click();
+    await pressCombo(page, 'esc');
+    await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', 'check_circle');
+    await expect(page).toHaveScreenshot('tasks-status-is-finished.png');
+
+    await app.buttonFinishedTasks().click();
+    await expect(screenTasks.taskStateIcon().first()).toHaveAttribute('data-mat-icon-name', 'check_circle');
+    await screenTasks.taskItem().first().click();
+    await expect(page).toHaveScreenshot('tasks-status-finished-tasks.png');
+
+    await screenTasks.buttonTaskAction().first().click();
+    await menuTaskActions.selectorState().click();
+    await expect(page).toHaveScreenshot('tasks-status-finished.png');
+    await menuTaskActions.optionDropped().click();
+    await pressCombo(page, 'esc');
+    await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', 'delete');
+    await expect(page).toHaveScreenshot('tasks-status-is-dropped.png');
+
+    await app.buttonDroppedTasks().click();
+    await expect(screenTasks.taskStateIcon().first()).toHaveAttribute('data-mat-icon-name', 'delete');
+    await screenTasks.taskItem().first().click();
+    await expect(page).toHaveScreenshot('tasks-status-dropped.png');
+
+    // Cycle task statuses Active->Finished->Dropped->Active using task screen context action, assert the status changes
+    await screenTasks.buttonTaskAction().first().click();
+    await menuTaskActions.selectorState().click();
+    await menuTaskActions.optionActive().click();
+    await pressCombo(page, 'esc');
+    await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', 'play_circle');
+    await app.buttonActiveTasks().click();
+    await expect(screenTasks.taskStateIcon().first()).toHaveAttribute('data-mat-icon-name', 'play_circle');
+    await screenTasks.taskItem().first().click();
+
+    await screenTask.buttonTaskAction().click();
+    await menuTaskActions.selectorState().click();
+    await menuTaskActions.optionFinished().click();
+    await pressCombo(page, 'esc');
+    await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', 'check_circle');
+    await app.buttonFinishedTasks().click();
+    await screenTasks.taskItem().first().click();
+
+    await screenTask.buttonTaskAction().click();
+    await menuTaskActions.selectorState().click();
+    await menuTaskActions.optionDropped().click();
+    await pressCombo(page, 'esc');
+    await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', 'delete');
+    await app.buttonDroppedTasks().click();
+    await screenTasks.taskItem().first().click();
+
+    await screenTask.buttonTaskAction().click();
+    await menuTaskActions.selectorState().click();
+    await menuTaskActions.optionActive().click();
+    await pressCombo(page, 'esc');
+    await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', 'play_circle');
+    await app.buttonActiveTasks().click();
+    await screenTasks.taskItem().first().click();
+
+    await screenTask.buttonTaskAction().click();
+    await menuTaskActions.selectorState().click();
+    await menuTaskActions.optionFinished().click();
+    await pressCombo(page, 'esc');
+    await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', 'check_circle');
+
+    // Cycle task statuses Active->Finished->Active using hot keys, assert the status changes
+    await screenTask.buttonTaskAction().click();
+    await menuTaskActions.selectorState().click();
+    await menuTaskActions.optionActive().click();
+    await pressCombo(page, 'esc');
+    await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', 'play_circle');
+  });
+
+  test('Renaming the task', async ({ page }) => {
+    // Open the "Rename" task dialog the task list "Rename" action
+    await screenTasks.emptyStateAddTaskButton().click();
+    await dialogCreateTask.input().fill('Task');
+    await dialogCreateTask.buttonSubmit().click();
+    await page.evaluate(() => document.fonts.ready);
+    await screenTasks.buttonTaskAction().first().click();
+
+    await expect(screenTask.screen()).toBeVisible();
+    await expect(menuTaskActions.buttonRename()).toBeVisible();
+    await page.mouse.move(0, 0);
+    await expect(page).toHaveScreenshot('tasks-rename-context-menu.png');
+
+    await menuTaskActions.buttonRename().click();
+    await expect(page).toHaveScreenshot('tasks-rename-just-opened.png');
+
+    // Erase the value, assert a validation message is shown
+    await dialogRenameTask.input().click();
+    await pressCombo(page, 'ctrl+a');
+    await pressCombo(page, 'delete');
+    await pressCombo(page, 'tab');
+    await expect(dialogRenameTask.validationError()).toHaveText('Value is required');
+    await expect(page).toHaveScreenshot('tasks-rename-validation.png');
+
+    // Submit the dialog with "Enter", assert the task got renamed
+    await dialogRenameTask.input().fill('Task 1');
+    await pressCombo(page, 'enter');
+    await expect(screenTasks.taskName().first()).toHaveText('Task 1');
+    await expect(screenTask.name()).toHaveText('Task 1');
+
+    // Rename the task again, but submit with "OK", assert the task got renamed
+    await screenTask.buttonTaskAction().click();
+    await menuTaskActions.buttonRename().click();
+    await dialogRenameTask.input().fill('Task 2');
+    await dialogRenameTask.buttonSubmit().click();
+    await expect(screenTask.name()).toHaveText('Task 2');
+
+    // Assert hotkeys open the "Rename task" dialog too
+    for (const combo of ['r t', 'к е']) {
+      await pressCombo(page, combo);
+      await expect(dialogRenameTask.title()).toHaveText('Rename task');
+      await expect(dialogRenameTask.input()).toHaveValue('Task 2');
+      await dialogRenameTask.buttonDismiss().click();
+      await expect(dialogRenameTask.title()).toBeHidden();
+    }
+
+    await dispatchF2(page);
+    await expect(dialogRenameTask.title()).toBeVisible();
+  });
+
+  test('Deleting the task', async ({ page }) => {
+    const addTask = async () => {
+      await screenTasks.addTask('Task');
     };
-  });
-  await t.expect(viewportMetrics).ok();
-  await t.expect(viewportMetrics!.scrollHeight).gt(viewportMetrics!.clientHeight);
-  const headerTopBefore = await screenTask.matHeaderStartCell.getBoundingClientRectProperty('top');
-  const footerBottomBefore = await screenTask.matFooterStartCell.getBoundingClientRectProperty('bottom');
-  await t.eval(() => {
-    const viewport = document.querySelector('screen-task cdk-virtual-scroll-viewport') as HTMLElement | null;
-    if (!viewport) return;
-    viewport.scrollTop = Math.floor((viewport.scrollHeight - viewport.clientHeight) / 2);
-  });
-  const headerTopAfter = await screenTask.matHeaderStartCell.getBoundingClientRectProperty('top');
-  const footerBottomAfter = await screenTask.matFooterStartCell.getBoundingClientRectProperty('bottom');
-  await t.expect(Math.abs(headerTopAfter - headerTopBefore)).lte(2, 'Header should stay anchored while scrolling');
-  await t.expect(Math.abs(footerBottomAfter - footerBottomBefore)).lte(2, 'Footer should stay anchored while scrolling');
-  // Assert the "Start" button is replaced with the "Stop" button and its tooltip reads "Stop"
-  await t.expect(screenTask.buttonStop.exists).ok();
-  await t.hover(screenTask.name);
-  await t.hover(screenTask.buttonStop);
-  await t.expect(tooltip.textContent).eql('Stop');
-  // Assert the app favicon changed to the "Running" one
-  await t.expect(app.favicon.getAttribute('href')).contains('/favicon-active.svg');
-  // Stop the task by clicking the "Stop" button
-  await t.click(screenTask.buttonStop);
-  // Assert the "Stop" button is replaced by the "Start" button
-  await t.expect(screenTask.buttonStart.exists).ok();
-  await t.expect(screenTask.buttonStop.exists).notOk();
-  // Assert all the status indicators reverted back to active/not-running
-  await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).contains('play_circle');
-  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).contains('play_circle');
-  // Start and stop the task with the "s" and "ы" hotkeys, assert it starts and stops
-  for (const combo of ['s', 'ы']) {
-    await t.pressKey(combo);
-    await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).contains('pause_circle');
-    await t.pressKey(combo);
-    await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).contains('play_circle');
-  }
-});
 
-test('Changing task status', async (t) => {
-  // Open an active/non-running task
-  await t
-    .click(screenTasks.emptyStateAddTaskButton)
-    .typeText(dialogCreateTask.input, 'Task')
-    .click(dialogCreateTask.buttonSubmit);
-  // Cycle task statuses Active->Finished->Dropped->Active using task list context action, assert the status changes
-  await t.click(screenTasks.buttonTaskAction).click(menuTaskActions.selectorState);
-  await t.expect(await comparePageScreenshot('active')).eql(VISUAL_REGRESSION_OK);
-  await t.click(menuTaskActions.optionFinished).pressKey('esc');
-  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).eql('check_circle');
-  await t.expect(await comparePageScreenshot('is finished')).eql(VISUAL_REGRESSION_OK);
-  await t.click(app.buttonFinishedTasks);
-  await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).eql('check_circle');
-  await t.click(screenTasks.taskItem);
-
-  await t.expect(await comparePageScreenshot('finished tasks')).eql(VISUAL_REGRESSION_OK);
-
-  await t.click(screenTasks.buttonTaskAction).click(menuTaskActions.selectorState);
-
-  await t.expect(await comparePageScreenshot('finished')).eql(VISUAL_REGRESSION_OK);
-  await t.click(menuTaskActions.optionDropped).pressKey('esc');
-  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).eql('delete');
-
-  await t.expect(await comparePageScreenshot('is dropped')).eql(VISUAL_REGRESSION_OK);
-  await t.click(app.buttonDroppedTasks);
-  await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).eql('delete');
-  await t.click(screenTasks.taskItem);
-
-  await t.expect(await comparePageScreenshot('dropped')).eql(VISUAL_REGRESSION_OK);
-
-  await t.click(screenTasks.buttonTaskAction).click(menuTaskActions.selectorState);
-  await t.click(menuTaskActions.optionActive).pressKey('esc');
-  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).eql('play_circle');
-  await t.click(app.buttonActiveTasks);
-  await t.expect(screenTasks.taskStateIcon.getAttribute('data-mat-icon-name')).eql('play_circle');
-  await t.click(screenTasks.taskItem);
-
-  // Cycle task statuses Active->Finished->Dropped->Active using task screen context action, assert the status changes
-  await t
-    .click(screenTask.buttonTaskAction)
-    .click(menuTaskActions.selectorState)
-    .click(menuTaskActions.optionFinished)
-    .pressKey('esc');
-  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).eql('check_circle');
-  await t.click(app.buttonFinishedTasks);
-  await t.click(screenTasks.taskItem);
-
-  await t
-    .click(screenTask.buttonTaskAction)
-    .click(menuTaskActions.selectorState)
-    .click(menuTaskActions.optionDropped)
-    .pressKey('esc');
-  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).eql('delete');
-  await t.click(app.buttonDroppedTasks);
-  await t.click(screenTasks.taskItem);
-
-  await t
-    .click(screenTask.buttonTaskAction)
-    .click(menuTaskActions.selectorState)
-    .click(menuTaskActions.optionActive)
-    .pressKey('esc');
-  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).eql('play_circle');
-  await t.click(app.buttonActiveTasks);
-  await t.click(screenTasks.taskItem);
-
-  // Cycle task statuses Active->Finished->Active using hot keys, assert the status changes
-  // ENG
-  await t.pressKey('m f').pressKey('esc');
-  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).eql('check_circle');
-  await t.click(app.buttonFinishedTasks);
-  await t.click(screenTasks.taskItem);
-
-  await t.pressKey('m a').pressKey('esc');
-  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).eql('play_circle');
-  await t.click(app.buttonActiveTasks);
-  await t.click(screenTasks.taskItem);
-  // RU
-  await t.pressKey('ь а').pressKey('esc');
-  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).eql('check_circle');
-  await t.click(app.buttonFinishedTasks);
-  await t.click(screenTasks.taskItem);
-
-  await t.pressKey('ь ф').pressKey('esc');
-  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).eql('play_circle');
-  await t.click(app.buttonActiveTasks);
-  await t.click(screenTasks.taskItem);
-});
-
-test('Renaming the task', async (t) => {
-  // Open the "Rename" task dialog the task list "Rename" action
-  await t
-    .click(screenTasks.emptyStateAddTaskButton)
-    .typeText(dialogCreateTask.input, 'Task')
-    .click(dialogCreateTask.buttonSubmit)
-    .click(screenTasks.buttonTaskAction);
-  await t.expect(screenTask.screen.exists).ok();
-  await t.expect(await comparePageScreenshot('context menu')).eql(VISUAL_REGRESSION_OK);
-  await t.click(menuTaskActions.buttonRename);
-  // Erase the value, assert a validation message is shown
-  await t.expect(await comparePageScreenshot('just opened')).eql(VISUAL_REGRESSION_OK);
-  await t.click(dialogRenameTask.input).pressKey('ctrl+a').pressKey('delete').pressKey('tab');
-  await t.expect(dialogRenameTask.validationError.textContent).eql('Value is required');
-
-  await t.expect(await comparePageScreenshot('validation')).eql(VISUAL_REGRESSION_OK);
-  // Submit the dialog with "Enter", assert the task got renamed
-  await t.typeText(dialogRenameTask.input, 'Task 1').pressKey('enter');
-  await t.expect(screenTasks.taskName.textContent).eql('Task 1');
-  await t.expect(screenTask.name.textContent).eql('Task 1');
-  // Rename the task again, but submit with "OK", assert the task got renamed
-  await t.click(screenTask.buttonTaskAction).click(menuTaskActions.buttonRename);
-  await t.typeText(dialogRenameTask.input, 'Task 2', { replace: true });
-  await t.click(dialogRenameTask.buttonSubmit);
-  await t.expect(screenTask.name.textContent).eql('Task 2');
-  // Assert hotkeys open the "Rename task" dialog too
-  for (const combo of ['r t', 'к е']) {
-    await t.pressKey(combo);
-    await t.expect(dialogRenameTask.title.textContent).eql('Rename task');
-    await t.expect(dialogRenameTask.input.value).eql('Task 2');
-    await t.click(dialogRenameTask.buttonDismiss);
-    await t.expect(dialogRenameTask.title.exists).notOk();
-  }
-  const client = await t.getCurrentCDPSession();
-  await client.Input.dispatchKeyEvent({
-    type: 'keyDown',
-    key: 'F2',
-    windowsVirtualKeyCode: 113,
-  });
-  await t.expect(dialogRenameTask.title.exists).ok();
-});
-
-test('Deleting the task', async (t) => {
-  const addTask = async () => {
-    await t
-      .click(screenTasks.emptyStateAddTaskButton)
-      .typeText(dialogCreateTask.input, 'Task')
-      .click(dialogCreateTask.buttonSubmit);
-  };
-  // Open a task
-  await addTask();
-  await t.expect(screenTask.screen.exists).ok();
-  // Remove it with the task list "Remove" context action
-  await t.click(screenTasks.buttonTaskAction).click(menuTaskActions.buttonDelete);
-  // Assert the task disappears from the task list
-  await t.expect(screenTasks.taskItem.count).eql(0);
-  // Assert the task details are closed
-  await t.expect(screenTask.screen.exists).notOk();
-  // Assert the URL does not contain task ID anymore
-  await t.expect(getLocationPathname()).match(/\/active$/);
-  // Assert the task can also be remove using task details context action and hotkeys
-  await addTask();
-  await t.expect(screenTasks.taskItem.count).eql(1);
-  await t.click(screenTask.buttonTaskAction).click(menuTaskActions.buttonDelete);
-  await t.expect(screenTasks.taskItem.count).eql(0);
-  for (const combo of ['d t', 'в е']) {
+    // Open a task
     await addTask();
-    await t.expect(screenTasks.taskItem.count).eql(1);
-    await t.pressKey(combo);
-    await t.expect(screenTasks.taskItem.count).eql(0);
-  }
-});
+    await expect(screenTask.screen()).toBeVisible();
 
-test('Export and import', async (t) => {
-  // Have a file with test data
-  const testId = randomUUID();
-  t.ctx.testId = testId;
-  await mkdir(`e2e/downloads/import-export`, { recursive: true });
-  const referenceData = {
-    version: 1,
-    value: [
-      { id: 'Bain', name: 'Task 1', state: 0, sessions: [] },
-      { id: '1ph6', name: 'Task 2', state: 0, sessions: [] },
-      { id: 'EnBz', name: 'Task 3', state: 0, sessions: [] },
-    ],
-  };
-  await writeFile(`e2e/downloads/import-export/data-${testId}.json`, JSON.stringify(referenceData, null, '  '));
-  // Import the data
-  await t.click(app.buttonImportExport);
-  await t.expect(await comparePageScreenshot('menu')).eql(VISUAL_REGRESSION_OK);
-  await t.setFilesToUpload(app.inputImport, [`../downloads/import-export/data-${testId}.json`]);
-  // Assert the tasks are added
-  await t.expect(screenTasks.taskItem.count).eql(3);
-  await t.expect(screenTasks.taskName.nth(0).textContent).eql('Task 1');
-  await t.expect(screenTasks.taskName.nth(1).textContent).eql('Task 2');
-  await t.expect(screenTasks.taskName.nth(2).textContent).eql('Task 3');
-  // Assert that export works
-  const href = await app.buttonExport.getAttribute('href');
-  // Clicking and checking downloaded file works too, but flakes a lot
-  const exportedData = await t.eval(() => fetch(href).then((res) => res.json()), { dependencies: { href } });
+    // Remove it with the task list "Remove" context action
+    await screenTasks.buttonTaskAction().first().click();
+    await menuTaskActions.buttonDelete().click();
 
-  await t.expect(exportedData).eql(referenceData);
-}).after(async (t) => {
-  await rm(`e2e/downloads/import-export/data-${t.ctx.testId}.json`, { force: true }).catch((e) => {});
-});
+    // Assert the task disappears from the task list
+    await expect(screenTasks.taskItem()).toHaveCount(0);
+    // Assert the task details are closed
+    await expect(screenTask.screen()).toBeHidden();
+    // Assert the URL does not contain task ID anymore
+    await expect.poll(async () => getLocationPathname(page)).toMatch(/\/active$/);
 
-// TestCafe client script to mock the date
+    await addTask();
+    await expect(screenTasks.taskItem()).toHaveCount(1);
+    await screenTask.buttonTaskAction().click();
+    await menuTaskActions.buttonDelete().click();
+    await expect(screenTasks.taskItem()).toHaveCount(0);
 
-test('Editing a session', async (t) => {
-  const now = '2024-06-01T12:00:00';
-  // Have a running task
-  await mockDate(new Date(now));
-  await screenTasks.addTask('Test');
-  await t.pressKey('s');
-  await advanceDate(4_000);
-  // Change a running task session start time, assert the total changes
-  await t.expect(screenTask.sessionDuration.nth(0).textContent).eql('4s');
-  await t.expect(screenTask.taskDuration.textContent).eql('4s');
-  await t.expect(await comparePageScreenshot('running')).eql(VISUAL_REGRESSION_OK);
-  await t.click(screenTask.buttonSessionAction).click(screenTask.menuSession.buttonEdit);
-  await dialogEditSession.setStart(now.replace('12', '09'));
-  await t.expect(await comparePageScreenshot('editing')).eql(VISUAL_REGRESSION_OK);
-  await t.click(dialogEditSession.buttonSubmit);
-  await t.expect(screenTask.sessionDuration.nth(0).textContent).eql('3h00m');
-  await t.expect(screenTask.taskDuration.textContent).eql('3h00m');
-  await t.expect(screenTasks.total.textContent).eql('3h00m');
-  // For a running task session, set the end time, assert the task becomes active/non-running
-  await t.click(screenTask.buttonSessionAction).click(screenTask.menuSession.buttonEdit);
-  await dialogEditSession.setEnd(now.replace('12', '11'));
-  await t.click(dialogEditSession.buttonSubmit);
-  await t.expect(screenTask.sessionDuration.nth(0).textContent).eql('2h00m');
-  await t.expect(screenTask.taskDuration.textContent).eql('2h00m');
-  await t.expect(screenTasks.total.textContent).eql('2h00m');
-  await t.expect(screenTasks.total.getAttribute('title')).eql('2h 0m 0s');
-  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).contains('play_circle');
-  // For a complete task session, remove the end time, assert the task becomes active/running and the total updates
-  await t
-    .click(screenTask.buttonSessionAction)
-    .click(screenTask.menuSession.buttonEdit)
-    .expect(dialogEditSession.inputEnd.exists)
-    .ok()
-    .click(dialogEditSession.buttonResetEnd)
-    .click(dialogEditSession.buttonSubmit);
-  await t.expect(screenTask.sessionDuration.nth(0).textContent).eql('3h00m');
-  await t.expect(screenTask.taskDuration.textContent).eql('3h00m');
-  await t.expect(screenTasks.total.textContent).eql('3h00m');
-  await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).contains('pause_circle');
-  // Edit a session, assert the form can't be submitted without start time
-  await t
-    .click(screenTask.buttonSessionAction)
-    .click(screenTask.menuSession.buttonEdit)
-    .click(dialogEditSession.buttonResetStart)
-    .click(dialogEditSession.buttonSubmit);
-  await t.expect(dialogEditSession.validationErrorStart.textContent).contains('Start is required');
-}).after(async (t) => {
-  await restoreDate();
-});
+    // Assert the task can also be remove using task details context action and hotkeys
+    // ENG
+    await addTask();
+    await expect(screenTasks.taskItem()).toHaveCount(1);
+    await pressCombo(page, 'd t');
+    await expect(screenTasks.taskItem()).toHaveCount(0);
 
-test('Moving a session', async (t) => {
-  (await t.getCurrentCDPSession()).Emulation.setCPUThrottlingRate({
-    rate: 8,
+    // RU
+    await addTask();
+    await expect(screenTasks.taskItem()).toHaveCount(1);
+    await pressCombo(page, 'в е');
+    await expect(screenTasks.taskItem()).toHaveCount(0);
   });
-  await mockDate(new Date('2025-07-05T06:09:00'));
-  // Have two tasks with sessions
-  await screenTasks.addTask('To');
-  await screenTasks.addTask('From');
-  await t.pressKey('s');
-  await advanceDate(500);
-  await t.pressKey('s');
-  // Open task 1, drag a session to the task 2
-  await t.expect(screenTask.sessionStart.count).eql(1);
-  await t.dispatchEvent(screenTask.sessionRow, 'mousedown');
-  await t.hover(screenTasks.taskItem.withText('To'));
-  // Assert the task task list task is marked as drop target
-  await t.expect(screenTasks.taskItem.withText('To').hasClass('cdk-drop-list-dragging')).ok();
-  await t.expect(screenTask.sessionStart.count).gt(1);
-  // Drop the session
-  await t.dispatchEvent(screenTasks.taskItem.withText('To'), 'mouseup');
-  // Assert the target task is no longer marked as the drop target
-  await t.expect(screenTasks.taskItem.withText('To').hasClass('cdk-drop-list-dragging')).notOk();
-  // Assert the total for both tasks were updated
-  await t.expect(screenTasks.taskItem.withText('To').find(screenTasks.durationSelector).textContent).contains('0s');
-  await t.expect(screenTasks.taskItem.withText('From').find(screenTasks.durationSelector).textContent).eql('0s');
-  // Assert the session was moved from task 1 to task 2
-  await t.expect(screenTask.name.textContent).contains('From');
-  await t.expect(screenTask.sessionStart.count).eql(0);
-  await t.pressKey('j');
-  await t.expect(screenTask.name.textContent).contains('To');
-  await t.expect(screenTask.sessionStart.count).eql(1);
-});
 
-test('Session splitting', async (t) => {
-  const checkSession = async (index: number, session: { start: string; end: string; duration: string }) => {
-    await t.expect(dialogSplitSession.sessionStart.nth(index).textContent).contains(session.start);
-    await t.expect(dialogSplitSession.sessionEnd.nth(index).textContent).contains(session.end);
-    await t.expect(dialogSplitSession.sessionDuration.nth(index).textContent).eql(session.duration);
-  };
+  test('Export and import', async ({ page }) => {
+    // Have a file with test data
+    const testId = randomUUID();
+    const filePath = `e2e/downloads/import-export/data-${testId}.json`;
+    await mkdir('e2e/downloads/import-export', { recursive: true });
 
-  // Have a task with 4h long session
-  const now = '2024-07-07T17:56:00';
-  await mockDate(new Date(now));
-  await screenTasks.addTask('Test');
-  await t.pressKey('s');
-  await advanceDate(14_400_000);
-  await t.pressKey('s');
-  // Open the session split dialog
-  await t.click(screenTask.buttonSessionAction);
-  await t.click(screenTask.menuSession.buttonSplit);
-  await t.expect(dialogSplitSession.matTable.count).eql(2);
-  await t.expect(dialogSplitSession.legacyNonMatTable.exists).notOk();
-  // Assert the session is split in the middle by default
-  await checkSession(0, { start: '2024-07-07 17:56', end: '2024-07-07 21:56', duration: '4h00m' });
-  await checkSession(1, { start: '2024-07-07 17:56', end: '2024-07-07 19:56', duration: '2h00m' });
-  await checkSession(2, { start: '2024-07-07 19:56', end: '2024-07-07 21:56', duration: '2h00m' });
-  await t.expect(await comparePageScreenshot('default')).eql(VISUAL_REGRESSION_OK);
-  // Move the slider to the leftmost position
-  await dialogSplitSession.setSliderValue(0);
-  // await dialogSplitSession.setSliderValue(0);
-  await checkSession(1, { start: '2024-07-07 17:56', end: '2024-07-07 17:56', duration: '0s' });
-  await checkSession(2, { start: '2024-07-07 17:56', end: '2024-07-07 21:56', duration: '4h00m' });
-  // Assert form submission is disabled
-  await t.expect(dialogSplitSession.buttonSubmit.hasAttribute('disabled')).ok();
-  // Move the slider to the rightmost position
-  await dialogSplitSession.setSliderValue(1);
-  await checkSession(1, { start: '2024-07-07 17:56', end: '2024-07-07 21:56', duration: '4h00m' });
-  await checkSession(2, { start: '2024-07-07 21:56', end: '2024-07-07 21:56', duration: '0s' });
-  await t.expect(await comparePageScreenshot('invalid')).eql(VISUAL_REGRESSION_OK);
-  // Assert form submission is disabled
-  await t.expect(dialogSplitSession.buttonSubmit.hasAttribute('disabled')).ok();
-  // Move the slider roughly to the middle
-  await dialogSplitSession.setSliderValue(0.4825);
-  await checkSession(1, { start: '2024-07-07 17:56', end: '2024-07-07 19:51', duration: '1h55m' });
-  await checkSession(2, { start: '2024-07-07 19:51', end: '2024-07-07 21:56', duration: '2h04m' });
-  // Assert form submission is enabled
-  await t.expect(dialogSplitSession.buttonSubmit.hasAttribute('disabled')).notOk();
-  // Submit the form
-  await t.click(dialogSplitSession.buttonSubmit);
-  await t.expect(dialogSplitSession.buttonSubmit.exists).notOk();
-  // Assert the session was split
-  await t.expect(screenTask.sessionStart.count).eql(2);
-  await t.expect(screenTask.sessionDuration.nth(0).textContent).eql('2h04m');
-  await t.expect(screenTask.sessionDuration.nth(1).textContent).eql('1h55m');
+    const referenceData = {
+      version: 1,
+      value: [
+        { id: 'Bain', name: 'Task 1', state: 0, sessions: [] },
+        { id: '1ph6', name: 'Task 2', state: 0, sessions: [] },
+        { id: 'EnBz', name: 'Task 3', state: 0, sessions: [] },
+      ],
+    };
+
+    await writeFile(filePath, JSON.stringify(referenceData, null, '  '));
+
+    try {
+      // Import the data
+      await app.buttonImportExport().click();
+      await expect(page).toHaveScreenshot('tasks-import-export-menu.png');
+      await app.inputImport().setInputFiles(filePath);
+
+      // Assert the tasks are added
+      await expect(screenTasks.taskItem()).toHaveCount(3);
+      await expect(screenTasks.taskName().nth(0)).toHaveText('Task 1');
+      await expect(screenTasks.taskName().nth(1)).toHaveText('Task 2');
+      await expect(screenTasks.taskName().nth(2)).toHaveText('Task 3');
+
+      // Assert that export works
+      const href = await app.buttonExport().getAttribute('href');
+      expect(href).toBeTruthy();
+      const exportedData = await page.evaluate(async (url) => fetch(url).then((res) => res.json()), href!);
+      expect(exportedData).toEqual(referenceData);
+      // Clicking and checking downloaded file works too, but flakes a lot
+    } finally {
+      await rm(filePath, { force: true }).catch(() => undefined);
+    }
+  });
+
+  test('Editing a session', async ({ page }) => {
+    // TestCafe client script to mock the date
+    const now = '2024-06-01T12:00:00';
+    await mockDate(page, new Date(now));
+
+    try {
+      // Have a running task
+      await screenTasks.addTask('Test');
+      await pressCombo(page, 's');
+      await advanceDate(page, 4_000);
+
+      await expect(screenTask.sessionDuration().nth(0)).toHaveText('4s');
+      await expect(screenTask.taskDuration()).toHaveText('4s');
+      await expect(page).toHaveScreenshot('tasks-edit-session-running.png');
+
+      // Change a running task session start time, assert the total changes
+      await screenTask.buttonSessionAction().click();
+      await screenTask.menuSession.buttonEdit().click();
+      await dialogEditSession.setStart(now.replace('12', '09'));
+      await expect(page).toHaveScreenshot('tasks-edit-session-editing.png');
+      await dialogEditSession.buttonSubmit().click();
+
+      await expect(screenTask.sessionDuration().nth(0)).toHaveText('3h00m');
+      await expect(screenTask.taskDuration()).toHaveText('3h00m');
+      await expect(screenTasks.total()).toHaveText('3h00m');
+
+      // For a running task session, set the end time, assert the task becomes active/non-running
+      await screenTask.buttonSessionAction().click();
+      await screenTask.menuSession.buttonEdit().click();
+      await dialogEditSession.setEnd(now.replace('12', '11'));
+      await dialogEditSession.buttonSubmit().click();
+
+      await expect(screenTask.sessionDuration().nth(0)).toHaveText('2h00m');
+      await expect(screenTask.taskDuration()).toHaveText('2h00m');
+      await expect(screenTasks.total()).toHaveText('2h00m');
+      await expect(screenTasks.total()).toHaveAttribute('title', '2h 0m 0s');
+      await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', /play_circle/);
+
+      // For a complete task session, remove the end time, assert the task becomes active/running and the total updates
+      await screenTask.buttonSessionAction().click();
+      await screenTask.menuSession.buttonEdit().click();
+      await expect(dialogEditSession.inputEnd()).toBeVisible();
+      await dialogEditSession.buttonResetEnd().click();
+      await dialogEditSession.buttonSubmit().click();
+
+      await expect(screenTask.sessionDuration().nth(0)).toHaveText('3h00m');
+      await expect(screenTask.taskDuration()).toHaveText('3h00m');
+      await expect(screenTasks.total()).toHaveText('3h00m');
+      await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', /pause_circle/);
+
+      // Edit a session, assert the form can't be submitted without start time
+      await screenTask.buttonSessionAction().click();
+      await screenTask.menuSession.buttonEdit().click();
+      await dialogEditSession.buttonResetStart().click();
+      await dialogEditSession.buttonSubmit().click();
+      await expect(dialogEditSession.validationErrorStart()).toContainText('Start is required');
+    } finally {
+      await restoreDate(page);
+    }
+  });
+
+  test('Moving a session', async ({ page }) => {
+    await mockDate(page, new Date('2025-07-05T06:09:00'));
+
+    try {
+      // Have two tasks with sessions
+      await screenTasks.addTask('To');
+      await screenTasks.addTask('From');
+      await pressCombo(page, 's');
+      await advanceDate(page, 500);
+      await pressCombo(page, 's');
+
+      // Open task 1, drag a session to the task 2
+      await expect(screenTask.sessionStart()).toHaveCount(1);
+
+      const source = screenTask.sessionRow().first();
+      const target = screenTasks.taskItemByText('To');
+      await source.dragTo(target);
+
+      if ((await screenTask.sessionStart().count()) !== 0) {
+        const sourceBox = await source.boundingBox();
+        const targetBox = await target.boundingBox();
+        if (sourceBox && targetBox) {
+          await page.mouse.move(sourceBox.x + sourceBox.width / 2, sourceBox.y + sourceBox.height / 2);
+          await page.mouse.down();
+          await page.mouse.move(targetBox.x + targetBox.width / 2, targetBox.y + targetBox.height / 2, { steps: 20 });
+          await page.mouse.up();
+        }
+      }
+
+      // Assert the target task is no longer marked as the drop target
+      await expect
+        .poll(async () => {
+          return screenTask.sessionStart().count();
+        })
+        .toBe(0);
+
+      // Assert the total for both tasks were updated
+      await expect(screenTasks.taskDuration(target)).toContainText('0s');
+      await expect(screenTasks.taskDuration(screenTasks.taskItemByText('From'))).toHaveText('0s');
+
+      // Assert the session was moved from task 1 to task 2
+      await expect(screenTask.name()).toContainText('From');
+      await pressCombo(page, 'j');
+      await expect(screenTask.name()).toContainText('To');
+      await expect(screenTask.sessionStart()).toHaveCount(1);
+    } finally {
+      await restoreDate(page);
+    }
+  });
+
+  test('Session splitting', async ({ page }) => {
+    const checkSession = async (index: number, session: { start: string; end: string; duration: string }) => {
+      await expect(dialogSplitSession.sessionStart().nth(index)).toContainText(session.start);
+      await expect(dialogSplitSession.sessionEnd().nth(index)).toContainText(session.end);
+      await expect(dialogSplitSession.sessionDuration().nth(index)).toHaveText(session.duration);
+    };
+
+    const now = '2024-07-07T17:56:00';
+    await mockDate(page, new Date(now));
+
+    try {
+      // Have a task with 4h long session
+      await screenTasks.addTask('Test');
+      await pressCombo(page, 's');
+      await advanceDate(page, 14_400_000);
+      await pressCombo(page, 's');
+
+      // Open the session split dialog
+      await screenTask.buttonSessionAction().click();
+      await screenTask.menuSession.buttonSplit().click();
+      // Assert the session is split in the middle by default
+      await expect(dialogSplitSession.matTable()).toHaveCount(2);
+      await expect(dialogSplitSession.legacyNonMatTable()).toBeHidden();
+
+      await checkSession(0, { start: '2024-07-07 17:56', end: '2024-07-07 21:56', duration: '4h00m' });
+      await checkSession(1, { start: '2024-07-07 17:56', end: '2024-07-07 19:56', duration: '2h00m' });
+      await checkSession(2, { start: '2024-07-07 19:56', end: '2024-07-07 21:56', duration: '2h00m' });
+      await expect(page).toHaveScreenshot('tasks-split-default.png');
+
+      // Move the slider to the leftmost position
+      // await dialogSplitSession.setSliderValue(0);
+      await dialogSplitSession.setSliderValue(0);
+      await checkSession(1, { start: '2024-07-07 17:56', end: '2024-07-07 17:56', duration: '0s' });
+      await checkSession(2, { start: '2024-07-07 17:56', end: '2024-07-07 21:56', duration: '4h00m' });
+      // Assert form submission is disabled
+      await expect(dialogSplitSession.buttonSubmit()).toBeDisabled();
+
+      // Move the slider to the rightmost position
+      await dialogSplitSession.setSliderValue(1);
+      await checkSession(1, { start: '2024-07-07 17:56', end: '2024-07-07 21:56', duration: '4h00m' });
+      await checkSession(2, { start: '2024-07-07 21:56', end: '2024-07-07 21:56', duration: '0s' });
+      await expect(page).toHaveScreenshot('tasks-split-invalid.png');
+      // Assert form submission is disabled
+      await expect(dialogSplitSession.buttonSubmit()).toBeDisabled();
+
+      // Move the slider roughly to the middle
+      await dialogSplitSession.setSliderValue(0.4825);
+      await checkSession(1, { start: '2024-07-07 17:56', end: '2024-07-07 19:51', duration: '1h55m' });
+      await checkSession(2, { start: '2024-07-07 19:51', end: '2024-07-07 21:56', duration: '2h04m' });
+      // Assert form submission is enabled
+      await expect(dialogSplitSession.buttonSubmit()).toBeEnabled();
+
+      // Submit the form
+      await dialogSplitSession.buttonSubmit().click();
+      await expect(dialogSplitSession.buttonSubmit()).toBeHidden();
+      // Assert the session was split
+      await expect(screenTask.sessionStart()).toHaveCount(2);
+      await expect(screenTask.sessionDuration().nth(0)).toHaveText('2h04m');
+      await expect(screenTask.sessionDuration().nth(1)).toHaveText('1h55m');
+    } finally {
+      await restoreDate(page);
+    }
+  });
 });

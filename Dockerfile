@@ -1,4 +1,4 @@
-FROM timbru31/node-chrome@sha256:6987e10524c460070f5a9c987336a8f0b1f67018e19ea74422c258567aa38823
+FROM mcr.microsoft.com/playwright:v1.59.1-noble
 COPY package*.json ./
 RUN npm ci
 ENTRYPOINT []

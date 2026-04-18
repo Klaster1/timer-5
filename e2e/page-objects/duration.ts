@@ -1,3 +1,9 @@
-import { Selector } from 'testcafe';
+import type { Locator, Page } from '@playwright/test';
 
-export const duration = Selector('duration');
+export class Duration {
+  public constructor(private readonly page: Page) {}
+
+  public root(): Locator {
+    return this.page.locator('duration');
+  }
+}

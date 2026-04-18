@@ -1,45 +1,65 @@
-import { Selector, t } from 'testcafe';
-import { e2e } from '../utils';
+import type { Locator, Page } from '@playwright/test';
 
-export const dialogEditSession = {
-  buttonStartDatepickerToggle: e2e('dialog-edit-session__button-start-datepicker-toggle'),
-  buttonEndDatepickerToggle: e2e('dialog-edit-session__button-end-datepicker-toggle'),
-  inputStart: e2e('dialog-edit-session__input-start'),
-  buttonResetStart: Selector('dialog-edit-session button-reset-input-control button').nth(0),
-  validationErrorStart: e2e('dialog-edit-session__start-validation-error'),
-  inputEnd: e2e('dialog-edit-session__input-end'),
-  buttonResetEnd: Selector('dialog-edit-session button-reset-input-control button').nth(1),
-  buttonSubmit: e2e('dialog-edit-session__button-submit'),
-  /**
-   * Example: "2017-06-01T08:30"
-   */
-  async setStart(value: string) {
-    const input = this.inputStart;
-    await t.click(this.buttonResetStart);
-    await t.eval(
-      () => {
-        const el = (input as any)() as HTMLInputElement;
-        el.value = value;
-        el.dispatchEvent(new Event('input'));
-      },
-      { dependencies: { input, value } },
-    );
-  },
-  /**
-   * Example: "2017-06-01T08:30"
-   */
-  async setEnd(value: string) {
-    const input = this.inputEnd;
-    if (await this.buttonResetEnd.exists) {
-      await t.click(this.buttonResetEnd);
+export class DialogEditSession {
+  public constructor(private readonly page: Page) {}
+
+  private dialog(): Locator {
+    return this.page.locator('mat-dialog-container:visible').last();
+  }
+
+  public buttonStartDatepickerToggle(): Locator {
+    return this.dialog().getByTestId('dialog-edit-session__button-start-datepicker-toggle');
+  }
+
+  public buttonEndDatepickerToggle(): Locator {
+    return this.dialog().getByTestId('dialog-edit-session__button-end-datepicker-toggle');
+  }
+
+  public inputStart(): Locator {
+    return this.dialog().getByTestId('dialog-edit-session__input-start');
+  }
+
+  public buttonResetStart(): Locator {
+    return this.dialog().locator('button-reset-input-control button').nth(0);
+  }
+
+  public validationErrorStart(): Locator {
+    return this.dialog().getByTestId('dialog-edit-session__start-validation-error');
+  }
+
+  public inputEnd(): Locator {
+    return this.dialog().getByTestId('dialog-edit-session__input-end');
+  }
+
+  public buttonResetEnd(): Locator {
+    return this.dialog().locator('button-reset-input-control button').nth(1);
+  }
+
+  public buttonSubmit(): Locator {
+    return this.dialog().getByTestId('dialog-edit-session__button-submit');
+  }
+
+  public async setStart(value: string): Promise<void> {
+    const input = this.inputStart();
+    await this.buttonResetStart().click();
+    await input.evaluate((el, nextValue) => {
+      const htmlInput = el as HTMLInputElement;
+      htmlInput.value = nextValue;
+      htmlInput.dispatchEvent(new Event('input', { bubbles: true }));
+      htmlInput.dispatchEvent(new Event('change', { bubbles: true }));
+    }, value);
+  }
+
+  public async setEnd(value: string): Promise<void> {
+    const input = this.inputEnd();
+    if (await this.buttonResetEnd().isVisible()) {
+      await this.buttonResetEnd().click();
     }
-    await t.eval(
-      () => {
-        const el = (input as any)() as HTMLInputElement;
-        el.value = value;
-        el.dispatchEvent(new Event('input'));
-      },
-      { dependencies: { input, value } },
-    );
-  },
-};
+    await input.evaluate((el, nextValue) => {
+      const htmlInput = el as HTMLInputElement;
+      htmlInput.value = nextValue;
+      htmlInput.dispatchEvent(new Event('input', { bubbles: true }));
+      htmlInput.dispatchEvent(new Event('change', { bubbles: true }));
+    }, value);
+  }
+}
