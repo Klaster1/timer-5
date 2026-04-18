@@ -437,7 +437,7 @@ test.describe('Tasks', () => {
   });
 
   test('Editing a session', async ({ page }) => {
-    // TestCafe client script to mock the date
+    // Playwright helper to mock the date in the browser context
     const now = '2024-06-01T12:00:00';
     await mockDate(page, new Date(now));
 
