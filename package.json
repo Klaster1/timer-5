@@ -59,6 +59,7 @@
     "@napi-rs/canvas": "^0.1.71",
     "@types/node": "^24.0.1",
     "angular-testcafe": "^4.0.0",
+    "baseline-browser-mapping": "^2.10.19",
     "gh-pages": "^6.3.0",
     "local-web-server": "^5.4.0",
     "looks-same": "^9.0.1",
