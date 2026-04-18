@@ -106,6 +106,33 @@ test('Starting and stopping the task', async (t) => {
   await t.expect(screenTask.sessionStart.nth(0).textContent).match(/\d/);
   await t.expect(screenTask.sessionEnd.nth(0).textContent).notMatch(/\d/);
   await t.expect(screenTask.sessionDuration.nth(0).textContent).contains('5s', { timeout: 10_000 });
+  // Add enough sessions to enforce viewport scrolling and verify sticky header/footer remain anchored.
+  for (let i = 0; i < 18; i++) {
+    await t.click(screenTask.buttonStop);
+    await t.click(screenTask.buttonStart);
+  }
+  const viewportMetrics = await t.eval(() => {
+    const viewport = document.querySelector('screen-task cdk-virtual-scroll-viewport') as HTMLElement | null;
+    if (!viewport) return null;
+    return {
+      scrollTop: viewport.scrollTop,
+      scrollHeight: viewport.scrollHeight,
+      clientHeight: viewport.clientHeight,
+    };
+  });
+  await t.expect(viewportMetrics).ok();
+  await t.expect(viewportMetrics!.scrollHeight).gt(viewportMetrics!.clientHeight);
+  const headerTopBefore = await screenTask.matHeaderStartCell.getBoundingClientRectProperty('top');
+  const footerBottomBefore = await screenTask.matFooterStartCell.getBoundingClientRectProperty('bottom');
+  await t.eval(() => {
+    const viewport = document.querySelector('screen-task cdk-virtual-scroll-viewport') as HTMLElement | null;
+    if (!viewport) return;
+    viewport.scrollTop = Math.floor((viewport.scrollHeight - viewport.clientHeight) / 2);
+  });
+  const headerTopAfter = await screenTask.matHeaderStartCell.getBoundingClientRectProperty('top');
+  const footerBottomAfter = await screenTask.matFooterStartCell.getBoundingClientRectProperty('bottom');
+  await t.expect(Math.abs(headerTopAfter - headerTopBefore)).lte(2, 'Header should stay anchored while scrolling');
+  await t.expect(Math.abs(footerBottomAfter - footerBottomBefore)).lte(2, 'Footer should stay anchored while scrolling');
   // Assert the "Start" button is replaced with the "Stop" button and its tooltip reads "Stop"
   await t.expect(screenTask.buttonStop.exists).ok();
   await t.hover(screenTask.name);
