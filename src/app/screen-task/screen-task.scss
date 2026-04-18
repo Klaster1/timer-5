@@ -48,6 +48,12 @@ mat-toolbar {
   max-width: 40px;
   min-width: 40px;
 }
+.header-action.mat-mdc-header-cell,
+.header-action.mat-mdc-cell,
+.header-action.mat-mdc-footer-cell {
+  padding-left: 0;
+  padding-right: 0;
+}
 cdk-virtual-scroll-viewport {
   grid-row: 2;
   padding-right: 2px;

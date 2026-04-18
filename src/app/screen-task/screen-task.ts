@@ -1,9 +1,10 @@
-import { CdkDrag, CdkDragPlaceholder, CdkDropList } from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
 import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
-import { DatePipe, NgStyle } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, viewChild } from '@angular/core';
 import { MatFabButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltip } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
@@ -25,13 +26,11 @@ import { RoutedDialogs } from '@app/providers/routed-dialogs';
 import { AppStore } from '@app/providers/state';
 import { HotkeysService } from 'angular2-hotkeys';
 import { ButtonSessionActionsComponent } from './button-session-actions/button-session-actions';
-import { VirtualScrollStickyTable } from './sticky';
-import { TypeSafeCdkVirtualForDirective } from './type-safe-virtual-for';
 
 @Component({
   selector: 'screen-task',
   templateUrl: './screen-task.html',
-  styleUrls: ['./screen-task.scss', './mat-table.scss'],
+  styleUrls: ['./screen-task.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     TaskStateIconPipe,
@@ -42,16 +41,13 @@ import { TypeSafeCdkVirtualForDirective } from './type-safe-virtual-for';
     ButtonSessionActionsComponent,
     MapPipe,
     CdkDrag,
-    CdkDragPlaceholder,
     CdkDropList,
     DatePipe,
     RouterLink,
     MatIconButton,
     MatFabButton,
     ScrollingModule,
-    NgStyle,
-    VirtualScrollStickyTable,
-    TypeSafeCdkVirtualForDirective,
+    MatTableModule,
     DurationComponent,
     ToolbarWidthSyncDirective,
   ],
@@ -67,6 +63,7 @@ export default class ScreenTaskComponent {
   taskDuration = taskDuration;
   sessionDuration = sessionDuration;
   sortSessions = sortSessions;
+  trackSession = (_: number, session: Task['sessions'][number]) => `${session.start}-${session.end ?? 'running'}`;
 
   hotkeys = [
     hotkey(KEYS_START_STOP, 'Start/stop task', (e) => {

@@ -9,6 +9,7 @@ import {
   MatDialogTitle,
 } from '@angular/material/dialog';
 import { MatSlider, MatSliderThumb } from '@angular/material/slider';
+import { MatTableModule } from '@angular/material/table';
 import { DurationComponent } from '@app/directives/duration';
 import { TemplateContextTypeDirective } from '@app/directives/template-context-type';
 import { Milliseconds } from '@app/domain/date-time';
@@ -24,7 +25,7 @@ export interface DialogSplitSessionData {
 @Component({
   selector: 'dialog-split-session',
   templateUrl: './dialog-split-session.html',
-  styleUrls: ['./dialog-split-session.scss', '../screen-task/mat-table.scss'],
+  styleUrls: ['./dialog-split-session.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatDialogTitle,
@@ -36,6 +37,7 @@ export interface DialogSplitSessionData {
     MatSliderThumb,
     DatePipe,
     DurationComponent,
+    MatTableModule,
     MapPipe,
     TemplateContextTypeDirective,
     NgTemplateOutlet,
@@ -88,6 +90,7 @@ export default class DialogSplitSessionComponent {
     return this.value() === this.state.dialogSession()?.start || this.value() === this.state.dialogSession()?.end;
   });
   sessionDuration = sessionDuration;
+  splitPreviewColumns = ['start', 'end', 'duration'];
 
   sessionsContext!: {
     sessions: Session[];
