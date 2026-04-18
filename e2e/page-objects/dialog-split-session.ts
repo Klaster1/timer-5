@@ -3,6 +3,8 @@ import { e2e } from '../utils';
 
 const sliderInput = Selector('.mdc-slider__track');
 export const dialogSplitSession = {
+  matTable: Selector('dialog-split-session table[mat-table]'),
+  legacyNonMatTable: Selector('dialog-split-session table.mat-mdc-table:not([mat-table])'),
   sessionStart: e2e('dialog-split-session__session-start'),
   sessionEnd: e2e('dialog-split-session__session-end'),
   sessionDuration: e2e('dialog-split-session__session-duration'),

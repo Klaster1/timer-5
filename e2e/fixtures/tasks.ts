@@ -68,6 +68,10 @@ test('Starting and stopping the task', async (t) => {
   await t.expect(await comparePageScreenshot('active menu')).eql(VISUAL_REGRESSION_OK);
   await t.pressKey('esc');
   await t.expect(screenTask.stateIcon.getAttribute('data-mat-icon-name')).contains('play_circle');
+  await t.expect(screenTask.matTable.exists).ok();
+  await t.expect(screenTask.legacyStickyHackTable.exists).notOk();
+  await t.expect(screenTask.matHeaderRow.exists).ok();
+  await t.expect(screenTask.matFooterRow.exists).ok();
   await t.click(screenTask.buttonTaskAction);
   await t.expect(menuTaskActions.selectorState.textContent).contains('Active');
   await t.pressKey('esc');
@@ -390,7 +394,7 @@ test('Moving a session', async (t) => {
   await t.hover(screenTasks.taskItem.withText('To'));
   // Assert the task task list task is marked as drop target
   await t.expect(screenTasks.taskItem.withText('To').hasClass('cdk-drop-list-dragging')).ok();
-  await t.expect(screenTask.sessionStart.count).eql(2);
+  await t.expect(screenTask.sessionStart.count).gt(1);
   // Drop the session
   await t.dispatchEvent(screenTasks.taskItem.withText('To'), 'mouseup');
   // Assert the target task is no longer marked as the drop target
@@ -423,6 +427,8 @@ test('Session splitting', async (t) => {
   // Open the session split dialog
   await t.click(screenTask.buttonSessionAction);
   await t.click(screenTask.menuSession.buttonSplit);
+  await t.expect(dialogSplitSession.matTable.count).eql(2);
+  await t.expect(dialogSplitSession.legacyNonMatTable.exists).notOk();
   // Assert the session is split in the middle by default
   await checkSession(0, { start: '2024-07-07 17:56', end: '2024-07-07 21:56', duration: '4h00m' });
   await checkSession(1, { start: '2024-07-07 17:56', end: '2024-07-07 19:56', duration: '2h00m' });

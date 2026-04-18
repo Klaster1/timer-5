@@ -4,6 +4,10 @@ import { e2e } from '../utils';
 export const screenTask = {
   name: e2e('screen-task__name'),
   stateIcon: e2e('screen-task__state-icon'),
+  matTable: Selector('screen-task table[mat-table]'),
+  legacyStickyHackTable: Selector('screen-task table[sticky]'),
+  matHeaderRow: Selector('screen-task tr[mat-header-row]'),
+  matFooterRow: Selector('screen-task tr[mat-footer-row]'),
   buttonTaskAction: Selector('screen-task [data-e2e="button-task-actions__trigger"]'),
   buttonStart: e2e('screen-task__button-start'),
   buttonStop: e2e('screen-task__button-stop'),
