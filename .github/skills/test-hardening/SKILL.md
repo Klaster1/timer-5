@@ -24,17 +24,18 @@ Produce reliable Playwright tests under stress without weakening correctness.
 3. Do not keep stress instrumentation in baseline test config.
 4. Any temporary hardening harness must be reverted before completion.
 5. A fix is valid only when behavior is still checked at the same product-level intent.
+6. Do not run hardening in Docker or any containerized test environment.
 
 ## Required Inputs
 
 - Target scope: one test, one fixture, or full suite.
 - Stress profile: CPU throttle x6, repeat each 100, workers 12.
-- Execution targets: host and container when both are used by the project.
+- Execution target: host only.
 
 ## Strict Procedure
 
 1. Define scope and create one tracking item per test case.
-2. Enable stress profile with temporary instrumentation only.
+2. Enable stress profile with temporary instrumentation only on host execution.
 3. Run the specified scope under instrumentation to establish the pre-fix baseline.
 4. Run one test case at a time under the same instrumentation until completion.
 5. If the case fails, classify failure before changing code.
