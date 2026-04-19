@@ -141,7 +141,7 @@ const filterByTo: Filter = (filter, t) => {
   if (!t) return t;
   const { to } = filter;
   if (to instanceof Date && !Number.isNaN(to.valueOf())) {
-    const sessions = t.sessions.filter((s) => (isNumber(s.end) ? s.end <= to.valueOf() : true));
+    const sessions = t.sessions.filter((s) => (isNumber(s.end) ? s.end <= to.valueOf() : s.start <= to.valueOf()));
     return sessions.length ? { ...t, sessions } : null;
   } else {
     return t;
