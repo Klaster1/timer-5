@@ -39,6 +39,17 @@ test.describe('General', () => {
     await expect(dialogHotkeyCheatsheet.dialog()).toBeHidden();
   });
 
+  test('Esc does not close left navigation drawer', async ({ page }) => {
+    await page.goto('/all');
+    await expect(app.buttonActiveTasks()).toBeInViewport();
+
+    await app.buttonImportExport().focus();
+    await expect(app.buttonImportExport()).toBeFocused();
+    await page.keyboard.press('Escape');
+
+    await expect(app.buttonActiveTasks()).toBeInViewport();
+  });
+
   test('Theme switcher', async ({ page }) => {
     // Switch to dark theme
     await app.buttonSwitchTheme().click();
