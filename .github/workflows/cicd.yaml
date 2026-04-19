@@ -52,7 +52,7 @@ jobs:
           path: |
             test-results
             playwright-report
-          archive: false
+          archive: true
           if-no-files-found: ignore
           retention-days: 1
           overwrite: true
