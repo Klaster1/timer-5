@@ -51,6 +51,7 @@ export class ScreenTasks {
   }
 
   public readonly filter = {
+    chart: () => this.page.locator('tasks-filter timeline-chart-uplot'),
     name: {
       input: () => this.page.locator('tasks-filter .name input'),
       buttonClear: () => this.page.locator('tasks-filter .name button-reset-input-control button'),

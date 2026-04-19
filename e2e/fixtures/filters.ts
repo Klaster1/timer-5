@@ -110,4 +110,18 @@ test.describe('Filters', () => {
     await expect(screenTasks.taskItemByText('TODAY RUNNING TASK')).toHaveCount(0);
     await expect(screenTasks.taskItemByText('YESTERDAY TASK')).toHaveCount(1);
   });
+
+  test('No tasks + filters: chart is hidden', async ({ page }) => {
+    await page.evaluate(() => {
+      localStorage.setItem('tasks', JSON.stringify({ version: 1, value: [] }));
+    });
+
+    const from = encodeURIComponent('2024-06-01T00:00:00.000Z');
+    const to = encodeURIComponent('2024-06-30T23:59:59.999Z');
+
+    await page.goto(`/all?from=${from}&to=${to}`);
+
+    await expect(screenTasks.filter.name.input()).toBeVisible();
+    await expect(screenTasks.filter.chart()).toHaveCount(0);
+  });
 });

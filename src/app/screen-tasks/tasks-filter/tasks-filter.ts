@@ -69,6 +69,8 @@ export class TasksFilterComponent {
   private router = inject<Router>(Router);
   private destroyRef = inject(DestroyRef);
 
+  public hasAnyTasks = computed(() => this.store.allTasks().length > 0);
+
   public dataRange = computed(() => {
     const data = this.store.filterChartData();
     const range = this.store.filterRange();
