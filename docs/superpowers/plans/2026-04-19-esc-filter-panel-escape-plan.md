@@ -13,6 +13,7 @@
 ### Task 1: RED - Capture The Bug With A Failing Test
 
 **Files:**
+
 - Modify: `e2e/page-objects/app.ts`
 - Modify: `e2e/fixtures/general.ts`
 
@@ -44,6 +45,7 @@ npm run e2e -- --grep "Esc does not close left navigation drawer"
 ```
 
 Expected RED result:
+
 - Fails with a visibility assertion because Esc hides the left-nav controls.
 
 - [ ] **Step 4: Commit RED test changes**
@@ -56,6 +58,7 @@ git commit -m "test(e2e): add regression for Esc closing left nav drawer"
 ### Task 2: GREEN - Minimal Fix
 
 **Files:**
+
 - Modify: `src/app/app.html`
 
 - [ ] **Step 1: Disable drawer closing on Escape**
@@ -63,9 +66,9 @@ git commit -m "test(e2e): add regression for Esc closing left nav drawer"
 ```html
 <!-- before -->
 <mat-drawer mode="side" [opened]="true">
-
-<!-- after -->
-<mat-drawer mode="side" [opened]="true" [disableClose]="true">
+  <!-- after -->
+  <mat-drawer mode="side" [opened]="true" [disableClose]="true"></mat-drawer
+></mat-drawer>
 ```
 
 - [ ] **Step 2: Re-run focused regression and confirm GREEN**
@@ -75,6 +78,7 @@ npm run e2e -- --grep "Esc does not close left navigation drawer"
 ```
 
 Expected GREEN result:
+
 - The test passes and left nav remains visible after Esc.
 
 - [ ] **Step 3: Commit fix**
@@ -87,6 +91,7 @@ git commit -m "fix(nav): prevent Escape from closing left drawer"
 ### Task 3: Safety Regression Checks
 
 **Files:**
+
 - Verify: `e2e/fixtures/general.ts`
 - Verify: `e2e/fixtures/tasks.ts`
 

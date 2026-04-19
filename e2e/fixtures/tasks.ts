@@ -46,6 +46,10 @@ test.describe('Tasks', () => {
     tooltip = new Tooltip(page);
   });
 
+  test.afterEach(async ({ page }) => {
+    await restoreDate(page);
+  });
+
   test('Adding a task', async ({ page }) => {
     // Click the empty state "Add task" button
     await screenTasks.emptyStateAddTaskButton().click();
@@ -100,6 +104,9 @@ test.describe('Tasks', () => {
   });
 
   test('Starting and stopping the task', async ({ page }) => {
+    const now = '2024-06-01T12:00:00';
+    await mockDate(page, new Date(now));
+
     // Create a task
     await screenTasks.emptyStateAddTaskButton().click();
     await dialogCreateTask.input().fill('Task');
@@ -149,13 +156,16 @@ test.describe('Tasks', () => {
     await expect(screenTasks.taskStateIcon().first()).toHaveAttribute('data-mat-icon-name', /pause_circle/);
     await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', /pause_circle/);
 
-    // Stop and start the session several times
+    // Stop and start the session several times with deterministic 1-second progress per closed session.
     for (const _ of [1, 2, 3]) {
+      await advanceDate(page, 1_000);
       await screenTask.buttonStop().click();
       await screenTask.buttonStart().click();
     }
+    // Advance the currently running session to 5 seconds.
+    await advanceDate(page, 5_000);
 
-    // Assert a session with start time and no end time appears at the top of the session list, with 00:00 duration
+    // Assert a session with start time and no end time appears at the top of the session list, with 5s duration.
     await expect(screenTask.sessionRow()).toHaveCount(4);
     await expect(screenTask.sessionStart().nth(0)).toContainText(/\d/);
     await expect(screenTask.sessionEnd().nth(0)).not.toContainText(/\d/);
@@ -441,110 +451,102 @@ test.describe('Tasks', () => {
     const now = '2024-06-01T12:00:00';
     await mockDate(page, new Date(now));
 
-    try {
-      // Have a running task
-      await screenTasks.addTask('Test');
-      await pressCombo(page, 's');
-      await advanceDate(page, 4_000);
+    // Have a running task
+    await screenTasks.addTask('Test');
+    await pressCombo(page, 's');
+    await advanceDate(page, 4_000);
 
-      await expect(screenTask.sessionDuration().nth(0)).toHaveText('4s');
-      await expect(screenTask.taskDuration()).toHaveText('4s');
-      await expect(page).toHaveScreenshot('tasks-edit-session-running.png');
+    await expect(screenTask.sessionDuration().nth(0)).toHaveText('4s');
+    await expect(screenTask.taskDuration()).toHaveText('4s');
+    await expect(page).toHaveScreenshot('tasks-edit-session-running.png');
 
-      // Change a running task session start time, assert the total changes
-      await screenTask.buttonSessionAction().click();
-      await screenTask.menuSession.buttonEdit().click();
-      await dialogEditSession.setStart(now.replace('12', '09'));
-      await expect(page).toHaveScreenshot('tasks-edit-session-editing.png');
-      await dialogEditSession.buttonSubmit().click();
+    // Change a running task session start time, assert the total changes
+    await screenTask.buttonSessionAction().click();
+    await screenTask.menuSession.buttonEdit().click();
+    await dialogEditSession.setStart(now.replace('12', '09'));
+    await expect(page).toHaveScreenshot('tasks-edit-session-editing.png');
+    await dialogEditSession.buttonSubmit().click();
 
-      await expect(screenTask.sessionDuration().nth(0)).toHaveText('3h00m');
-      await expect(screenTask.taskDuration()).toHaveText('3h00m');
-      await expect(screenTasks.total()).toHaveText('3h00m');
+    await expect(screenTask.sessionDuration().nth(0)).toHaveText('3h00m');
+    await expect(screenTask.taskDuration()).toHaveText('3h00m');
+    await expect(screenTasks.total()).toHaveText('3h00m');
 
-      // For a running task session, set the end time, assert the task becomes active/non-running
-      await screenTask.buttonSessionAction().click();
-      await screenTask.menuSession.buttonEdit().click();
-      await dialogEditSession.setEnd(now.replace('12', '11'));
-      await dialogEditSession.buttonSubmit().click();
+    // For a running task session, set the end time, assert the task becomes active/non-running
+    await screenTask.buttonSessionAction().click();
+    await screenTask.menuSession.buttonEdit().click();
+    await dialogEditSession.setEnd(now.replace('12', '11'));
+    await dialogEditSession.buttonSubmit().click();
 
-      await expect(screenTask.sessionDuration().nth(0)).toHaveText('2h00m');
-      await expect(screenTask.taskDuration()).toHaveText('2h00m');
-      await expect(screenTasks.total()).toHaveText('2h00m');
-      await expect(screenTasks.total()).toHaveAttribute('title', '2h 0m 0s');
-      await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', /play_circle/);
+    await expect(screenTask.sessionDuration().nth(0)).toHaveText('2h00m');
+    await expect(screenTask.taskDuration()).toHaveText('2h00m');
+    await expect(screenTasks.total()).toHaveText('2h00m');
+    await expect(screenTasks.total()).toHaveAttribute('title', '2h 0m 0s');
+    await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', /play_circle/);
 
-      // For a complete task session, remove the end time, assert the task becomes active/running and the total updates
-      await screenTask.buttonSessionAction().click();
-      await screenTask.menuSession.buttonEdit().click();
-      await expect(dialogEditSession.inputEnd()).toBeVisible();
-      await dialogEditSession.buttonResetEnd().click();
-      await dialogEditSession.buttonSubmit().click();
+    // For a complete task session, remove the end time, assert the task becomes active/running and the total updates
+    await screenTask.buttonSessionAction().click();
+    await screenTask.menuSession.buttonEdit().click();
+    await expect(dialogEditSession.inputEnd()).toBeVisible();
+    await dialogEditSession.buttonResetEnd().click();
+    await dialogEditSession.buttonSubmit().click();
 
-      await expect(screenTask.sessionDuration().nth(0)).toHaveText('3h00m');
-      await expect(screenTask.taskDuration()).toHaveText('3h00m');
-      await expect(screenTasks.total()).toHaveText('3h00m');
-      await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', /pause_circle/);
+    await expect(screenTask.sessionDuration().nth(0)).toHaveText('3h00m');
+    await expect(screenTask.taskDuration()).toHaveText('3h00m');
+    await expect(screenTasks.total()).toHaveText('3h00m');
+    await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', /pause_circle/);
 
-      // Edit a session, assert the form can't be submitted without start time
-      await screenTask.buttonSessionAction().click();
-      await screenTask.menuSession.buttonEdit().click();
-      await dialogEditSession.buttonResetStart().click();
-      await dialogEditSession.buttonSubmit().click();
-      await expect(dialogEditSession.validationErrorStart()).toContainText('Start is required');
-    } finally {
-      await restoreDate(page);
-    }
+    // Edit a session, assert the form can't be submitted without start time
+    await screenTask.buttonSessionAction().click();
+    await screenTask.menuSession.buttonEdit().click();
+    await dialogEditSession.buttonResetStart().click();
+    await dialogEditSession.buttonSubmit().click();
+    await expect(dialogEditSession.validationErrorStart()).toContainText('Start is required');
   });
 
   test('Moving a session', async ({ page }) => {
     await mockDate(page, new Date('2025-07-05T06:09:00'));
 
-    try {
-      // Have two tasks with sessions
-      await screenTasks.addTask('To');
-      await screenTasks.addTask('From');
-      await pressCombo(page, 's');
-      await advanceDate(page, 500);
-      await pressCombo(page, 's');
+    // Have two tasks with sessions
+    await screenTasks.addTask('To');
+    await screenTasks.addTask('From');
+    await pressCombo(page, 's');
+    await advanceDate(page, 500);
+    await pressCombo(page, 's');
 
-      // Open task 1, drag a session to the task 2
-      await expect(screenTask.sessionStart()).toHaveCount(1);
+    // Open task 1, drag a session to the task 2
+    await expect(screenTask.sessionStart()).toHaveCount(1);
 
-      const source = screenTask.sessionRow().first();
-      const target = screenTasks.taskItemByText('To');
-      await source.dragTo(target);
+    const source = screenTask.sessionRow().first();
+    const target = screenTasks.taskItemByText('To');
+    await source.dragTo(target);
 
-      if ((await screenTask.sessionStart().count()) !== 0) {
-        const sourceBox = await source.boundingBox();
-        const targetBox = await target.boundingBox();
-        if (sourceBox && targetBox) {
-          await page.mouse.move(sourceBox.x + sourceBox.width / 2, sourceBox.y + sourceBox.height / 2);
-          await page.mouse.down();
-          await page.mouse.move(targetBox.x + targetBox.width / 2, targetBox.y + targetBox.height / 2, { steps: 20 });
-          await page.mouse.up();
-        }
+    if ((await screenTask.sessionStart().count()) !== 0) {
+      const sourceBox = await source.boundingBox();
+      const targetBox = await target.boundingBox();
+      if (sourceBox && targetBox) {
+        await page.mouse.move(sourceBox.x + sourceBox.width / 2, sourceBox.y + sourceBox.height / 2);
+        await page.mouse.down();
+        await page.mouse.move(targetBox.x + targetBox.width / 2, targetBox.y + targetBox.height / 2, { steps: 20 });
+        await page.mouse.up();
       }
-
-      // Assert the target task is no longer marked as the drop target
-      await expect
-        .poll(async () => {
-          return screenTask.sessionStart().count();
-        })
-        .toBe(0);
-
-      // Assert the total for both tasks were updated
-      await expect(screenTasks.taskDuration(target)).toContainText('0s');
-      await expect(screenTasks.taskDuration(screenTasks.taskItemByText('From'))).toHaveText('0s');
-
-      // Assert the session was moved from task 1 to task 2
-      await expect(screenTask.name()).toContainText('From');
-      await pressCombo(page, 'j');
-      await expect(screenTask.name()).toContainText('To');
-      await expect(screenTask.sessionStart()).toHaveCount(1);
-    } finally {
-      await restoreDate(page);
     }
+
+    // Assert the target task is no longer marked as the drop target
+    await expect
+      .poll(async () => {
+        return screenTask.sessionStart().count();
+      })
+      .toBe(0);
+
+    // Assert the total for both tasks were updated
+    await expect(screenTasks.taskDuration(target)).toContainText('0s');
+    await expect(screenTasks.taskDuration(screenTasks.taskItemByText('From'))).toHaveText('0s');
+
+    // Assert the session was moved from task 1 to task 2
+    await expect(screenTask.name()).toContainText('From');
+    await pressCombo(page, 'j');
+    await expect(screenTask.name()).toContainText('To');
+    await expect(screenTask.sessionStart()).toHaveCount(1);
   });
 
   test('Session splitting', async ({ page }) => {
@@ -557,57 +559,53 @@ test.describe('Tasks', () => {
     const now = '2024-07-07T17:56:00';
     await mockDate(page, new Date(now));
 
-    try {
-      // Have a task with 4h long session
-      await screenTasks.addTask('Test');
-      await pressCombo(page, 's');
-      await advanceDate(page, 14_400_000);
-      await pressCombo(page, 's');
+    // Have a task with 4h long session
+    await screenTasks.addTask('Test');
+    await pressCombo(page, 's');
+    await advanceDate(page, 14_400_000);
+    await pressCombo(page, 's');
 
-      // Open the session split dialog
-      await screenTask.buttonSessionAction().click();
-      await screenTask.menuSession.buttonSplit().click();
-      // Assert the session is split in the middle by default
-      await expect(dialogSplitSession.matTable()).toHaveCount(2);
-      await expect(dialogSplitSession.legacyNonMatTable()).toBeHidden();
+    // Open the session split dialog
+    await screenTask.buttonSessionAction().click();
+    await screenTask.menuSession.buttonSplit().click();
+    // Assert the session is split in the middle by default
+    await expect(dialogSplitSession.matTable()).toHaveCount(2);
+    await expect(dialogSplitSession.legacyNonMatTable()).toBeHidden();
 
-      await checkSession(0, { start: '2024-07-07 17:56', end: '2024-07-07 21:56', duration: '4h00m' });
-      await checkSession(1, { start: '2024-07-07 17:56', end: '2024-07-07 19:56', duration: '2h00m' });
-      await checkSession(2, { start: '2024-07-07 19:56', end: '2024-07-07 21:56', duration: '2h00m' });
-      await expect(page).toHaveScreenshot('tasks-split-default.png');
+    await checkSession(0, { start: '2024-07-07 17:56', end: '2024-07-07 21:56', duration: '4h00m' });
+    await checkSession(1, { start: '2024-07-07 17:56', end: '2024-07-07 19:56', duration: '2h00m' });
+    await checkSession(2, { start: '2024-07-07 19:56', end: '2024-07-07 21:56', duration: '2h00m' });
+    await expect(page).toHaveScreenshot('tasks-split-default.png');
 
-      // Move the slider to the leftmost position
-      // await dialogSplitSession.setSliderValue(0);
-      await dialogSplitSession.setSliderValue(0);
-      await checkSession(1, { start: '2024-07-07 17:56', end: '2024-07-07 17:56', duration: '0s' });
-      await checkSession(2, { start: '2024-07-07 17:56', end: '2024-07-07 21:56', duration: '4h00m' });
-      // Assert form submission is disabled
-      await expect(dialogSplitSession.buttonSubmit()).toBeDisabled();
+    // Move the slider to the leftmost position
+    // await dialogSplitSession.setSliderValue(0);
+    await dialogSplitSession.setSliderValue(0);
+    await checkSession(1, { start: '2024-07-07 17:56', end: '2024-07-07 17:56', duration: '0s' });
+    await checkSession(2, { start: '2024-07-07 17:56', end: '2024-07-07 21:56', duration: '4h00m' });
+    // Assert form submission is disabled
+    await expect(dialogSplitSession.buttonSubmit()).toBeDisabled();
 
-      // Move the slider to the rightmost position
-      await dialogSplitSession.setSliderValue(1);
-      await checkSession(1, { start: '2024-07-07 17:56', end: '2024-07-07 21:56', duration: '4h00m' });
-      await checkSession(2, { start: '2024-07-07 21:56', end: '2024-07-07 21:56', duration: '0s' });
-      await expect(page).toHaveScreenshot('tasks-split-invalid.png');
-      // Assert form submission is disabled
-      await expect(dialogSplitSession.buttonSubmit()).toBeDisabled();
+    // Move the slider to the rightmost position
+    await dialogSplitSession.setSliderValue(1);
+    await checkSession(1, { start: '2024-07-07 17:56', end: '2024-07-07 21:56', duration: '4h00m' });
+    await checkSession(2, { start: '2024-07-07 21:56', end: '2024-07-07 21:56', duration: '0s' });
+    await expect(page).toHaveScreenshot('tasks-split-invalid.png');
+    // Assert form submission is disabled
+    await expect(dialogSplitSession.buttonSubmit()).toBeDisabled();
 
-      // Move the slider roughly to the middle
-      await dialogSplitSession.setSliderValue(0.4825);
-      await checkSession(1, { start: '2024-07-07 17:56', end: '2024-07-07 19:51', duration: '1h55m' });
-      await checkSession(2, { start: '2024-07-07 19:51', end: '2024-07-07 21:56', duration: '2h04m' });
-      // Assert form submission is enabled
-      await expect(dialogSplitSession.buttonSubmit()).toBeEnabled();
+    // Move the slider roughly to the middle
+    await dialogSplitSession.setSliderValue(0.4825);
+    await checkSession(1, { start: '2024-07-07 17:56', end: '2024-07-07 19:51', duration: '1h55m' });
+    await checkSession(2, { start: '2024-07-07 19:51', end: '2024-07-07 21:56', duration: '2h04m' });
+    // Assert form submission is enabled
+    await expect(dialogSplitSession.buttonSubmit()).toBeEnabled();
 
-      // Submit the form
-      await dialogSplitSession.buttonSubmit().click();
-      await expect(dialogSplitSession.buttonSubmit()).toBeHidden();
-      // Assert the session was split
-      await expect(screenTask.sessionStart()).toHaveCount(2);
-      await expect(screenTask.sessionDuration().nth(0)).toHaveText('2h04m');
-      await expect(screenTask.sessionDuration().nth(1)).toHaveText('1h55m');
-    } finally {
-      await restoreDate(page);
-    }
+    // Submit the form
+    await dialogSplitSession.buttonSubmit().click();
+    await expect(dialogSplitSession.buttonSubmit()).toBeHidden();
+    // Assert the session was split
+    await expect(screenTask.sessionStart()).toHaveCount(2);
+    await expect(screenTask.sessionDuration().nth(0)).toHaveText('2h04m');
+    await expect(screenTask.sessionDuration().nth(1)).toHaveText('1h55m');
   });
 });

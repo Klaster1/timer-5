@@ -30,13 +30,14 @@ Produce reliable Playwright tests under stress without weakening correctness.
 
 - Target scope: one test, one fixture, or full suite.
 - Stress profile: CPU throttle x6, repeat each 100, workers 12.
+- Playwright execution flag: use `-x` to stop on first failure.
 - Execution target: host only.
 
 ## Strict Procedure
 
 1. Define scope and create one tracking item per test case.
 2. Enable stress profile with temporary instrumentation only on host execution.
-3. Run the specified scope under instrumentation to establish the pre-fix baseline.
+3. Run the specified scope under instrumentation with `-x` to establish the pre-fix baseline.
 4. Run one test case at a time under the same instrumentation until completion.
 5. If the case fails, classify failure before changing code.
 6. Fix root cause, rerun the same case under the same instrumentation to 100/100, then mark tracking item complete.
@@ -80,6 +81,7 @@ Produce reliable Playwright tests under stress without weakening correctness.
 
 - Scope:
 - Stress profile used:
+- Fail-fast mode (`-x`) used:
 - Per-test result:
 - Root causes found:
 - Durable fixes applied:
