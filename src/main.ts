@@ -15,7 +15,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MAT_TOOLTIP_DEFAULT_OPTIONS, MatTooltipDefaultOptions } from '@angular/material/tooltip';
 import { DomSanitizer, bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideRouter, withRouterConfig } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { SwUpdate, provideServiceWorker } from '@angular/service-worker';
 import { AppComponent } from '@app/app';
 import { gameStateGuard } from '@app/guards/game-state';
@@ -51,7 +51,6 @@ bootstrapApplication(AppComponent, {
           ],
         },
       ],
-      withRouterConfig({ paramsInheritanceStrategy: 'always' }),
     ),
     provideDialogRoutes([
       {
