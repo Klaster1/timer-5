@@ -1,8 +1,6 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
-    "ignoreDeprecations": "6.0",
     "outDir": "./dist/out-tsc",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
@@ -21,7 +19,7 @@
     "module": "ES2022",
     "paths": {
       "@app/*": [
-        "src/app/*"
+        "./src/app/*"
       ]
     },
     "strictNullChecks": true
