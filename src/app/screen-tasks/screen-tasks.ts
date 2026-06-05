@@ -2,7 +2,6 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
 import { NgClass } from '@angular/common';
 import {
-  ChangeDetectionStrategy,
   Component,
   DestroyRef,
   Injector,
@@ -41,7 +40,6 @@ import { TasksFilterComponent } from './tasks-filter/tasks-filter';
   selector: 'screen-tasks',
   templateUrl: './screen-tasks.html',
   styleUrls: ['./screen-tasks.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     EmptyStateComponent,
     TasksFilterComponent,

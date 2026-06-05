@@ -1,5 +1,5 @@
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject } from '@angular/core';
+import { Component, DestroyRef, computed, effect, inject } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatActionList, MatListItem, MatNavList } from '@angular/material/list';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
@@ -22,7 +22,6 @@ import { AppStore } from './providers/state';
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrls: ['./app.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatDrawerContainer,
     MatDrawer,

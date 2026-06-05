@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   Component,
   DestroyRef,
   ElementRef,
@@ -78,7 +77,6 @@ const barChartPlugin = (params: { colors: (string | null)[]; minRangeInMs: Milli
   template: ``,
   styleUrl: '../../../../node_modules/uplot/dist/uPlot.min.css',
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: [
     `
       timeline-chart-uplot {

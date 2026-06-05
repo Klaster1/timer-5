@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatListItem } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
@@ -12,7 +12,6 @@ type ThemeOption = { theme: Theme; label: string; icon: string };
   selector: 'button-theme-switcher',
   templateUrl: './button-theme-switcher.html',
   styleUrl: './button-theme-switcher.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatTooltip, MatIcon, MatListItem, MatMenuModule],
 })
 export class ButtonThemeSwitcherComponent {

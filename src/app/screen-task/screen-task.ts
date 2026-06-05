@@ -1,7 +1,7 @@
 import { CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
 import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, viewChild } from '@angular/core';
+import { Component, DestroyRef, computed, effect, inject, viewChild } from '@angular/core';
 import { MatFabButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
@@ -31,7 +31,6 @@ import { ButtonSessionActionsComponent } from './button-session-actions/button-s
   selector: 'screen-task',
   templateUrl: './screen-task.html',
   styleUrls: ['./screen-task.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     TaskStateIconPipe,
     MatToolbarModule,

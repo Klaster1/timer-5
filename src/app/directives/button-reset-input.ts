@@ -1,11 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'button-reset-input-control',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     @if (showButton()) {
       <button mat-icon-button (click)="reset.emit()" matTooltip="Reset value" type="button">

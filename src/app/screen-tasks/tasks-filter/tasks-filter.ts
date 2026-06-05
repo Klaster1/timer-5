@@ -1,6 +1,6 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { A11yModule } from '@angular/cdk/a11y';
-import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject } from '@angular/core';
+import { Component, DestroyRef, computed, effect, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
@@ -38,7 +38,6 @@ type Wrap<T> = Required<{ [Key in keyof T]: FormControl<T[Key]> }>;
   selector: 'tasks-filter',
   templateUrl: './tasks-filter.html',
   styleUrls: ['./tasks-filter.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [
     trigger('inOutAnimation', [
       transition(':enter', [style({ opacity: 0 }), animate('300ms ease-out', style({ opacity: 1 }))]),

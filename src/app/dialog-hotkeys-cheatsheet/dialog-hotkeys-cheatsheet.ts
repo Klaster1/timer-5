@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
   MatDialogActions,
@@ -15,7 +15,6 @@ import { HotkeysService } from 'angular2-hotkeys';
   selector: 'dialog-hotkeys-cheatsheet',
   templateUrl: './dialog-hotkeys-cheatsheet.html',
   styleUrls: ['./dialog-hotkeys-cheatsheet.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatButton, MapPipe],
 })
 export default class DialogHotkeysCheatsheetComponent {

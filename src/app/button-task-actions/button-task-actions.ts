@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
@@ -13,7 +13,6 @@ import { AppStore } from '@app/providers/state';
   templateUrl: './button-task-actions.html',
   styleUrls: ['./button-task-actions.scss'],
   selector: 'button-task-actions',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatMenu,
     MatMenuTrigger,

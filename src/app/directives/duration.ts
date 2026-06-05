@@ -1,5 +1,5 @@
 import { AsyncPipe, NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ElementRef, inject, input } from '@angular/core';
+import { Component, ElementRef, inject, input } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { DurationFn } from '@app/domain/date-time';
 import { pad2 } from '@app/utils/number';
@@ -53,7 +53,6 @@ const EVERY_SECOND_INTERVAL = interval(secondsToMilliseconds(1)).pipe(
       }
     `,
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NgClass, AsyncPipe],
 })
 export class DurationComponent {

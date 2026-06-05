@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
@@ -12,7 +12,6 @@ import { AppStore } from '@app/providers/state';
   templateUrl: './button-session-actions.html',
   styleUrls: ['./button-session-actions.scss'],
   selector: 'button-session-actions',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatMenu,
     MatMenuContent,
