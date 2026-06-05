@@ -1,24 +1,22 @@
 <h1 mat-dialog-title>Edit session</h1>
-<form mat-dialog-content [formGroup]="form" id="promptForm" (ngSubmit)="onSubmit()">
+<form mat-dialog-content id="promptForm" [formRoot]="form" (submit)="onSubmit()">
   <mat-form-field>
     <mat-label>Start</mat-label>
-    <input matInput type="datetime-local" formControlName="start" data-e2e="dialog-edit-session__input-start" />
+    <input matInput type="datetime-local" [formField]="form.start" data-e2e="dialog-edit-session__input-start" />
     <button-reset-input-control
       matSuffix
-      [value]="form.controls.start.value"
-      (reset)="form.controls.start.reset()"
+      [value]="form.start().value()"
+      (reset)="form.start().value.set(null)"
     ></button-reset-input-control>
-    @if (form.controls.start.errors?.required) {
     <mat-error data-e2e="dialog-edit-session__start-validation-error">Start is required</mat-error>
-    }
   </mat-form-field>
   <mat-form-field>
     <mat-label>End</mat-label>
-    <input matInput type="datetime-local" formControlName="end" data-e2e="dialog-edit-session__input-end" />
+    <input matInput type="datetime-local" [formField]="form.end" data-e2e="dialog-edit-session__input-end" />
     <button-reset-input-control
       matSuffix
-      [value]="form.controls.end.value"
-      (reset)="form.controls.end.reset()"
+      [value]="form.end().value()"
+      (reset)="form.end().value.set(null)"
     ></button-reset-input-control>
   </mat-form-field>
 </form>

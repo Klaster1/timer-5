@@ -35,12 +35,12 @@ export class DatetimeLocalDirective implements ControlValueAccessor {
   _handleInput(event: Event): void {
     if (!(event.target instanceof HTMLInputElement)) return;
     const value = event.target.value;
-    this.onChange(value.length ? new Date(value) : value);
+    this.onChange(value.length ? new Date(value) : null);
   }
 
-  onChange = (_: any) => {};
+  onChange = (_: any) => { };
 
-  onTouched = () => {};
+  onTouched = () => { };
 
   registerOnTouched(fn: () => void): void {
     this.onTouched = fn;

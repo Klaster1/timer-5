@@ -1,7 +1,6 @@
 <form
   class="mat-body"
-  (submit)="$event.preventDefault()"
-  [formGroup]="form"
+  [formRoot]="form"
   cdkTrapFocus
   [cdkTrapFocusAutoCapture]="true"
 >
@@ -11,42 +10,41 @@
       type="search"
       matInput
       placeholder="Search"
-      name="search"
-      formControlName="search"
+      [formField]="form.search"
       #searchInput
       cdkFocusRegionStart
       cdkFocusInitial
     />
     <button-reset-input-control
       matSuffix
-      [value]="form.controls.search.value"
-      (reset)="form.controls.search.reset()"
+      [value]="form.search().value()"
+      (reset)="form.search().value.set('')"
     ></button-reset-input-control>
   </mat-form-field>
   <mat-form-field class="duration">
     <mat-label>Sort by duration</mat-label>
-    <mat-select formControlName="durationSort">
-      <mat-option>Default</mat-option>
+    <mat-select [formField]="form.durationSort">
+      <mat-option [value]="null">Default</mat-option>
       <mat-option value="longestFirst">Longest first</mat-option>
       <mat-option value="shortestFirst">Shortest first</mat-option>
     </mat-select>
   </mat-form-field>
   <mat-form-field class="from">
     <mat-label>From</mat-label>
-    <input matInput placeholder="From" formControlName="from" type="datetime-local" />
+    <input matInput placeholder="From" [formField]="form.from" type="datetime-local" />
     <button-reset-input-control
       matSuffix
-      [value]="form.controls.from.value"
-      (reset)="form.controls.from.reset()"
+      [value]="form.from().value()"
+      (reset)="form.from().value.set(null)"
     ></button-reset-input-control>
   </mat-form-field>
   <mat-form-field class="to">
     <mat-label>To</mat-label>
-    <input matInput placeholder="To" formControlName="to" cdkFocusRegionEnd type="datetime-local" />
+    <input matInput placeholder="To" [formField]="form.to" cdkFocusRegionEnd type="datetime-local" />
     <button-reset-input-control
       matSuffix
-      [value]="form.controls.to.value"
-      (reset)="form.controls.to.reset()"
+      [value]="form.to().value()"
+      (reset)="form.to().value.set(null)"
     ></button-reset-input-control>
   </mat-form-field>
   <button class="dates-menu" mat-icon-button matSuffix [matMenuTriggerFor]="fromMenu" matTooltip="Choose range preset">

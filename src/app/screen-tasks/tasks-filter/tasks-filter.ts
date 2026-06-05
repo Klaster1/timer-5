@@ -1,8 +1,8 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { A11yModule } from '@angular/cdk/a11y';
-import { Component, DestroyRef, computed, effect, inject } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { FormField, FormRoot, form as signalForm } from '@angular/forms/signals';
 import { MatIconButton } from '@angular/material/button';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
@@ -32,7 +32,12 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { ButtonResetInputComponent } from '../../directives/button-reset-input';
 import { TimelineChartUplotComponent } from './timeline-chart-uplot';
 
-type Wrap<T> = Required<{ [Key in keyof T]: FormControl<T[Key]> }>;
+interface FilterFormData {
+  search: string;
+  from: Date | null;
+  to: Date | null;
+  durationSort: 'longestFirst' | 'shortestFirst' | null;
+}
 
 @Component({
   selector: 'tasks-filter',
@@ -55,11 +60,12 @@ type Wrap<T> = Required<{ [Key in keyof T]: FormControl<T[Key]> }>;
     MatSuffix,
     MatLabel,
     MatInput,
-    ReactiveFormsModule,
+    FormField,
+    FormRoot,
+    DatetimeLocalDirective,
     A11yModule,
     TimelineChartUplotComponent,
     ButtonResetInputComponent,
-    DatetimeLocalDirective,
     MatTooltip,
   ],
 })
@@ -77,86 +83,108 @@ export class TasksFilterComponent {
     return { data, range } as const;
   });
 
+  filterModel = signal<FilterFormData>({
+    search: '',
+    from: null,
+    to: null,
+    durationSort: null,
+  });
+  form = signalForm(this.filterModel);
+
   constructor() {
     this.destroyRef.onDestroy(() => {
       this.router.navigate([], { queryParams: {} });
     });
     effect(() => {
-      const decodedFilterParams = this.store.decodedFilterParams();
-      this.form.patchValue(decodedFilterParams);
+      const params = this.store.decodedFilterParams();
+      this.filterModel.set({
+        search: params.search ?? '',
+        from: params.from ?? null,
+        to: params.to ?? null,
+        durationSort: params.durationSort ?? null,
+      });
     });
-    this.form.valueChanges
+    // TODO: replace with debounced() from @angular/core once its async timing
+    // is compatible with the URL↔form sync loop (currently breaks filter tests).
+    toObservable(this.filterModel)
       .pipe(debounceTime(10), distinctUntilChanged(deepEquals), takeUntilDestroyed())
-      .subscribe((value) => this.router.navigate([], { queryParams: encodeFilterParams(value) }));
+      .subscribe((value) =>
+        this.router.navigate([], { queryParams: encodeFilterParams(this.toFilterParams(value)) }),
+      );
   }
 
   hasChartData = hasChartData;
-  form = new FormGroup<Wrap<FilterMatrixParams>>({
-    search: new FormControl(),
-    from: new FormControl(),
-    to: new FormControl(),
-    durationSort: new FormControl(),
-  });
+
+  private toFilterParams(data: FilterFormData): FilterMatrixParams {
+    return {
+      search: data.search || undefined,
+      from: data.from ?? undefined,
+      to: data.to ?? undefined,
+      durationSort: data.durationSort ?? undefined,
+    };
+  }
 
   onChartRangeChange(e: ScaleRange) {
-    this.form.patchValue({
-      from: e[0] ?? undefined,
-      to: e[1] ?? undefined,
-    });
+    this.filterModel.update((m) => ({ ...m, from: e[0], to: e[1] }));
   }
 
   setAnyTime() {
-    this.form.patchValue({
-      from: undefined,
-      to: undefined,
-    });
+    this.filterModel.update((m) => ({ ...m, from: null, to: null }));
   }
   setToday() {
-    this.form.patchValue({
+    this.filterModel.update((m) => ({
+      ...m,
       from: startOfDay(new Date()),
       to: endOfDay(new Date()),
-    });
+    }));
   }
   setYesterday() {
-    this.form.patchValue({
+    this.filterModel.update((m) => ({
+      ...m,
       from: startOfDay(subDays(new Date(), 1)),
       to: endOfDay(subDays(new Date(), 1)),
-    });
+    }));
   }
   setThisWeek() {
-    this.form.patchValue({
+    this.filterModel.update((m) => ({
+      ...m,
       from: startOfWeek(new Date(), { weekStartsOn: 1 }),
       to: endOfWeek(new Date(), { weekStartsOn: 1 }),
-    });
+    }));
   }
   setPreviousWeek() {
-    this.form.patchValue({
+    this.filterModel.update((m) => ({
+      ...m,
       from: startOfWeek(subWeeks(new Date(), 1), { weekStartsOn: 1 }),
       to: endOfWeek(subWeeks(new Date(), 1), { weekStartsOn: 1 }),
-    });
+    }));
   }
   setThisMonth() {
-    this.form.patchValue({
+    this.filterModel.update((m) => ({
+      ...m,
       from: startOfMonth(new Date()),
       to: endOfMonth(new Date()),
-    });
+    }));
   }
   setPreviousMonth() {
-    this.form.patchValue({
+    this.filterModel.update((m) => ({
+      ...m,
       from: startOfMonth(subMonths(new Date(), 1)),
       to: endOfMonth(subMonths(new Date(), 1)),
-    });
+    }));
   }
   setThisYear() {
-    this.form.patchValue({
+    this.filterModel.update((m) => ({
+      ...m,
       from: startOfYear(new Date()),
       to: endOfYear(new Date()),
-    });
+    }));
   }
   setPreviousYear() {
-    this.form.patchValue({
+    this.filterModel.update((m) => ({
+      ...m,
       from: startOfYear(subYears(new Date(), 1)),
       to: endOfYear(subYears(new Date(), 1)),
-    });
+    }));
   }
 }
