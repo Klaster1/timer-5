@@ -8,6 +8,7 @@ import {
   effect,
   inject,
   input,
+  reflectComponentType,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
@@ -122,10 +123,13 @@ export const provideDialogRoutes = (routes: Routes): Provider[] => {
                 ...('dialogConfig' in component ? (component.dialogConfig as MatDialogConfig) : {}),
               });
 
-              // Bind route params + query params to component inputs (mirrors withComponentInputBinding for dialogs)
+              // Bind matching route/query params to the dialog's declared inputs
+              // (mirrors withComponentInputBinding; skips params the dialog doesn't declare so
+              // preserved query params like active filters don't trigger NG0303 unknown-input errors).
+              const declaredInputs = new Set(reflectComponentType(component)?.inputs.map((i) => i.templateName));
               const allParams = { ...event.snapshot.queryParams, ...event.snapshot.params };
               for (const [key, value] of Object.entries(allParams)) {
-                dialogRef.componentRef?.setInput(key, value);
+                if (declaredInputs.has(key)) dialogRef.componentRef?.setInput(key, value);
               }
 
               dialogRef.afterClosed().subscribe(() => {
