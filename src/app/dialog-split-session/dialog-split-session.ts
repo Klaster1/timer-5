@@ -1,5 +1,5 @@
 import { DatePipe, NgTemplateOutlet } from '@angular/common';
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, inject, input, linkedSignal } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
   MatDialogActions,
@@ -16,6 +16,7 @@ import { Milliseconds } from '@app/domain/date-time';
 import { Session, sessionDuration } from '@app/domain/task';
 import { MapPipe } from '@app/pipes/map';
 import { AppStore } from '@app/providers/state';
+import { optionalNumber } from '@app/utils/number';
 
 export interface DialogSplitSessionData {
   start: number;
@@ -49,44 +50,39 @@ export default class DialogSplitSessionComponent {
 
   public readonly state = inject(AppStore);
 
-  public value = signal<null | Milliseconds>(null);
+  public readonly taskId = input<string>();
+  public readonly sessionIndex = input(undefined, { transform: optionalNumber });
 
-  constructor() {
-    effect(
-      () => {
-        const session = this.state.dialogSession();
-        if (!session) return;
-        const middle = session.start + (session.end! - session.start) / 2;
-        this.value.set(middle);
-      },
-      {
-        allowSignalWrites: true,
-      },
-    );
-  }
+  private session = computed(() => {
+    const taskId = this.taskId();
+    const idx = this.sessionIndex();
+    if (!taskId || idx === undefined) return undefined;
+    return this.state.tasks()[taskId]?.sessions[idx];
+  });
+
+  public value = linkedSignal<null | Milliseconds>(() => {
+    const session = this.session();
+    if (!session) return null;
+    return session.start + (session.end! - session.start) / 2;
+  });
 
   public beforeSessions = computed(() => {
-    const session = this.state.dialogSession();
+    const session = this.session();
     return session ? [session] : [];
   });
   public afterSessions = computed(() => {
     const value = this.value();
-    const session = this.state.dialogSession();
+    const session = this.session();
     if (!session || value === null) return [];
     const before: Session = { ...session, end: value };
     const after: Session = { ...session, start: value };
     return [before, after];
   });
-  public min = computed(() => {
-    const session = this.state.dialogSession();
-    return session?.start;
-  });
-  public max = computed(() => {
-    const session = this.state.dialogSession();
-    return session?.end;
-  });
+  public min = computed(() => this.session()?.start);
+  public max = computed(() => this.session()?.end);
   public submitDisabled = computed(() => {
-    return this.value() === this.state.dialogSession()?.start || this.value() === this.state.dialogSession()?.end;
+    const session = this.session();
+    return this.value() === session?.start || this.value() === session?.end;
   });
   sessionDuration = sessionDuration;
   splitPreviewColumns = ['start', 'end', 'duration'];
@@ -98,7 +94,9 @@ export default class DialogSplitSessionComponent {
   submit() {
     const disabled = this.submitDisabled();
     const result = this.afterSessions();
-    if (disabled || !result) return;
-    this.state.splitSession(result);
+    const taskId = this.taskId();
+    const idx = this.sessionIndex();
+    if (disabled || !result || !taskId || idx === undefined) return;
+    this.state.splitSession(taskId, idx, result);
   }
 }

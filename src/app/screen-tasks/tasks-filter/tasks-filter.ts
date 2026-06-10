@@ -1,6 +1,6 @@
 import { animate, style, transition, trigger } from '@angular/animations';
 import { A11yModule } from '@angular/cdk/a11y';
-import { Component, DestroyRef, computed, effect, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, effect, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormField, FormRoot, form as signalForm } from '@angular/forms/signals';
 import { MatIconButton } from '@angular/material/button';
@@ -12,7 +12,7 @@ import { MatOption, MatSelect } from '@angular/material/select';
 import { MatTooltip } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { DatetimeLocalDirective } from '@app/directives/datetime-local';
-import { ScaleRange, hasChartData } from '@app/domain/chart';
+import { ChartData, ScaleRange, hasChartData } from '@app/domain/chart';
 import { FilterMatrixParams, encodeFilterParams } from '@app/domain/router';
 import { AppStore } from '@app/providers/state';
 import { deepEquals } from '@app/utils/assert';
@@ -74,12 +74,17 @@ export class TasksFilterComponent {
   private router = inject<Router>(Router);
   private destroyRef = inject(DestroyRef);
 
+  // Inputs from parent (screen-tasks)
+  public readonly chartData = input<ChartData | undefined>(undefined);
+  public readonly filterRange = input<readonly [Date | null, Date | null] | undefined>(undefined);
+  public readonly decodedFilterParams = input<FilterMatrixParams>({});
+
   public hasAnyTasks = computed(() => this.store.allTasks().length > 0);
 
   public dataRange = computed(() => {
-    const data = this.store.filterChartData();
-    const range = this.store.filterRange();
-    if (!hasChartData(data) || !range) return undefined;
+    const data = this.chartData();
+    const range = this.filterRange();
+    if (!data || !hasChartData(data) || !range) return undefined;
     return { data, range } as const;
   });
 
@@ -96,7 +101,7 @@ export class TasksFilterComponent {
       this.router.navigate([], { queryParams: {} });
     });
     effect(() => {
-      const params = this.store.decodedFilterParams();
+      const params = this.decodedFilterParams();
       this.filterModel.set({
         search: params.search ?? '',
         from: params.from ?? null,

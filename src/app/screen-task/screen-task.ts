@@ -1,7 +1,7 @@
 import { CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
 import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
 import { DatePipe } from '@angular/common';
-import { Component, DestroyRef, computed, effect, inject, viewChild } from '@angular/core';
+import { Component, DestroyRef, computed, effect, inject, input, viewChild } from '@angular/core';
 import { MatFabButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
@@ -19,11 +19,12 @@ import {
   KEYS_START_STOP,
   hotkey,
 } from '@app/domain/hotkeys';
-import { Task, TaskState, isTaskRunning, sessionDuration, sortSessions, taskDuration } from '@app/domain/task';
+import { Task, TaskState, filterTaskSessions, isTaskRunning, sessionDuration, sortSessions, taskDuration } from '@app/domain/task';
 import { MapPipe } from '@app/pipes/map';
 import { TaskStateIconPipe } from '@app/pipes/task-state-icon';
 import { RoutedDialogs } from '@app/providers/routed-dialogs';
 import { AppStore } from '@app/providers/state';
+import { optionalDate } from '@app/utils/date';
 import { HotkeysService } from 'angular2-hotkeys';
 import { ButtonSessionActionsComponent } from './button-session-actions/button-session-actions';
 
@@ -57,7 +58,20 @@ export default class ScreenTaskComponent {
   private destroyRef = inject(DestroyRef);
   private routedDialogs = inject(RoutedDialogs);
 
-  taskIsInProgress = computed(() => isTaskRunning(this.store.currentTask()));
+  // Route inputs
+  public readonly taskId = input<string>();
+  public readonly from = input(undefined, { transform: optionalDate });
+  public readonly to = input(undefined, { transform: optionalDate });
+
+  currentTask = computed(() => {
+    const taskId = this.taskId();
+    if (!taskId) return undefined;
+    const task = this.store.tasks()[taskId];
+    if (!task) return undefined;
+    return filterTaskSessions(task, { from: this.from(), to: this.to() });
+  });
+
+  taskIsInProgress = computed(() => isTaskRunning(this.currentTask()));
   viewport = viewChild(CdkVirtualScrollViewport);
   taskDuration = taskDuration;
   sessionDuration = sessionDuration;
@@ -65,8 +79,8 @@ export default class ScreenTaskComponent {
   trackSession = (_: number, session: Task['sessions'][number]) => `${session.start}-${session.end ?? 'running'}`;
 
   hotkeys = [
-    hotkey(KEYS_START_STOP, 'Start/stop task', (e) => {
-      const task = this.store.currentTask();
+    hotkey(KEYS_START_STOP, 'Start/stop task', () => {
+      const task = this.currentTask();
       const inProgress = this.taskIsInProgress();
       if (!task) return;
       if (inProgress) {
@@ -75,20 +89,20 @@ export default class ScreenTaskComponent {
         this.start(task.id);
       }
     }),
-    hotkey(KEYS_MARK_FINISHED, `Mark as finished`, (e) => {
-      const task = this.store.currentTask();
+    hotkey(KEYS_MARK_FINISHED, `Mark as finished`, () => {
+      const task = this.currentTask();
       if (task) this.store.updateTaskState(task.id, TaskState.finished);
     }),
-    hotkey(KEYS_MARK_ACTIVE, `Mark as active`, (e) => {
-      const task = this.store.currentTask();
+    hotkey(KEYS_MARK_ACTIVE, `Mark as active`, () => {
+      const task = this.currentTask();
       if (task) this.store.updateTaskState(task.id, TaskState.active);
     }),
     hotkey(KEYS_RENAME, 'Rename task', () => {
-      const task = this.store.currentTask();
+      const task = this.currentTask();
       if (task) this.routedDialogs.navigate(['tasks', task.id, 'rename']);
     }),
     hotkey(KEYS_DELETE_TASK, 'Delete task', () => {
-      const task = this.store.currentTask();
+      const task = this.currentTask();
       if (task) this.store.deleteTask(task.id);
     }),
   ];
@@ -100,7 +114,7 @@ export default class ScreenTaskComponent {
       this.keys.remove(this.hotkeys);
     });
     effect(() => {
-      this.store.currentTaskId();
+      this.taskId();
       this.viewport()?.scrollToIndex(0);
     });
   }
@@ -109,8 +123,5 @@ export default class ScreenTaskComponent {
   }
   stop(taskId: string) {
     this.store.stopTask(taskId, Date.now());
-  }
-  deleteTask(task: Task) {
-    this.store.deleteTask(task.id);
   }
 }

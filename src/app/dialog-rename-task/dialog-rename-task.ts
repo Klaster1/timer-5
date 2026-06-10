@@ -1,4 +1,4 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, inject, input, linkedSignal } from '@angular/core';
 import { FormField, FormRoot, required, form as signalForm } from '@angular/forms/signals';
 import { MatButton } from '@angular/material/button';
 import { MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle } from '@angular/material/dialog';
@@ -27,18 +27,20 @@ import { AppStore } from '@app/providers/state';
 export default class DialogRenameTaskComponent {
   private state = inject(AppStore);
 
-  taskModel = signal({ value: '' });
+  public readonly taskId = input<string>();
+
+  taskModel = linkedSignal(() => {
+    const taskId = this.taskId();
+    return { value: taskId ? (this.state.tasks()[taskId]?.name ?? '') : '' };
+  });
   form = signalForm(this.taskModel, (schema) => {
     required(schema.value);
   });
 
-  private syncFromStore = effect(() => {
-    this.taskModel.set({ value: this.state.dialogTask()?.name ?? '' });
-  });
-
   onSubmit() {
-    if (this.form.value().valid()) {
-      this.state.renameTask(this.taskModel().value);
+    const taskId = this.taskId();
+    if (this.form.value().valid() && taskId) {
+      this.state.renameTask(taskId, this.taskModel().value);
     }
   }
 }

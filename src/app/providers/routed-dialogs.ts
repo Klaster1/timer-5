@@ -121,6 +121,13 @@ export const provideDialogRoutes = (routes: Routes): Provider[] => {
                 injector: dialogInjector,
                 ...('dialogConfig' in component ? (component.dialogConfig as MatDialogConfig) : {}),
               });
+
+              // Bind route params + query params to component inputs (mirrors withComponentInputBinding for dialogs)
+              const allParams = { ...event.snapshot.queryParams, ...event.snapshot.params };
+              for (const [key, value] of Object.entries(allParams)) {
+                dialogRef.componentRef?.setInput(key, value);
+              }
+
               dialogRef.afterClosed().subscribe(() => {
                 router.navigate(['..', { outlets: { [DIALOG_OUTLET_NAME]: null } }], {
                   queryParamsHandling: 'preserve',

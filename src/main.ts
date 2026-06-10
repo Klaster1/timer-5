@@ -15,10 +15,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MAT_TOOLTIP_DEFAULT_OPTIONS, MatTooltipDefaultOptions } from '@angular/material/tooltip';
 import { DomSanitizer, bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { SwUpdate, provideServiceWorker } from '@angular/service-worker';
 import { AppComponent } from '@app/app';
 import { gameStateGuard } from '@app/guards/game-state';
+import { taskExistsGuard } from '@app/guards/task-exists';
 import { provideDialogRoutes } from '@app/providers/routed-dialogs';
 import { HotkeyModule } from 'angular2-hotkeys';
 import { secondsToMilliseconds } from 'date-fns/secondsToMilliseconds';
@@ -47,10 +48,13 @@ bootstrapApplication(AppComponent, {
             {
               path: ':taskId',
               component: ScreenTaskComponent,
+              canActivate: [taskExistsGuard],
+              runGuardsAndResolvers: 'always',
             },
           ],
         },
       ],
+      withComponentInputBinding(),
     ),
     provideDialogRoutes([
       {

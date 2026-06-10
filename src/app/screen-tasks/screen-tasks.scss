@@ -52,6 +52,9 @@ mat-icon.running {
   flex-direction: column;
   overflow: hidden;
 }
+.task.task-hidden {
+  display: none;
+}
 mat-toolbar {
   flex: 0 0 auto;
 }

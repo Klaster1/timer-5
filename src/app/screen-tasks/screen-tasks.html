@@ -1,9 +1,9 @@
-<div class="container" [ngClass]="{ 'task-opened': store.isCurrentTaskOpened() }">
-  @if (store.currentTasks(); as tasks) {
+<div class="container" [ngClass]="{ 'task-opened': isCurrentTaskOpened() }">
+  @if (currentTasks(); as tasks) {
   <section class="tasks">
     <mat-toolbar [syncWidthTo]="viewport()">
       <h1>
-        <ng-container> {{ store.currentTaskState() | taskState }} </ng-container>
+        <ng-container> {{ state() | taskState }} </ng-container>
         (<duration [value]="tasks | map: tasksDuration" data-e2e="screen-tasks__total" class="state-duration"></duration
         >)
       </h1>
@@ -12,12 +12,12 @@
       </button>
     </mat-toolbar>
     @defer { @if (searchOpened()) {
-    <tasks-filter (keyup.esc)="toggleFilter(false)"></tasks-filter>
+    <tasks-filter (keyup.esc)="toggleFilter(false)" [chartData]="filterChartData()" [filterRange]="filterRange()" [decodedFilterParams]="decodedFilterParams()"></tasks-filter>
     } } @if (tasks.length) {
     <cdk-virtual-scroll-viewport
       #scroll
       [itemSize]="48"
-      [scrollToIndex]="store.currentTaskIndex()"
+      [scrollToIndex]="currentTaskIndex()"
       [checkViewportSizeWhenValueChanges]="tasks"
     >
       <mat-nav-list>
@@ -61,7 +61,7 @@
       <img src="assets/favicon.svg" alt="Timer" illustration />
       <span title>No tasks</span>
       <span subtitle>
-        @switch (store.currentTaskState()) { @case ('all') { Create a task and it will show up here } @case
+        @switch (state()) { @case ('all') { Create a task and it will show up here } @case
         (taskState.active) { Create a task and it will show up here } @case (taskState.finished) { You didn't finish any
         tasks yet } @case (taskState.dropped) { You didn't abandon any tasks yet } }
       </span>
@@ -85,9 +85,8 @@
     </empty-state>
     } } }
   </section>
-  } @if (store.isCurrentTaskOpened()) {
-  <section class="task mat-app-background">
-    <router-outlet></router-outlet>
-  </section>
   }
+  <section class="task mat-app-background" [class.task-hidden]="!isCurrentTaskOpened()">
+    <router-outlet (activate)="openTask.set($event)" (deactivate)="openTask.set(undefined)"></router-outlet>
+  </section>
 </div>

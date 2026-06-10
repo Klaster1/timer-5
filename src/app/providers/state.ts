@@ -1,20 +1,16 @@
-import { DestroyRef, computed, effect, inject } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
-import { chartSeries } from '@app/domain/chart';
-import { decodeFilterMatrixParams, decodeRouteParams } from '@app/domain/router';
+import { computed, effect, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { fromStoredTasks, toStoredTasks } from '@app/domain/storage';
 import {
   Session,
   SessionId,
   Task,
   TaskState,
-  filterTaskSessions,
-  filterTasks,
   isSessionWithId,
   isTaskRunning,
   makeTaskId,
 } from '@app/domain/task';
+import { RoutedDialogs } from '@app/providers/routed-dialogs';
 import { deepEquals } from '@app/utils/assert';
 import {
   WritableStateSource,
@@ -27,72 +23,11 @@ import {
   withState,
 } from '@ngrx/signals';
 import { Draft, produce } from 'immer';
-import { RoutedDialogs } from './routed-dialogs';
 
 export type NormalizedTasks = { [id: string]: Task };
 
 const updateState = <State extends object>(store: WritableStateSource<State>, recipe: (draft: Draft<State>) => any) => {
   patchState(store, (state) => produce(state, recipe));
-};
-
-const withRouter = () => {
-  type RouterState = {
-    router: {
-      url: ActivatedRouteSnapshot['url'];
-      params: ActivatedRouteSnapshot['params'];
-      queryParams: ActivatedRouteSnapshot['queryParams'];
-      children?: ActivatedRouteSnapshot['children'];
-    } | null;
-  };
-  const initialState: RouterState = {
-    router: null,
-  };
-  return signalStoreFeature(
-    withState<RouterState>(initialState),
-    withMethods((store) => {
-      const router = inject(Router);
-      const destroyRef = inject(DestroyRef);
-      return {
-        hookUpRouter() {
-          router.events.pipe(takeUntilDestroyed(destroyRef)).subscribe((event) => {
-            if (event instanceof NavigationEnd) {
-              updateState(store, (draft) => {
-                const route = router.routerState.snapshot.root;
-                draft.router = {
-                  url: route?.url,
-                  params: route?.params,
-                  queryParams: route?.queryParams,
-                  children: route?.children,
-                };
-              });
-            }
-          });
-        },
-      };
-    }),
-    withComputed((store) => {
-      const currentRoutes = computed((): ActivatedRouteSnapshot[] | undefined => {
-        return store.router()?.children?.map((route) => {
-          while (route.firstChild) {
-            route = route.firstChild;
-          }
-          return route;
-        });
-      });
-      const routeParams = computed(() => currentRoutes()?.map((route) => route.params));
-      const queryParams = computed(() => currentRoutes()?.map((route) => route.queryParams));
-      return {
-        currentRoutes,
-        routeParams,
-        queryParams,
-      };
-    }),
-    withHooks({
-      onInit(store) {
-        store.hookUpRouter();
-      },
-    }),
-  );
 };
 
 export type ThemeMode = 'auto' | 'manual';
@@ -101,6 +36,7 @@ export type Theme = {
   mode: ThemeMode;
   variant: ThemeVariant;
 };
+
 const withTheme = () => {
   type ThemeState = {
     theme: Theme | undefined;
@@ -158,7 +94,7 @@ const withTheme = () => {
           if (theme) document.body.classList.toggle('theme-dark', theme.variant === 'dark');
         });
       },
-      onDestroy(store) {
+      onDestroy() {
         destroySignal.abort();
       },
     }),
@@ -175,132 +111,36 @@ const initialState: TasksState = {
 export const AppStore = signalStore(
   { providedIn: 'root', protectedState: false },
   withTheme(),
-  withRouter(),
   withState<TasksState>(initialState),
   withComputed((store) => {
-    // Params
-    const decodedFilterParams = computed(() => decodeFilterMatrixParams(store.queryParams()?.at(0) ?? {}));
-    const decodedRouteParams = computed(() => decodeRouteParams(store.routeParams()?.at(0) ?? {}));
-    const filterFrom = computed(() => decodedFilterParams().from);
-    const filterTo = computed(() => decodedFilterParams().to);
-    const currentTaskId = computed(() => decodedRouteParams().taskId);
-    const currentSessionIndex = computed(() => store.routeParams()?.at(0)?.sessionIndex);
-    const currentTaskState = computed(() => decodedRouteParams().state);
-
-    // Tasks
     const allTasks = computed(() => Object.values(store.tasks()));
-    const taskFilterParams = computed(
-      () => ({
-        ...decodedFilterParams(),
-        state: currentTaskState(),
-      }),
-      { equal: deepEquals },
-    );
-    const currentTasks = computed(() => {
-      return filterTasks(taskFilterParams(), allTasks());
-    });
-    const currentTask = computed(() => {
-      const taskId = currentTaskId();
-      const from = filterFrom();
-      const to = filterTo();
-      if (!taskId) return;
-      const maybeTask = store.tasks()[taskId];
-      if (!maybeTask) return;
-      return filterTaskSessions(maybeTask, { from, to });
-    });
-    const filterChartData = computed(() => chartSeries(allTasks(), currentTasks()));
-    const currentTaskIndex = computed(() => currentTasks().findIndex(({ id }) => id === currentTask()?.id) ?? -1);
-    const nextTaskId = computed(() => {
-      const tasks = currentTasks();
-      const currentIndex = currentTaskIndex();
-      if (!tasks.length) return;
-      const nextTaskIndex = currentIndex >= tasks.length - 1 ? 0 : currentIndex + 1;
-      return tasks[nextTaskIndex]?.id;
-    });
-    const prevTaskId = computed(() => {
-      const tasks = currentTasks();
-      const currentIndex = currentTaskIndex();
-      if (!tasks.length) return;
-      const prevTaskIndex = currentIndex <= 0 ? tasks.length - 1 : currentIndex - 1;
-      return tasks[prevTaskIndex]?.id;
-    });
-    const isCurrentTaskOpened = computed(() => !!currentTask());
     const isAnyTaskActive = computed(() => allTasks().some(isTaskRunning));
-    const dialogTaskId = computed((): string | undefined => store.routeParams()?.at(1)?.taskId);
-    const dialogSessionIndex = computed((): number | undefined => {
-      const sessionIndex = store.routeParams()?.at(1)?.sessionIndex;
-      return typeof sessionIndex === 'string' ? Number(sessionIndex) : undefined;
-    });
-    const dialogTask = computed(() => {
-      const taskId = dialogTaskId();
-      if (!taskId) return;
-      return store.tasks()[taskId];
-    });
-    const dialogSession = computed(() => {
-      const task = dialogTask();
-      const sessionIndex = dialogSessionIndex();
-      if (!task || sessionIndex === undefined) return;
-      return task.sessions[sessionIndex];
-    });
-
-    // Filter
-    const filterRange = computed(() => [filterFrom() ?? null, filterTo() ?? null] as const);
-
-    return {
-      decodedFilterParams,
-      decodedRouteParams,
-      filterFrom,
-      filterTo,
-      currentTaskId,
-      currentSessionIndex,
-      currentTaskState,
-      allTasks,
-      currentTasks,
-      currentTask,
-      filterChartData,
-      currentTaskIndex,
-      nextTaskId,
-      prevTaskId,
-      isCurrentTaskOpened,
-      isAnyTaskActive,
-      filterRange,
-      dialogTaskId,
-      dialogSessionIndex,
-      dialogTask,
-      dialogSession,
-    };
+    return { allTasks, isAnyTaskActive };
   }),
   withMethods((store) => {
     const router = inject(Router);
     const routedDialogs = inject(RoutedDialogs);
-
     const taskById = (taskId: string) => computed(() => store.tasks()[taskId]);
-    const renameTask = async (name: string) => {
-      const taskId = store.dialogTaskId();
-      if (!taskId) return;
+    const getSessionAtIndex = (taskId: string, sessionIndex: number) =>
+      computed(() => {
+        const task = store.tasks()[taskId];
+        return task?.sessions[sessionIndex];
+      });
+    const renameTask = (taskId: string, name: string) => {
       updateState(store, (draft) => {
         const task = draft.tasks[taskId];
         if (task) task.name = name;
       });
       routedDialogs.close();
     };
-    const getSessionAtIndex = (taskId: string, sessionIndex: number) =>
-      computed(() => {
-        const task = store.tasks()[taskId];
-        return task?.sessions[sessionIndex];
-      });
     const deleteTask = (taskIdToRemove: string) => {
       updateState(store, (draft) => {
         delete draft.tasks[taskIdToRemove];
       });
-      const state = store.currentTaskState();
-      const taskId = store.currentTaskId();
-      if (taskIdToRemove === taskId && state) router.navigate([state], { queryParamsHandling: 'merge' });
+      // Re-run guards on the current URL; taskExistsGuard closes the detail pane if its task is gone
+      router.navigateByUrl(router.url, { onSameUrlNavigation: 'reload' });
     };
-    const editSession = async (updatedSession: Session) => {
-      const taskId = store.dialogTaskId();
-      const sessionIndex = store.dialogSessionIndex();
-      if (!taskId || sessionIndex === undefined) return;
+    const editSession = (taskId: string, sessionIndex: number, updatedSession: Session) => {
       updateState(store, (draft) => {
         const task = draft.tasks[taskId];
         if (!task) return;
@@ -308,10 +148,7 @@ export const AppStore = signalStore(
       });
       routedDialogs.close();
     };
-    const splitSession = (updatedSessions: Session[]) => {
-      const taskId = store.dialogTaskId();
-      const sessionIndex = store.dialogSessionIndex();
-      if (!taskId || sessionIndex === undefined) return;
+    const splitSession = (taskId: string, sessionIndex: number, updatedSessions: Session[]) => {
       updateState(store, (draft) => {
         const task = draft.tasks[taskId];
         if (!task) return;
@@ -319,15 +156,12 @@ export const AppStore = signalStore(
       });
       routedDialogs.close();
     };
-    const createTask = async (name: string) => {
+    const createTask = (name: string): void => {
       const taskId = makeTaskId();
       updateState(store, (draft) => {
         draft.tasks[taskId] = { id: taskId, name, sessions: [], state: TaskState.active };
       });
-      router.navigate([
-        '/',
-        { outlets: { dialog: null, primary: [store.currentTaskState() === 'all' ? 'all' : 'active', taskId] } },
-      ]);
+      router.navigate(['/', { outlets: { dialog: null, primary: ['active', taskId] } }]);
     };
     return {
       stopTask(taskId: string, timestamp: number) {

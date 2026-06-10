@@ -31,14 +31,18 @@ export const decodeFilterMatrixParams: Decoder<FilterMatrixParams> = (value) => 
   return result;
 };
 
+export const decodeTaskState = (value: unknown): RouteTaskState | undefined => {
+  for (const i of [TaskState.finished, TaskState.active, TaskState.dropped, 'all'] as const) {
+    if (value === i) return i;
+  }
+  return undefined;
+};
+
 export const decodeRouteParams: Decoder<RouteFragmentParams> = (value) => {
   const result = {} as RouteFragmentParams;
   if (value.taskId) result.taskId = value.taskId;
-  if (value.state) {
-    for (const i of [TaskState.finished, TaskState.active, TaskState.dropped, 'all'] as const) {
-      if (value.state === i) result.state = i;
-    }
-  }
+  const state = decodeTaskState(value.state);
+  if (state) result.state = state;
   return result;
 };
 
