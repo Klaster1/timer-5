@@ -38,9 +38,9 @@ export class DatetimeLocalDirective implements ControlValueAccessor {
     this.onChange(value.length ? new Date(value) : null);
   }
 
-  onChange = (_: any) => { };
+  onChange = (_: any) => {};
 
-  onTouched = () => { };
+  onTouched = () => {};
 
   registerOnTouched(fn: () => void): void {
     this.onTouched = fn;

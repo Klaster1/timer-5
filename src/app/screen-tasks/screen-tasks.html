@@ -12,7 +12,12 @@
       </button>
     </mat-toolbar>
     @defer { @if (searchOpened()) {
-    <tasks-filter (keyup.esc)="toggleFilter(false)" [chartData]="filterChartData()" [filterRange]="filterRange()" [decodedFilterParams]="decodedFilterParams()"></tasks-filter>
+    <tasks-filter
+      (keyup.esc)="toggleFilter(false)"
+      [chartData]="filterChartData()"
+      [filterRange]="filterRange()"
+      [decodedFilterParams]="decodedFilterParams()"
+    ></tasks-filter>
     } } @if (tasks.length) {
     <cdk-virtual-scroll-viewport
       #scroll
@@ -61,9 +66,9 @@
       <img src="assets/favicon.svg" alt="Timer" illustration />
       <span title>No tasks</span>
       <span subtitle>
-        @switch (state()) { @case ('all') { Create a task and it will show up here } @case
-        (taskState.active) { Create a task and it will show up here } @case (taskState.finished) { You didn't finish any
-        tasks yet } @case (taskState.dropped) { You didn't abandon any tasks yet } }
+        @switch (state()) { @case ('all') { Create a task and it will show up here } @case (taskState.active) { Create a
+        task and it will show up here } @case (taskState.finished) { You didn't finish any tasks yet } @case
+        (taskState.dropped) { You didn't abandon any tasks yet } }
       </span>
       <button
         class="tertiary-button"

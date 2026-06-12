@@ -19,7 +19,15 @@ import {
   KEYS_START_STOP,
   hotkey,
 } from '@app/domain/hotkeys';
-import { Task, TaskState, filterTaskSessions, isTaskRunning, sessionDuration, sortSessions, taskDuration } from '@app/domain/task';
+import {
+  Task,
+  TaskState,
+  filterTaskSessions,
+  isTaskRunning,
+  sessionDuration,
+  sortSessions,
+  taskDuration,
+} from '@app/domain/task';
 import { MapPipe } from '@app/pipes/map';
 import { TaskStateIconPipe } from '@app/pipes/task-state-icon';
 import { RoutedDialogs } from '@app/providers/routed-dialogs';

@@ -26,12 +26,21 @@ import { ToolbarWidthSyncDirective } from '@app/directives/toolbar-width-sync';
 import { chartSeries } from '@app/domain/chart';
 import { KEYS_ADD, KEYS_NEXT, KEYS_PREV, KEYS_SEARCH, hotkey } from '@app/domain/hotkeys';
 import { decodeFilterMatrixParams, decodeTaskState } from '@app/domain/router';
-import { SessionDragEvent, Task, TaskState, filterTasks, isTaskRunning, taskDuration, tasksDuration } from '@app/domain/task';
+import {
+  SessionDragEvent,
+  Task,
+  TaskState,
+  filterTasks,
+  isTaskRunning,
+  taskDuration,
+  tasksDuration,
+} from '@app/domain/task';
 import { MapPipe } from '@app/pipes/map';
 import { TaskStatePipe } from '@app/pipes/task-state';
 import { TaskStateIconPipe } from '@app/pipes/task-state-icon';
 import { DialogLinkDirective, RoutedDialogs } from '@app/providers/routed-dialogs';
 import { AppStore } from '@app/providers/state';
+import type ScreenTaskComponent from '@app/screen-task/screen-task';
 import { TypeSafeCdkVirtualForDirective } from '@app/screen-task/type-safe-virtual-for';
 import { deepEquals } from '@app/utils/assert';
 import { Hotkey, HotkeysService } from 'angular2-hotkeys';
@@ -39,7 +48,6 @@ import { CheckViewportSizeWhenValueChangesDirective } from './checkViewportSizeW
 import { EmptyStateComponent } from './empty-state/empty-state';
 import { ScrollToIndexDirective } from './scrollToIndex';
 import { TasksFilterComponent } from './tasks-filter/tasks-filter';
-import type ScreenTaskComponent from '@app/screen-task/screen-task';
 
 @Component({
   selector: 'screen-tasks',
@@ -102,10 +110,9 @@ export default class ScreenTasksComponent {
       durationSort: this.durationSort(),
     }),
   );
-  private taskFilterParams = computed(
-    () => ({ ...this.decodedFilterParams(), state: this.state() }),
-    { equal: deepEquals },
-  );
+  private taskFilterParams = computed(() => ({ ...this.decodedFilterParams(), state: this.state() }), {
+    equal: deepEquals,
+  });
   currentTasks = computed(() => filterTasks(this.taskFilterParams(), this.store.allTasks()));
   filterChartData = computed(() => chartSeries(this.store.allTasks(), this.currentTasks()));
   filterRange = computed(

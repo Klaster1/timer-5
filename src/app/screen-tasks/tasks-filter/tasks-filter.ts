@@ -113,9 +113,7 @@ export class TasksFilterComponent {
     // is compatible with the URL↔form sync loop (currently breaks filter tests).
     toObservable(this.filterModel)
       .pipe(debounceTime(10), distinctUntilChanged(deepEquals), takeUntilDestroyed())
-      .subscribe((value) =>
-        this.router.navigate([], { queryParams: encodeFilterParams(this.toFilterParams(value)) }),
-      );
+      .subscribe((value) => this.router.navigate([], { queryParams: encodeFilterParams(this.toFilterParams(value)) }));
   }
 
   hasChartData = hasChartData;

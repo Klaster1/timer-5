@@ -1,15 +1,7 @@
 import { computed, DestroyRef, effect, inject, Service, Signal, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { fromStoredTasks, toStoredTasks } from '@app/domain/storage';
-import {
-  isSessionWithId,
-  isTaskRunning,
-  makeTaskId,
-  Session,
-  SessionId,
-  Task,
-  TaskState,
-} from '@app/domain/task';
+import { isSessionWithId, isTaskRunning, makeTaskId, Session, SessionId, Task, TaskState } from '@app/domain/task';
 import { RoutedDialogs } from '@app/providers/routed-dialogs';
 import { deepEquals } from '@app/utils/assert';
 import { Draft, produce } from 'immer';

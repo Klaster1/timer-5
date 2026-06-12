@@ -56,7 +56,13 @@
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-    <tr mat-row *matRowDef="let item; columns: displayedColumns" data-e2e="screen-task__session-row" cdkDrag [cdkDragData]="[item, task.id]"></tr>
+    <tr
+      mat-row
+      *matRowDef="let item; columns: displayedColumns"
+      data-e2e="screen-task__session-row"
+      cdkDrag
+      [cdkDragData]="[item, task.id]"
+    ></tr>
     <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>
   </table>
 </cdk-virtual-scroll-viewport>
