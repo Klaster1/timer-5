@@ -27,7 +27,7 @@
     "deploy": "gh-pages --nojekyll --dotfiles --dist dist/timer-5",
     "generate-screenshots": "node ./scripts/generate-screenshots.ts"
   },
-  "private": true,
+  "private": false,
   "dependencies": {
     "@angular/animations": "^22.0.0",
     "@angular/cdk": "^22.0.0",
