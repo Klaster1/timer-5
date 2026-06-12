@@ -56,7 +56,7 @@
     "@napi-rs/canvas": "^0.1.71",
     "@playwright/test": "^1.60.0",
     "@types/node": "^24.0.1",
-    "baseline-browser-mapping": "^2.10.19",
+    "baseline-browser-mapping": "^2.10.36",
     "gh-pages": "^6.3.0",
     "local-web-server": "^5.4.0",
     "prettier": "^3.6.2",
