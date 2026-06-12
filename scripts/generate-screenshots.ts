@@ -1,4 +1,3 @@
-import { createCanvas, loadImage } from '@napi-rs/canvas';
 import type { Page } from '@playwright/test';
 import { chromium } from '@playwright/test';
 import { existsSync } from 'node:fs';
@@ -24,6 +23,11 @@ const installScreenshotStabilizers = async (page: Page): Promise<void> => {
       }
     `,
   });
+};
+
+const parkCursor = async (page: Page): Promise<void> => {
+  await page.mouse.move(-1, -1);
+  await page.evaluate(() => (document.activeElement as HTMLElement | null)?.blur());
 };
 
 const waitForStableFrame = async (page: Page): Promise<void> => {
@@ -93,36 +97,61 @@ const createReadmeScreenshot = async (page: Page): Promise<void> => {
       height: Math.round(1278 * scaling),
     });
     await waitForStableFrame(page);
+    await parkCursor(page);
     return page.screenshot({ type: 'png' });
   };
 
-  const dark = await loadImage(await screenshot('dark'));
-  const light = await loadImage(await screenshot('light'));
-  const canvas = createCanvas(dark.width, dark.height);
-  const ctx = canvas.getContext('2d');
+  const darkBuf = await screenshot('dark');
+  const lightBuf = await screenshot('light');
 
-  ctx.drawImage(dark, 0, 0);
+  const resultBase64 = await page.evaluate(
+    async ({ darkBase64, lightBase64 }) => {
+      const loadImg = (src: string): Promise<HTMLImageElement> =>
+        new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.src = src;
+        });
 
-  const angle = -66 * (Math.PI / 180);
-  const lineLength = canvas.height / Math.sin(angle);
-  const startX = canvas.width / 1.9 - (lineLength * Math.cos(angle)) / 2;
-  const startY = 0;
-  const endX = startX + lineLength * Math.cos(angle);
-  const endY = startY + lineLength * Math.sin(angle);
+      const [dark, light] = await Promise.all([
+        loadImg(`data:image/png;base64,${darkBase64}`),
+        loadImg(`data:image/png;base64,${lightBase64}`),
+      ]);
 
-  ctx.save();
-  ctx.beginPath();
-  ctx.moveTo(startX, startY);
-  ctx.lineTo(endX, endY);
-  ctx.lineTo(canvas.width, canvas.height);
-  ctx.lineTo(canvas.width, 0);
-  ctx.closePath();
-  ctx.clip();
-  ctx.drawImage(light, 0, 0);
-  ctx.restore();
+      const canvas = document.createElement('canvas');
+      canvas.width = dark.width;
+      canvas.height = dark.height;
+      const ctx = canvas.getContext('2d')!;
 
-  const buffer = canvas.toBuffer('image/png');
-  await writeFile('./screenshot.png', buffer);
+      ctx.drawImage(dark, 0, 0);
+
+      const angle = -66 * (Math.PI / 180);
+      const lineLength = canvas.height / Math.sin(angle);
+      const startX = canvas.width / 1.9 - (lineLength * Math.cos(angle)) / 2;
+      const startY = 0;
+      const endX = startX + lineLength * Math.cos(angle);
+      const endY = startY + lineLength * Math.sin(angle);
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(endX, endY);
+      ctx.lineTo(canvas.width, canvas.height);
+      ctx.lineTo(canvas.width, 0);
+      ctx.closePath();
+      ctx.clip();
+      ctx.drawImage(light, 0, 0);
+      ctx.restore();
+
+      return canvas.toDataURL('image/png').split(',')[1];
+    },
+    {
+      darkBase64: darkBuf.toString('base64'),
+      lightBase64: lightBuf.toString('base64'),
+    },
+  );
+
+  await writeFile('./screenshot.png', Buffer.from(resultBase64!, 'base64'));
 };
 
 const createSocialScreenshot = async (page: Page): Promise<void> => {
@@ -138,24 +167,33 @@ const createSocialScreenshot = async (page: Page): Promise<void> => {
   });
   await closeOverlays(page);
   await waitForStableFrame(page);
+  await parkCursor(page);
 
-  const screenshot = await page.screenshot({ type: 'png' });
+  const screenshotBuf = await page.screenshot({ type: 'png' });
 
-  const canvas = createCanvas(width * scale, height * scale);
-  const ctx = canvas.getContext('2d');
+  const resultBase64 = await page.evaluate(
+    async ({ imgBase64, w, h, s, p, bg }) => {
+      const img = await new Promise<HTMLImageElement>((resolve) => {
+        const el = new Image();
+        el.onload = () => resolve(el);
+        el.src = `data:image/png;base64,${imgBase64}`;
+      });
 
-  ctx.fillStyle = background;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(
-    await loadImage(screenshot),
-    padding * scale,
-    padding * scale,
-    canvas.width - padding * 2 * scale,
-    canvas.height - padding * 2 * scale,
+      const canvas = document.createElement('canvas');
+      canvas.width = w * s;
+      canvas.height = h * s;
+      const ctx = canvas.getContext('2d')!;
+
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, p * s, p * s, canvas.width - p * 2 * s, canvas.height - p * 2 * s);
+
+      return canvas.toDataURL('image/png').split(',')[1];
+    },
+    { imgBase64: screenshotBuf.toString('base64'), w: width, h: height, s: scale, p: padding, bg: background },
   );
 
-  const buffer = canvas.toBuffer('image/png');
-  await writeFile('./social.png', buffer);
+  await writeFile('./social.png', Buffer.from(resultBase64!, 'base64'));
 };
 
 const main = async (): Promise<void> => {
