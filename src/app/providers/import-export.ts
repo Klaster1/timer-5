@@ -1,8 +1,8 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Service } from '@angular/core';
 import { fromStoredTasks } from '@app/domain/storage';
 import { AppStore } from './state';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class ImportExportService {
   private store = inject(AppStore);
   import(event: Event) {

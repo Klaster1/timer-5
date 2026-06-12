@@ -1,6 +1,6 @@
-import { DOCUMENT, Injectable, inject } from '@angular/core';
+import { DOCUMENT, Service, inject } from '@angular/core';
 
-@Injectable({ providedIn: 'root' })
+@Service()
 export class FaviconService {
   private document = inject(DOCUMENT);
   setIcon(href: string) {

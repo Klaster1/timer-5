@@ -1,14 +1,14 @@
 import {
   Directive,
   ENVIRONMENT_INITIALIZER,
-  Injectable,
   Injector,
   Provider,
+  Service,
   SimpleChange,
   effect,
   inject,
   input,
-  reflectComponentType,
+  reflectComponentType
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
@@ -49,9 +49,7 @@ export class DialogLinkDirective {
   }
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class RoutedDialogs {
   private router = inject(Router);
   public navigate(route: any[]) {
