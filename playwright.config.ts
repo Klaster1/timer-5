@@ -50,6 +50,7 @@ export default defineConfig({
     // Linux screenshots: the browser runs in a Playwright Server container, the tests run on this machine.
     {
       name: 'docker',
+      default: false,
       dependencies: ['docker-setup'],
       teardown: 'docker-teardown',
       snapshotPathTemplate: '{testDir}/{testFileName}-snapshots/{arg}-chromium-linux{ext}',
@@ -59,7 +60,7 @@ export default defineConfig({
         connectOptions: { wsEndpoint: `ws://127.0.0.1:${serverPort}/` },
       },
     },
-    { name: 'docker-setup', testDir: './e2e/docker', testMatch: 'setup.ts' },
-    { name: 'docker-teardown', testDir: './e2e/docker', testMatch: 'teardown.ts' },
+    { name: 'docker-setup', default: false, testDir: './e2e/docker', testMatch: 'setup.ts' },
+    { name: 'docker-teardown', default: false, testDir: './e2e/docker', testMatch: 'teardown.ts' },
   ],
 });
