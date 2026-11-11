@@ -48,7 +48,7 @@ export default class DialogSplitSessionComponent {
     autoFocus: false,
   };
 
-  public readonly state = inject(AppStore);
+  private readonly state = inject(AppStore);
 
   public readonly taskId = input<string>();
   public readonly sessionIndex = input(undefined, { transform: optionalNumber });
@@ -60,17 +60,17 @@ export default class DialogSplitSessionComponent {
     return this.state.tasks()[taskId]?.sessions[idx];
   });
 
-  public value = linkedSignal<null | Milliseconds>(() => {
+  private value = linkedSignal<null | Milliseconds>(() => {
     const session = this.session();
     if (!session) return null;
     return session.start + (session.end! - session.start) / 2;
   });
 
-  public beforeSessions = computed(() => {
+  private beforeSessions = computed(() => {
     const session = this.session();
     return session ? [session] : [];
   });
-  public afterSessions = computed(() => {
+  private afterSessions = computed(() => {
     const value = this.value();
     const session = this.session();
     if (!session || value === null) return [];
@@ -78,20 +78,20 @@ export default class DialogSplitSessionComponent {
     const after: Session = { ...session, start: value };
     return [before, after];
   });
-  public min = computed(() => this.session()?.start);
-  public max = computed(() => this.session()?.end);
-  public submitDisabled = computed(() => {
+  private min = computed(() => this.session()?.start);
+  private max = computed(() => this.session()?.end);
+  private submitDisabled = computed(() => {
     const session = this.session();
     return this.value() === session?.start || this.value() === session?.end;
   });
-  sessionDuration = sessionDuration;
-  splitPreviewColumns = ['start', 'end', 'duration'];
+  private sessionDuration = sessionDuration;
+  private splitPreviewColumns = ['start', 'end', 'duration'];
 
-  sessionsContext!: {
+  private sessionsContext!: {
     sessions: Session[];
   };
 
-  submit() {
+  private submit() {
     const disabled = this.submitDisabled();
     const result = this.afterSessions();
     const taskId = this.taskId();

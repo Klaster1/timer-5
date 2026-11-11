@@ -29,13 +29,13 @@ import { AppStore } from '@app/providers/state';
 export class ButtonTaskActionsComponent {
   private store = inject(AppStore);
   task = input<Task>();
-  taskState = TaskState;
+  private taskState = TaskState;
 
-  deleteTask() {
+  private deleteTask() {
     const task = this.task();
     if (task) this.store.deleteTask(task.id);
   }
-  changeTaskState(state: TaskState) {
+  private changeTaskState(state: TaskState) {
     const task = this.task();
     if (task) this.store.updateTaskState(task.id, state);
   }

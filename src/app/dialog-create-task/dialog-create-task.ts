@@ -27,11 +27,11 @@ import { AppStore } from '@app/providers/state';
 export default class DialogCreateTaskComponent {
   private state = inject(AppStore);
 
-  form = signalForm(signal<{ value: string }>({ value: '' }), (schema) => {
+  private form = signalForm(signal<{ value: string }>({ value: '' }), (schema) => {
     required(schema.value);
   });
 
-  onSubmit() {
+  private onSubmit() {
     const value = this.form.value().value();
     if (this.form.value().valid()) {
       this.state.createTask(value);

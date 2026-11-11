@@ -28,17 +28,17 @@ export class ButtonSessionActionsComponent {
 
   public task = input.required<Task>();
   public session = input.required<Session>();
-  public sessionIndex = computed(() => this.task().sessions.indexOf(this.session()));
+  private sessionIndex = computed(() => this.task().sessions.indexOf(this.session()));
 
-  public isSplitDisabled = computed(() => isSessionRunning(this.session()));
+  private isSplitDisabled = computed(() => isSessionRunning(this.session()));
 
-  remove() {
+  private remove() {
     this.store.deleteSession(this.task().id, getSessionId(this.session()));
   }
-  get skipBeforeParams() {
+  private get skipBeforeParams() {
     return encodeFilterParams({ from: new Date(this.session().start) });
   }
-  get skipAfterParams() {
+  private get skipAfterParams() {
     return encodeFilterParams({ to: new Date(this.session()?.end ?? new Date()) });
   }
 }

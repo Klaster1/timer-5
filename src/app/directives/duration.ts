@@ -58,7 +58,7 @@ const EVERY_SECOND_INTERVAL = interval(secondsToMilliseconds(1)).pipe(
 export class DurationComponent {
   private elementRef = inject(ElementRef<HTMLElement>);
   public readonly value = input.required<DurationFn>();
-  public readonly DimMode = DimMode;
+  private readonly DimMode = DimMode;
   private readonly duration$ = combineLatest([toObservable(this.value), EVERY_SECOND_INTERVAL]).pipe(
     map(([value, now]) => ({
       hours: ~~(value(now) / 3600000),
@@ -68,7 +68,7 @@ export class DurationComponent {
     shareReplay({ refCount: true, bufferSize: 1 }),
     takeUntilDestroyed(),
   );
-  public readonly durationFragments = this.duration$.pipe(
+  private readonly durationFragments = this.duration$.pipe(
     map(({ hours, minutes, seconds }): Fragment[] => {
       if (hours === 0 && minutes === 0) {
         return [{ value: seconds.toString(), unit: Unit.Seconds, dimmed: DimMode.None }];

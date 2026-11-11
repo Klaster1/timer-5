@@ -15,8 +15,8 @@ type ThemeOption = { theme: Theme; label: string; icon: string };
   imports: [MatTooltip, MatIcon, MatListItem, MatMenuModule],
 })
 export class ButtonThemeSwitcherComponent {
-  public store = inject(AppStore);
-  public options: ThemeOption[] = [
+  private store = inject(AppStore);
+  private options: ThemeOption[] = [
     { theme: { mode: 'manual', variant: 'light' }, label: 'Light', icon: 'light_mode' },
     { theme: { mode: 'manual', variant: 'dark' }, label: 'Dark', icon: 'dark_mode' },
     {
@@ -25,11 +25,11 @@ export class ButtonThemeSwitcherComponent {
       icon: 'brightness_medium',
     },
   ];
-  public currentOption = computed(() => {
+  private currentOption = computed(() => {
     const theme = this.store.theme();
     return this.options.find((option) =>
       theme?.mode === 'manual' ? deepEquals(option.theme, theme) : option.theme.mode === 'auto',
     );
   });
-  public currentThemeTooltip = computed(() => `Current theme: ${this.currentOption()?.label.toLowerCase()}`);
+  private currentThemeTooltip = computed(() => `Current theme: ${this.currentOption()?.label.toLowerCase()}`);
 }

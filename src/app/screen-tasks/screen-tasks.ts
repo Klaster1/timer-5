@@ -86,7 +86,7 @@ import { TasksFilterComponent } from './tasks-filter/tasks-filter';
   ],
 })
 export default class ScreenTasksComponent {
-  public store = inject(AppStore);
+  private store = inject(AppStore);
   private keys = inject(HotkeysService);
   private router = inject(Router);
   private routedDialogs = inject(RoutedDialogs);
@@ -102,7 +102,7 @@ export default class ScreenTasksComponent {
   public readonly durationSort = input<string>();
 
   // Derived from route inputs
-  decodedFilterParams = computed(() =>
+  private decodedFilterParams = computed(() =>
     decodeFilterMatrixParams({
       search: this.search(),
       from: this.from(),
@@ -113,30 +113,30 @@ export default class ScreenTasksComponent {
   private taskFilterParams = computed(() => ({ ...this.decodedFilterParams(), state: this.state() }), {
     equal: deepEquals,
   });
-  currentTasks = computed(() => filterTasks(this.taskFilterParams(), this.store.allTasks()));
-  filterChartData = computed(() => chartSeries(this.store.allTasks(), this.currentTasks()));
-  filterRange = computed(
+  private currentTasks = computed(() => filterTasks(this.taskFilterParams(), this.store.allTasks()));
+  private filterChartData = computed(() => chartSeries(this.store.allTasks(), this.currentTasks()));
+  private filterRange = computed(
     () => [this.decodedFilterParams().from ?? null, this.decodedFilterParams().to ?? null] as const,
   );
 
   private filterPresent = computed(() => !!Object.keys(this.decodedFilterParams()).length);
   private filterToggles = signal<boolean | undefined>(undefined);
-  public searchOpened = computed(() => {
+  private searchOpened = computed(() => {
     const filterPresent = this.filterPresent();
     const filterToggles = this.filterToggles();
     return filterToggles !== undefined ? filterToggles : filterPresent;
   });
 
   // The currently open task detail component, set by the <router-outlet> activate/deactivate events
-  public readonly openTask = signal<ScreenTaskComponent | undefined>(undefined);
+  private readonly openTask = signal<ScreenTaskComponent | undefined>(undefined);
 
   // For scrollToIndex in the template — index of the currently open task
-  currentTaskIndex = computed(() => {
+  private currentTaskIndex = computed(() => {
     const taskId = this.openTask()?.taskId();
     return taskId ? this.currentTasks().findIndex((t) => t.id === taskId) : -1;
   });
 
-  isCurrentTaskOpened = computed(() => !!this.openTask());
+  private isCurrentTaskOpened = computed(() => !!this.openTask());
 
   constructor() {
     afterNextRender(() => {
@@ -161,13 +161,13 @@ export default class ScreenTasksComponent {
     });
   }
 
-  taskDuration = taskDuration;
-  tasksDuration = tasksDuration;
-  taskState = TaskState;
-  isTaskRunning = isTaskRunning;
-  taskId: TrackByFunction<Task> = (_, task) => task.id;
+  private taskDuration = taskDuration;
+  private tasksDuration = tasksDuration;
+  private taskState = TaskState;
+  private isTaskRunning = isTaskRunning;
+  private taskId: TrackByFunction<Task> = (_, task) => task.id;
 
-  hotkeys = [
+  private hotkeys = [
     hotkey(KEYS_ADD, 'Add task', () => this.routedDialogs.navigate(['tasks', 'create'])),
     hotkey([...KEYS_NEXT, ...KEYS_PREV], 'Next/prev task', (e) => {
       const state = this.state();
@@ -192,10 +192,10 @@ export default class ScreenTasksComponent {
     ),
   ];
 
-  toggleFilter(opened?: boolean) {
+  private toggleFilter(opened?: boolean) {
     this.filterToggles.update(() => opened ?? !this.searchOpened());
   }
-  onDrop(
+  private onDrop(
     {
       item: {
         data: [session, fromTaskid],

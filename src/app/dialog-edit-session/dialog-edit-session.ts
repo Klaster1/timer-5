@@ -43,18 +43,18 @@ export default class DialogEditSessionComponent {
     return this.state.tasks()[taskId]?.sessions[idx];
   });
 
-  sessionModel = linkedSignal<{ start: Date | null; end: Date | null }>(() => {
+  private sessionModel = linkedSignal<{ start: Date | null; end: Date | null }>(() => {
     const session = this.session();
     return {
       start: session?.start != null ? new Date(session.start) : null,
       end: session?.end != null ? new Date(session.end) : null,
     };
   });
-  form = signalForm(this.sessionModel, (schema) => {
+  private form = signalForm(this.sessionModel, (schema) => {
     required(schema.start);
   });
 
-  onSubmit() {
+  private onSubmit() {
     const taskId = this.taskId();
     const idx = this.sessionIndex();
     const { start, end } = this.sessionModel();

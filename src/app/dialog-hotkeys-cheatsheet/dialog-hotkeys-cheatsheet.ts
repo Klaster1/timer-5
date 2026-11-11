@@ -20,8 +20,8 @@ import { HotkeysService } from 'angular2-hotkeys';
 export default class DialogHotkeysCheatsheetComponent {
   static dialogConfig: MatDialogConfig = { width: undefined };
   private hotkeysService = inject(HotkeysService);
-  get keys() {
+  private get keys() {
     return this.hotkeysService.hotkeys.filter((key) => key.description);
   }
-  withoutCyrillics = (values: string[]): string[] => [...values].filter((value) => !hasCyrillics(value));
+  private withoutCyrillics = (values: string[]): string[] => [...values].filter((value) => !hasCyrillics(value));
 }
