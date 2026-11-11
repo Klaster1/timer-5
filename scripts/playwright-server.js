@@ -1,6 +1,6 @@
 import { spawn, spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const { version } = createRequire(import.meta.url)('@playwright/test/package.json');
 
@@ -9,40 +9,58 @@ export const serverPort = 3333;
 // The image, the server and the test runner must run the same Playwright version, so all three follow @playwright/test.
 const image = `mcr.microsoft.com/playwright:v${version}-noble`;
 
+// Without windowsHide, a docker.exe started from the console-less watcher opens a terminal window on Windows.
+const docker = (...args) => spawnSync('docker', args, { encoding: 'utf8', windowsHide: true });
+
 export const removeContainer = () => {
-  spawnSync('docker', ['rm', '--force', containerName], { stdio: 'ignore' });
+  docker('rm', '--force', containerName);
 };
 
-// The global teardown of the Linux e2e run.
-export default removeContainer;
+const isContainerRunning = () => docker('ps', '--quiet', '--filter', `name=^${containerName}$`).stdout.trim() !== '';
 
-const runServer = () => {
+/** Starts the container and returns when the server accepts connections. */
+export const startContainer = async () => {
   removeContainer();
-  const container = spawn(
-    'docker',
-    [
-      ...['run', '--rm', '--init', '--name', containerName, '--workdir', '/home/pwuser', '--user', 'pwuser'],
-      ...['--publish', `${serverPort}:${serverPort}`, image],
-      ...['npx', '-y', `playwright@${version}`, 'run-server', '--port', String(serverPort), '--host', '0.0.0.0'],
-    ],
-    { stdio: 'inherit' },
+  const run = docker(
+    ...['run', '--detach', '--rm', '--init', '--name', containerName, '--workdir', '/home/pwuser', '--user', 'pwuser'],
+    ...['--publish', `${serverPort}:${serverPort}`, image],
+    ...['npx', '-y', `playwright@${version}`, 'run-server', '--port', String(serverPort), '--host', '0.0.0.0'],
   );
-  container.on('exit', (code) => process.exit(code ?? 1));
-  process.on('exit', removeContainer);
-  for (const signal of ['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGBREAK']) process.on(signal, () => process.exit(1));
-
-  // Windows ends this process without a signal when the runner stops, and a killed `docker run` leaves its container
-  // running. Polling the runner lets this process notice that and remove the container.
-  const runnerPid = Number(process.env['E2E_RUNNER_PID']);
-  if (runnerPid) {
-    setInterval(() => {
-      try {
-        process.kill(runnerPid, 0);
-      } catch (error) {
-        if (error.code === 'ESRCH') process.exit(1);
-      }
-    }, 1000);
+  if (run.status !== 0) throw new Error(`docker run failed: ${run.stderr}`);
+  for (let attempt = 0; attempt < 120; attempt++) {
+    const logs = docker('logs', containerName);
+    if (/Listening on ws/.test(logs.stdout + logs.stderr)) return;
+    if (!isContainerRunning())
+      throw new Error(`The Playwright server container stopped:\n${logs.stdout}${logs.stderr}`);
+    await new Promise((resolve) => setTimeout(resolve, 500));
   }
+  throw new Error('The Playwright server did not start in 60 s.');
 };
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) runServer();
+/**
+ * Starts a detached process that removes the container when the runner dies, then exits.
+ * A killed runner runs no teardown, and a container started with `docker run -d` outlives it.
+ */
+export const watchRunner = (runnerPid) => {
+  spawn(process.execPath, [fileURLToPath(import.meta.url), 'watch', String(runnerPid)], {
+    detached: true,
+    stdio: 'ignore',
+    windowsHide: true,
+  }).unref();
+};
+
+const watch = (runnerPid) => {
+  setInterval(() => {
+    try {
+      process.kill(runnerPid, 0);
+    } catch (error) {
+      if (error.code !== 'ESRCH') return;
+      removeContainer();
+      process.exit(0);
+    }
+  }, 1000);
+};
+
+if (import.meta.url === pathToFileURL(process.argv[1]).href && process.argv[2] === 'watch') {
+  watch(Number(process.argv[3]));
+}
