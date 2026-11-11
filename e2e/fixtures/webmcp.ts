@@ -65,9 +65,7 @@ test.describe('WebMCP', () => {
 
   const openApp = async (page: Page, tasks: SeedTask[] = []) => {
     await page.goto('/');
-    await page.evaluate((tasks) => {
-      localStorage.setItem('tasks', JSON.stringify({ version: 1, value: tasks }));
-    }, seedToStorage(tasks));
+    await page.localStorage.setItem('tasks', JSON.stringify({ version: 1, value: seedToStorage(tasks) }));
     await page.goto('/all');
     await expect.poll(() => toolNames(page)).toEqual(TOOL_NAMES);
     await mockDate(page, new Date(NOW));

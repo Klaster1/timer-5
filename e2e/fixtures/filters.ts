@@ -79,11 +79,9 @@ test.describe('Filters', () => {
 
     const toSec = (ms: number) => Math.floor(ms / 1000);
 
-    await page.evaluate(
-      (payload) => {
-        localStorage.setItem('tasks', JSON.stringify(payload));
-      },
-      {
+    await page.localStorage.setItem(
+      'tasks',
+      JSON.stringify({
         version: 1,
         value: [
           {
@@ -99,7 +97,7 @@ test.describe('Filters', () => {
             sessions: [[toSec(todayRunningStart.valueOf()), null]],
           },
         ],
-      },
+      }),
     );
 
     const from = encodeURIComponent(yesterdayStart.toISOString());
@@ -112,9 +110,7 @@ test.describe('Filters', () => {
   });
 
   test('No tasks + filters: chart is hidden', async ({ page }) => {
-    await page.evaluate(() => {
-      localStorage.setItem('tasks', JSON.stringify({ version: 1, value: [] }));
-    });
+    await page.localStorage.setItem('tasks', JSON.stringify({ version: 1, value: [] }));
 
     const from = encodeURIComponent('2024-06-01T00:00:00.000Z');
     const to = encodeURIComponent('2024-06-30T23:59:59.999Z');
