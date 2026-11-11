@@ -43,17 +43,17 @@ import { AppStore } from './providers/state';
   ],
 })
 export class AppComponent {
-  public keys = inject<HotkeysService>(HotkeysService);
-  public router = inject<Router>(Router);
+  private keys = inject<HotkeysService>(HotkeysService);
+  private router = inject<Router>(Router);
   private importExport = inject<ImportExportService>(ImportExportService);
   private favicon = inject<FaviconService>(FaviconService);
   private hotkeysService = inject<HotkeysService>(HotkeysService);
   private destroyRef = inject(DestroyRef);
-  public store = inject(AppStore);
+  private store = inject(AppStore);
   private sanitizer = inject(DomSanitizer);
   private routedDialogs = inject(RoutedDialogs);
 
-  public exportUrl = computed(() => {
+  private exportUrl = computed(() => {
     const tasks = this.store.tasks();
     const url = URL.createObjectURL(
       new Blob([JSON.stringify(toStoredTasks(tasks), null, '  ')], { type: 'application/json;charset=utf-8;' }),
@@ -61,7 +61,7 @@ export class AppComponent {
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   });
 
-  taskState = TaskState;
+  private taskState = TaskState;
 
   constructor() {
     this.hotkeysService.cheatSheetToggle.subscribe(() => {
@@ -89,7 +89,7 @@ export class AppComponent {
       if (exportUrl) URL.revokeObjectURL(exportUrl.toString());
     });
   }
-  import(event: Event) {
+  private import(event: Event) {
     this.importExport.import(event);
   }
 }

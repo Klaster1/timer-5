@@ -61,7 +61,7 @@ import { ButtonSessionActionsComponent } from './button-session-actions/button-s
   ],
 })
 export default class ScreenTaskComponent {
-  public store = inject(AppStore);
+  private store = inject(AppStore);
   private keys = inject<HotkeysService>(HotkeysService);
   private destroyRef = inject(DestroyRef);
   private routedDialogs = inject(RoutedDialogs);
@@ -71,7 +71,7 @@ export default class ScreenTaskComponent {
   public readonly from = input(undefined, { transform: optionalDate });
   public readonly to = input(undefined, { transform: optionalDate });
 
-  currentTask = computed(() => {
+  private currentTask = computed(() => {
     const taskId = this.taskId();
     if (!taskId) return undefined;
     const task = this.store.tasks()[taskId];
@@ -79,14 +79,15 @@ export default class ScreenTaskComponent {
     return filterTaskSessions(task, { from: this.from(), to: this.to() });
   });
 
-  taskIsInProgress = computed(() => isTaskRunning(this.currentTask()));
+  private taskIsInProgress = computed(() => isTaskRunning(this.currentTask()));
   viewport = viewChild(CdkVirtualScrollViewport);
-  taskDuration = taskDuration;
-  sessionDuration = sessionDuration;
-  sortSessions = sortSessions;
-  trackSession = (_: number, session: Task['sessions'][number]) => `${session.start}-${session.end ?? 'running'}`;
+  private taskDuration = taskDuration;
+  private sessionDuration = sessionDuration;
+  private sortSessions = sortSessions;
+  private trackSession = (_: number, session: Task['sessions'][number]) =>
+    `${session.start}-${session.end ?? 'running'}`;
 
-  hotkeys = [
+  private hotkeys = [
     hotkey(KEYS_START_STOP, 'Start/stop task', () => {
       const task = this.currentTask();
       const inProgress = this.taskIsInProgress();
@@ -114,7 +115,7 @@ export default class ScreenTaskComponent {
       if (task) this.store.deleteTask(task.id);
     }),
   ];
-  displayedColumns = ['start', 'end', 'duration', 'action'];
+  private displayedColumns = ['start', 'end', 'duration', 'action'];
 
   constructor() {
     this.keys.add(this.hotkeys);
@@ -126,10 +127,10 @@ export default class ScreenTaskComponent {
       this.viewport()?.scrollToIndex(0);
     });
   }
-  start(taskId: string) {
+  private start(taskId: string) {
     this.store.startTask(taskId, Date.now());
   }
-  stop(taskId: string) {
+  private stop(taskId: string) {
     this.store.stopTask(taskId, Date.now());
   }
 }

@@ -276,11 +276,11 @@ export class TimelineChartUplotComponent {
       setTimeout(this.updateColors);
     });
   }
-  getLegendValue(value: number) {
+  private getLegendValue(value: number) {
     return value ? formatHours(value) : '--:--';
   }
 
-  getLegendLabel() {
+  private getLegendLabel() {
     return 'Hours';
   }
 }

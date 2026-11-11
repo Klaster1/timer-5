@@ -24,5 +24,5 @@ import { MatTooltip } from '@angular/material/tooltip';
 export class ButtonResetInputComponent<T> {
   value = input<T>();
   reset = output<void>();
-  public showButton = computed(() => this.value() !== null && this.value() !== '');
+  private showButton = computed(() => this.value() !== null && this.value() !== '');
 }

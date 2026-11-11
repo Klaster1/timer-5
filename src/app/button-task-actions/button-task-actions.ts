@@ -2,6 +2,7 @@ import { Component, inject, input } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { MatTooltip } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { Task, TaskState } from '@app/domain/task';
 import { TaskStatePipe } from '@app/pipes/task-state';
@@ -20,6 +21,7 @@ import { AppStore } from '@app/providers/state';
     MatMenuItem,
     MatIconButton,
     MatIcon,
+    MatTooltip,
     TaskStateIconPipe,
     TaskStatePipe,
     RouterLink,
@@ -29,13 +31,13 @@ import { AppStore } from '@app/providers/state';
 export class ButtonTaskActionsComponent {
   private store = inject(AppStore);
   task = input<Task>();
-  taskState = TaskState;
+  private taskState = TaskState;
 
-  deleteTask() {
+  private deleteTask() {
     const task = this.task();
     if (task) this.store.deleteTask(task.id);
   }
-  changeTaskState(state: TaskState) {
+  private changeTaskState(state: TaskState) {
     const task = this.task();
     if (task) this.store.updateTaskState(task.id, state);
   }

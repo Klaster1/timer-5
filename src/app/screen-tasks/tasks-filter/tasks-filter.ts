@@ -79,22 +79,22 @@ export class TasksFilterComponent {
   public readonly filterRange = input<readonly [Date | null, Date | null] | undefined>(undefined);
   public readonly decodedFilterParams = input<FilterMatrixParams>({});
 
-  public hasAnyTasks = computed(() => this.store.allTasks().length > 0);
+  private hasAnyTasks = computed(() => this.store.allTasks().length > 0);
 
-  public dataRange = computed(() => {
+  private dataRange = computed(() => {
     const data = this.chartData();
     const range = this.filterRange();
     if (!data || !hasChartData(data) || !range) return undefined;
     return { data, range } as const;
   });
 
-  filterModel = signal<FilterFormData>({
+  private filterModel = signal<FilterFormData>({
     search: '',
     from: null,
     to: null,
     durationSort: null,
   });
-  form = signalForm(this.filterModel);
+  private form = signalForm(this.filterModel);
 
   constructor() {
     this.destroyRef.onDestroy(() => {
@@ -116,7 +116,7 @@ export class TasksFilterComponent {
       .subscribe((value) => this.router.navigate([], { queryParams: encodeFilterParams(this.toFilterParams(value)) }));
   }
 
-  hasChartData = hasChartData;
+  private hasChartData = hasChartData;
 
   private toFilterParams(data: FilterFormData): FilterMatrixParams {
     return {
@@ -127,63 +127,63 @@ export class TasksFilterComponent {
     };
   }
 
-  onChartRangeChange(e: ScaleRange) {
+  private onChartRangeChange(e: ScaleRange) {
     this.filterModel.update((m) => ({ ...m, from: e[0], to: e[1] }));
   }
 
-  setAnyTime() {
+  private setAnyTime() {
     this.filterModel.update((m) => ({ ...m, from: null, to: null }));
   }
-  setToday() {
+  private setToday() {
     this.filterModel.update((m) => ({
       ...m,
       from: startOfDay(new Date()),
       to: endOfDay(new Date()),
     }));
   }
-  setYesterday() {
+  private setYesterday() {
     this.filterModel.update((m) => ({
       ...m,
       from: startOfDay(subDays(new Date(), 1)),
       to: endOfDay(subDays(new Date(), 1)),
     }));
   }
-  setThisWeek() {
+  private setThisWeek() {
     this.filterModel.update((m) => ({
       ...m,
       from: startOfWeek(new Date(), { weekStartsOn: 1 }),
       to: endOfWeek(new Date(), { weekStartsOn: 1 }),
     }));
   }
-  setPreviousWeek() {
+  private setPreviousWeek() {
     this.filterModel.update((m) => ({
       ...m,
       from: startOfWeek(subWeeks(new Date(), 1), { weekStartsOn: 1 }),
       to: endOfWeek(subWeeks(new Date(), 1), { weekStartsOn: 1 }),
     }));
   }
-  setThisMonth() {
+  private setThisMonth() {
     this.filterModel.update((m) => ({
       ...m,
       from: startOfMonth(new Date()),
       to: endOfMonth(new Date()),
     }));
   }
-  setPreviousMonth() {
+  private setPreviousMonth() {
     this.filterModel.update((m) => ({
       ...m,
       from: startOfMonth(subMonths(new Date(), 1)),
       to: endOfMonth(subMonths(new Date(), 1)),
     }));
   }
-  setThisYear() {
+  private setThisYear() {
     this.filterModel.update((m) => ({
       ...m,
       from: startOfYear(new Date()),
       to: endOfYear(new Date()),
     }));
   }
-  setPreviousYear() {
+  private setPreviousYear() {
     this.filterModel.update((m) => ({
       ...m,
       from: startOfYear(subYears(new Date(), 1)),

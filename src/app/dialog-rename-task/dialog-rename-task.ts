@@ -29,15 +29,15 @@ export default class DialogRenameTaskComponent {
 
   public readonly taskId = input<string>();
 
-  taskModel = linkedSignal(() => {
+  private taskModel = linkedSignal(() => {
     const taskId = this.taskId();
     return { value: taskId ? (this.state.tasks()[taskId]?.name ?? '') : '' };
   });
-  form = signalForm(this.taskModel, (schema) => {
+  private form = signalForm(this.taskModel, (schema) => {
     required(schema.value);
   });
 
-  onSubmit() {
+  private onSubmit() {
     const taskId = this.taskId();
     if (this.form.value().valid() && taskId) {
       this.state.renameTask(taskId, this.taskModel().value);
