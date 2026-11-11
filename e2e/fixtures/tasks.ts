@@ -241,8 +241,7 @@ test.describe('Tasks', () => {
     await page.evaluate(() => document.fonts.ready);
 
     // Cycle task statuses Active->Finished->Dropped->Active using task list context action, assert the status changes
-    await screenTasks.buttonTaskAction().first().click();
-    await menuTaskActions.selectorState().click();
+    await menuTaskActions.openState(screenTasks.buttonTaskAction().first());
     await expect(menuTaskActions.optionFinished()).toBeVisible();
     await expect(page).toHaveScreenshot('tasks-status-active.png');
     await menuTaskActions.optionFinished().click();
@@ -255,8 +254,7 @@ test.describe('Tasks', () => {
     await screenTasks.taskItem().first().click();
     await expect(page).toHaveScreenshot('tasks-status-finished-tasks.png');
 
-    await screenTasks.buttonTaskAction().first().click();
-    await menuTaskActions.selectorState().click();
+    await menuTaskActions.openState(screenTasks.buttonTaskAction().first());
     await expect(page).toHaveScreenshot('tasks-status-finished.png');
     await menuTaskActions.optionDropped().click();
     await pressCombo(page, 'esc');
@@ -269,8 +267,7 @@ test.describe('Tasks', () => {
     await expect(page).toHaveScreenshot('tasks-status-dropped.png');
 
     // Cycle task statuses Active->Finished->Dropped->Active using task screen context action, assert the status changes
-    await screenTasks.buttonTaskAction().first().click();
-    await menuTaskActions.selectorState().click();
+    await menuTaskActions.openState(screenTasks.buttonTaskAction().first());
     await menuTaskActions.optionActive().click();
     await pressCombo(page, 'esc');
     await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', 'play_circle');
@@ -278,39 +275,34 @@ test.describe('Tasks', () => {
     await expect(screenTasks.taskStateIcon().first()).toHaveAttribute('data-mat-icon-name', 'play_circle');
     await screenTasks.taskItem().first().click();
 
-    await screenTask.buttonTaskAction().click();
-    await menuTaskActions.selectorState().click();
+    await menuTaskActions.openState(screenTask.buttonTaskAction());
     await menuTaskActions.optionFinished().click();
     await pressCombo(page, 'esc');
     await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', 'check_circle');
     await app.buttonFinishedTasks().click();
     await screenTasks.taskItem().first().click();
 
-    await screenTask.buttonTaskAction().click();
-    await menuTaskActions.selectorState().click();
+    await menuTaskActions.openState(screenTask.buttonTaskAction());
     await menuTaskActions.optionDropped().click();
     await pressCombo(page, 'esc');
     await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', 'delete');
     await app.buttonDroppedTasks().click();
     await screenTasks.taskItem().first().click();
 
-    await screenTask.buttonTaskAction().click();
-    await menuTaskActions.selectorState().click();
+    await menuTaskActions.openState(screenTask.buttonTaskAction());
     await menuTaskActions.optionActive().click();
     await pressCombo(page, 'esc');
     await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', 'play_circle');
     await app.buttonActiveTasks().click();
     await screenTasks.taskItem().first().click();
 
-    await screenTask.buttonTaskAction().click();
-    await menuTaskActions.selectorState().click();
+    await menuTaskActions.openState(screenTask.buttonTaskAction());
     await menuTaskActions.optionFinished().click();
     await pressCombo(page, 'esc');
     await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', 'check_circle');
 
     // Cycle task statuses Active->Finished->Active using hot keys, assert the status changes
-    await screenTask.buttonTaskAction().click();
-    await menuTaskActions.selectorState().click();
+    await menuTaskActions.openState(screenTask.buttonTaskAction());
     await menuTaskActions.optionActive().click();
     await pressCombo(page, 'esc');
     await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', 'play_circle');
