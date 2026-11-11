@@ -21,6 +21,8 @@ One commit per step.
    - names its snapshots `-chromium-linux`, the names the existing Linux files have,
    - depends on the `docker-setup` project, which starts the container, and has the
      `docker-teardown` project as its teardown, which removes it.
+   The three docker projects set `default: false`, so a plain `playwright test` runs `chromium` only. The `docker`
+   project skips `webmcp.ts`: WebMCP needs a secure context, and `http://host.docker.internal` is not one.
    Every run sets `process.env.TZ = 'UTC'`, and both browser projects use `timezoneId: 'UTC'`.
    The test code builds dates in the runner's time zone and the browser shows them in its own,
    so the two must agree. The image tag and the server version follow the installed
