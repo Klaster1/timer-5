@@ -6,6 +6,10 @@ Angular 22 time tracker. The app keeps all data in `localStorage`. Node 22.14 or
 
 `OnPush` is the default change detection strategy. Do not add `changeDetection: ChangeDetectionStrategy.OnPush` to component decorators.
 
+The repo tracks Angular's `next` releases. `npx ng update @angular/core@next @angular/cli@next @angular/material@next` moves it. TypeScript stays inside the range the Angular compiler accepts.
+
+A component member that only its own template or host bindings read is `private`. Inputs, outputs, models and queries stay public.
+
 ## Scripts
 
 - `npm start` serves the app on port 4200.
