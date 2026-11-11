@@ -5,9 +5,6 @@ import { ScreenTask } from '../page-objects/screen-task';
 import { ScreenTasks } from '../page-objects/screen-tasks';
 import { advanceDate, mockDate, restoreDate } from '../utils';
 
-type StubTool = { execute: (args: Record<string, unknown>, options: { signal: AbortSignal }) => unknown };
-type StubWindow = Window & { __webMcpTools: Map<string, StubTool> };
-
 type SeedTask = { id: string; name: string; state: 0 | 1 | 2; sessions: [string, string | null][] };
 
 const TOOL_NAMES = [
@@ -45,40 +42,15 @@ const SEED: SeedTask[] = [
   { id: 'old1', name: 'Old task', state: 2, sessions: [['2024-05-01T09:00:00+02:00', '2024-05-01T10:00:00+02:00']] },
 ];
 
-// Chromium has no WebMCP support in headless mode, so the stub keeps the registered tools for the tests to call.
-const installModelContextStub = () => {
-  const tools = new Map<string, StubTool>();
-  (window as unknown as StubWindow).__webMcpTools = tools;
-  Object.defineProperty(document, 'modelContext', {
-    configurable: true,
-    value: {
-      registerTool: (tool: StubTool & { name: string }, options?: { signal?: AbortSignal }) => {
-        tools.set(tool.name, tool);
-        options?.signal?.addEventListener('abort', () => {
-          if (tools.get(tool.name) === tool) tools.delete(tool.name);
-        });
-        return Promise.resolve();
-      },
-    },
-  });
-};
+const toolNames = async (page: Page): Promise<string[]> => (await page.webmcp.tools()).map((tool) => tool.name).sort();
 
-const toolNames = (page: Page): Promise<string[]> =>
-  page.evaluate(() => [...(window as unknown as StubWindow).__webMcpTools.keys()].sort());
-
-const callTool = async (page: Page, name: string, args: Record<string, unknown> = {}): Promise<any> => {
-  const result = await page.evaluate(
-    async ({ name, args }) => {
-      const tool = (window as unknown as StubWindow).__webMcpTools.get(name);
-      if (!tool) throw new Error(`Tool is not registered: ${name}`);
-      return tool.execute(args, { signal: new AbortController().signal });
-    },
-    { name, args },
-  );
-  return JSON.parse(result as string);
-};
+const callTool = async (page: Page, name: string, args: Record<string, unknown> = {}): Promise<any> =>
+  page.webmcp.callTool(name, args);
 
 const seconds = (iso: string): number => Date.parse(iso) / 1000;
+
+// Chromium offers WebMCP behind a flag. The flag needs its own browser, so it is set for the whole file.
+test.use({ launchOptions: { args: ['--enable-features=WebMCP'] } });
 
 test.describe('WebMCP', () => {
   let app: App;
@@ -104,7 +76,6 @@ test.describe('WebMCP', () => {
   test.use({ timezoneId: 'Europe/Berlin' });
 
   test.beforeEach(async ({ page }) => {
-    await page.addInitScript(installModelContextStub);
     app = new App(page);
     screenTask = new ScreenTask(page);
     screenTasks = new ScreenTasks(page);

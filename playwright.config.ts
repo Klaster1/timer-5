@@ -51,6 +51,8 @@ export default defineConfig({
     {
       name: 'docker',
       default: false,
+      // WebMCP exists only in a secure context, and http://host.docker.internal is not one. The spec has no screenshots.
+      testIgnore: 'webmcp.ts',
       dependencies: ['docker-setup'],
       teardown: 'docker-teardown',
       snapshotPathTemplate: '{testDir}/{testFileName}-snapshots/{arg}-chromium-linux{ext}',
