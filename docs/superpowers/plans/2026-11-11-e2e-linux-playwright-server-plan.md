@@ -27,13 +27,13 @@ One commit per step.
    server script when its runner dies, a global teardown when a run ends, and a stale-container
    removal at start.
    Done when: `docker ps` is empty after a normal run, a failed run and a killed runner.
-4. `package.json`: `e2e:linux` and `e2e:linux:update-snapshots` replace the three Docker
-   scripts. `e2e:all` runs `e2e`, then `e2e:linux`. `Dockerfile` and `.dockerignore` go.
+4. `package.json`: `e2e:docker` and `e2e:docker:update-snapshots` keep their names and run the new route. `docker:build` goes.
+   `e2e:all` runs `e2e`, then `e2e:docker`. `Dockerfile` and `.dockerignore` go.
    Done when: nothing else refers to them.
 5. `CLAUDE.md` and the test-hardening skill name the new route where they named the old one.
 
 ## Checks
 
 - `npm run e2e` passes on Windows, as before.
-- `npm run e2e:linux` passes against the existing Linux snapshots.
-- `npm run e2e:linux:update-snapshots` on an unchanged tree leaves `git status` clean.
+- `npm run e2e:docker` passes against the existing Linux snapshots.
+- `npm run e2e:docker:update-snapshots` on an unchanged tree leaves `git status` clean.

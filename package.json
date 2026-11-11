@@ -20,9 +20,9 @@
     "e2e": "playwright test e2e/fixtures",
     "e2e:update-snapshots": "playwright test e2e/fixtures --update-snapshots",
     "e2e:ci": "playwright test e2e/fixtures",
-    "e2e:linux": "node scripts/e2e-linux.js",
-    "e2e:linux:update-snapshots": "node scripts/e2e-linux.js --update-snapshots",
-    "e2e:all": "npm run e2e && npm run e2e:linux",
+    "e2e:docker": "node scripts/e2e-linux.js",
+    "e2e:docker:update-snapshots": "node scripts/e2e-linux.js --update-snapshots",
+    "e2e:all": "npm run e2e && npm run e2e:docker",
     "deploy": "gh-pages --nojekyll --dotfiles --dist dist/timer-5",
     "generate-screenshots": "node ./scripts/generate-screenshots.ts"
   },
