@@ -1,7 +1,16 @@
 import { computed, DestroyRef, effect, inject, Service, Signal, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { fromStoredTasks, toStoredTasks } from '@app/domain/storage';
-import { isSessionWithId, isTaskRunning, makeTaskId, Session, SessionId, Task, TaskState } from '@app/domain/task';
+import {
+  isSessionWithId,
+  isTaskRunning,
+  makeTaskId,
+  Session,
+  SessionId,
+  Task,
+  TaskId,
+  TaskState,
+} from '@app/domain/task';
 import { RoutedDialogs } from '@app/providers/routed-dialogs';
 import { deepEquals } from '@app/utils/assert';
 import { Draft, produce } from 'immer';
@@ -145,12 +154,13 @@ export class AppStore {
     this.routedDialogs.close();
   }
 
-  createTask(name: string): void {
+  createTask(name: string): TaskId {
     const taskId = makeTaskId();
     this.update((draft) => {
       draft.tasks[taskId] = { id: taskId, name, sessions: [], state: TaskState.active };
     });
     this.router.navigate(['/', { outlets: { dialog: null, primary: ['active', taskId] } }]);
+    return taskId;
   }
 
   stopTask(taskId: string, timestamp: number): void {

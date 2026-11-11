@@ -6,6 +6,7 @@ import {
   importProvidersFrom,
   inject,
   isDevMode,
+  provideExperimentalWebMcpTools,
   provideZonelessChangeDetection,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -21,6 +22,7 @@ import { AppComponent } from '@app/app';
 import { gameStateGuard } from '@app/guards/game-state';
 import { taskExistsGuard } from '@app/guards/task-exists';
 import { provideDialogRoutes } from '@app/providers/routed-dialogs';
+import { webMcpTools } from '@app/providers/webmcp-tools';
 import { HotkeyModule } from 'angular2-hotkeys';
 import { secondsToMilliseconds } from 'date-fns/secondsToMilliseconds';
 import { interval } from 'rxjs';
@@ -36,6 +38,7 @@ bootstrapApplication(AppComponent, {
   providers: [
     provideZonelessChangeDetection(),
     provideAnimations(),
+    provideExperimentalWebMcpTools(webMcpTools),
     importProvidersFrom(HotkeyModule.forRoot({ cheatSheetCloseEsc: false, disableCheatSheet: false })),
     provideRouter(
       [

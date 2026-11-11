@@ -30,3 +30,18 @@ You will need Node.js 22 or newer.
 
 1. Install packages with `npm i` if you haven't already.
 2. Run `npm run build`. Static files will be placed in the `dist` directory.
+
+# WebMCP
+
+The app registers tools with WebMCP, so an AI agent in the browser can read and change the tasks:
+
+- `list_tasks`: lists tasks, filtered by state and name.
+- `get_task`: returns one task with its sessions.
+- `get_time_report`: sums the time per task in a date range.
+- `create_task`: creates a task, optionally started.
+- `start_task`, `stop_task`: start or end a session.
+- `rename_task`, `set_task_state`: rename a task or move it to the active, finished or dropped list.
+- `edit_session`, `delete_session`: change or remove one session.
+- `delete_task`: removes a task. The agent asks you first.
+
+WebMCP is an experimental Chrome feature. The deployed site carries an origin-trial token. On `localhost`, turn on `chrome://flags/#enable-webmcp-testing` and restart Chrome.

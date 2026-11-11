@@ -20,17 +20,19 @@ first.
 - `.vscode/mcp.json` and `.vscode/playwright-mcp.config.json` stay as they are: the one
   server in `mcp.json` is commented out.
 
-Done when: `git grep -i copilot` finds nothing, and the skill sits under `.claude/skills/`.
+Done when: `git grep -i copilot` finds nothing outside `docs/superpowers/plans/`, and the skill sits under `.claude/skills/`.
 
 ## Part 1: Angular to the latest release
 
 - Today: Angular 22.0.1 (`@angular/core` in `node_modules`). Latest on npm: 22.2.5.
 - Run `ng update` for `@angular/core`, `@angular/cli` and `@angular/material` (with
   `@angular/cdk`), and apply the migrations it offers.
-- 22.0.1 already has the experimental WebMCP API (`provideExperimentalWebMcpTools`,
-  `declareExperimentalWebMcpTool`), and it looks up `document.modelContext` before
-  `navigator.modelContext`. Re-check the API names after the update: the API is
-  experimental and can change in a minor release.
+- 22.0.1 already had the experimental WebMCP API (`provideExperimentalWebMcpTools`,
+  `declareExperimentalWebMcpTool`), and it looked up `document.modelContext` before
+  `navigator.modelContext`. After the update to 22.2.5 the names and the lookup are unchanged.
+  `declareExperimentalWebMcpTool` now returns `Promise<void>`, and the schema generic is now
+  `object`.
+- No migrations. Versions: 22.2.5 core, 22.2.6 cdk, material, cli and build.
 
 Done when: `npm run build` passes and the full e2e suite passes locally against `npm start`.
 
@@ -71,8 +73,10 @@ Chromium without browser WebMCP support. The spec calls the tools through the st
 the result on screen (a created task shows in the list, a started task shows as running) and
 in the returned JSON.
 
-Using the tools from a real browser needs WebMCP turned on in Chrome: the WebMCP entry in
-`chrome://flags`, or an origin-trial token for `klaster1.github.io`. `README.md` says so.
+The deployed site carries an origin-trial token for `https://klaster1.github.io` (feature
+WebMCP, expires 2027-03-30), set in a `<meta http-equiv="origin-trial">` tag in
+`src/index.html`. On localhost, WebMCP needs `chrome://flags/#enable-webmcp-testing`.
+`README.md` says so.
 
 Done when: `npm run build` passes, the new spec passes, and the full e2e suite passes once
 at the end.
