@@ -1,4 +1,4 @@
-<div class="container" [ngClass]="{ 'task-opened': isCurrentTaskOpened() }">
+<div class="container" [class.task-opened]="isCurrentTaskOpened()">
   @if (currentTasks(); as tasks) {
   <section class="tasks">
     <mat-toolbar [syncWidthTo]="viewport()">
@@ -40,7 +40,7 @@
         >
           <mat-icon
             [svgIcon]="task | taskStateIcon"
-            [ngClass]="{ running: task | map: isTaskRunning }"
+            [class.running]="task | map: isTaskRunning"
             data-e2e="screen-tasks__task-state-icon"
             matListItemIcon
           ></mat-icon>

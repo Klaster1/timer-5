@@ -1,4 +1,4 @@
-import { AsyncPipe, NgClass } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, ElementRef, inject, input } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { DurationFn } from '@app/domain/date-time';
@@ -33,7 +33,7 @@ const EVERY_SECOND_INTERVAL = interval(secondsToMilliseconds(1)).pipe(
 @Component({
   selector: 'duration',
   // prettier-ignore
-  template: `@for(fragment of durationFragments | async; track fragment.unit){<span class="fragment" [ngClass]="{ dimmed: fragment.dimmed === DimMode.All }"><span class="value">@if(fragment.dimmed === DimMode.First){<span class="dimmed">{{ fragment.value.at(0) }}</span><span>{{ fragment.value.slice(1) }}</span>}@else{{{ fragment.value }}}</span><span class="unit">{{ fragment.unit }}</span></span>}`,
+  template: `@for(fragment of durationFragments | async; track fragment.unit){<span class="fragment" [class.dimmed]="fragment.dimmed === DimMode.All"><span class="value">@if(fragment.dimmed === DimMode.First){<span class="dimmed">{{ fragment.value.at(0) }}</span><span>{{ fragment.value.slice(1) }}</span>}@else{{{ fragment.value }}}</span><span class="unit">{{ fragment.unit }}</span></span>}`,
   styles: [
     `
       :host {
@@ -53,7 +53,7 @@ const EVERY_SECOND_INTERVAL = interval(secondsToMilliseconds(1)).pipe(
       }
     `,
   ],
-  imports: [NgClass, AsyncPipe],
+  imports: [AsyncPipe],
 })
 export class DurationComponent {
   private elementRef = inject(ElementRef<HTMLElement>);

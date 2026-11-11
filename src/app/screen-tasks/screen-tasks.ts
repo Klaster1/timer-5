@@ -1,6 +1,5 @@
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
-import { NgClass } from '@angular/common';
 import {
   Component,
   DestroyRef,
@@ -79,7 +78,6 @@ import { TasksFilterComponent } from './tasks-filter/tasks-filter';
     DragDropModule,
     CheckViewportSizeWhenValueChangesDirective,
     ScrollToIndexDirective,
-    NgClass,
     TypeSafeCdkVirtualForDirective,
     DurationComponent,
     ToolbarWidthSyncDirective,
