@@ -23,7 +23,7 @@ test.describe('Filters', () => {
     // Send "ctrl+f" keys
     await pressCombo(page, 'ctrl+f');
 
-    await expect(page).toHaveScreenshot('filters-empty-filter.png');
+    await expect(page).toHaveScreenshot('filters-empty-filter.webp');
     // Fill in the "Name filter", in lowercase
     await screenTasks.filter.name.input().fill('game');
 
@@ -32,7 +32,7 @@ test.describe('Filters', () => {
     // Assert the displayed tasks match the filter
     await expect(screenTasks.taskItem()).toHaveCount(1);
     await expect(screenTasks.taskName().nth(0)).toHaveText('GAME');
-    await expect(page).toHaveScreenshot('filters-name-filled.png');
+    await expect(page).toHaveScreenshot('filters-name-filled.webp');
 
     // Assert the URL ends with "?search=${value}"
     await expect.poll(async () => getLocationSearch(page)).toBe('?search=game');
@@ -44,7 +44,7 @@ test.describe('Filters', () => {
 
     // Clear the filter value with "Clear" button in the form control
     await screenTasks.filter.name.buttonClear().click();
-    await expect(page).toHaveScreenshot('filters-cleared.png');
+    await expect(page).toHaveScreenshot('filters-cleared.webp');
 
     // Assert all tasks are displayed
     await expect(screenTasks.taskItem()).toHaveCount(4);
@@ -79,11 +79,9 @@ test.describe('Filters', () => {
 
     const toSec = (ms: number) => Math.floor(ms / 1000);
 
-    await page.evaluate(
-      (payload) => {
-        localStorage.setItem('tasks', JSON.stringify(payload));
-      },
-      {
+    await page.localStorage.setItem(
+      'tasks',
+      JSON.stringify({
         version: 1,
         value: [
           {
@@ -99,7 +97,7 @@ test.describe('Filters', () => {
             sessions: [[toSec(todayRunningStart.valueOf()), null]],
           },
         ],
-      },
+      }),
     );
 
     const from = encodeURIComponent(yesterdayStart.toISOString());
@@ -112,9 +110,7 @@ test.describe('Filters', () => {
   });
 
   test('No tasks + filters: chart is hidden', async ({ page }) => {
-    await page.evaluate(() => {
-      localStorage.setItem('tasks', JSON.stringify({ version: 1, value: [] }));
-    });
+    await page.localStorage.setItem('tasks', JSON.stringify({ version: 1, value: [] }));
 
     const from = encodeURIComponent('2024-06-01T00:00:00.000Z');
     const to = encodeURIComponent('2024-06-30T23:59:59.999Z');

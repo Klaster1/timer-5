@@ -21,7 +21,7 @@ test.describe('General', () => {
     await page.keyboard.press('Shift+?');
     // Assert it displays all hotkeys, in english only
     await expect(dialogHotkeyCheatsheet.descriptions()).toHaveCount(7);
-    await expect(page).toHaveScreenshot('general-hotkeys-only-tasks.png');
+    await expect(page).toHaveScreenshot('general-hotkeys-only-tasks.webp');
 
     // Assert "Close" closes the dialog
     await dialogHotkeyCheatsheet.buttonDismiss().click();
@@ -32,7 +32,7 @@ test.describe('General', () => {
     await page.keyboard.press('Shift+?');
 
     await expect(dialogHotkeyCheatsheet.descriptions()).toHaveCount(12);
-    await expect(page).toHaveScreenshot('general-hotkeys-task-opened.png');
+    await expect(page).toHaveScreenshot('general-hotkeys-task-opened.webp');
 
     // Open the dialog again, assert "Esc" closes the dialog
     await page.keyboard.press('Escape');
@@ -54,18 +54,18 @@ test.describe('General', () => {
     // Switch to dark theme
     await app.buttonSwitchTheme().click();
     await expect(app.buttonTheme('Dark')).toBeVisible();
-    await expect(page).toHaveScreenshot('general-themes-menu.png');
+    await expect(page).toHaveScreenshot('general-themes-menu.webp');
 
     await app.buttonTheme('Dark').click();
     // Assert the theme is applied
-    await expect(page).toHaveScreenshot('general-theme-dark.png');
+    await expect(page).toHaveScreenshot('general-theme-dark.webp');
 
     // Switch to light theme
     await app.buttonSwitchTheme().click();
     await expect(app.buttonTheme('Light')).toBeVisible();
     await app.buttonTheme('Light').click();
     // Assert the theme is applied
-    await expect(page).toHaveScreenshot('general-theme-light.png');
+    await expect(page).toHaveScreenshot('general-theme-light.webp');
 
     // Switch to system theme
     await app.buttonSwitchTheme().click();
@@ -76,13 +76,13 @@ test.describe('General', () => {
     await forceSystemTheme(page, 'dark');
     await closeOverlays(page);
     // Assert the theme is applied
-    await expect(page).toHaveScreenshot('general-theme-system-dark.png');
+    await expect(page).toHaveScreenshot('general-theme-system-dark.webp');
 
     // Override the system theme to light
     await forceSystemTheme(page, 'light');
     await closeOverlays(page);
     // Assert the theme is applied
-    await expect(page).toHaveScreenshot('general-theme-system-light.png');
+    await expect(page).toHaveScreenshot('general-theme-system-light.webp');
 
     // Reload the page
     await reloadIgnoringCache(page);

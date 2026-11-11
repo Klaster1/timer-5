@@ -4,7 +4,7 @@ export class DialogCreateTask {
   public constructor(private readonly page: Page) {}
 
   private dialog(): Locator {
-    return this.page.locator('mat-dialog-container:visible').last();
+    return this.page.locator('mat-dialog-container').visible().last();
   }
 
   public title(): Locator {

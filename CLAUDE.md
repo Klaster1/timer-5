@@ -20,9 +20,9 @@ A component member that only its own template or host bindings read is `private`
 ## E2E tests
 
 - Start `npm start` first. `npm run e2e` does not start a server outside CI.
-- Screenshot tests compare against one snapshot per OS in `e2e/fixtures/<spec>.ts-snapshots/`: `*-chromium-win32.png` on Windows, `*-chromium-linux.png` on Linux.
+- Screenshot tests compare against one snapshot per OS in `e2e/fixtures/<spec>.ts-snapshots/`: `*-chromium-win32.webp` on Windows, `*-chromium-linux.webp` on Linux.
 - CI runs on Linux. It serves `dist/` at `http://localhost:4200/timer-5/` with `npm run serve:ci`.
-- To check or update the Linux snapshots on Windows, run `npm run docker:build`, then `npm run e2e:docker` or `npm run e2e:docker:update-snapshots`. The dev server must run on the host.
+- To check or update the Linux snapshots locally, run `npm run e2e:docker` or `npm run e2e:docker:update-snapshots`. They run the `docker` Playwright project. Docker must run, port 3333 must be free, and the dev server must run on the host. The browser runs in a Playwright Server container, and the tests run on the host in UTC. The container is removed when the run ends. The `docker` project skips `webmcp.ts`: WebMCP needs a secure context, and `http://host.docker.internal` is not one.
 - Test ids use the `data-e2e` attribute.
 - Do not update snapshots to make a failing test pass. Find the visual change first.
 

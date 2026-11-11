@@ -1,9 +1,13 @@
 import { defineConfig, devices } from '@playwright/test';
+import { serverPort } from './scripts/playwright-server.js';
 
 const isCI = process.env['CI'] === 'true' || process.env['CI'] === '1';
+// The test code builds dates in the runner's time zone and the browser shows them in its own. Both use UTC.
+process.env['TZ'] = 'UTC';
 const workers = isCI ? 4 : 5;
 const baseURL =
   process.env['PLAYWRIGHT_BASE_URL'] ?? (isCI ? 'http://localhost:4200/timer-5/' : 'http://localhost:4200/');
+const desktopChrome = { ...devices['Desktop Chrome'], viewport: { width: 1920, height: 1080 }, timezoneId: 'UTC' };
 
 export default defineConfig({
   testDir: './e2e/fixtures',
@@ -41,10 +45,24 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
+      use: desktopChrome,
+    },
+    // Linux screenshots: the browser runs in a Playwright Server container, the tests run on this machine.
+    {
+      name: 'docker',
+      default: false,
+      // WebMCP exists only in a secure context, and http://host.docker.internal is not one. The spec has no screenshots.
+      testIgnore: 'webmcp.ts',
+      dependencies: ['docker-setup'],
+      teardown: 'docker-teardown',
+      snapshotPathTemplate: '{testDir}/{testFileName}-snapshots/{arg}-chromium-linux{ext}',
       use: {
-        ...devices['Desktop Chrome'],
-        viewport: { width: 1920, height: 1080 },
+        ...desktopChrome,
+        baseURL: process.env['PLAYWRIGHT_BASE_URL'] ?? 'http://host.docker.internal:4200/',
+        connectOptions: { wsEndpoint: `ws://127.0.0.1:${serverPort}/` },
       },
     },
+    { name: 'docker-setup', default: false, testDir: './e2e/docker', testMatch: 'setup.ts' },
+    { name: 'docker-teardown', default: false, testDir: './e2e/docker', testMatch: 'teardown.ts' },
   ],
 });
