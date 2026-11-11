@@ -54,12 +54,12 @@ test.describe('Tasks', () => {
     // Click the empty state "Add task" button
     await screenTasks.emptyStateAddTaskButton().click();
     await expect(dialogCreateTask.title()).toBeVisible();
-    await expect(page).toHaveScreenshot('tasks-adding-just-opened.png');
+    await expect(page).toHaveScreenshot('tasks-adding-just-opened.webp');
 
     // Unfocus the input, asset validation is show
     await pressCombo(page, 'tab');
     await expect(dialogCreateTask.validationError()).toContainText('Value is required');
-    await expect(page).toHaveScreenshot('tasks-adding-invalid.png');
+    await expect(page).toHaveScreenshot('tasks-adding-invalid.webp');
 
     // Submit the dialog with "Enter", assert form is not submitted
     await dialogCreateTask.input().click();
@@ -76,7 +76,7 @@ test.describe('Tasks', () => {
     await expect(screenTasks.taskName()).toHaveCount(1);
     await expect(screenTasks.taskName().first()).toContainText('Test');
     await expect(screenTasks.taskStateIcon().first()).toHaveAttribute('data-mat-icon-name', /play_circle/);
-    await expect(page).toHaveScreenshot('tasks-adding-task-created.png');
+    await expect(page).toHaveScreenshot('tasks-adding-task-created.webp');
 
     // Send the "a t" and "ф е" hotkeys, assert the "Add a task" dialog opens for both
     for (const combo of ['a t', 'ф е']) {
@@ -119,7 +119,7 @@ test.describe('Tasks', () => {
     await expect(screenTasks.taskStateIcon().first()).toHaveAttribute('data-mat-icon-name', /play_circle/);
     await screenTasks.buttonTaskAction().nth(1).click();
     await expect(menuTaskActions.selectorState()).toContainText('State: Active');
-    await expect(page).toHaveScreenshot('tasks-startstop-active-menu.png');
+    await expect(page).toHaveScreenshot('tasks-startstop-active-menu.webp');
     await pressCombo(page, 'esc');
 
     await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', /play_circle/);
@@ -137,7 +137,7 @@ test.describe('Tasks', () => {
     await expect(screenTask.buttonStop()).toBeHidden();
     await screenTask.buttonStart().hover();
     await expect(tooltip.root()).toHaveText('Start');
-    await expect(page).toHaveScreenshot('tasks-startstop-start-tooltip.png');
+    await expect(page).toHaveScreenshot('tasks-startstop-start-tooltip.webp');
 
     // Shrink window down to single panel layout, take a screenshot - "Create task" button should not be visible and "Start task" should
     await setDeviceMetrics(page, {
@@ -147,7 +147,7 @@ test.describe('Tasks', () => {
       deviceScaleFactor: 1,
       screenOrientation: { angle: 0, type: 'portraitPrimary' },
     });
-    await expect(page).toHaveScreenshot('tasks-startstop-single-panel.png');
+    await expect(page).toHaveScreenshot('tasks-startstop-single-panel.webp');
     await clearDeviceMetrics(page);
 
     // Start a task with the "Start" button
@@ -243,28 +243,28 @@ test.describe('Tasks', () => {
     // Cycle task statuses Active->Finished->Dropped->Active using task list context action, assert the status changes
     await menuTaskActions.openState(screenTasks.buttonTaskAction().first());
     await expect(menuTaskActions.optionFinished()).toBeVisible();
-    await expect(page).toHaveScreenshot('tasks-status-active.png');
+    await expect(page).toHaveScreenshot('tasks-status-active.webp');
     await menuTaskActions.optionFinished().click();
     await pressCombo(page, 'esc');
     await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', 'check_circle');
-    await expect(page).toHaveScreenshot('tasks-status-is-finished.png');
+    await expect(page).toHaveScreenshot('tasks-status-is-finished.webp');
 
     await app.buttonFinishedTasks().click();
     await expect(screenTasks.taskStateIcon().first()).toHaveAttribute('data-mat-icon-name', 'check_circle');
     await screenTasks.taskItem().first().click();
-    await expect(page).toHaveScreenshot('tasks-status-finished-tasks.png');
+    await expect(page).toHaveScreenshot('tasks-status-finished-tasks.webp');
 
     await menuTaskActions.openState(screenTasks.buttonTaskAction().first());
-    await expect(page).toHaveScreenshot('tasks-status-finished.png');
+    await expect(page).toHaveScreenshot('tasks-status-finished.webp');
     await menuTaskActions.optionDropped().click();
     await pressCombo(page, 'esc');
     await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', 'delete');
-    await expect(page).toHaveScreenshot('tasks-status-is-dropped.png');
+    await expect(page).toHaveScreenshot('tasks-status-is-dropped.webp');
 
     await app.buttonDroppedTasks().click();
     await expect(screenTasks.taskStateIcon().first()).toHaveAttribute('data-mat-icon-name', 'delete');
     await screenTasks.taskItem().first().click();
-    await expect(page).toHaveScreenshot('tasks-status-dropped.png');
+    await expect(page).toHaveScreenshot('tasks-status-dropped.webp');
 
     // Cycle task statuses Active->Finished->Dropped->Active using task screen context action, assert the status changes
     await menuTaskActions.openState(screenTasks.buttonTaskAction().first());
@@ -319,10 +319,10 @@ test.describe('Tasks', () => {
     await expect(screenTask.screen()).toBeVisible();
     await expect(menuTaskActions.buttonRename()).toBeVisible();
     await page.mouse.move(0, 0);
-    await expect(page).toHaveScreenshot('tasks-rename-context-menu.png');
+    await expect(page).toHaveScreenshot('tasks-rename-context-menu.webp');
 
     await menuTaskActions.buttonRename().click();
-    await expect(page).toHaveScreenshot('tasks-rename-just-opened.png');
+    await expect(page).toHaveScreenshot('tasks-rename-just-opened.webp');
 
     // Erase the value, assert a validation message is shown
     await dialogRenameTask.input().click();
@@ -330,7 +330,7 @@ test.describe('Tasks', () => {
     await pressCombo(page, 'delete');
     await pressCombo(page, 'tab');
     await expect(dialogRenameTask.validationError()).toHaveText('Value is required');
-    await expect(page).toHaveScreenshot('tasks-rename-validation.png');
+    await expect(page).toHaveScreenshot('tasks-rename-validation.webp');
 
     // Submit the dialog with "Enter", assert the task got renamed
     await dialogRenameTask.input().fill('Task 1');
@@ -418,7 +418,7 @@ test.describe('Tasks', () => {
     try {
       // Import the data
       await app.buttonImportExport().click();
-      await expect(page).toHaveScreenshot('tasks-import-export-menu.png');
+      await expect(page).toHaveScreenshot('tasks-import-export-menu.webp');
       await app.inputImport().setInputFiles(filePath);
 
       // Assert the tasks are added
@@ -450,13 +450,13 @@ test.describe('Tasks', () => {
 
     await expect(screenTask.sessionDuration().nth(0)).toHaveText('4s');
     await expect(screenTask.taskDuration()).toHaveText('4s');
-    await expect(page).toHaveScreenshot('tasks-edit-session-running.png');
+    await expect(page).toHaveScreenshot('tasks-edit-session-running.webp');
 
     // Change a running task session start time, assert the total changes
     await screenTask.buttonSessionAction().click();
     await screenTask.menuSession.buttonEdit().click();
     await dialogEditSession.setStart(now.replace('12', '09'));
-    await expect(page).toHaveScreenshot('tasks-edit-session-editing.png');
+    await expect(page).toHaveScreenshot('tasks-edit-session-editing.webp');
     await dialogEditSession.buttonSubmit().click();
 
     await expect(screenTask.sessionDuration().nth(0)).toHaveText('3h00m');
@@ -567,7 +567,7 @@ test.describe('Tasks', () => {
     await checkSession(0, { start: '2024-07-07 17:56', end: '2024-07-07 21:56', duration: '4h00m' });
     await checkSession(1, { start: '2024-07-07 17:56', end: '2024-07-07 19:56', duration: '2h00m' });
     await checkSession(2, { start: '2024-07-07 19:56', end: '2024-07-07 21:56', duration: '2h00m' });
-    await expect(page).toHaveScreenshot('tasks-split-default.png');
+    await expect(page).toHaveScreenshot('tasks-split-default.webp');
 
     // Move the slider to the leftmost position
     // await dialogSplitSession.setSliderValue(0);
@@ -581,7 +581,7 @@ test.describe('Tasks', () => {
     await dialogSplitSession.setSliderValue(1);
     await checkSession(1, { start: '2024-07-07 17:56', end: '2024-07-07 21:56', duration: '4h00m' });
     await checkSession(2, { start: '2024-07-07 21:56', end: '2024-07-07 21:56', duration: '0s' });
-    await expect(page).toHaveScreenshot('tasks-split-invalid.png');
+    await expect(page).toHaveScreenshot('tasks-split-invalid.webp');
     // Assert form submission is disabled
     await expect(dialogSplitSession.buttonSubmit()).toBeDisabled();
 

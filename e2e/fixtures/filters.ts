@@ -23,7 +23,7 @@ test.describe('Filters', () => {
     // Send "ctrl+f" keys
     await pressCombo(page, 'ctrl+f');
 
-    await expect(page).toHaveScreenshot('filters-empty-filter.png');
+    await expect(page).toHaveScreenshot('filters-empty-filter.webp');
     // Fill in the "Name filter", in lowercase
     await screenTasks.filter.name.input().fill('game');
 
@@ -32,7 +32,7 @@ test.describe('Filters', () => {
     // Assert the displayed tasks match the filter
     await expect(screenTasks.taskItem()).toHaveCount(1);
     await expect(screenTasks.taskName().nth(0)).toHaveText('GAME');
-    await expect(page).toHaveScreenshot('filters-name-filled.png');
+    await expect(page).toHaveScreenshot('filters-name-filled.webp');
 
     // Assert the URL ends with "?search=${value}"
     await expect.poll(async () => getLocationSearch(page)).toBe('?search=game');
@@ -44,7 +44,7 @@ test.describe('Filters', () => {
 
     // Clear the filter value with "Clear" button in the form control
     await screenTasks.filter.name.buttonClear().click();
-    await expect(page).toHaveScreenshot('filters-cleared.png');
+    await expect(page).toHaveScreenshot('filters-cleared.webp');
 
     // Assert all tasks are displayed
     await expect(screenTasks.taskItem()).toHaveCount(4);
