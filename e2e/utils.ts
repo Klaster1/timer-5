@@ -106,3 +106,74 @@ export const restoreDate = async (page: Page): Promise<void> => {
     Date.now = originalDateNow;
   });
 };
+
+const RUSSIAN_LAYOUT: Record<string, { code: string; keyCode: number }> = {
+  п: { code: 'KeyG', keyCode: 71 },
+  е: { code: 'KeyT', keyCode: 84 },
+  ф: { code: 'KeyA', keyCode: 65 },
+  а: { code: 'KeyF', keyCode: 70 },
+  о: { code: 'KeyJ', keyCode: 74 },
+  л: { code: 'KeyK', keyCode: 75 },
+};
+
+/** Types keys as the Russian keyboard layout does: the physical key is Latin, the typed character is Cyrillic. */
+export const pressRussianKeys = async (page: Page, combo: string): Promise<void> => {
+  const cdpSession = await page.context().newCDPSession(page);
+  for (const key of combo.split(' ')) {
+    const physicalKey = RUSSIAN_LAYOUT[key];
+    if (!physicalKey) throw new Error(`No physical key for "${key}"`);
+    const event = { key, code: physicalKey.code, windowsVirtualKeyCode: physicalKey.keyCode };
+    await cdpSession.send('Input.dispatchKeyEvent', { ...event, type: 'keyDown', text: key, unmodifiedText: key });
+    await cdpSession.send('Input.dispatchKeyEvent', { ...event, type: 'keyUp' });
+    await page.waitForTimeout(80);
+  }
+};
+
+export const pressKeys = async (page: Page, combo: string): Promise<void> => {
+  for (const key of combo.split(' ')) {
+    await page.keyboard.press(key);
+    await page.waitForTimeout(80);
+  }
+};
+
+export const getFilterParams = async (page: Page): Promise<Record<string, string>> => {
+  const params = new URLSearchParams(await getLocationSearch(page));
+  // The router encodes the date values a second time
+  return Object.fromEntries(
+    [...params].map(([key, value]) => [key, key === 'from' || key === 'to' ? decodeURIComponent(value) : value]),
+  );
+};
+
+type SeedSession = readonly [start: number, end: number | null];
+
+export type SeedTask = {
+  id?: string;
+  name: string;
+  state?: 'active' | 'finished' | 'dropped';
+  sessions?: readonly SeedSession[];
+};
+
+const STORED_STATES = { active: 0, finished: 1, dropped: 2 } as const;
+
+/** Stores the tasks in `localStorage`. Session times are in milliseconds. Call before navigating. */
+export const seedTasks = async (page: Page, tasks: readonly SeedTask[]): Promise<void> => {
+  const toSeconds = (ms: number): number => Math.floor(ms / 1000);
+  await page.localStorage.setItem(
+    'tasks',
+    JSON.stringify({
+      version: 1,
+      value: tasks.map((task, index) => ({
+        id: task.id ?? `seed-${index}`,
+        name: task.name,
+        state: STORED_STATES[task.state ?? 'active'],
+        sessions: (task.sessions ?? []).map(([start, end]) => [toSeconds(start), end === null ? null : toSeconds(end)]),
+      })),
+    }),
+  );
+};
+
+/** A session from ISO timestamps. */
+export const session = (start: string, end: string | null): readonly [number, number | null] => [
+  Date.parse(start),
+  end === null ? null : Date.parse(end),
+];

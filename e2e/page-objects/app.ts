@@ -7,6 +7,10 @@ export class App {
     return this.page.locator('link[rel="icon"]');
   }
 
+  public buttonAllTasks(): Locator {
+    return this.page.getByTestId('navigation__button-tasks-all');
+  }
+
   public buttonActiveTasks(): Locator {
     return this.page.getByTestId('navigation__button-tasks-active');
   }

@@ -7,7 +7,13 @@
         (<duration [value]="tasks | map: tasksDuration" data-e2e="screen-tasks__total" class="state-duration"></duration
         >)
       </h1>
-      <button mat-icon-button (click)="toggleFilter()" matTooltip="Toggle filter panel" #toggle>
+      <button
+        mat-icon-button
+        (click)="toggleFilter()"
+        matTooltip="Toggle filter panel"
+        data-e2e="screen-tasks__button-toggle-filter"
+        #toggle
+      >
         <mat-icon svgIcon="filter_list"></mat-icon>
       </button>
     </mat-toolbar>

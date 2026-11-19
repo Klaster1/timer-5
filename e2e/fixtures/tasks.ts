@@ -19,6 +19,8 @@ import {
   pressCombo,
   reloadIgnoringCache,
   restoreDate,
+  seedTasks,
+  session,
   setDeviceMetrics,
 } from '../utils';
 
@@ -599,5 +601,70 @@ test.describe('Tasks', () => {
     await expect(screenTask.sessionStart()).toHaveCount(2);
     await expect(screenTask.sessionDuration().nth(0)).toHaveText('2h04m');
     await expect(screenTask.sessionDuration().nth(1)).toHaveText('1h55m');
+  });
+
+  test('Totals', async ({ page }) => {
+    // The clock starts at 12:00 and keeps running, the running session started an hour earlier
+    await page.clock.install({ time: new Date('2026-11-18T12:00:00Z') });
+    await seedTasks(page, [
+      {
+        name: 'Running',
+        sessions: [session('2026-11-18T10:00:00Z', '2026-11-18T10:30:00Z'), session('2026-11-18T11:00:00Z', null)],
+      },
+      {
+        name: 'Complete',
+        sessions: [
+          session('2026-11-18T08:00:00Z', '2026-11-18T09:15:00Z'),
+          session('2026-11-18T09:00:00Z', '2026-11-18T10:00:00Z'),
+        ],
+      },
+      { name: 'Done', state: 'finished', sessions: [session('2026-11-18T07:00:00Z', '2026-11-18T07:45:00Z')] },
+      { name: 'Dropped', state: 'dropped', sessions: [session('2026-11-18T06:00:00Z', '2026-11-18T06:10:00Z')] },
+    ]);
+    await page.goto('/all');
+
+    // Assert the total of all tasks is the sum of the task durations
+    await expect(screenTasks.total()).toHaveText('4h40m');
+    await expect(screenTasks.taskDuration(screenTasks.taskItemByText('Running'))).toHaveText('1h30m');
+    await expect(screenTasks.taskDuration(screenTasks.taskItemByText('Complete'))).toHaveText('2h15m');
+    await expect(screenTasks.taskDuration(screenTasks.taskItemByText('Done'))).toHaveText('0h45m');
+    await expect(screenTasks.taskDuration(screenTasks.taskItemByText('Dropped'))).toHaveText('0h10m');
+
+    // Each task state has its own total
+    await app.buttonActiveTasks().click();
+    await expect(screenTasks.taskName()).toHaveText(['Running', 'Complete']);
+    await expect(screenTasks.total()).toHaveText('3h45m');
+    await app.buttonFinishedTasks().click();
+    await expect(screenTasks.taskName()).toHaveText(['Done']);
+    await expect(screenTasks.total()).toHaveText('0h45m');
+    await app.buttonDroppedTasks().click();
+    await expect(screenTasks.taskName()).toHaveText(['Dropped']);
+    await expect(screenTasks.total()).toHaveText('0h10m');
+
+    // The task details show the session durations, the latest session first, and their sum
+    await app.buttonActiveTasks().click();
+    await screenTasks.taskItemByText('Complete').getByTestId('screen-tasks__task-name').click();
+    await expect(screenTask.sessionDuration()).toHaveText(['1h00m', '1h15m']);
+    await expect(screenTask.taskDuration()).toHaveText('2h15m');
+    await screenTasks.taskItemByText('Running').getByTestId('screen-tasks__task-name').click();
+    await expect(screenTask.sessionDuration()).toHaveText(['1h00m', '0h30m']);
+    await expect(screenTask.taskDuration()).toHaveText('1h30m');
+
+    // Mark a task as finished, assert it moves from the active total to the finished total
+    await screenTasks.taskItemByText('Complete').getByTestId('screen-tasks__task-name').click();
+    await pressCombo(page, 'm f');
+    await expect(screenTasks.taskName()).toHaveText(['Running']);
+    await expect(screenTasks.total()).toHaveText('1h30m');
+    await app.buttonFinishedTasks().click();
+    await expect(screenTasks.taskName()).toHaveText(['Complete', 'Done']);
+    await expect(screenTasks.total()).toHaveText('3h00m');
+
+    // Delete a task, assert the totals no longer include it
+    await app.buttonDroppedTasks().click();
+    await screenTasks.taskItemByText('Dropped').getByTestId('screen-tasks__task-name').click();
+    await pressCombo(page, 'd t');
+    await expect(screenTasks.taskItem()).toHaveCount(0);
+    await app.buttonAllTasks().click();
+    await expect(screenTasks.total()).toHaveText('4h30m');
   });
 });
