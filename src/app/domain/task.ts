@@ -118,15 +118,8 @@ const filterByState: Filter = (filter, t) => {
   }
 };
 
-const filterByName: Filter = (filter, t) => {
-  if (!t) return t;
-  const { search } = filter;
-  if (typeof search === 'string' && search.length) {
-    return t.name.toLowerCase().includes(search.toLowerCase()) ? t : null;
-  } else {
-    return t;
-  }
-};
+const filterByName = (nameMatches: Set<TaskId> | undefined, t: Nullable<Task>): Nullable<Task> =>
+  t && nameMatches && !nameMatches.has(t.id) ? null : t;
 const filterByFrom: Filter = (filter, t) => {
   if (!t) return t;
   const { from } = filter;
@@ -161,20 +154,25 @@ const sortByDuration = (filter: FilterParams, tasks: Task[]): Task[] => {
   }
 };
 
-const composedPredicate = (filter: FilterParams, t: Nullable<Task>): Nullable<Task> =>
-  filterByTo(filter, filterByFrom(filter, filterByName(filter, filterByState(filter, t))));
+const composedPredicate = (
+  filter: FilterParams,
+  nameMatches: Set<TaskId> | undefined,
+  t: Nullable<Task>,
+): Nullable<Task> => filterByTo(filter, filterByFrom(filter, filterByName(nameMatches, filterByState(filter, t))));
 
-export const filterTasks = (filter: FilterParams, values: Task[]): Task[] =>
-  sortByDuration(
+/** `nameMatches` holds the ids of the tasks the name search found. Without it, the name search is not applied. */
+export const filterTasks = (filter: FilterParams, values: Task[], nameMatches?: Set<TaskId>): Task[] => {
+  return sortByDuration(
     filter,
     values.reduce((acc: Task[], task) => {
-      const result = composedPredicate(filter, task);
+      const result = composedPredicate(filter, nameMatches, task);
       if (result) {
         acc.push(result);
       }
       return acc;
     }, []),
   );
+};
 
 export const filterTaskSessions = (task: Task, params: Pick<FilterParams, 'from' | 'to'>): Task => {
   const sessions = filterByTo(params, filterByFrom(params, task))?.sessions;

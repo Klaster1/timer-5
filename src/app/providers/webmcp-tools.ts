@@ -11,13 +11,14 @@ import {
   TaskState,
 } from '@app/domain/task';
 import { AppStore } from '@app/providers/state';
+import { TaskNameSearch } from '@app/providers/task-name-search';
 import { isNumber } from '@app/utils/assert';
 import { format } from 'date-fns/format';
 import { isValid } from 'date-fns/isValid';
 import { parseISO } from 'date-fns/parseISO';
 
 type Args = Record<string, unknown>;
-type Handler = (args: Args, store: AppStore, now: Milliseconds) => unknown;
+type Handler = (args: Args, store: AppStore, now: Milliseconds) => unknown | Promise<unknown>;
 
 class ToolInputError extends Error {}
 
@@ -123,9 +124,10 @@ const defineTool = (
   handler: Handler,
 ): WebMcpToolDescriptor => ({
   ...definition,
-  execute: (args) => {
+  execute: async (args) => {
+    const store = inject(AppStore); // Before the first await: `inject` needs the injection context
     try {
-      return JSON.stringify(handler(args ?? {}, inject(AppStore), Date.now()));
+      return JSON.stringify(await handler(args ?? {}, store, Date.now()));
     } catch (error) {
       if (error instanceof ToolInputError) return JSON.stringify({ error: error.message });
       throw error;
@@ -155,19 +157,25 @@ export const webMcpTools: WebMcpToolDescriptor[] = [
             enum: ['active', 'finished', 'dropped', 'all'],
             description: 'Only tasks in this state. Default "active".',
           },
-          query: { type: 'string', description: 'Only tasks whose name contains this text, case-insensitive.' },
+          query: {
+            type: 'string',
+            description:
+              "Only tasks whose name matches every word of this text, case-insensitive, a typo allowed. Operators: 'text includes it exactly, ^text starts with, text$ ends with, !text excludes, a | b is either.",
+          },
           runningOnly: { type: 'boolean', description: 'Only tasks with a running session. Default false.' },
           limit: { type: 'integer', minimum: 1, maximum: 500, description: 'Most tasks to return. Default 50.' },
         },
       },
       annotations: readOnly,
     },
-    (args, store, now) => {
+    async (args, store, now) => {
       const state = optionalChoice(args, 'state', [...TASK_STATES, 'all']) ?? TaskState.active;
       const query = typeof args['query'] === 'string' ? args['query'] : undefined;
       const runningOnly = optionalBoolean(args, 'runningOnly', false);
       const limit = optionalInteger(args, 'limit', 50, 1, 500);
-      const matches = filterTasks({ state, search: query }, store.allTasks()).filter(
+      const search = inject(TaskNameSearch); // Before the first await: `inject` needs the injection context
+      const nameMatches = query?.trim() ? await search.search(query.trim(), store.allTasks()) : undefined;
+      const matches = filterTasks({ state }, store.allTasks(), nameMatches).filter(
         (task) => !runningOnly || isTaskRunning(task),
       );
       return { total: matches.length, tasks: matches.slice(0, limit).map((task) => taskSummary(task, now)) };

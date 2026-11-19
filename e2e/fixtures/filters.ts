@@ -573,4 +573,197 @@ test.describe('Filters', () => {
     await expect(screenTasks.taskItem()).toHaveCount(2);
     await expect.poll(async () => getLocationSearch(page)).toBe('');
   });
+
+  test.describe('Name search', () => {
+    const day = (d: number) =>
+      session(`2026-11-${String(d).padStart(2, '0')}T10:00:00Z`, `2026-11-${String(d).padStart(2, '0')}T11:00:00Z`);
+    const tasks: SeedTask[] = [
+      { name: 'Standup', sessions: [day(1)] },
+      { name: 'Stand-up notes', sessions: [day(2)] },
+      { name: 'Write weekly report', sessions: [day(3)] },
+      { name: 'Review pull requests', sessions: [day(4)] },
+      { name: 'Reading Dune', state: 'finished', sessions: [day(5)] },
+      { name: 'Dentist appointment', sessions: [day(6)] },
+      { name: 'Database migration', sessions: [day(7)] },
+      { name: 'MCDEV-1234 plan', sessions: [day(8)] },
+      { name: 'MCDEV-1224 fix', sessions: [day(9)] },
+      { name: 'Meeting notes', sessions: [day(10)] },
+      { name: 'C++ course', sessions: [day(11)] },
+      { name: 'Cat photos', sessions: [day(12)] },
+    ];
+    // The order of the list is not what these tests check
+    const listed = async () => [...(await screenTasks.taskName().allTextContents())].sort();
+    const search = async (page: Page, text: string) => {
+      await screenTasks.filter.name.input().fill(text);
+      // The router encodes the already encoded value once more
+      const inUrl = async () => new URLSearchParams(await getLocationSearch(page)).get('search');
+      await expect.poll(async () => (await inUrl()) && decodeURIComponent((await inUrl())!)).toBe(text || null);
+    };
+
+    test.beforeEach(async ({ page }) => {
+      await seedTasks(page, tasks);
+      await page.goto('/all');
+      await screenTasks.buttonToggleFilter().click();
+      await expect(screenTasks.filter.name.input()).toBeVisible();
+      await expect(screenTasks.taskName()).toHaveCount(tasks.length);
+      // The typo-tolerant search loads when the filter opens. The tests below need it, so wait until a typo finds a name.
+      await search(page, 'stndup');
+      await expect.poll(listed).toEqual(['Standup']);
+      await search(page, '');
+      await expect(screenTasks.taskName()).toHaveCount(tasks.length);
+    });
+
+    test('Finds a name with a typo', async ({ page }) => {
+      for (const [query, found] of [
+        ['stndup', ['Standup']],
+        ['dentst', ['Dentist appointment']],
+        ['migrtion', ['Database migration']],
+        ['reding', ['Reading Dune']],
+      ] as const) {
+        await search(page, query);
+        await expect.poll(listed, { message: query }).toEqual([...found]);
+      }
+    });
+
+    test('Finds a name by parts of its words, in any order', async ({ page }) => {
+      await search(page, 'rep wri');
+      await expect.poll(listed).toEqual(['Write weekly report']);
+      await search(page, 'wri rep');
+      await expect.poll(listed).toEqual(['Write weekly report']);
+      await search(page, 'pull req');
+      await expect.poll(listed).toEqual(['Review pull requests']);
+      // "stand up" is two words, and the name "Stand-up notes" has them both
+      await search(page, 'stand up');
+      await expect.poll(listed).toEqual(['Stand-up notes', 'Standup']);
+    });
+
+    test('Shows the empty state when no name matches, and all tasks again when the search is cleared', async ({
+      page,
+    }) => {
+      await search(page, 'zzz');
+      await expect(screenTasks.emptyStateNothingFound()).toBeVisible();
+      await expect(screenTasks.taskItem()).toHaveCount(0);
+
+      await search(page, '');
+      await expect(screenTasks.taskItem()).toHaveCount(tasks.length);
+    });
+
+    test('Applies a search from the URL, typos included', async ({ page }) => {
+      await page.goto('/all?search=stndup');
+      await expect.poll(listed).toEqual(['Standup']);
+      await expect(screenTasks.filter.name.input()).toHaveValue('stndup');
+    });
+
+    test('Searches within the open list only', async ({ page }) => {
+      await page.goto('/finished');
+      await screenTasks.buttonToggleFilter().click();
+      await expect(screenTasks.taskName()).toHaveCount(1);
+      await search(page, 'reding');
+      await expect.poll(listed).toEqual(['Reading Dune']);
+      await page.goto('/active?search=reding');
+      await expect(screenTasks.emptyStateNothingFound()).toBeVisible();
+    });
+
+    test('Matches exactly after a quote', async ({ page }) => {
+      // Without the quote a number allows a wrong digit, and a short word a different letter
+      await search(page, 'mcdev 1234');
+      await expect.poll(listed).toEqual(['MCDEV-1224 fix', 'MCDEV-1234 plan']);
+      await search(page, "'mcdev-1234");
+      await expect.poll(listed).toEqual(['MCDEV-1234 plan']);
+      await search(page, "'meet");
+      await expect.poll(listed).toEqual(['Meeting notes']);
+      await search(page, "'c++");
+      await expect.poll(listed).toEqual(['C++ course']);
+    });
+
+    test('Supports the search operators', async ({ page }) => {
+      await search(page, '^stand');
+      await expect.poll(listed).toEqual(['Stand-up notes', 'Standup']);
+      await search(page, 'notes$');
+      await expect.poll(listed).toEqual(['Meeting notes', 'Stand-up notes']);
+      await search(page, 'notes !stand');
+      await expect.poll(listed).toEqual(['Meeting notes']);
+      await search(page, "'standup | cat");
+      await expect.poll(listed).toEqual(['Cat photos', 'Standup']);
+    });
+
+    test('Finds a name by a search that has only a symbol', async ({ page }) => {
+      await search(page, '-');
+      await expect.poll(listed).toEqual(['MCDEV-1224 fix', 'MCDEV-1234 plan', 'Stand-up notes']);
+    });
+
+    test('Applies the first character at once and the next ones 100 ms after the last keystroke', async ({ page }) => {
+      // The searches that reach the workers, in order
+      await page.addInitScript(() => {
+        const queries: string[] = ((window as any).__searches = []);
+        const postMessage = Worker.prototype.postMessage;
+        Worker.prototype.postMessage = function (this: Worker, message: any, ...rest: any[]) {
+          if (message?.method === 'search' && !queries.includes(message.args[0])) queries.push(message.args[0]);
+          return (postMessage as any).call(this, message, ...rest);
+        };
+      });
+      const searches = () => page.evaluate(() => (window as any).__searches as string[]);
+      // Time stands still until the test moves it. The worker answers in real time, so the test moves the clock in small steps until the page shows it.
+      await page.clock.install();
+      await page.goto('/all');
+      await screenTasks.buttonToggleFilter().click();
+      await expect(screenTasks.filter.name.input()).toBeVisible();
+      await page.clock.pauseAt(Date.now() + 60_000);
+      const stepUntil = async (done: () => Promise<boolean>) => {
+        for (let step = 0; step < 100; step++) {
+          if (await done()) return;
+          await page.clock.runFor(10);
+          await page.waitForTimeout(20);
+        }
+        throw new Error('The page did not reach the state in time');
+      };
+
+      await screenTasks.filter.name.input().fill('q');
+      await stepUntil(async () => (await listed()).join() === 'Review pull requests');
+
+      await screenTasks.filter.name.input().fill('qz');
+      await page.clock.runFor(30);
+      await page.waitForTimeout(100);
+      // The URL has the new search, and the workers have not got it yet
+      expect(new URLSearchParams(await getLocationSearch(page)).get('search')).toBe('qz');
+      expect(await searches()).toEqual(['q']);
+
+      await stepUntil(async () => (await searches()).length === 2);
+      expect(await searches()).toEqual(['q', 'qz']);
+      await stepUntil(() => screenTasks.emptyStateNothingFound().isVisible());
+    });
+
+    test('Finds a renamed task by its new name', async ({ page }) => {
+      await search(page, 'dentist');
+      await expect.poll(listed).toEqual(['Dentist appointment']);
+
+      await screenTasks.taskItemByText('Dentist appointment').getByTestId('screen-tasks__task-name').click();
+      await pressCombo(page, 'r t');
+      await page.getByTestId('dialog-rename-task__input').fill('Orthodontist visit');
+      await pressCombo(page, 'enter');
+
+      // The old name no longer matches, and the new one does, with a typo
+      await search(page, 'appointment');
+      await expect(screenTasks.emptyStateNothingFound()).toBeVisible();
+      await search(page, 'orthodntist');
+      await expect.poll(listed).toEqual(['Orthodontist visit']);
+    });
+  });
+
+  test('Loads the typo-tolerant search only when a search opens', async ({ page }) => {
+    await seedTasks(page, [{ name: 'Standup', sessions: [session('2026-11-01T10:00:00Z', '2026-11-01T11:00:00Z')] }]);
+    const loaded: string[] = [];
+    page.on('response', async (response) => {
+      if (!/\.js(\?|$)/.test(response.url())) return;
+      if ((await response.text().catch(() => '')).includes('useTokenSearch')) loaded.push(response.url());
+    });
+
+    await page.goto('/all');
+    await expect(screenTasks.taskItem()).toHaveCount(1);
+    await page.waitForLoadState('networkidle');
+    expect(loaded, 'the list alone does not load it').toEqual([]);
+
+    await screenTasks.buttonToggleFilter().click();
+    await expect.poll(() => loaded.length, { message: 'opening the filter loads it' }).toBeGreaterThan(0);
+  });
 });
