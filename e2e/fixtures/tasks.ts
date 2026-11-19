@@ -667,4 +667,179 @@ test.describe('Tasks', () => {
     await app.buttonAllTasks().click();
     await expect(screenTasks.total()).toHaveText('4h30m');
   });
+
+  test('Deleting a session', async ({ page }) => {
+    // The clock starts at 14:00 and keeps running
+    await page.clock.install({ time: new Date('2026-11-18T14:00:00Z') });
+    await seedTasks(page, [
+      {
+        name: 'Work',
+        sessions: [
+          session('2026-11-18T08:00:00Z', '2026-11-18T09:00:00Z'),
+          session('2026-11-18T09:30:00Z', '2026-11-18T10:30:00Z'),
+          session('2026-11-18T13:00:00Z', null),
+        ],
+      },
+      { name: 'Other', sessions: [session('2026-11-18T07:00:00Z', '2026-11-18T07:30:00Z')] },
+    ]);
+    await page.goto('/all');
+
+    // Open a task with a running session and two complete ones
+    await screenTasks.taskItemByText('Work').getByTestId('screen-tasks__task-name').click();
+    await expect(screenTask.sessionRow()).toHaveCount(3);
+    await expect(screenTask.sessionDuration()).toHaveText(['1h00m', '1h00m', '1h00m']);
+    await expect(screenTask.taskDuration()).toHaveText('3h00m');
+    await expect(screenTasks.total()).toHaveText('3h30m');
+    await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', /pause_circle/);
+
+    // Delete a complete session in the middle of the list
+    await screenTask.buttonSessionAction().nth(1).click();
+    await screenTask.menuSession.buttonDelete().click();
+    // Assert the other sessions stay in place and the totals shrink
+    await expect(screenTask.sessionRow()).toHaveCount(2);
+    await expect(screenTask.sessionStart()).toHaveText(['2026-11-18 13:00', '2026-11-18 8:00']);
+    await expect(screenTask.taskDuration()).toHaveText('2h00m');
+    await expect(screenTasks.taskDuration(screenTasks.taskItemByText('Work'))).toHaveText('2h00m');
+    await expect(screenTasks.total()).toHaveText('2h30m');
+
+    // Delete the running session
+    await screenTask.buttonSessionAction().nth(0).click();
+    await screenTask.menuSession.buttonDelete().click();
+    await expect(screenTask.sessionRow()).toHaveCount(1);
+    await expect(screenTask.taskDuration()).toHaveText('1h00m');
+    // Assert the task is not running anymore and can be started
+    await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', /play_circle/);
+    await expect(screenTasks.taskStateIcon().first()).toHaveAttribute('data-mat-icon-name', /play_circle/);
+    await expect(screenTask.buttonStart()).toBeVisible();
+    await expect(screenTask.buttonStop()).toBeHidden();
+
+    // Delete the last session of the task
+    await screenTask.buttonSessionAction().nth(0).click();
+    await screenTask.menuSession.buttonDelete().click();
+    // Assert the task stays, with no sessions and no time
+    await expect(screenTask.sessionRow()).toHaveCount(0);
+    await expect(screenTask.taskDuration()).toHaveText('0s');
+    await expect(screenTasks.taskItemByText('Work')).toHaveCount(1);
+    await expect(screenTasks.taskDuration(screenTasks.taskItemByText('Work'))).toHaveText('0s');
+    // Assert the other task is untouched
+    await expect(screenTasks.taskDuration(screenTasks.taskItemByText('Other'))).toHaveText('0h30m');
+    await expect(screenTasks.total()).toHaveText('0h30m');
+
+    // Reload the app, assert the deletion persists
+    await reloadIgnoringCache(page);
+    await expect(screenTask.sessionRow()).toHaveCount(0);
+    await expect(screenTasks.total()).toHaveText('0h30m');
+
+    // The task can be started again
+    await screenTask.buttonStart().click();
+    await expect(screenTask.sessionRow()).toHaveCount(1);
+    await expect(screenTask.stateIcon()).toHaveAttribute('data-mat-icon-name', /pause_circle/);
+  });
+
+  test('Session order', async ({ page }) => {
+    // The clock starts at 14:00 and keeps running
+    await page.clock.install({ time: new Date('2026-11-18T14:00:00Z') });
+    // Sessions are stored in no particular order
+    await seedTasks(page, [
+      {
+        name: 'Work',
+        sessions: [
+          session('2026-11-18T10:00:00Z', '2026-11-18T11:00:00Z'),
+          session('2026-11-18T13:00:00Z', null),
+          session('2026-11-18T08:00:00Z', '2026-11-18T09:00:00Z'),
+          session('2026-11-18T12:00:00Z', '2026-11-18T12:30:00Z'),
+        ],
+      },
+      {
+        name: 'Ties',
+        sessions: [
+          session('2026-11-17T10:00:00Z', '2026-11-17T10:10:00Z'),
+          session('2026-11-17T10:00:00Z', '2026-11-17T10:20:00Z'),
+        ],
+      },
+    ]);
+    await page.goto('/all');
+    await screenTasks.taskItemByText('Work').getByTestId('screen-tasks__task-name').click();
+
+    // Assert the sessions are listed the latest start first, the running one included
+    await expect(screenTask.sessionStart()).toHaveText([
+      '2026-11-18 13:00',
+      '2026-11-18 12:00',
+      '2026-11-18 10:00',
+      '2026-11-18 8:00',
+    ]);
+
+    // Stop and start the task, assert the new session goes to the top
+    await screenTask.buttonStop().click();
+    await screenTask.buttonStart().click();
+    await expect(screenTask.sessionRow()).toHaveCount(5);
+    await expect(screenTask.sessionStart()).toHaveText([
+      /2026-11-18 14:00/,
+      '2026-11-18 13:00',
+      '2026-11-18 12:00',
+      '2026-11-18 10:00',
+      '2026-11-18 8:00',
+    ]);
+    await expect(screenTask.sessionEnd().first()).toHaveText('');
+
+    // Change the start of the oldest session so it moves in between the others
+    await screenTask.buttonSessionAction().nth(4).click();
+    await screenTask.menuSession.buttonEdit().click();
+    await dialogEditSession.setEnd('2026-11-18T12:45');
+    await dialogEditSession.setStart('2026-11-18T12:15');
+    await dialogEditSession.buttonSubmit().click();
+    await expect(dialogEditSession.buttonSubmit()).toBeHidden();
+    await expect(screenTask.sessionStart()).toHaveText([
+      /2026-11-18 14:00/,
+      '2026-11-18 13:00',
+      '2026-11-18 12:15',
+      '2026-11-18 12:00',
+      '2026-11-18 10:00',
+    ]);
+
+    // Reload the app, assert the order persists
+    await reloadIgnoringCache(page);
+    await expect(screenTask.sessionStart()).toHaveText([
+      /2026-11-18 14:00/,
+      '2026-11-18 13:00',
+      '2026-11-18 12:15',
+      '2026-11-18 12:00',
+      '2026-11-18 10:00',
+    ]);
+
+    // Sessions that start at the same time keep their stored order
+    await screenTasks.taskItemByText('Ties').getByTestId('screen-tasks__task-name').click();
+    await expect(screenTask.sessionDuration()).toHaveText(['0h10m', '0h20m']);
+  });
+
+  test('Task order', async ({ page }) => {
+    // The clock starts at 14:00 and keeps running
+    await page.clock.install({ time: new Date('2026-11-18T14:00:00Z') });
+    await seedTasks(page, [
+      { name: 'Old', sessions: [session('2026-11-18T08:00:00Z', '2026-11-18T09:00:00Z')] },
+      { name: 'Newer', sessions: [session('2026-11-18T10:00:00Z', '2026-11-18T11:00:00Z')] },
+      { name: 'Running early', sessions: [session('2026-11-18T07:00:00Z', null)] },
+      { name: 'Running late', sessions: [session('2026-11-18T09:00:00Z', null)] },
+      { name: 'No sessions' },
+    ]);
+    await page.goto('/all');
+
+    // Tasks without sessions go first, then running tasks, the latest start first, then the rest, the latest session first
+    await expect(screenTasks.taskName()).toHaveText(['No sessions', 'Running late', 'Running early', 'Newer', 'Old']);
+
+    // Start a task, assert it moves above the other running tasks
+    await screenTasks.taskItemByText('Old').getByTestId('screen-tasks__task-name').click();
+    await screenTask.buttonStart().click();
+    await expect(screenTasks.taskName()).toHaveText(['No sessions', 'Old', 'Running late', 'Running early', 'Newer']);
+
+    // Stop it, assert it moves above the other complete tasks
+    await screenTask.buttonStop().click();
+    await expect(screenTasks.taskName()).toHaveText(['No sessions', 'Running late', 'Running early', 'Old', 'Newer']);
+
+    // Start the task without sessions, assert it goes first
+    await screenTasks.taskItemByText('No sessions').getByTestId('screen-tasks__task-name').click();
+    await screenTask.buttonStart().click();
+    await expect(screenTasks.taskName()).toHaveText(['No sessions', 'Running late', 'Running early', 'Old', 'Newer']);
+    await expect(screenTasks.taskStateIcon().first()).toHaveAttribute('data-mat-icon-name', /pause_circle/);
+  });
 });
