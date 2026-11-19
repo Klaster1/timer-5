@@ -1,0 +1,18 @@
+name: Release Please
+
+on:
+  push:
+    branches: [master]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      # It keeps a release pull request open that bumps the version and writes CHANGELOG.md from the commit titles.
+      # Merging that pull request tags the release and publishes it on GitHub.
+      - uses: googleapis/release-please-action@v4
