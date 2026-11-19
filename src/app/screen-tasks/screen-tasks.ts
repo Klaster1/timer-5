@@ -23,7 +23,7 @@ import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/rou
 import { ButtonTaskActionsComponent } from '@app/button-task-actions/button-task-actions';
 import { DurationComponent } from '@app/directives/duration';
 import { ToolbarWidthSyncDirective } from '@app/directives/toolbar-width-sync';
-import { chartSeries } from '@app/domain/chart';
+import { chartBars, chartSeries } from '@app/domain/chart';
 import { KEYS_ADD, KEYS_NEXT, KEYS_PREV, KEYS_SEARCH, hotkey } from '@app/domain/hotkeys';
 import { decodeFilterMatrixParams, decodeTaskState } from '@app/domain/router';
 import {
@@ -135,7 +135,8 @@ export default class ScreenTasksComponent {
   private currentTasks = computed(() =>
     filterTasks(this.taskFilterParams(), this.store.allTasks(), this.nameMatches()),
   );
-  private filterChartData = computed(() => chartSeries(this.store.allTasks(), this.currentTasks()));
+  private dayBars = computed(() => chartBars(this.store.allTasks()));
+  private filterChartData = computed(() => chartSeries(this.dayBars(), this.currentTasks()));
   private filterRange = computed(
     () => [this.decodedFilterParams().from ?? null, this.decodedFilterParams().to ?? null] as const,
   );
