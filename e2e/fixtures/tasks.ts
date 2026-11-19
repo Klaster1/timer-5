@@ -627,8 +627,8 @@ test.describe('Tasks', () => {
     await expect(screenTasks.total()).toHaveText('4h40m');
     await expect(screenTasks.taskDuration(screenTasks.taskItemByText('Running'))).toHaveText('1h30m');
     await expect(screenTasks.taskDuration(screenTasks.taskItemByText('Complete'))).toHaveText('2h15m');
-    await expect(screenTasks.taskDuration(screenTasks.taskItemByText('Done'))).toHaveText('0h45m');
-    await expect(screenTasks.taskDuration(screenTasks.taskItemByText('Dropped'))).toHaveText('0h10m');
+    await expect(screenTasks.taskDuration(screenTasks.taskItemByText('Done'))).toHaveText('45m');
+    await expect(screenTasks.taskDuration(screenTasks.taskItemByText('Dropped'))).toHaveText('10m');
 
     // Each task state has its own total
     await app.buttonActiveTasks().click();
@@ -636,10 +636,10 @@ test.describe('Tasks', () => {
     await expect(screenTasks.total()).toHaveText('3h45m');
     await app.buttonFinishedTasks().click();
     await expect(screenTasks.taskName()).toHaveText(['Done']);
-    await expect(screenTasks.total()).toHaveText('0h45m');
+    await expect(screenTasks.total()).toHaveText('45m');
     await app.buttonDroppedTasks().click();
     await expect(screenTasks.taskName()).toHaveText(['Dropped']);
-    await expect(screenTasks.total()).toHaveText('0h10m');
+    await expect(screenTasks.total()).toHaveText('10m');
 
     // The task details show the session durations, the latest session first, and their sum
     await app.buttonActiveTasks().click();
@@ -647,7 +647,7 @@ test.describe('Tasks', () => {
     await expect(screenTask.sessionDuration()).toHaveText(['1h00m', '1h15m']);
     await expect(screenTask.taskDuration()).toHaveText('2h15m');
     await screenTasks.taskItemByText('Running').getByTestId('screen-tasks__task-name').click();
-    await expect(screenTask.sessionDuration()).toHaveText(['1h00m', '0h30m']);
+    await expect(screenTask.sessionDuration()).toHaveText(['1h00m', '30m']);
     await expect(screenTask.taskDuration()).toHaveText('1h30m');
 
     // Mark a task as finished, assert it moves from the active total to the finished total
@@ -722,13 +722,13 @@ test.describe('Tasks', () => {
     await expect(screenTasks.taskItemByText('Work')).toHaveCount(1);
     await expect(screenTasks.taskDuration(screenTasks.taskItemByText('Work'))).toHaveText('0s');
     // Assert the other task is untouched
-    await expect(screenTasks.taskDuration(screenTasks.taskItemByText('Other'))).toHaveText('0h30m');
-    await expect(screenTasks.total()).toHaveText('0h30m');
+    await expect(screenTasks.taskDuration(screenTasks.taskItemByText('Other'))).toHaveText('30m');
+    await expect(screenTasks.total()).toHaveText('30m');
 
     // Reload the app, assert the deletion persists
     await reloadIgnoringCache(page);
     await expect(screenTask.sessionRow()).toHaveCount(0);
-    await expect(screenTasks.total()).toHaveText('0h30m');
+    await expect(screenTasks.total()).toHaveText('30m');
 
     // The task can be started again
     await screenTask.buttonStart().click();
@@ -809,7 +809,7 @@ test.describe('Tasks', () => {
 
     // Sessions that start at the same time keep their stored order
     await screenTasks.taskItemByText('Ties').getByTestId('screen-tasks__task-name').click();
-    await expect(screenTask.sessionDuration()).toHaveText(['0h10m', '0h20m']);
+    await expect(screenTask.sessionDuration()).toHaveText(['10m', '20m']);
   });
 
   test('Task order', async ({ page }) => {
@@ -841,5 +841,37 @@ test.describe('Tasks', () => {
     await screenTask.buttonStart().click();
     await expect(screenTasks.taskName()).toHaveText(['No sessions', 'Running late', 'Running early', 'Old', 'Newer']);
     await expect(screenTasks.taskStateIcon().first()).toHaveAttribute('data-mat-icon-name', /pause_circle/);
+  });
+
+  test('Duration format', async ({ page }) => {
+    const minutes = (m: number, extraSeconds = 0) =>
+      [
+        Date.parse('2026-11-10T10:00:00Z'),
+        Date.parse('2026-11-10T10:00:00Z') + (m * 60 + extraSeconds) * 1000,
+      ] as const;
+    await seedTasks(
+      page,
+      [
+        ['A 10h', 10 * 60],
+        ['B 1h05', 65],
+        ['C 1h', 60],
+        ['D 45m', 45],
+        ['E 9m', 9],
+        ['F 1m', 1],
+      ].map(([name, m], i) => ({
+        name: String(name),
+        sessions: [[minutes(Number(m))[0] + i * 86_400_000, minutes(Number(m))[1] + i * 86_400_000] as const],
+      })),
+    );
+    await page.goto('/all');
+
+    // Hours show only when not zero, and minutes get a leading zero only after hours
+    const duration = (name: string) => screenTasks.taskDuration(screenTasks.taskItemByText(name));
+    await expect(duration('A 10h')).toHaveText('10h00m');
+    await expect(duration('B 1h05')).toHaveText('1h05m');
+    await expect(duration('C 1h')).toHaveText('1h00m');
+    await expect(duration('D 45m')).toHaveText('45m');
+    await expect(duration('E 9m')).toHaveText('9m');
+    await expect(duration('F 1m')).toHaveText('1m');
   });
 });
