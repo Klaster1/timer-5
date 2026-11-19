@@ -92,3 +92,12 @@ body {
     vertical-align: middle;
   }
 }
+
+// Material loads the text button styles when the first dialog renders its buttons. They contain the global rule
+// `.mat-mdc-button-base .mat-icon { min-height: fit-content; flex-shrink: 0 }`, which makes the icons of every icon
+// button and FAB on the page taller and shifts them while a dialog is open. This rule has a higher specificity, so it
+// wins whenever the styles load.
+:is(.mat-mdc-icon-button, .mat-mdc-fab).mat-mdc-button-base .mat-icon {
+  min-height: 0;
+  flex-shrink: 1;
+}
