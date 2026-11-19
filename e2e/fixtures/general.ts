@@ -232,4 +232,30 @@ test.describe('General', () => {
       .poll(async () => screenTasks.distanceFromViewportCenter(screenTasks.taskItemByText(nearEndName)))
       .toBeLessThan(roughlyCentered);
   });
+
+  test('Opening a dialog does not move the icons', async ({ page }) => {
+    // Material loads global button styles when the first dialog renders its buttons
+    await seedTasks(page, [{ name: 'One', sessions: [session('2026-11-10T10:00:00Z', '2026-11-10T11:00:00Z')] }]);
+    await page.goto('/all/seed-0');
+    await expect(screenTask.name()).toHaveText('One');
+    const iconBoxes = () =>
+      page.locator('mat-icon').evaluateAll((icons) =>
+        icons.map((icon) => {
+          const { x, y, width, height } = icon.getBoundingClientRect();
+          return { name: icon.getAttribute('data-mat-icon-name'), x, y, width, height };
+        }),
+      );
+    const before = await iconBoxes();
+    expect(before.length).toBeGreaterThan(5);
+
+    // Open the hotkeys dialog, assert every icon stays where it was
+    await page.keyboard.press('Shift+?');
+    await expect(dialogHotkeyCheatsheet.dialog()).toBeVisible();
+    expect(await iconBoxes()).toEqual(before);
+
+    // Close it, assert the icons are still in place
+    await page.keyboard.press('Escape');
+    await expect(dialogHotkeyCheatsheet.dialog()).toBeHidden();
+    expect(await iconBoxes()).toEqual(before);
+  });
 });
