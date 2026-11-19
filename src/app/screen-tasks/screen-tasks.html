@@ -24,17 +24,17 @@
       [filterRange]="filterRange()"
       [decodedFilterParams]="decodedFilterParams()"
     ></tasks-filter>
-    } } @if (tasks.length) {
+    } } @if (listTasks().length) {
     <cdk-virtual-scroll-viewport
       #scroll
       [itemSize]="48"
       [scrollToIndex]="currentTaskIndex()"
-      [checkViewportSizeWhenValueChanges]="tasks"
+      [checkViewportSizeWhenValueChanges]="listTasks()"
     >
       <mat-nav-list>
         <a
           mat-list-item
-          *cdkVirtualFor="let task of tasks; trackBy: taskId; types: tasks"
+          *cdkVirtualFor="let task of listTasks(); trackBy: taskId; types: listTasks()"
           cdkDropList
           (cdkDropListDropped)="onDrop($event, task)"
           data-e2e="screen-tasks__task-item"

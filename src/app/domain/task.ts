@@ -94,13 +94,17 @@ export const taskDuration = (task?: Task): DurationFn => {
   return runningDuration ? (now: Milliseconds) => completeDuration + runningDuration(now) : () => completeDuration;
 };
 
-export const tasksDuration =
-  (tasks: Task[]): DurationFn =>
-  (now: Milliseconds) =>
-    tasks.map(runningTaskDuration).reduce(
-      (acc, runningDuration) => (runningDuration ? acc + runningDuration(now) : acc),
-      tasks.reduce((acc, task) => acc + completeTaskDuration(task), 0),
-    );
+/** Adds up the finished sessions once. The returned function only adds the running sessions, as it runs every second. */
+export const tasksDuration = (tasks: Task[]): DurationFn => {
+  let completeDuration = 0;
+  const runningDurations: DurationFn[] = [];
+  for (const task of tasks) {
+    completeDuration += completeTaskDuration(task);
+    const runningDuration = runningTaskDuration(task);
+    if (runningDuration) runningDurations.push(runningDuration);
+  }
+  return (now: Milliseconds) => runningDurations.reduce((acc, duration) => acc + duration(now), completeDuration);
+};
 
 type Nullable<T> = T | null;
 

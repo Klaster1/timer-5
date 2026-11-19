@@ -23,7 +23,7 @@ import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/rou
 import { ButtonTaskActionsComponent } from '@app/button-task-actions/button-task-actions';
 import { DurationComponent } from '@app/directives/duration';
 import { ToolbarWidthSyncDirective } from '@app/directives/toolbar-width-sync';
-import { chartSeries } from '@app/domain/chart';
+import { chartBars, chartSeries } from '@app/domain/chart';
 import { KEYS_ADD, KEYS_NEXT, KEYS_PREV, KEYS_SEARCH, hotkey } from '@app/domain/hotkeys';
 import { decodeFilterMatrixParams, decodeTaskState } from '@app/domain/router';
 import {
@@ -53,6 +53,7 @@ import { TasksFilterComponent } from './tasks-filter/tasks-filter';
 
 const SEARCH_DEBOUNCE_MS = 100;
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+const nextFrame = () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
 
 @Component({
   selector: 'screen-tasks',
@@ -135,7 +136,12 @@ export default class ScreenTasksComponent {
   private currentTasks = computed(() =>
     filterTasks(this.taskFilterParams(), this.store.allTasks(), this.nameMatches()),
   );
-  private filterChartData = computed(() => chartSeries(this.store.allTasks(), this.currentTasks()));
+  // The list follows `currentTasks` one frame later. The count and the chart update in the first frame, and the list swap,
+  // the most expensive part with thousands of tasks, in the next one. The first value applies at once.
+  private listedTasks = debounced(() => this.currentTasks(), nextFrame);
+  private listTasks = computed(() => this.listedTasks.value() ?? []);
+  private dayBars = computed(() => chartBars(this.store.allTasks()));
+  private filterChartData = computed(() => chartSeries(this.dayBars(), this.currentTasks()));
   private filterRange = computed(
     () => [this.decodedFilterParams().from ?? null, this.decodedFilterParams().to ?? null] as const,
   );
@@ -154,7 +160,7 @@ export default class ScreenTasksComponent {
   // For scrollToIndex in the template — index of the currently open task
   private currentTaskIndex = computed(() => {
     const taskId = this.openTask()?.taskId();
-    return taskId ? this.currentTasks().findIndex((t) => t.id === taskId) : -1;
+    return taskId ? this.listTasks().findIndex((t) => t.id === taskId) : -1;
   });
 
   private isCurrentTaskOpened = computed(() => !!this.openTask());
@@ -183,7 +189,7 @@ export default class ScreenTasksComponent {
     });
     // Scroll to top when tasks change
     effect(() => {
-      this.currentTasks();
+      this.listTasks();
       afterNextRender(
         {
           read: () => {

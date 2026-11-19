@@ -1,13 +1,7 @@
-import { Session, sessionDurationPure, Task } from '@app/domain/task';
+import { sessionDurationPure, Task, TaskId } from '@app/domain/task';
 import { endOfDay } from 'date-fns/endOfDay';
 import { millisecondsToSeconds } from 'date-fns/millisecondsToSeconds';
 import { startOfDay } from 'date-fns/startOfDay';
-
-const clampSession = (session: Session, start: number, end: number, now: number): Session => ({
-  ...session,
-  start: Math.max(start, session.start),
-  end: Math.min(end, session.end ?? now),
-});
 
 export type ScaleRange = readonly [Date | null, Date | null];
 type DateRange = [Date, Date];
@@ -24,70 +18,72 @@ const generateRanges = (start: Date, end: Date): DateRange[] => {
   return result;
 };
 
-const getSessionRangeId = (session: Session): number => startOfDay(new Date(session.start)).valueOf();
+const getEarliestSessionStart = (tasks: Task[]): number | undefined => {
+  let earliest: number | undefined;
+  for (const task of tasks) {
+    for (const session of task.sessions) {
+      if (earliest === undefined || session.start < earliest) earliest = session.start;
+    }
+  }
+  return earliest;
+};
 
-const getEarliestSessionStart = (tasks: Task[]): number | undefined =>
-  tasks.flatMap((t) => t.sessions.map((s) => s.start)).sort((a, b) => a - b)[0];
+type Bar = { start: Date; end: Date; tasks: Set<TaskId>; duration: number };
+/** One bar per day, from the earliest session to today. Does not depend on the filter. */
+export type ChartBars = readonly Bar[];
 
-type Bar = { start: Date; end: Date; tasks: Set<Task['id']>; duration: number; includesCurrentTasks: boolean };
-type Bars = Map<number, Bar>;
-
-const tasksToBars = (allTasks: Task[], currentTasks: Task[]): Bars => {
-  const currentTasksIds = new Set(currentTasks.map((t) => t.id));
-  const now = new Date();
+export const chartBars = (allTasks: Task[]): ChartBars => {
   const earliestStart = getEarliestSessionStart(allTasks);
   if (earliestStart === undefined) {
-    return new Map();
+    return [];
   }
-  const result: Bars = new Map(
-    generateRanges(new Date(earliestStart), now).map(([s, e]): [number, Bar] => [
-      s.valueOf(),
-      {
-        start: s,
-        end: e,
-        tasks: new Set(),
-        duration: 0,
-        includesCurrentTasks: false,
-      },
+  const byDay = new Map(
+    generateRanges(new Date(earliestStart), new Date()).map(([start, end]): [number, Bar] => [
+      start.valueOf(),
+      { start, end, tasks: new Set(), duration: 0 },
     ]),
   );
-  return allTasks.reduce((bars: Bars, task: Task) => {
-    task.sessions.forEach((s) => {
-      let duration = sessionDurationPure(s);
+  for (const task of allTasks) {
+    for (const session of task.sessions) {
+      let start = session.start;
+      let duration = sessionDurationPure(session);
       while (duration >= 10) {
-        const bar = bars.get(getSessionRangeId(s));
+        const bar = byDay.get(startOfDay(start).valueOf());
         if (!bar) {
           break;
         }
-        const sessionSlice = clampSession(s, bar.start.valueOf(), bar.end.valueOf(), now.valueOf());
-        const sliceDuration = sessionDurationPure(sessionSlice);
-        if (!bar.includesCurrentTasks) bar.includesCurrentTasks = currentTasksIds.has(task.id);
+        const sliceDuration = Math.min(bar.end.valueOf(), session.end!) - Math.max(bar.start.valueOf(), start);
         bar.tasks.add(task.id);
         bar.duration += sliceDuration;
-        duration = duration - sliceDuration;
-        s = { ...s, start: bar.end.valueOf() + 1 };
+        duration -= sliceDuration;
+        start = bar.end.valueOf() + 1;
       }
-    });
-    return bars;
-  }, result);
+    }
+  }
+  return [...byDay.values()];
 };
 
-export const chartSeries = (allTasks: Task[], currentTasks: Task[]): ChartData => {
-  const bars = tasksToBars(allTasks, currentTasks);
-  const currentBars: Bars = new Map(
-    [...bars.entries()].map(([key, bar]) => [key, bar.includesCurrentTasks ? bar : { ...bar, duration: 0 }]),
-  );
-  const otherBars: Bars = new Map(
-    [...bars.entries()].map(([key, bar]) => [key, !bar.includesCurrentTasks ? bar : { ...bar, duration: 0 }]),
-  );
-  return [
-    [...bars.values()].flatMap((b) => [
-      millisecondsToSeconds(b.start.valueOf()),
-      millisecondsToSeconds(b.end.valueOf()),
-    ]),
-    [...currentBars.values()].flatMap((b) => [b.duration, b.duration]),
-    [...otherBars.values()].flatMap((b) => [b.duration, b.duration]),
-  ];
+const includesAny = (ids: Set<TaskId>, wanted: Set<TaskId>): boolean => {
+  for (const id of ids) {
+    if (wanted.has(id)) return true;
+  }
+  return false;
+};
+
+/** Splits each bar's duration into the part with current tasks and the part without them. */
+export const chartSeries = (bars: ChartBars, currentTasks: Task[]): ChartData => {
+  const currentTaskIds = new Set(currentTasks.map((t) => t.id));
+  const times: number[] = [];
+  const current: number[] = [];
+  const other: number[] = [];
+  for (const bar of bars) {
+    const duration = bar.duration;
+    const isCurrent = includesAny(bar.tasks, currentTaskIds);
+    times.push(millisecondsToSeconds(bar.start.valueOf()), millisecondsToSeconds(bar.end.valueOf()));
+    current.push(isCurrent ? duration : 0, isCurrent ? duration : 0);
+    other.push(isCurrent ? 0 : duration, isCurrent ? 0 : duration);
+  }
+  return [times, current, other];
 };
 
 export const hasChartData = (data: ChartData): boolean => !!data[0]?.length;
