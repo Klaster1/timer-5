@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.1.0](https://github.com/Klaster1/timer-5/compare/v5.0.1...v5.1.0) (2026-11-19)
+
+
+### Features
+
+* find tasks by name with typos and search operators ([#63](https://github.com/Klaster1/timer-5/issues/63)) ([ce164ab](https://github.com/Klaster1/timer-5/commit/ce164ab3f4a7c747ad3e26520f5b35e6ae998eeb))
+
 ## [5.0.1](https://github.com/Klaster1/timer-5/compare/v5.0.0...v5.0.1) (2026-11-19)
 
 
