@@ -9,6 +9,8 @@ permissions:
   issues: write
   pull-requests: write
 
+concurrency: release-please # Two quick pushes to master must not race on the release pull request.
+
 jobs:
   release-please:
     runs-on: ubuntu-latest
@@ -16,3 +18,27 @@ jobs:
       # It keeps a release pull request open that bumps the version and writes CHANGELOG.md from the commit titles.
       # Merging that pull request tags the release and publishes it on GitHub.
       - uses: googleapis/release-please-action@v4
+        with:
+          # The personal access token, not the default one: pushes and releases made with the default token start no
+          # workflows, so the merge below would neither tag the release nor deploy.
+          token: ${{ secrets.GH_TOKEN }}
+
+      # The release pull request holds only the version and the changelog, and its commits passed CI before they
+      # reached master, so it merges at once. The label is the one release-please puts on its own pull requests.
+      - name: Merge the release pull request
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          for number in $(gh pr list --label "autorelease: pending" --state open --json number --jq '.[].number'); do
+            merged=false
+            for attempt in 1 2 3 4 5; do
+              if gh pr merge "$number" --squash; then merged=true; break; fi
+              echo "Attempt $attempt failed: GitHub may still be working out whether #$number can merge."
+              sleep 10
+            done
+            if [ "$merged" != true ]; then
+              echo "::error::Could not merge #$number."
+              exit 1
+            fi
+          done
