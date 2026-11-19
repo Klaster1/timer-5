@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.1.1](https://github.com/Klaster1/timer-5/compare/v5.1.0...v5.1.1) (2026-11-19)
+
+
+### Performance Improvements
+
+* make typing in the filter smoother with thousands of tasks ([7fa1600](https://github.com/Klaster1/timer-5/commit/7fa16002081576b2d59b26a6efac7b2b779e5e5f))
+
 ## [5.1.0](https://github.com/Klaster1/timer-5/compare/v5.0.1...v5.1.0) (2026-11-19)
 
 
