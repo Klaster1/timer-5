@@ -53,6 +53,7 @@ import { TasksFilterComponent } from './tasks-filter/tasks-filter';
 
 const SEARCH_DEBOUNCE_MS = 100;
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+const nextFrame = () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
 
 @Component({
   selector: 'screen-tasks',
@@ -135,6 +136,10 @@ export default class ScreenTasksComponent {
   private currentTasks = computed(() =>
     filterTasks(this.taskFilterParams(), this.store.allTasks(), this.nameMatches()),
   );
+  // The list follows `currentTasks` one frame later. The count and the chart update in the first frame, and the list swap,
+  // the most expensive part with thousands of tasks, in the next one. The first value applies at once.
+  private listedTasks = debounced(() => this.currentTasks(), nextFrame);
+  private listTasks = computed(() => this.listedTasks.value() ?? []);
   private dayBars = computed(() => chartBars(this.store.allTasks()));
   private filterChartData = computed(() => chartSeries(this.dayBars(), this.currentTasks()));
   private filterRange = computed(
@@ -155,7 +160,7 @@ export default class ScreenTasksComponent {
   // For scrollToIndex in the template — index of the currently open task
   private currentTaskIndex = computed(() => {
     const taskId = this.openTask()?.taskId();
-    return taskId ? this.currentTasks().findIndex((t) => t.id === taskId) : -1;
+    return taskId ? this.listTasks().findIndex((t) => t.id === taskId) : -1;
   });
 
   private isCurrentTaskOpened = computed(() => !!this.openTask());
@@ -184,7 +189,7 @@ export default class ScreenTasksComponent {
     });
     // Scroll to top when tasks change
     effect(() => {
-      this.currentTasks();
+      this.listTasks();
       afterNextRender(
         {
           read: () => {
