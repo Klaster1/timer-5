@@ -25,7 +25,12 @@
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": ["src/favicon.svg", "src/assets", "src/manifest.webmanifest"],
+            "assets": [
+              "src/favicon.svg",
+              "src/assets",
+              "src/manifest.webmanifest",
+              { "glob": "fuse.worker.mjs", "input": "node_modules/fuse.js/dist", "output": "/assets" }
+            ],
             "styles": ["src/styles.scss"],
             "scripts": [],
             "serviceWorker": "ngsw-config.json",

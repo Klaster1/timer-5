@@ -7,6 +7,7 @@ import {
   TrackByFunction,
   afterNextRender,
   computed,
+  debounced,
   effect,
   inject,
   input,
@@ -28,6 +29,7 @@ import { decodeFilterMatrixParams, decodeTaskState } from '@app/domain/router';
 import {
   SessionDragEvent,
   Task,
+  TaskId,
   TaskState,
   filterTasks,
   isTaskRunning,
@@ -39,6 +41,7 @@ import { TaskStatePipe } from '@app/pipes/task-state';
 import { TaskStateIconPipe } from '@app/pipes/task-state-icon';
 import { DialogLinkDirective, RoutedDialogs } from '@app/providers/routed-dialogs';
 import { AppStore } from '@app/providers/state';
+import { TaskNameSearch } from '@app/providers/task-name-search';
 import type ScreenTaskComponent from '@app/screen-task/screen-task';
 import { TypeSafeCdkVirtualForDirective } from '@app/screen-task/type-safe-virtual-for';
 import { deepEquals } from '@app/utils/assert';
@@ -47,6 +50,9 @@ import { CheckViewportSizeWhenValueChangesDirective } from './checkViewportSizeW
 import { EmptyStateComponent } from './empty-state/empty-state';
 import { ScrollToIndexDirective } from './scrollToIndex';
 import { TasksFilterComponent } from './tasks-filter/tasks-filter';
+
+const SEARCH_DEBOUNCE_MS = 100;
+const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 @Component({
   selector: 'screen-tasks',
@@ -85,6 +91,7 @@ import { TasksFilterComponent } from './tasks-filter/tasks-filter';
 })
 export default class ScreenTasksComponent {
   private store = inject(AppStore);
+  private nameSearch = inject(TaskNameSearch);
   private keys = inject(HotkeysService);
   private router = inject(Router);
   private routedDialogs = inject(RoutedDialogs);
@@ -108,10 +115,26 @@ export default class ScreenTasksComponent {
       durationSort: this.durationSort(),
     }),
   );
-  private taskFilterParams = computed(() => ({ ...this.decodedFilterParams(), state: this.state() }), {
-    equal: deepEquals,
-  });
-  private currentTasks = computed(() => filterTasks(this.taskFilterParams(), this.store.allTasks()));
+  // The list follows the search 100 ms after the last keystroke: the form and the URL stay immediate, since the filter panel
+  // reads decodedFilterParams. The first character and a cleared search apply at once.
+  private listSearch = debounced(
+    () => this.decodedFilterParams().search,
+    (value, last) => (!value || last.status === 'error' || !last.value ? undefined : sleep(SEARCH_DEBOUNCE_MS)),
+  );
+  // The name search is not part of these: `nameMatches` carries it
+  private taskFilterParams = computed(
+    () => {
+      const { search, ...filter } = this.decodedFilterParams();
+      return { ...filter, state: this.state() };
+    },
+    { equal: deepEquals },
+  );
+  // Until the first result arrives, a search from the URL shows every task. After that the list keeps the last result
+  // until the next one arrives, so it never flashes
+  private nameMatches = signal<Set<TaskId> | undefined>(undefined);
+  private currentTasks = computed(() =>
+    filterTasks(this.taskFilterParams(), this.store.allTasks(), this.nameMatches()),
+  );
   private filterChartData = computed(() => chartSeries(this.store.allTasks(), this.currentTasks()));
   private filterRange = computed(
     () => [this.decodedFilterParams().from ?? null, this.decodedFilterParams().to ?? null] as const,
@@ -137,6 +160,21 @@ export default class ScreenTasksComponent {
   private isCurrentTaskOpened = computed(() => !!this.openTask());
 
   constructor() {
+    // When a search opens, the workers get the names, so the first keystroke does not wait for them
+    effect(() => {
+      if (this.searchOpened()) this.nameSearch.prepare(this.store.allTasks()).catch((error) => console.error(error));
+    });
+    effect((onCleanup) => {
+      const text = (this.listSearch.value() ?? '').trim();
+      const tasks = this.store.allTasks();
+      if (!text) return void this.nameMatches.set(undefined);
+      let current = true;
+      onCleanup(() => (current = false));
+      this.nameSearch.search(text, tasks).then(
+        (ids) => current && this.nameMatches.set(ids),
+        (error) => console.error(error),
+      );
+    });
     afterNextRender(() => {
       this.keys.add(this.hotkeys);
     });
