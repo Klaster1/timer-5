@@ -38,11 +38,13 @@ The version, `CHANGELOG.md` and the releases come from the commit titles, throug
 
 ## Releases
 
-`.github/workflows/release-please.yml` runs on every push to `master`. It keeps one release pull request open, titled `chore(master): release <version>`. The pull request bumps `package.json` and `package-lock.json` and adds the new section to `CHANGELOG.md`. Merging it tags `v<version>` and publishes a GitHub Release with that section as the notes. The deploy workflow runs on that merge as on any other.
+`.github/workflows/release-please.yml` runs on every push to `master`. When a `feat`, `fix`, `perf` or `revert` commit has landed since the last release, it opens a release pull request titled `chore(master): release <version>`, which bumps `package.json` and `package-lock.json` and adds the new section to `CHANGELOG.md`. A step in the same workflow then merges that pull request at once. The merge push runs the workflow again, which tags `v<version>` and publishes a GitHub Release with that section as the notes. So every `feat` or `fix` is released within about a minute, and there is no step for you to take.
 
-To release, merge the release pull request. Check its changelog first: fix the PR titles before merging, or edit `CHANGELOG.md` in the release pull request. No release pull request appears until a `feat`, `fix`, `perf` or `revert` commit lands.
-
-The release pull request is made with the workflow's own token, so CI does not run on it. It only touches the version and the changelog.
+- The workflow uses the `GH_TOKEN` secret, not the default token. Pushes and releases made with the default token start no workflows, so the merge would neither tag the release nor deploy.
+- The release pull request and its merge commit hold only the version and the changelog. `.github/workflows/cicd.yaml` skips them: its job has no run for a branch named `release-please--…` or a commit titled `chore(master): release …`.
+- The deploy in `cicd.yaml` runs on every push to `master` whose tests pass, as before.
+- The changelog text comes from the PR titles, and the release goes out with them. Check a title before you merge.
+- If the merge step fails, the release pull request stays open. Merge it by hand.
 
 `bootstrap-sha` in `release-please-config.json` starts the commit history at the commit before release-please was added. Release-please ignores it once the first release pull request has merged.
 

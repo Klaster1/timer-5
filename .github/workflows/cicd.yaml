@@ -8,8 +8,15 @@ on:
     branches:
       - master
 
+concurrency:
+  # A new push to a pull request cancels its running CI. Runs on master finish, so a deploy is never cut short.
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   build-test-deploy:
+    # Release Please's pull request and its merge hold only the version and the changelog: nothing to test or deploy.
+    if: "${{ !startsWith(github.head_ref, 'release-please--') && !startsWith(github.event.head_commit.message, 'chore(master): release') }}"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
