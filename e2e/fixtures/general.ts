@@ -116,11 +116,13 @@ test.describe('General', () => {
       })),
     );
     await page.goto('/active');
-    const pathname = () => expect.poll(async () => getLocationPathname(page));
+    // CI serves the app under /timer-5/
+    const pathname = (route: string) =>
+      expect.poll(async () => getLocationPathname(page)).toMatch(new RegExp('/' + route + '$'));
 
     // Click the app logo, assert all tasks open and the URL ends with "/all"
     await app.buttonAllTasks().click();
-    await pathname().toBe('/all');
+    await pathname('all');
     await expect(screenTasks.taskName().first()).toHaveText(taskName(59));
     await expect.poll(async () => (await screenTasks.renderedStateIcons()).length).toBe(3);
 
@@ -149,36 +151,36 @@ test.describe('General', () => {
 
     // Click "Active tasks", assert only active tasks are visible, the "Active" route is opened
     await app.buttonActiveTasks().click();
-    await pathname().toBe('/active');
+    await pathname('active');
     await expect.poll(async () => screenTasks.renderedStateIcons()).toEqual(['play_circle']);
 
     // Click "Finished tasks", assert only finished tasks are visible, the "Finished" route is opened
     await app.buttonFinishedTasks().click();
-    await pathname().toBe('/finished');
+    await pathname('finished');
     await expect.poll(async () => screenTasks.renderedStateIcons()).toEqual(['check_circle']);
 
     // Click "Dropped tasks", assert only dropped tasks are visible, the "Dropped" route is opened
     await app.buttonDroppedTasks().click();
-    await pathname().toBe('/dropped');
+    await pathname('dropped');
     await expect.poll(async () => screenTasks.renderedStateIcons()).toEqual(['delete']);
 
     // Send "g t" keys, assert the "All tasks" are opened
     await pressKeys(page, 'g t');
-    await pathname().toBe('/all');
+    await pathname('all');
     // Send "g a" keys, assert the "Active tasks" are opened
     await pressKeys(page, 'g a');
-    await pathname().toBe('/active');
+    await pathname('active');
     // Send "g f" keys, assert the "Finished tasks" are opened
     await pressKeys(page, 'g f');
-    await pathname().toBe('/finished');
+    await pathname('finished');
 
     // Send the same keys in the Russian layout
     await pressRussianKeys(page, 'п е');
-    await pathname().toBe('/all');
+    await pathname('all');
     await pressRussianKeys(page, 'п ф');
-    await pathname().toBe('/active');
+    await pathname('active');
     await pressRussianKeys(page, 'п а');
-    await pathname().toBe('/finished');
+    await pathname('finished');
     // "о" and "л" are "j" and "k"
     await pressRussianKeys(page, 'о');
     await expect(screenTask.name()).toHaveText(taskName(58));
